@@ -37,7 +37,7 @@ then
   command rm -rf $installer_path
 
   # End Installation
-  echo -e"\nPlease Either Restart The Terminal Or Run Source To Use QCD"
+  echo -e "\nPlease Either Restart The Terminal Or Run Source To Use QCD"
 elif [ $confirm == n ] || [ $confirm == N ]
 then
   echo -e "\nQCD Installation Aborted!"
