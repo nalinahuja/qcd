@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+STORE_FILE=~/.qcd_store
+TEMP_FILE=~/.qcd_temp
+
 function qcd() {
   # Store First Arg
   indicated_dir=$1
@@ -10,14 +13,16 @@ function qcd() {
   fi
 
   # Create Dir Store
-  if [[ ! -f ~/dev/qcd/.qcd_store ]]
+  if [[ ! -f $STORE_FILE ]]
   then
-    touch ~/dev/qcd/.qcd_store
+    touch $STORE_FILE
   fi
 
   # Is Valid Directory
   if [[ -e $indicated_dir ]]
   then
+    echo "Valid Path"
+
     # Change Directory
     command cd $indicated_dir
 
@@ -26,19 +31,21 @@ function qcd() {
     new_ept=$(basename $new_dir)
 
     # Append If Unique
-    if [[ -z $(egrep -s -x ".* $new_dir" ~/dev/qcd/.qcd_store) ]]
+    if [[ -z $(egrep -s -x ".* $new_dir" $STORE_FILE) ]]
     then
-      printf "%s %s\n" $new_ept $new_dir >> ~/dev/qcd/.qcd_store
+      printf "%s %s\n" $new_ept $new_dir >> $STORE_FILE
     fi
   else
-    res=$(egrep -s -x "$indicated_dir.*" ~/dev/qcd/.qcd_store)
+    echo "Linked Path"
+
+    res=$(egrep -s -x "$indicated_dir.*" $STORE_FILE)
     res_cnt=$(echo "$res" | wc -l)
 
     if [[ $res_cnt -gt 1 ]]
     then
       echo -e "qcd: Multiple matches to endpoint"
 
-      paths=$(egrep -s -x "$indicated_dir.*" ~/dev/qcd/.qcd_store | cut -d ' ' -f2)
+      paths=$(egrep -s -x "$indicated_dir.*" $STORE_FILE | cut -d ' ' -f2)
 
       cnt=1
       for path in $paths
@@ -49,6 +56,8 @@ function qcd() {
 
       read -p "Endpoint: " ep
       res=$(echo $paths | cut -d ' ' -f$ep)
+    else
+      res=$(echo $res | cut -d ' ' -f2)
     fi
 
     if [[ -z $res ]]
@@ -58,6 +67,9 @@ function qcd() {
       if [[ ! -e $res ]]
       then
         echo -e "qcd: $res: No such file or directory"
+        del_line=$(rep -n "$res" $STORE_FILE | cut -d ':' -f1)
+        sed -i "${del_line}d" $STORE_FILE > $TEMP_FILE
+        cat $TEMP_FILE > $STORE_FILE && rm $TEMP_FILE
       else
         command cd $res
       fi
