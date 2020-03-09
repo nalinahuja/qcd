@@ -21,9 +21,6 @@ Just like the command cd, simply indicate a path or keyword of a path you have b
 </p>
 
 ```
-# Reset Endpoints File
-qcd --reset
-
 # Quick Change Directory
 qcd $PATH
 ```
