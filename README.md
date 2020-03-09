@@ -22,7 +22,7 @@ Just like the command cd, simply indicate a path or keyword of a path you have b
 
 ```
 # Reset Endpoints File
-qcd -r
+qcd -reset
 
 # Quick Change Directory
 qcd $PATH
