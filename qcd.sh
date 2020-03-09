@@ -48,7 +48,7 @@ function qcd() {
     if [[ $res_cnt -gt 1 ]]
     then
       # Prompt User
-      echo -e "qcd: Multiple matches to ${b}$indicated_dir${n}"
+      echo -e "qcd: Multiple paths to ${b}$indicated_dir${n}"
 
       # Cut Paths By Abs Path
       paths=$(echo -e "$res" | cut -d ' ' -f2)
