@@ -18,23 +18,49 @@ function qcd() {
   # Is Valid Directory
   if [[ -e $indicated_dir ]]
   then
+    # Change Directory
     command cd $indicated_dir
 
+    # Store Complete Path And Endpoint
     new_dir=$(pwd -P)
     new_ept=$(basename $new_dir)
 
-    if [[ -z $(egrep -s -m1 -x "$new_ept.*" ~/dev/qcd/.qcd_store) ]]
+    # Append If Unique
+    if [[ -z $(egrep -s -x ".* $new_dir" ~/dev/qcd/.qcd_store) ]]
     then
       printf "%s %s\n" $new_ept $new_dir >> ~/dev/qcd/.qcd_store
     fi
   else
-    match=$(egrep -s -m1 -x "$indicated_dir.*" ~/dev/qcd/.qcd_store | cut -d ' ' -f2)
+    res=$(egrep -s -x "$indicated_dir.*" ~/dev/qcd/.qcd_store)
+    res_cnt=$(echo "$res" | wc -l)
 
-    if [[ -z $match ]]
+    if [[ $res_cnt -gt 1 ]]
     then
-      echo -e "qcd: Cannot match keyword to directory."
+      echo -e "qcd: Multiple matches to endpoint"
+
+      paths=$(egrep -s -x "$indicated_dir.*" ~/dev/qcd/.qcd_store | cut -d ' ' -f2)
+
+      cnt=1
+      for path in $paths
+      do
+        printf "(%d) %s\n" $cnt $path
+        cnt=$((cnt + 1))
+      done
+
+      read -p "Endpoint: " ep
+      res=$(echo $paths | cut -d ' ' -f$ep)
+    fi
+
+    if [[ -z $res ]]
+    then
+      echo -e "qcd: Cannot match keyword to directory"
     else
-      command cd $match
+      if [[ ! -e $res ]]
+      then
+        echo -e "qcd: $res: No such file or directory"
+      else
+        command cd $res
+      fi
     fi
   fi
 }
