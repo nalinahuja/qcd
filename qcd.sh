@@ -18,7 +18,6 @@ function qcd() {
   # Is Valid Directory
   if [[ -e $indicated_dir ]]
   then
-    echo "Valid"
     command cd $indicated_dir
 
     new_dir=$(pwd -P)
