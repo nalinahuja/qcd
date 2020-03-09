@@ -34,7 +34,6 @@ function qcd() {
     then
       echo -e "qcd: Cannot match keyword to directory."
     else
-      echo "Linked"
       command cd $match
     fi
   fi
