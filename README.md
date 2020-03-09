@@ -1,14 +1,18 @@
 ## QCD
 
-<p style="justify">
+<p align="justify">
 QCD is a terminal utility that allows the user to quickly change the current directory by specifying an endpoint or a valid directory. QCD works completely locally and stores visited endpoints in a file called .qcd_store which is by default located at ~/.qcd.
 </p>
 
 ## Install QCD
 
+<p align="justify">
 Please navigate to the release tab of this repository and download the latest version of this project. You can alternatively clone this repository but it is recommended that you download the most recent release as the git repository contains comparatively larger.
+</p>
 
+<p align="justify">
 Once you have completed the above task, navigate to the location where the QCD repository contents have been downloaded and run the install.sh script. This script will install QCD to your home directory as a hidden folder (.qcd) which contains the QCD program and the store file and add the qcd function to your terminal configuration.
+</p>
 
 ## Usage
 
