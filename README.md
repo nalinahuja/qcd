@@ -23,6 +23,5 @@ Just like the command cd, simply indicate a path or keyword of a path you have b
 </p>
 
 ```
-# Quick Change Directory
 qcd $PATH
 ```
