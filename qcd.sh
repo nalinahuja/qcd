@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-QCD_STORE=~/qcd_store
-QCD_TEMP=~/qcd_temp
+QCD_STORE=~/.qcd/qcd_store
+QCD_TEMP=~/.qcd/qcd_temp
 
 b=$(tput bold)
 n=$(tput sgr0)
