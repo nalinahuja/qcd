@@ -7,7 +7,7 @@ QCD is a terminal utility that allows the user to quickly change the current dir
 ## Install QCD
 
 <p align="justify">
-Please navigate to the release tab of this repository and download the latest version of this project. You can alternatively clone this repository but it is recommended that you download the most recent release as the git repository contains comparatively larger.
+Please navigate to the <a href="https://github.com/nalinahuja22/qcd/releases">release</a> tab of this repository and download the latest version of this project. You can alternatively clone this <a href="https://github.com/nalinahuja22/qcd">repository</a> but it is recommended that you download the most recent release as the git repository contains comparatively larger.
 </p>
 
 <p align="justify">
