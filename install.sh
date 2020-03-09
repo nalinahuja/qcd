@@ -4,7 +4,7 @@ QCD_FOLD=~/.qcd
 QCD_PROG=./qcd.sh
 QCD_LICE=./LICENSE
 QCD_READ=./README.md
-QCD_COMMAND="\nqcd() {\n if [[ \$1 = '-reset' ]]\n then\n   > ~/.qcd/qcd_store\n else\n   . ~/.qcd/qcd.sh \$1\n fi\n}"
+QCD_COMMAND="\nqcd() {\n if [[ \$1 = '--reset' ]]\n then\n   > ~/.qcd/qcd_store\n else\n   . ~/.qcd/qcd.sh \$1\n fi\n}"
 
 read -p "Please Confirm Installation of QCD [y/n]: " confirm
 
