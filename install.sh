@@ -31,10 +31,13 @@ then
   command mv $QCD_LICE $QCD_FOLD
   command mv $QCD_READ $QCD_FOLD
 
+  echo -e "→ Installed QCD In ~/.qcd"
+
   # Clean Installer
   command rm -rf $installer_path
 
-  echo -e "→ Installed QCD In ~/.qcd"
+  # End Installation
+  echo -e"\nPlease Either Restart The Terminal Or Run Source To Use QCD"
 elif [ $confirm == n ] || [ $confirm == N ]
 then
   echo -e "\nQCD Installation Aborted!"
