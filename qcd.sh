@@ -18,7 +18,7 @@ function qcd() {
     # Is Valid Directory
     if [[ -e $indicated_dir ]]
     then
-      echo "Valid Dir"
+      echo "Valid"
       command cd $indicated_dir
       pwd -P >> ~/dev/qcd/.qcd_store
     else
