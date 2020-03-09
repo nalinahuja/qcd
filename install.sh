@@ -24,8 +24,6 @@ then
   echo -e "→ Installed QCD Command To Bash Config"
 
   # Store Program Files
-  installer_path=$(pwd)
-
   command mkdir $QCD_FOLD
   command mv $QCD_PROG $QCD_FOLD
   command mv $QCD_LICE $QCD_FOLD
@@ -34,6 +32,7 @@ then
   echo -e "→ Installed QCD In ~/.qcd"
 
   # Clean Installer
+  installer_path=$(pwd)
   command rm -rf $installer_path
 
   # End Installation
