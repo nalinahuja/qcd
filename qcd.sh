@@ -99,7 +99,7 @@ function qcd() {
     if [[ -z $res ]]
     then
       # Prompt User
-      echo -e "qcd: Cannot match keyword to directory"
+      echo -e "qcd: Cannot link keyword to directory"
     else
       # Check If Linked Path Is Valid
       if [[ ! -e $res ]]
