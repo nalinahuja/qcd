@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-QCD_AUTOC=~/.qcd/comp.sh
 QCD_STORE=~/.qcd/store
 QCD_TEMP=~/.qcd/temp
 
@@ -95,9 +94,6 @@ function qcd() {
     fi
   fi
 }
-
-# Update Completion Table
-source $QCD_AUTOC
 
 # Start QCD Function
 qcd $1

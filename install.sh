@@ -5,7 +5,7 @@ QCD_PROG=./qcd.sh
 QCD_COMP=./comp.sh
 QCD_LICE=./LICENSE
 QCD_READ=./README.md
-QCD_COMMAND="\nqcd() {\n  . ~/.qcd/qcd.sh \$1\n}"
+QCD_COMMAND="\nqcd() {\n  . source ~/.qcd/comp.sh\n  . ~/.qcd/qcd.sh \$1\n}"
 
 read -p "Please Confirm Installation of QCD [y/n]: " confirm
 
