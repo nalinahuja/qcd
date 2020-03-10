@@ -45,7 +45,7 @@ function qcd() {
 
   # Invalid Directory
   else
-    # Get Path Prefix
+    # Get Path Prefix and Suffix
     prefix=$(echo -e "$indicated_dir" | cut -d '/' -f1)
     suffix=""
 
