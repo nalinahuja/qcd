@@ -37,7 +37,7 @@ function qcd() {
     local new_ept=$(basename $new_dir)
 
     # Append To QCD Store If Unique
-    if [[ -z $(egrep -s -x ".* $new_dir" $QCD_STORE) ]]
+    if [[ -z $(egrep -s -x ".* $new_dir" $QCD_STORE) && ! "$HOME" = "$new_dir" ]]
     then
       printf "%s %s\n" $new_ept $new_dir >> $QCD_STORE
     fi
