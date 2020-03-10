@@ -2,6 +2,8 @@
 
 #!/usr/bin/env bash
 
+#todo: Store File Invalid Path Cleaning
+
 QCD_STORE=~/.qcd/store
 QCD_TEMP=~/.qcd/temp
 
@@ -44,7 +46,7 @@ function qcd() {
   else
     # Get Path Prefix
     prefix=$(echo -e "$indicated_dir" | cut -d '/' -f1)
-    suffix=''
+    suffix=""
 
     # Get Path Suffix If Non-Empty
     if [[ "$indicated_dir" == *\/* ]]
@@ -106,7 +108,7 @@ function qcd() {
         echo -e "qcd: $res: No such file or directory"
 
         # Delete Invalid Path From QCD Store
-        del_line=$(grep -n "$res" $QCD_STORE | cut -d ':' -f1)
+        del_line=$(egrep -s -n "$res" $QCD_STORE | cut -d ':' -f1)
         sed "${del_line}d" $QCD_STORE > $QCD_TEMP
         cat $QCD_TEMP > $QCD_STORE && rm $QCD_TEMP
       else
