@@ -7,7 +7,7 @@ QCD_PROG=./qcd.sh
 QCD_COMP=./comp.sh
 QCD_LICE=./LICENSE
 QCD_READ=./README.md
-QCD_STORE=~/.qcd/store
+QCD_STOR=~/.qcd/store
 
 read -p "Please Confirm Installation of QCD [y/n]: " confirm
 
@@ -38,10 +38,10 @@ then
 
   # Clean Installer
   installer_path=$(pwd)
-  command rm -rf $installer_path
+  command rm $installer_path/installer.sh
 
   # Create Empty File
-  touch $QCD_STORE
+  touch $QCD_STOR
 
   # Update Terminal Config
   echo -e "\nQCD Successfully Installed, Please Restart Your Terminal!"
