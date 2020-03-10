@@ -3,8 +3,6 @@
 #!/usr/bin/env bash
 
 # todo: Remove Invalid Paths From Store
-# todo: Remove Non-Substring Matching Suggestions
-# todo: Path Completion For Curr Dir And Endpoints
 
 QCD_STORE=~/.qcd/store
 QCD_TEMP=~/.qcd/temp
