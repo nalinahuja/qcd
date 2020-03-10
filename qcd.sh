@@ -4,6 +4,7 @@
 
 # todo: Remove Invalid Paths From Store
 # todo: Remove Non-Substring Matching Suggestions
+# todo: Path Completion For Endpoint And Endpoint + Subdir Redirect
 
 QCD_STORE=~/.qcd/store
 QCD_TEMP=~/.qcd/temp
