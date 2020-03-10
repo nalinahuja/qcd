@@ -5,7 +5,8 @@ QCD_PROG=./qcd.sh
 QCD_COMP=./comp.sh
 QCD_LICE=./LICENSE
 QCD_READ=./README.md
-QCD_COMMAND="\nqcd() {\n  . ~/.qcd/qcd.sh \$1\n}\n\nsource ~/.qcd/comp.sh"
+QCD_STORE=~/.qcd/store
+QCD_COMMAND="\nqcd() {\n  source ~/.qcd/comp.sh\n  . ~/.qcd/qcd.sh \$1\n}"
 
 read -p "Please Confirm Installation of QCD [y/n]: " confirm
 
@@ -37,6 +38,9 @@ then
   # Clean Installer
   installer_path=$(pwd)
   command rm -rf $installer_path
+
+  # Create Empty File
+  touch $QCD_STORE
 
   # End Installation
   echo -e "\nPlease Restart Your Terminal To Use QCD"
