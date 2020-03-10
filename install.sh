@@ -8,7 +8,7 @@ QCD_COMP=./comp.sh
 QCD_LICE=./LICENSE
 QCD_READ=./README.md
 QCD_STORE=~/.qcd/store
-QCD_COMMAND="\nqcd() {\n  source ~/.qcd/comp.sh\n  . ~/.qcd/qcd.sh \$1\n}\n\nsource ~/.qcd/comp.sh"
+QCD_COMMAND="\nqcd() {\n  . ~/.qcd/qcd.sh \$1\n  source %s\n}\n\nsource ~/.qcd/comp.sh"
 
 read -p "Please Confirm Installation of QCD [y/n]: " confirm
 
@@ -17,13 +17,13 @@ then
   #Add Command To Terminal Profile
   if [[ -f ~/.zshrc ]]
   then
-    echo -e $QCD_COMMAND >> ~/.zshrc
+    echo -e $QCD_COMMAND ~/.zshrc >> ~/.zshrc
   elif [[ -f ~/.bashrc ]]
   then
-    echo -e $QCD_COMMAND >> ~/.bashrc
+    echo -e $QCD_COMMAND ~/.bashrc >> ~/.bashrc
   elif [[ -f ~/.bash_profile ]]
   then
-    echo -e $QCD_COMMAND >> ~/.bash_profile
+    printf $QCD_COMMAND ~/.bash_profile >> ~/.bash_profile
   fi
 
   echo -e "→ Installed QCD Command To Terminal Config"
