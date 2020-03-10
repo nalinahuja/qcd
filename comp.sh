@@ -32,7 +32,6 @@ function _qcd_comp() {
     WORD_LIST=$(cat $QCD_STORE | awk '{print $1}' | sort)
     COMPREPLY=($(compgen -W "$WORD_LIST" "${COMP_WORDS[1]}"))
   fi
-
 }
 
 if [[ -e $QCD_STORE ]]
