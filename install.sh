@@ -2,6 +2,7 @@
 
 QCD_FOLD=~/.qcd
 QCD_PROG=./qcd.sh
+QCD_COMP=./comp.sh
 QCD_LICE=./LICENSE
 QCD_READ=./README.md
 QCD_COMMAND="\nqcd() {\n  . ~/.qcd/qcd.sh \$1\n}"
@@ -10,22 +11,24 @@ read -p "Please Confirm Installation of QCD [y/n]: " confirm
 
 if [ $confirm == y ] || [ $confirm == Y ]
 then
-  #Add Command To Bash Profile
-  if [[ -f ~/.bashrc ]]
+  #Add Command To Terminal Profile
+  if [[ -f ~/.zshrc ]]
+  then
+    echo -e $QCD_COMMAND >> ~/.zshrc
+  elif [[ -f ~/.bashrc ]]
   then
     echo -e $QCD_COMMAND >> ~/.bashrc
-    source ~/.bashrc
   elif [[ -f ~/.bash_profile ]]
   then
     echo -e $QCD_COMMAND >> ~/.bash_profile
-    source ~/.bash_profile
   fi
 
-  echo -e "→ Installed QCD Command To Bash Config"
+  echo -e "→ Installed QCD Command To Terminal Config"
 
   # Store Program Files
   command mkdir $QCD_FOLD
   command mv $QCD_PROG $QCD_FOLD
+  command mv $QCD_COMP $QCD_FOLD
   command mv $QCD_LICE $QCD_FOLD
   command mv $QCD_READ $QCD_FOLD
 
