@@ -4,9 +4,9 @@
 
 QCD_FOLD=~/.qcd
 QCD_PROG=./qcd.sh
+QCD_COMP=./comp.sh
 QCD_LICE=./LICENSE
 QCD_READ=./README.md
-QCD_COMP=./comp.sh
 QCD_STORE=~/.qcd/store
 QCD_COMMAND="\nqcd() {\n  source ~/.qcd/comp.sh\n  . ~/.qcd/qcd.sh \$1\n}\n\nsource ~/.qcd/comp.sh"
 
