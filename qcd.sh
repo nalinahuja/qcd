@@ -12,7 +12,7 @@ n=$(tput sgr0)
 
 function qcd() {
   # Store First Arg
-  indicated_dir="$1"
+  indicated_dir=$1
 
   # Set To Home If Empty
   if [[ -z $indicated_dir ]]
