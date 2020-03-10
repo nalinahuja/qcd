@@ -36,10 +36,6 @@ then
 
   echo -e "→ Installed QCD In ~/.qcd"
 
-  # Clean Installer
-  installer_path=$(pwd)
-  command rm $installer_path/installer.sh
-
   # Create Empty File
   touch $QCD_STOR
 
