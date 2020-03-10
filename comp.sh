@@ -1,7 +1,6 @@
 #/usr/bin/env bash
 
 QCD_STORE=~/.qcd/store
+WORD_LIST=$(cat $QCD_STORE | awk '{print $1}')
 
-word_list=$(cat ~/.qcd/store | awk '{print $1}')
-
-complete -W "$word_list" qcd
+complete -W "$WORD_LIST" qcd
