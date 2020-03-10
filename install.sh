@@ -13,11 +13,7 @@ read -p "Please Confirm Installation of QCD [y/n]: " confirm
 
 if [ $confirm == y ] || [ $confirm == Y ]
 then
-  #Add Command To Terminal Profile
-  if [[ -f ~/.zshrc ]]
-  then
-    echo -e "\nqcd() {\n  . ~/.qcd/qcd.sh \$1\n  source ~/.zshrc\n}\n\nsource ~/.qcd/comp.sh" >> ~/.zshrc
-  elif [[ -f ~/.bashrc ]]
+  if [[ -f ~/.bashrc ]]
   then
     echo -e "\nqcd() {\n  . ~/.qcd/qcd.sh \$1\n  source  ~/.bashrc\n}\n\nsource ~/.qcd/comp.sh" >> ~/.bashrc
   elif [[ -f ~/.bash_profile ]]

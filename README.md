@@ -1,7 +1,7 @@
 ## QCD
 
 <p align="justify">
-QCD is a terminal utility that allows the user to quickly change the current directory by specifying an endpoint or a valid directory. QCD is installed at <i>~/.qcd</i> and works completely locally by storing visited endpoints in a file called <i>store</i> which is by located within the program folder. QCD works by storing endpoints and their absolute path as you visit them and storing them such that if a keyword is passed to QCD, it can resolve the absolute path from the endpoint if it has been seen by QCD.
+QCD is a bash utility that allows the user to quickly change the current directory by specifying an endpoint or a valid directory. QCD is installed at <i>~/.qcd</i> and works completely locally by storing visited endpoints in a file called <i>store</i> which is by located within the program folder. QCD works by storing endpoints and their absolute path as you visit them and storing them such that if a keyword is passed to QCD, it can resolve the absolute path from the endpoint if it has been seen by QCD.
 </p>
 
 ## Install QCD
@@ -17,7 +17,7 @@ Once you have completed the above task, navigate to the location where the QCD r
 ## Usage
 
 <p align="justify">
-Just like the command cd, simply indicate a valid path or keyword related to a path you have been to previously and QCD will resolve the directory and switch to it. QCD has the ability complete the path based on the contents of the current directory and previously visited endpoints. If multiple paths exist to the same endpoint, you will have to manually select which one to jump to. If the keyword or indicated directory in the is not found, an error will appear. 
+Just like the command cd, simply indicate a valid path or keyword related to a path you have been to previously and QCD will resolve the directory and switch to it. QCD has the ability complete the path based on the contents of the current directory and previously visited endpoints. If multiple paths exist to the same endpoint, you will have to manually select which one to jump to. If the keyword or indicated directory in the is not found, an error will appear.
 </p>
 
 ```
