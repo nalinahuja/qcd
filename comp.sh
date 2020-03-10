@@ -2,8 +2,8 @@
 
 QCD_STORE=~/.qcd/store
 
-if [[ -f $QCD_STORE ]]
+if [[ -e $QCD_STORE ]]
 then
   WORD_LIST=$(cat $QCD_STORE | awk '{print $1}')
-  complete -W "$WORD_LIST" qcd
+  complete -o dirnames -W "$WORD_LIST" qcd
 fi
