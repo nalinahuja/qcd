@@ -102,9 +102,8 @@ function qcd() {
         del_line=$(grep -n "$res" $QCD_STORE | cut -d ':' -f1)
         sed "${del_line}d" $QCD_STORE > $QCD_TEMP
         cat $QCD_TEMP > $QCD_STORE && rm $QCD_TEMP
-
-      # Swtich To Linked Path
       else
+        # Swtich To Linked Path
         command cd $res
       fi
     fi
