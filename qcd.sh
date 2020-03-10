@@ -44,16 +44,25 @@ function qcd() {
     fi
 
   # Invalid Directory
-  else
+else
+    # Get Path Prefix
+    prefix=$(echo -e "$indicated_dir" | cut -d '/' -f1)
+
+    # Get Path Suffix If Non-Empty
+    if [[ "$indicated_dir" == *\/* ]]
+    then
+      suffix=$(echo -e "$indicated_dir" | cut -d '/' -f2)
+    fi
+
     # Check For File Link In Store File
-    res=$(egrep -s -x "$indicated_dir.*" $QCD_STORE)
+    res=$(egrep -s -x "$prefix.*" $QCD_STORE)
     res_cnt=$(echo "$res" | wc -l)
 
     # Check Result Count
     if [[ $res_cnt -gt 1 ]]
     then
       # Prompt User
-      echo -e "qcd: Multiple paths to endpoint ${b}$indicated_dir${n}"
+      echo -e "qcd: Multiple paths to endpoint ${b}$prefix${n}"
 
       # Format Paths By Absolute Path
       paths=$(echo -e "$res" | cut -d ' ' -f2 | sort)
@@ -105,6 +114,12 @@ function qcd() {
       else
         # Swtich To Linked Path
         command cd $res
+
+        # Navigate To Suffix If Non-Empty
+        if [[ ! -z $suffix && -e $suffix ]]
+        then
+          command cd $suffix
+        fi
       fi
     fi
   fi
