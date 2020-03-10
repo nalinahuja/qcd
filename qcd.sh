@@ -72,6 +72,8 @@ function qcd() {
       cnt=1
       for path in $paths
       do
+        prefix_len=$((${#HOME} + 1))
+        path="~$(echo $path | cut -c $prefix_len-${#path})"
         printf "(%d) %s\n" $cnt $path
         cnt=$((cnt + 1))
       done

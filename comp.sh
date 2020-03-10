@@ -19,11 +19,9 @@ function _qcd_comp() {
 
     for WORD in $WORD_LIST
     do
-      word_len=${#WORD}
       prefix=${WORD%%$curr_arg*}
       prefix_len=$((${#prefix} + 1))
-
-      NEW_LIST="${NEW_LIST} $(echo $WORD | cut -c $prefix_len-$word_len)"
+      NEW_LIST="${NEW_LIST} $(echo $WORD | cut -c $prefix_len-${#WORD})"
     done
 
     COMPREPLY=($(compgen -W "$NEW_LIST" "${COMP_WORDS[1]}"))
