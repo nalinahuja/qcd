@@ -1,3 +1,5 @@
+#Developed by Nalin Ahuja, nalinahuja22
+
 #!/usr/bin/env bash
 
 QCD_FOLD=~/.qcd
