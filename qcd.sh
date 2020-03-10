@@ -44,6 +44,7 @@ function qcd() {
   else
     # Get Path Prefix
     prefix=$(echo -e "$indicated_dir" | cut -d '/' -f1)
+    suffix=''
 
     # Get Path Suffix If Non-Empty
     if [[ "$indicated_dir" == *\/* ]]
