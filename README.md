@@ -1,7 +1,7 @@
 ## QCD
 
 <p align="justify">
-QCD is a terminal utility that allows the user to quickly change the current directory by specifying an endpoint or a valid directory. QCD is installed at **~/.qcd** and works completely locally by storing visited endpoints in a file called **store** which is by located within the program folder. QCD works by storing endpoints and their absolute path as you visit them and storing them such that if a keyword is passed to QCD, it can resolve the absolute path from the endpoint if it has been seen by QCD.
+QCD is a terminal utility that allows the user to quickly change the current directory by specifying an endpoint or a valid directory. QCD is installed at <i>~/.qcd</i> and works completely locally by storing visited endpoints in a file called <i>store</i> which is by located within the program folder. QCD works by storing endpoints and their absolute path as you visit them and storing them such that if a keyword is passed to QCD, it can resolve the absolute path from the endpoint if it has been seen by QCD.
 </p>
 
 ## Install QCD
