@@ -2,8 +2,6 @@
 
 #!/usr/bin/env bash
 
-# todo: Remove Invalid Paths From Store
-
 QCD_STORE=~/.qcd/store
 QCD_TEMP=~/.qcd/temp
 
