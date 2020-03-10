@@ -17,13 +17,13 @@ then
   #Add Command To Terminal Profile
   if [[ -f ~/.zshrc ]]
   then
-    echo -e $QCD_COMMAND ~/.zshrc >> ~/.zshrc
+    printf $QCD_COMMAND "~/.zshrc" >> ~/.zshrc
   elif [[ -f ~/.bashrc ]]
   then
-    echo -e $QCD_COMMAND ~/.bashrc >> ~/.bashrc
+    printf $QCD_COMMAND "~/.bashrc" >> ~/.bashrc
   elif [[ -f ~/.bash_profile ]]
   then
-    printf $QCD_COMMAND ~/.bash_profile >> ~/.bash_profile
+    printf $QCD_COMMAND "~/.bash_profile" >> ~/.bash_profile
   fi
 
   echo -e "→ Installed QCD Command To Terminal Config"
