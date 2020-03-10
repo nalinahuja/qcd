@@ -18,15 +18,12 @@ then
   if [[ -f ~/.zshrc ]]
   then
     printf $QCD_COMMAND "~/.zshrc" >> ~/.zshrc
-    source ~/.zshrc
   elif [[ -f ~/.bashrc ]]
   then
     printf $QCD_COMMAND "~/.bashrc" >> ~/.bashrc
-    source ~/.bashrc
   elif [[ -f ~/.bash_profile ]]
   then
     printf $QCD_COMMAND "~/.bash_profile" >> ~/.bash_profile
-    source ~/.bash_profile
   fi
 
   echo -e "→ Installed QCD Command To Terminal Config"
@@ -48,7 +45,7 @@ then
   touch $QCD_STORE
 
   # Update Terminal Config
-  echo -e "\nQCD Successfully Installed!"
+  echo -e "\nQCD Successfully Installed, Please Restart Your Terminal!"
 elif [ $confirm == n ] || [ $confirm == N ]
 then
   echo -e "\nQCD Installation Aborted!"
