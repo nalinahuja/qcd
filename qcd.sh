@@ -2,8 +2,8 @@
 
 #!/usr/bin/env bash
 
-# todo: Remove Invalid Paths
-# todo: Extended Path Redirection ex. cs252/assignments
+# todo: Remove Invalid Paths From Store
+# todo: Extended Path Redirection ex. cs252/assignments/... -> link:cs252/ cd assignments/...
 
 QCD_STORE=~/.qcd/store
 QCD_TEMP=~/.qcd/temp
