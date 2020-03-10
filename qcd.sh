@@ -3,6 +3,7 @@
 #!/usr/bin/env bash
 
 #todo: Store File Invalid Path Cleaning
+#todo: Automatic Selection Logic Based On Priority
 
 QCD_STORE=~/.qcd/store
 QCD_TEMP=~/.qcd/temp
