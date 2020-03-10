@@ -4,11 +4,11 @@
 
 QCD_FOLD=~/.qcd
 QCD_PROG=./qcd.sh
-QCD_COMP=./comp.sh
 QCD_LICE=./LICENSE
 QCD_READ=./README.md
+QCD_COMP=./comp.bash
 QCD_STORE=~/.qcd/store
-QCD_COMMAND="\nqcd() {\n  source ~/.qcd/comp.sh\n  . ~/.qcd/qcd.sh \$1\n}"
+QCD_COMMAND="\nqcd() {\n  source ~/.qcd/comp.bash\n  . ~/.qcd/qcd.sh \$1\n}\n\nsource ~/.qcd/comp.bash"
 
 read -p "Please Confirm Installation of QCD [y/n]: " confirm
 

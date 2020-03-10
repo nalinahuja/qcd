@@ -21,7 +21,7 @@ After the success of the installation script, please close and open your termina
 </p>
 
 ```
-source ~/.qcd/comp.sh
+source ~/.qcd/comp.bash
 ```
 
 ## Usage
