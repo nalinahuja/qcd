@@ -2,7 +2,7 @@
 
 #!/usr/bin/env bash
 
-# todo: Remove Invalid Paths If Multiple Exist, Extended Path Redirection ex. cs252/assignments, Multiple Paths Input Bound Check
+# todo: Remove Invalid Paths If Multiple Exist, Extended Path Redirection ex. cs252/assignments, Multiple Paths Input Bound Check, Path Namespace Completion
 
 QCD_STORE=~/.qcd/store
 QCD_TEMP=~/.qcd/temp
