@@ -48,7 +48,7 @@ then
   touch $QCD_STORE
 
   # Update Terminal Config
-  echo -e "\nQCD Has Successfully Installed"
+  echo -e "\nQCD Successfully Installed!"
 elif [ $confirm == n ] || [ $confirm == N ]
 then
   echo -e "\nQCD Installation Aborted!"
