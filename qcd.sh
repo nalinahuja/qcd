@@ -2,7 +2,8 @@
 
 #!/usr/bin/env bash
 
-# todo: Remove Invalid Paths If Multiple Exist, Extended Path Redirection ex. cs252/assignments, Multiple Paths Input Bound Check, Path Namespace Completion, sort multiple path selections
+# todo: Remove Invalid Paths
+# todo: Extended Path Redirection ex. cs252/assignments
 
 QCD_STORE=~/.qcd/store
 QCD_TEMP=~/.qcd/temp
@@ -52,10 +53,10 @@ function qcd() {
     if [[ $res_cnt -gt 1 ]]
     then
       # Prompt User
-      echo -e "qcd: Multiple paths to ${b}$indicated_dir${n}"
+      echo -e "qcd: Multiple paths to endpoint ${b}$indicated_dir${n}"
 
-      # Cut Paths By Abs Path
-      paths=$(echo -e "$res" | cut -d ' ' -f2)
+      # Format Paths By Absolute Path
+      paths=$(echo -e "$res" | cut -d ' ' -f2 | sort)
 
       # Display Options
       cnt=1
@@ -67,6 +68,17 @@ function qcd() {
 
       # Format Selected Endpoint
       read -p "Endpoint: " ep
+
+      # Error Check Bounds
+      if [[ $ep -lt 1 ]]
+      then
+        ep=1
+      elif [[ $ep -gt $res_cnt ]]
+      then
+        ep=$res_cnt
+      fi
+
+      # Format Endpoint
       res=$(echo $paths | cut -d ' ' -f$ep)
     else
       # Format Endpoint
