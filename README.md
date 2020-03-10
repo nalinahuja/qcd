@@ -17,7 +17,7 @@ Once you have completed the above task, navigate to the location where the QCD r
 ## Usage
 
 <p align="justify">
-Just like the command cd, simply indicate a path or keyword of a path you have been to previously and qcd will attempt to navigate to the directory. QCD has the ability to complete the names of keywords and contents of the current directory. If the keyword or local file is not found, an error will appear. 
+Just like the command cd, simply indicate a path or keyword of a path you have been to previously and qcd will attempt to navigate to the directory. QCD has the ability to complete the names of keywords and contents of the current directory. If the keyword or a file in the current directory is not found, an error will appear. 
 </p>
 
 ```
