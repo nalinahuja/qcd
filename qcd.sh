@@ -3,7 +3,7 @@
 #!/usr/bin/env bash
 
 # todo: Remove Invalid Paths From Store
-# todo: Extended Path Redirection ex. cs252/assignments/... -> link:cs252/ cd assignments/...
+# todo: Remove Non-Substring Matching Suggestions
 
 QCD_STORE=~/.qcd/store
 QCD_TEMP=~/.qcd/temp
@@ -34,8 +34,8 @@ function qcd() {
     command cd $indicated_dir
 
     # Store Complete Path And Endpoint
-    new_dir=$(pwd -P)
-    new_ept=$(basename $new_dir)
+    local new_dir=$(pwd -P)
+    local new_ept=$(basename $new_dir)
 
     # Append To QCD Store If Unique
     if [[ -z $(egrep -s -x ".* $new_dir" $QCD_STORE) ]]
@@ -119,6 +119,16 @@ else
         if [[ ! -z $suffix && -e $suffix ]]
         then
           command cd $suffix
+
+          # Store Complete Path And Endpoint
+          local new_dir=$(pwd -P)
+          local new_ept=$(basename $new_dir)
+
+          # Append To QCD Store If Unique
+          if [[ -z $(egrep -s -x ".* $new_dir" $QCD_STORE) ]]
+          then
+            printf "%s %s\n" $new_ept $new_dir >> $QCD_STORE
+          fi
         fi
       fi
     fi
