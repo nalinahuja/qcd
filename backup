@@ -21,12 +21,7 @@ function _qcd_comp() {
     do
       prefix=${WORD%%$curr_arg*}
       prefix_len=$((${#prefix} + 1))
-      sub_directory=$(echo $WORD | cut -c $prefix_len-${#WORD})
-
-      if [[ $(echo "$sub_directory" | awk -F "/" '{print NF-1}') -eq $(echo "${COMP_WORDS[1]}" | awk -F "/" '{print NF-1}') ]]
-      then
-        NEW_LIST="${NEW_LIST} $sub_directory"
-      fi
+      NEW_LIST="${NEW_LIST} $(echo $WORD | cut -c $prefix_len-${#WORD})"
     done
 
     COMPREPLY=($(compgen -W "$NEW_LIST" "${COMP_WORDS[1]}"))
