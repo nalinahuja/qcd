@@ -23,7 +23,6 @@ then
 
   echo -e "→ Installed QCD Command To Terminal Config"
 
-  # Store Program Files
   command mkdir $QCD_FOLD
   command mv $QCD_PROG $QCD_FOLD
   command mv $QCD_COMP $QCD_FOLD
@@ -32,10 +31,8 @@ then
 
   echo -e "→ Installed QCD In ~/.qcd"
 
-  # Create Empty File
   touch $QCD_STOR
 
-  # Update Terminal Config
   echo -e "\nQCD Successfully Installed, Please Restart Your Terminal!"
 elif [ $confirm == n ] || [ $confirm == N ]
 then
