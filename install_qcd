@@ -13,15 +13,18 @@ read -p "Please Confirm Installation of QCD [y/n]: " confirm
 
 if [ $confirm == y ] || [ $confirm == Y ]
 then
-  if [[ -f ~/.bashrc ]]
+  if [[ ! -e $QCD_FOLD ]]
   then
-    echo -e "\nqcd() {\n  . ~/.qcd/qcd.sh \$1\n  source  ~/.bashrc\n}\n\nsource ~/.qcd/comp.sh" >> ~/.bashrc
-  elif [[ -f ~/.bash_profile ]]
-  then
-    echo -e "\nqcd() {\n  . ~/.qcd/qcd.sh \$1\n  source ~/.bash_profile\n}\n\nsource ~/.qcd/comp.sh" >> ~/.bash_profile
+    if [[ -f ~/.bashrc ]]
+    then
+      echo -e "\nqcd() {\n  . ~/.qcd/qcd.sh \$1\n  source  ~/.bashrc\n}\n\nsource ~/.qcd/comp.sh" >> ~/.bashrc
+    elif [[ -f ~/.bash_profile ]]
+    then
+      echo -e "\nqcd() {\n  . ~/.qcd/qcd.sh \$1\n  source ~/.bash_profile\n}\n\nsource ~/.qcd/comp.sh" >> ~/.bash_profile
+    fi
+    
+    echo -e "→ Installed QCD Command To Terminal Config"
   fi
-
-  echo -e "→ Installed QCD Command To Terminal Config"
 
   command mkdir $QCD_FOLD
   command mv $QCD_PROG $QCD_FOLD
