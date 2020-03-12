@@ -1,0 +1,50 @@
+#Developed by Nalin Ahuja, nalinahuja22
+
+#!/usr/bin/env bash
+
+QCD_STORE=~/.qcd/store
+
+function _qcd_comp() {
+  # Store Current Commandline Argument
+  CNT=$(echo ${COMP_WORDS[1]} | awk -F "/" '{print NF-1}')
+  CND=$((CNT + 1))
+
+  LINK_ARG="$(echo ${COMP_WORDS[1]} | cut -d '/' -f$CNT)/"
+  POST_ARG="$(echo ${COMP_WORDS[1]} | cut -d '/' -f$CND)"
+
+  echo
+  echo $LINK_ARG
+  echo $POST_ARG
+
+  # Initialize Word List
+  WORD_LIST=""
+
+  # Path Completion
+  if [[ "$LINK_ARG" == *\/* ]]
+  then
+    RES_DIR="$(cat $QCD_STORE | awk '{print $2}' | sort | egrep -s -m1 "$LINK_ARG")$POST_ARG"
+
+    if [[ ! -e $RES_DIR ]]
+    then
+      RES_DIR="$(cat $QCD_STORE | awk '{print $2}' | sort | egrep -s -m1 "$LINK_ARG")"
+    fi
+
+    SUB_DIRS=$(gls -l $RES_DIR | grep ^d | awk '{print $9}')
+
+    for SUB_DIR in $SUB_DIRS
+    do
+      WORD_LIST="${WORD_LIST} $RES_DIR$SUB_DIR"
+    done
+
+    COMPREPLY=($(compgen -W "$WORD_LIST" "${COMP_WORDS[1]}"))
+  else
+    # Endpoint Completion
+    WORD_LIST=$(cat $QCD_STORE | awk '{print $1}' | sort)
+    COMPREPLY=($(compgen -W "$WORD_LIST" "${COMP_WORDS[1]}"))
+  fi
+}
+
+if [[ -e $QCD_STORE ]]
+then
+  complete -o dirnames -A directory -F _qcd_comp -X ".*" qcd
+fi
