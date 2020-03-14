@@ -22,11 +22,11 @@ then
     then
       echo -e "\nqcd() {\n  . ~/.qcd/qcd.sh \$1\n  source ~/.bash_profile\n}\n\nsource ~/.qcd/comp.sh" >> ~/.bash_profile
     fi
-    
+
     echo -e "→ Installed QCD Command To Terminal Config"
   fi
 
-  command mkdir $QCD_FOLD
+  command mkdir $QCD_FOLD 2> /dev/null
   command mv $QCD_PROG $QCD_FOLD
   command mv $QCD_COMP $QCD_FOLD
   command mv $QCD_LICE $QCD_FOLD
@@ -34,7 +34,10 @@ then
 
   echo -e "→ Installed QCD In ~/.qcd"
 
-  touch $QCD_STOR
+  if [[ ! -f $QCD_STOR ]]
+  then
+    touch $QCD_STOR
+  fi
 
   echo -e "\nQCD Successfully Installed, Please Restart Your Terminal!"
 elif [ $confirm == n ] || [ $confirm == N ]
