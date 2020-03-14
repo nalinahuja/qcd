@@ -49,7 +49,7 @@ function qcd() {
     # Get Path Suffix If Non-Empty
     if [[ "$indicated_dir" == *\/* ]]
     then
-      suffix=$(echo -e "$indicated_dir" | cut -d '/' -f2)
+      suffix=${indicated_dir:${#prefix} + 1}
     fi
 
     # Check For File Link In Store File
