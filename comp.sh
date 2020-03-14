@@ -6,30 +6,24 @@ QCD_STORE=~/.qcd/store
 
 function _qcd_comp() {
   # Store Current Commandline Argument
-  curr_arg=${COMP_WORDS[1]}
+  CURR_ARG=${COMP_WORDS[1]}
+  LINK_ARG=${CURR_ARG:0:$(echo "${COMP_WORDS[1]}" | awk -F "/" '{print length($0)-length($NF)}')}
 
   # Initialize Word List
   WORD_LIST=""
 
   # Path Completion
-  if [[ "$curr_arg" == *\/* ]]
+  if [[ "$LINK_ARG" == *\/* ]]
   then
-    WORD_LIST=$(cat $QCD_STORE | awk '{print $2}' | sort | egrep -s "$curr_arg")
-    NEW_LIST=""
+    RES_DIR="$(cat $QCD_STORE | awk '{print $2}' | sort | egrep -s -m1 "$LINK_ARG")"
+    SUB_DIRS=$(command ls -l $RES_DIR | grep ^d | awk '{print $9}')
 
-    for WORD in $WORD_LIST
+    for SUB_DIR in $SUB_DIRS
     do
-      prefix=${WORD%%$curr_arg*}
-      prefix_len=$((${#prefix} + 1))
-      sub_directory=$(echo $WORD | cut -c $prefix_len-${#WORD})
-
-      if [[ $(echo "$sub_directory" | awk -F "/" '{print NF-1}') -eq $(echo "${COMP_WORDS[1]}" | awk -F "/" '{print NF-1}') ]]
-      then
-        NEW_LIST="${NEW_LIST} $sub_directory"
-      fi
+      WORD_LIST="${WORD_LIST} $LINK_ARG$SUB_DIR"
     done
 
-    COMPREPLY=($(compgen -W "$NEW_LIST" "${COMP_WORDS[1]}"))
+    COMPREPLY=($(compgen -W "$WORD_LIST" "${COMP_WORDS[1]}"))
   else
     # Endpoint Completion
     WORD_LIST=$(cat $QCD_STORE | awk '{print $1}' | sort)
