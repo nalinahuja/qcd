@@ -20,7 +20,7 @@ function _qcd_comp() {
 
     for SUB_DIR in $SUB_DIRS
     do
-      WORD_LIST="${WORD_LIST} $LINK_ARG$SUB_DIR"
+      WORD_LIST="${WORD_LIST} $LINK_ARG$SUB_DIR/"
     done
 
     COMPREPLY=($(compgen -W "$WORD_LIST" "${COMP_WORDS[1]}"))
@@ -33,5 +33,5 @@ function _qcd_comp() {
 
 if [[ -e $QCD_STORE ]]
 then
-  complete -o dirnames -A directory -F _qcd_comp -X ".*" qcd
+  complete -o nospace -o dirnames -A directory -F _qcd_comp -X ".*" qcd
 fi
