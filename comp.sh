@@ -18,12 +18,26 @@ function _qcd_comp() {
     RES_DIR="$(cat $QCD_STORE | awk '{print $2}' | sort | egrep -s -m1 "$LINK_ARG")"
     SUB_DIRS=$(command ls -l $RES_DIR | grep ^d | awk '{print $9}')
 
-    for SUB_DIR in $SUB_DIRS
-    do
-      WORD_LIST="${WORD_LIST} $LINK_ARG$SUB_DIR/"
-    done
+    # Check RES_DIR
+    if [[ ! -z $RES_DIR ]]
+    then
+      # Generate WORD_LIST
+      for SUB_DIR in $SUB_DIRS
+      do
+        # Create Temp Sub-Dir
+        TEMP="$LINK_ARG$SUB_DIR"
 
-    COMPREPLY=($(compgen -W "$WORD_LIST" "${COMP_WORDS[1]}"))
+        # Append Completion Slash
+        if [[ "${TEMP: -1}" == "/" ]]
+        then
+          WORD_LIST="${WORD_LIST} $TEMP"
+        else
+          WORD_LIST="${WORD_LIST} $TEMP/"
+        fi
+      done
+
+      COMPREPLY=($(compgen -W "$WORD_LIST" "${COMP_WORDS[1]}"))
+    fi
   else
     # Endpoint Completion
     WORD_LIST=$(cat $QCD_STORE | awk '{print $1}' | sort)
