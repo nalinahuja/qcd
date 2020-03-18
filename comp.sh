@@ -15,7 +15,13 @@ function _qcd_comp() {
   # Path Completion
   if [[ "$LINK_ARG" == *\/* ]]
   then
-    RES_DIR="$(cat $QCD_STORE | awk '{print $2}' | sort | egrep -s -m1 "$LINK_ARG")"
+    if [[ ! -e $CURR_ARG ]]
+    then
+      RES_DIR="$(cat $QCD_STORE | awk '{print $2}' | sort | egrep -s -m1 "$LINK_ARG")"
+    else
+      RES_DIR="$CURR_ARG"
+    fi
+
     SUB_DIRS=$(command ls -l $RES_DIR | grep ^d | awk '{print $9}')
 
     # Check RES_DIR
@@ -25,14 +31,14 @@ function _qcd_comp() {
       for SUB_DIR in $SUB_DIRS
       do
         # Create Temp Sub-Dir
-        TEMP="$LINK_ARG$SUB_DIR"
+        WORD="$LINK_ARG$SUB_DIR"
 
         # Append Completion Slash
-        if [[ "${TEMP: -1}" == "/" ]]
+        if [[ ! -e $CURR_ARG ]]
         then
-          WORD_LIST="${WORD_LIST} $TEMP"
+          WORD_LIST="${WORD_LIST} $WORD/"
         else
-          WORD_LIST="${WORD_LIST} $TEMP/"
+          WORD_LIST="${WORD_LIST} $WORD"
         fi
       done
 
