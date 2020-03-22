@@ -46,7 +46,17 @@ function _qcd_comp() {
     fi
   else
     # Endpoint Completion
-    WORD_LIST=$(cat $QCD_STORE | awk '{print $1}' | sort)
+    QUIK_DIRS=$(cat $QCD_STORE | awk '{printf $1 "/\n"}' | sort)
+
+    # Remove Duplicate Dirs
+    for DIR in $QUIK_DIRS
+    do
+      if [[ ! -e $DIR ]]
+      then
+        WORD_LIST="${WORD_LIST} $DIR"
+      fi
+    done
+
     COMPREPLY=($(compgen -W "$WORD_LIST" "${COMP_WORDS[1]}"))
   fi
 }
