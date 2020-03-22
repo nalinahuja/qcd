@@ -5,6 +5,7 @@
 QCD_STORE=~/.qcd/store
 QCD_TEMP=~/.qcd/temp
 
+quit="q"
 b=$(tput bold)
 n=$(tput sgr0)
 
@@ -60,7 +61,7 @@ function qcd() {
     if [[ $res_cnt -gt 1 ]]
     then
       # Prompt User
-      echo -e "qcd: Multiple paths linked from ${b}$prefix${n}"
+      echo -e "qcd: Multiple paths linked to ${b}$prefix${n}"
 
       # Format Paths By Absolute Path
       paths=$(echo -e "$res" | cut -d ' ' -f2 | sort)
@@ -77,6 +78,12 @@ function qcd() {
 
       # Format Selected Endpoint
       read -p "Endpoint: " ep
+
+      # Exit On Special Input
+      if [[ "$ep" == $quit ]]
+      then
+        return
+      fi
 
       # Error Check Bounds
       if [[ $ep -lt 1 ]]
