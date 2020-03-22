@@ -42,9 +42,6 @@ function _qcd_comp() {
         fi
       done
 
-      echo
-      echo $WORD_LIST
-
       COMPREPLY=($(compgen -W "$WORD_LIST" "${COMP_WORDS[1]}"))
     fi
   else
