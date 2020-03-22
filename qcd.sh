@@ -5,7 +5,6 @@
 QCD_STORE=~/.qcd/store
 QCD_TEMP=~/.qcd/temp
 
-quit="q"
 b=$(tput bold)
 n=$(tput sgr0)
 
@@ -78,12 +77,6 @@ function qcd() {
 
       # Format Selected Endpoint
       read -p "Endpoint: " ep
-
-      # Exit On Special Input
-      if [[ "$ep" == $quit ]]
-      then
-        return
-      fi
 
       # Error Check Bounds
       if [[ $ep -lt 1 ]]
