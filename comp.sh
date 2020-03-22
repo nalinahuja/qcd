@@ -34,7 +34,7 @@ function _qcd_comp() {
         WORD="$LINK_ARG$SUB_DIR"
 
         # Append Completion Slash
-        if [[ ! -e $CURR_ARG ]]
+        if [[ ! -e $WORD ]]
         then
           WORD_LIST="${WORD_LIST} $WORD/"
         else
@@ -42,14 +42,17 @@ function _qcd_comp() {
         fi
       done
 
+      echo
+      echo $WORD_LIST
+
       COMPREPLY=($(compgen -W "$WORD_LIST" "${COMP_WORDS[1]}"))
     fi
   else
     # Endpoint Completion
-    QUIK_DIRS=$(cat $QCD_STORE | awk '{printf $1 "/\n"}' | sort)
+    QUICK_DIRS=$(cat $QCD_STORE | awk '{printf $1 "/\n"}' | sort)
 
     # Remove Duplicate Dirs
-    for DIR in $QUIK_DIRS
+    for DIR in $QUICK_DIRS
     do
       if [[ ! -e $DIR ]]
       then
