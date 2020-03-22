@@ -60,7 +60,7 @@ function qcd() {
     if [[ $res_cnt -gt 1 ]]
     then
       # Prompt User
-      echo -e "qcd: Multiple paths to endpoint ${b}$prefix${n}"
+      echo -e "qcd: Multiple paths linked from ${b}$prefix${n}"
 
       # Format Paths By Absolute Path
       paths=$(echo -e "$res" | cut -d ' ' -f2 | sort)
