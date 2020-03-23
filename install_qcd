@@ -17,10 +17,10 @@ then
   then
     if [[ -f ~/.bashrc ]]
     then
-      echo -e "\nqcd() {\n  . ~/.qcd/qcd.sh \$1\n  source  ~/.bashrc\n}\n\nsource ~/.qcd/comp.sh" >> ~/.bashrc
+      echo -e "\nqcd() {\n  . ~/.qcd/qcd.sh \$1\n  source ~/.qcd/comp.sh}\n" >> ~/.bashrc
     elif [[ -f ~/.bash_profile ]]
     then
-      echo -e "\nqcd() {\n  . ~/.qcd/qcd.sh \$1\n  source ~/.bash_profile\n}\n\nsource ~/.qcd/comp.sh" >> ~/.bash_profile
+      echo -e "\nqcd() {\n  . ~/.qcd/qcd.sh \$1\n  source ~/.qcd/comp.sh}\n" >> ~/.bash_profile
     fi
 
     echo -e "→ Installed QCD Command To Terminal Config"
