@@ -69,8 +69,7 @@ function qcd() {
       cnt=1
       for path in $paths
       do
-        prefix_len=$((${#HOME} + 1))
-        path="~$(echo $path | cut -c $prefix_len-${#path})"
+        path="~$(echo $path | cut -c $((${#HOME} + 1))-${#path})"
         printf "(%d) %s\n" $cnt $path
         cnt=$((cnt + 1))
       done
@@ -105,7 +104,8 @@ function qcd() {
       then
         # Prompt User
         if [[ $res_cnt -gt 1 ]]; then echo; fi
-        echo -e "qcd: $res: No such file or directory"
+        out="~$(echo $res | cut -c $((${#HOME} + 1))-${#res})"
+        echo -e "qcd: $out: No such file or directory"
 
         # Delete Invalid Path From QCD Store
         del_line=$(egrep -s -n "$res" $QCD_STORE | cut -d ':' -f1)
