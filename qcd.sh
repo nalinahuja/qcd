@@ -33,11 +33,14 @@ function qcd() {
     command cd $indicated_dir
 
     # Store Complete Path And Endpoint
-    local new_dir="$(pwd -P)"
+    local new_dir="$(pwd -P)/"
     local new_ept=$(basename $new_dir)
 
+    echo $new_dir
+    echo $new_ept
+
     # Append To QCD Store If Unique
-    if [[ ! "$HOME" = "$new_dir" && -z $(egrep -s -x ".* $new_dir" $QCD_STORE) ]]
+    if [[ ! "$HOME/" = "$new_dir" && -z $(egrep -s -x ".* $new_dir" $QCD_STORE) ]]
     then
       command printf "%s %s/\n" $new_ept $new_dir >> $QCD_STORE
     fi
@@ -124,11 +127,11 @@ function qcd() {
           command cd $suffix
 
           # Store Complete Path And Endpoint
-          local new_dir="$(pwd -P)"
+          local new_dir="$(pwd -P)/"
           local new_ept=$(basename $new_dir)
 
           # Append To QCD Store If Unique
-          if [[ ! "$HOME" = "$new_dir" && -z $(egrep -s -x ".* $new_dir" $QCD_STORE) ]]
+          if [[ ! "$HOME/" = "$new_dir" && -z $(egrep -s -x ".* $new_dir" $QCD_STORE) ]]
           then
             command printf "%s %s/\n" $new_ept $new_dir >> $QCD_STORE
           fi
