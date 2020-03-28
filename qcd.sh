@@ -8,11 +8,13 @@ QCD_TEMP=~/.qcd/temp
 b=$(tput bold)
 n=$(tput sgr0)
 
+# End Global Variables----------------------------------------------------------------------------------------------------------------------------------------------
+
 function qcd() {
-  # Store First Arg
+  # Store First Argument
   indicated_dir="$1"
 
-  # Set To Home If Empty
+  # Set To Home Directory If Empty
   if [[ -z $indicated_dir ]]
   then
     indicated_dir=~
@@ -24,20 +26,20 @@ function qcd() {
     command touch $QCD_STORE
   fi
 
-  # Is Valid Directory
+  # Indicated Directory Is Valid
   if [[ -e $indicated_dir ]]
   then
-    # Change Directory
+    # Change Directory To Indicated Directory
     command cd $indicated_dir
 
     # Store Complete Path And Endpoint
-    local new_dir="$(pwd -P)/"
+    local new_dir="$(pwd -P)"
     local new_ept=$(basename $new_dir)
 
     # Append To QCD Store If Unique
-    if [[ -z $(egrep -s -x ".* $new_dir" $QCD_STORE) && ! "$HOME/" = "$new_dir" ]]
+    if [[ ! "$HOME" = "$new_dir" && -z $(egrep -s -x ".* $new_dir" $QCD_STORE) ]]
     then
-      command printf "%s %s\n" $new_ept $new_dir >> $QCD_STORE
+      command printf "%s %s/\n" $new_ept $new_dir >> $QCD_STORE
     fi
 
   # Invalid Directory
@@ -62,7 +64,7 @@ function qcd() {
       # Prompt User
       command echo -e "qcd: Multiple paths linked to ${b}$prefix${n}"
 
-      # Format Paths By Absolute Path
+      # Store Paths In Order Of Absolute Path
       local paths=$(echo -e "$res" | cut -d ' ' -f2 | sort)
 
       # Display Options
@@ -112,22 +114,23 @@ function qcd() {
         command sed "${del_line}d" $QCD_STORE > $QCD_TEMP
         command cat $QCD_TEMP > $QCD_STORE && rm $QCD_TEMP
       else
-        # Swtich To Linked Path
+        # Change Directory To Linked Path
         command cd $res
 
-        # Navigate To Suffix If Non-Empty
+        # Check If Suffix Exists And Valid
         if [[ ! -z $suffix && -e $suffix ]]
         then
+          # Change Directory To Suffix
           command cd $suffix
 
           # Store Complete Path And Endpoint
-          local new_dir="$(pwd -P)/"
+          local new_dir="$(pwd -P)"
           local new_ept=$(basename $new_dir)
 
           # Append To QCD Store If Unique
-          if [[ ! "$HOME/" = "$new_dir" && -z $(egrep -s -x ".* $new_dir" $QCD_STORE) ]]
+          if [[ ! "$HOME" = "$new_dir" && -z $(egrep -s -x ".* $new_dir" $QCD_STORE) ]]
           then
-            command printf "%s %s\n" $new_ept $new_dir >> $QCD_STORE
+            command printf "%s %s/\n" $new_ept $new_dir >> $QCD_STORE
           fi
         fi
       fi
@@ -137,3 +140,5 @@ function qcd() {
 
 # Start QCD Function
 qcd $1
+
+# End QCD Function--------------------------------------------------------------------------------------------------------------------------------------------------

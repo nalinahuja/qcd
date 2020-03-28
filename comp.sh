@@ -4,6 +4,8 @@
 
 QCD_STORE=~/.qcd/store
 
+# End Global Variables----------------------------------------------------------------------------------------------------------------------------------------------
+
 function _qcd_comp() {
   # Store Current Commandline Argument
   CURR_ARG=${COMP_WORDS[1]}
@@ -61,7 +63,11 @@ function _qcd_comp() {
   fi
 }
 
+# End QCD Comp Function----------------------------------------------------------------------------------------------------------------------------------------------
+
 if [[ -e $QCD_STORE ]]
 then
   command complete -o nospace -o dirnames -A directory -F _qcd_comp -X ".*" qcd
 fi
+
+# End Complete Function----------------------------------------------------------------------------------------------------------------------------------------------
