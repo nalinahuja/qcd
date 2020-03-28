@@ -21,7 +21,7 @@ function qcd() {
   # Create QCD Store
   if [[ ! -f $QCD_STORE ]]
   then
-    touch $QCD_STORE
+    command touch $QCD_STORE
   fi
 
   # Is Valid Directory
@@ -43,8 +43,8 @@ function qcd() {
   # Invalid Directory
   else
     # Get Path Prefix and Suffix
-    prefix=$(echo -e "$indicated_dir" | cut -d '/' -f1)
-    suffix=""
+    local prefix=$(echo -e "$indicated_dir" | cut -d '/' -f1)
+    local suffix=""
 
     # Get Path Suffix If Non-Empty
     if [[ "$indicated_dir" == *\/* ]]
@@ -53,8 +53,8 @@ function qcd() {
     fi
 
     # Check For File Link In Store File
-    res=$(egrep -s -x "$prefix.*" $QCD_STORE)
-    res_cnt=$(echo "$res" | wc -l)
+    local res=$(egrep -s -x "$prefix.*" $QCD_STORE)
+    local res_cnt=$(echo "$res" | wc -l)
 
     # Check Result Count
     if [[ $res_cnt -gt 1 ]]
@@ -63,7 +63,7 @@ function qcd() {
       echo -e "qcd: Multiple paths linked to ${b}$prefix${n}"
 
       # Format Paths By Absolute Path
-      paths=$(echo -e "$res" | cut -d ' ' -f2 | sort)
+      local paths=$(echo -e "$res" | cut -d ' ' -f2 | sort)
 
       # Display Options
       cnt=1
@@ -104,11 +104,11 @@ function qcd() {
       then
         # Prompt User
         if [[ $res_cnt -gt 1 ]]; then echo; fi
-        out="~$(echo $res | cut -c $((${#HOME} + 1))-${#res})"
+        local out="~$(echo $res | cut -c $((${#HOME} + 1))-${#res})"
         echo -e "qcd: $out: No such file or directory"
 
         # Delete Invalid Path From QCD Store
-        del_line=$(egrep -s -n "$res" $QCD_STORE | cut -d ':' -f1)
+        local del_line=$(egrep -s -n "$res" $QCD_STORE | cut -d ':' -f1)
         sed "${del_line}d" $QCD_STORE > $QCD_TEMP
         cat $QCD_TEMP > $QCD_STORE && rm $QCD_TEMP
       else
