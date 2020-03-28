@@ -37,7 +37,7 @@ function qcd() {
     # Append To QCD Store If Unique
     if [[ -z $(egrep -s -x ".* $new_dir" $QCD_STORE) && ! "$HOME/" = "$new_dir" ]]
     then
-      printf "%s %s\n" $new_ept $new_dir >> $QCD_STORE
+      command printf "%s %s\n" $new_ept $new_dir >> $QCD_STORE
     fi
 
   # Invalid Directory
@@ -60,22 +60,22 @@ function qcd() {
     if [[ $res_cnt -gt 1 ]]
     then
       # Prompt User
-      echo -e "qcd: Multiple paths linked to ${b}$prefix${n}"
+      command echo -e "qcd: Multiple paths linked to ${b}$prefix${n}"
 
       # Format Paths By Absolute Path
       local paths=$(echo -e "$res" | cut -d ' ' -f2 | sort)
 
       # Display Options
-      cnt=1
+      local cnt=1
       for path in $paths
       do
         path="~$(echo $path | cut -c $((${#HOME} + 1))-${#path})"
-        printf "(%d) %s\n" $cnt $path
+        command printf "(%d) %s\n" $cnt $path
         cnt=$((cnt + 1))
       done
 
       # Format Selected Endpoint
-      read -p "Endpoint: " ep
+      command read -p "Endpoint: " ep
 
       # Error Check Bounds
       if [[ $ep -lt 1 ]]
@@ -97,7 +97,7 @@ function qcd() {
     if [[ -z $res ]]
     then
       # Prompt User
-      echo -e "qcd: Cannot link keyword to directory"
+      command echo -e "qcd: Cannot link keyword to directory"
     else
       # Check If Linked Path Is Valid
       if [[ ! -e $res ]]
@@ -109,8 +109,8 @@ function qcd() {
 
         # Delete Invalid Path From QCD Store
         local del_line=$(egrep -s -n "$res" $QCD_STORE | cut -d ':' -f1)
-        sed "${del_line}d" $QCD_STORE > $QCD_TEMP
-        cat $QCD_TEMP > $QCD_STORE && rm $QCD_TEMP
+        command sed "${del_line}d" $QCD_STORE > $QCD_TEMP
+        command cat $QCD_TEMP > $QCD_STORE && rm $QCD_TEMP
       else
         # Swtich To Linked Path
         command cd $res
@@ -125,9 +125,11 @@ function qcd() {
           local new_ept=$(basename $new_dir)
 
           # Append To QCD Store If Unique
-          if [[ -z $(egrep -s -x ".* $new_dir" $QCD_STORE) && ! "$HOME/" = "$new_dir" ]]
+          if [[ ! "$HOME/" = "$new_dir" && -z $(egrep -s -x ".* $new_dir" $QCD_STORE) ]]
           then
-            printf "%s %s\n" $new_ept $new_dir >> $QCD_STORE
+            command printf "%s %s\n" $new_ept $new_dir >> $QCD_STORE
+          else
+
           fi
         fi
       fi

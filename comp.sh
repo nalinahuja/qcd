@@ -63,5 +63,5 @@ function _qcd_comp() {
 
 if [[ -e $QCD_STORE ]]
 then
-  complete -o nospace -o dirnames -A directory -F _qcd_comp -X ".*" qcd
+  command complete -o nospace -o dirnames -A directory -F _qcd_comp -X ".*" qcd
 fi
