@@ -128,8 +128,6 @@ function qcd() {
           if [[ ! "$HOME/" = "$new_dir" && -z $(egrep -s -x ".* $new_dir" $QCD_STORE) ]]
           then
             command printf "%s %s\n" $new_ept $new_dir >> $QCD_STORE
-          else
-
           fi
         fi
       fi
