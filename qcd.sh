@@ -33,7 +33,7 @@ function qcd() {
     command cd $indicated_dir
 
     # Store Complete Path And Endpoint
-    local new_dir="$(pwd -P)/"
+    local new_dir="$(pwd)/"
     local new_ept=$(basename $new_dir)
 
     # Append To QCD Store If Unique
@@ -124,7 +124,7 @@ function qcd() {
           command cd $suffix
 
           # Store Complete Path And Endpoint
-          local new_dir="$(pwd -P)/"
+          local new_dir="$(pwd)/"
           local new_ept=$(basename $new_dir)
 
           # Append To QCD Store If Unique
