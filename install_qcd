@@ -4,7 +4,6 @@
 
 QCD_FOLD=~/.qcd
 QCD_PROG=./qcd.sh
-QCD_COMP=./comp.sh
 QCD_LICE=./LICENSE
 QCD_READ=./README.md
 QCD_STOR=~/.qcd/store
@@ -17,10 +16,10 @@ then
   then
     if [[ -f ~/.bashrc ]]
     then
-      echo -e "\nqcd() {\n  . ~/.qcd/qcd.sh \$1\n  source ~/.qcd/comp.sh\n}\n\nsource ~/.qcd/comp.sh" >> ~/.bashrc
+      echo -e "\nqcd() {\n  . ~/.qcd/qcd.sh \$1\n}\n\nqcd" >> ~/.bashrc
     elif [[ -f ~/.bash_profile ]]
     then
-      echo -e "\nqcd() {\n  . ~/.qcd/qcd.sh \$1\n  source ~/.qcd/comp.sh\n}\n\nsource ~/.qcd/comp.sh" >> ~/.bash_profile
+      echo -e "\nqcd() {\n  . ~/.qcd/qcd.sh \$1\n}\n\nqcd" >> ~/.bash_profile
     fi
 
     echo -e "→ Installed QCD Command To Terminal Config"
@@ -28,7 +27,6 @@ then
 
   command mkdir $QCD_FOLD 2> /dev/null
   command mv $QCD_PROG $QCD_FOLD
-  command mv $QCD_COMP $QCD_FOLD
   command mv $QCD_LICE $QCD_FOLD
   command mv $QCD_READ $QCD_FOLD
 
