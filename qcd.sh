@@ -3,7 +3,6 @@
 #!/usr/bin/env bash
 
 # qcd space delim handling
-# qcd dont add current dir to autocomplete
 
 QCD_STORE=~/.qcd/store
 QCD_TEMP=~/.qcd/temp
@@ -24,7 +23,7 @@ function add_directory() {
   local ept=$(basename $dir)
 
   # Append To QCD Store If Unique
-  if [[ ! "$HOME/" = "$dir" && -z $(egrep -s -x ".* $dir" $QCD_STORE) ]]
+  if [[ ! "$dir" = "$HOME/" && -z $(egrep -s -x ".* $dir" $QCD_STORE) ]]
   then
     command printf "%s %s\n" $ept $dir >> $QCD_STORE
   fi
@@ -195,16 +194,18 @@ function _qcd_comp() {
     fi
   else
     # Endpoint Completion
-    QUICK_DIRS=$(cat $QCD_STORE | awk '{printf $1 "/\n"}' | sort)
+    QUICK_DIRS=$(cat $QCD_STORE | awk '{printf $1 "/:" $2 "\n"}' | sort)
 
     # Remove Duplicate Dirs
     for DIR in $QUICK_DIRS
     do
+      local link=$(echo -e $DIR | cut -d ':' -f1)
+      local path=$(echo -e $DIR | cut -d ':' -f2)
+      local pwd=$(pwd)
 
-      #TODO
-      if [[ ! -e $DIR ]]
+      if [[ ! -e $link && ! "$path" = "$pwd" ]]
       then
-        WORD_LIST="${WORD_LIST} $DIR"
+        WORD_LIST="${WORD_LIST} $link"
       fi
     done
 
