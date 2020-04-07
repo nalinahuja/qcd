@@ -2,6 +2,9 @@
 
 #!/usr/bin/env bash
 
+# qcd space delim handling
+# qcd dont add current dir to autocomplete
+
 QCD_STORE=~/.qcd/store
 QCD_TEMP=~/.qcd/temp
 
@@ -10,15 +13,35 @@ n=$(tput sgr0)
 
 # End Global Variables----------------------------------------------------------------------------------------------------------------------------------------------
 
+function format_dir() {
+  # Format Directory From Home
+  command echo -e "~$(echo -e $1 | cut -c $((${#HOME} + 1))-${#1})"
+}
+
+function add_directory() {
+  # Store Current Directory Information
+  local dir="$(pwd)/"
+  local ept=$(basename $dir)
+
+  # Append To QCD Store If Unique
+  if [[ ! "$HOME/" = "$dir" && -z $(egrep -s -x ".* $dir" $QCD_STORE) ]]
+  then
+    command printf "%s %s\n" $ept $dir >> $QCD_STORE
+  fi
+}
+
+function remove_directory() {
+  # Remove Directory By Line Number
+  local del_line=$(egrep -s -n "$1" $QCD_STORE | cut -d ':' -f1)
+  command sed "${del_line}d" $QCD_STORE > $QCD_TEMP
+  command mv $QCD_TEMP $QCD_STORE
+}
+
+# End Helper Function-----------------------------------------------------------------------------------------------------------------------------------------------
+
 function qcd() {
   # Store First Argument
   indicated_dir="$1"
-
-  # Set To Home Directory If Empty
-  if [[ -z $indicated_dir ]]
-  then
-    indicated_dir=~
-  fi
 
   # Create QCD Store
   if [[ ! -f $QCD_STORE ]]
@@ -26,23 +49,26 @@ function qcd() {
     command touch $QCD_STORE
   fi
 
-  # Indicated Directory Is Valid
+  # Create QCD History
+  if [[ ! -f $QCD_HIST ]]
+  then
+    command touch $QCD_HIST
+  fi
+
+  # Set To Home Directory If Empty
+  if [[ -z $indicated_dir ]]
+  then
+    indicated_dir=~
+  fi
+
+  # Determine If Path Is Linked
   if [[ -e $indicated_dir ]]
   then
-    # Change Directory To Indicated Directory
+    # Change To Unlinked Directory
     command cd $indicated_dir
 
     # Store Complete Path And Endpoint
-    local new_dir="$(pwd)/"
-    local new_ept=$(basename $new_dir)
-
-    # Append To QCD Store If Unique
-    if [[ ! "$HOME/" = "$new_dir" && -z $(egrep -s -x ".* $new_dir" $QCD_STORE) ]]
-    then
-      command printf "%s %s\n" $new_ept $new_dir >> $QCD_STORE
-    fi
-
-  # Invalid Directory
+    add_directory
   else
     # Get Path Prefix and Suffix
     local prefix=$(echo -e "$indicated_dir" | cut -d '/' -f1)
@@ -71,25 +97,25 @@ function qcd() {
       local cnt=1
       for path in $paths
       do
-        path="~$(echo $path | cut -c $((${#HOME} + 1))-${#path})"
+        path=$(format_dir $path)
         command printf "(%d) %s\n" $cnt $path
         cnt=$((cnt + 1))
       done
 
       # Format Selected Endpoint
-      command read -p "Endpoint: " ep
+      command read -p "Endpoint: " ept
 
       # Error Check Bounds
-      if [[ $ep -lt 1 ]]
+      if [[ $ept -lt 1 ]]
       then
-        ep=1
-      elif [[ $ep -gt $res_cnt ]]
+        ept=1
+      elif [[ $ept -gt $res_cnt ]]
       then
-        ep=$res_cnt
+        ept=$res_cnt
       fi
 
       # Format Endpoint
-      res=$(echo $paths | cut -d ' ' -f$ep)
+      res=$(echo $paths | cut -d ' ' -f$ept)
     else
       # Format Endpoint
       res=$(echo $res | cut -d ' ' -f2)
@@ -100,39 +126,26 @@ function qcd() {
     then
       # Prompt User
       command echo -e "qcd: Cannot link keyword to directory"
+    elif [[ ! -e $res ]]
+    then
+      # Prompt User Of Error
+      if [[ $res_cnt -gt 1 ]]; then echo; fi
+      command echo -e "qcd: $(format_dir $res): Directory does not exist"
+
+      # Remove Invalid Path From QCD Store
+      remove_directory $res
     else
-      # Check If Linked Path Is Valid
-      if [[ ! -e $res ]]
+      # Change Directory To Linked Path
+      command cd $res
+
+      # Check If Suffix Exists And Valid
+      if [[ ! -z $suffix && -e $suffix ]]
       then
-        # Prompt User
-        if [[ $res_cnt -gt 1 ]]; then echo; fi
-        local out="~$(echo $res | cut -c $((${#HOME} + 1))-${#res})"
-        echo -e "qcd: $out: No such file or directory"
+        # Change Directory To Subdirectory
+        command cd $suffix
 
-        # Delete Invalid Path From QCD Store
-        local del_line=$(egrep -s -n "$res" $QCD_STORE | cut -d ':' -f1)
-        command sed "${del_line}d" $QCD_STORE > $QCD_TEMP
-        command cat $QCD_TEMP > $QCD_STORE && rm $QCD_TEMP
-      else
-        # Change Directory To Linked Path
-        command cd $res
-
-        # Check If Suffix Exists And Valid
-        if [[ ! -z $suffix && -e $suffix ]]
-        then
-          # Change Directory To Suffix
-          command cd $suffix
-
-          # Store Complete Path And Endpoint
-          local new_dir="$(pwd)/"
-          local new_ept=$(basename $new_dir)
-
-          # Append To QCD Store If Unique
-          if [[ ! "$HOME/" = "$new_dir" && -z $(egrep -s -x ".* $new_dir" $QCD_STORE) ]]
-          then
-            command printf "%s %s\n" $new_ept $new_dir >> $QCD_STORE
-          fi
-        fi
+        # Store Complete Path And Endpoint
+        add_directory
       fi
     fi
   fi
@@ -158,7 +171,7 @@ function _qcd_comp() {
       RES_DIR="$CURR_ARG"
     fi
 
-    SUB_DIRS=$(command ls -l $RES_DIR | grep ^d | awk '{print $9}')
+    SUB_DIRS=$(command ls -l $RES_DIR | egrep -s ^d | awk '{print $9}')
 
     # Check RES_DIR
     if [[ ! -z $RES_DIR ]]
@@ -187,6 +200,8 @@ function _qcd_comp() {
     # Remove Duplicate Dirs
     for DIR in $QUICK_DIRS
     do
+
+      #TODO
       if [[ ! -e $DIR ]]
       then
         WORD_LIST="${WORD_LIST} $DIR"
