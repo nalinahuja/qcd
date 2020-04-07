@@ -3,6 +3,8 @@
 #!/usr/bin/env bash
 
 # qcd space delim handling
+# qcd cleanup -c
+# qcd forget -f
 
 QCD_STORE=~/.qcd/store
 QCD_TEMP=~/.qcd/temp
@@ -42,22 +44,16 @@ function qcd() {
   # Store First Argument
   indicated_dir="$1"
 
-  # Create QCD Store
-  if [[ ! -f $QCD_STORE ]]
-  then
-    command touch $QCD_STORE
-  fi
-
-  # Create QCD History
-  if [[ ! -f $QCD_HIST ]]
-  then
-    command touch $QCD_HIST
-  fi
-
   # Set To Home Directory If Empty
   if [[ -z $indicated_dir ]]
   then
     indicated_dir=~
+  fi
+
+  # Create QCD Store
+  if [[ ! -f $QCD_STORE ]]
+  then
+    command touch $QCD_STORE
   fi
 
   # Determine If Path Is Linked
