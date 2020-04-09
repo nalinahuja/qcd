@@ -34,6 +34,8 @@ then
   command mv $QCD_LICE $QCD_FOLD
   command mv $QCD_READ $QCD_FOLD
 
+  source $QCD_COMP
+
   echo -e "→ Installed QCD In ~/.qcd"
 
   echo -e "\nQCD Successfully Installed, Please Restart Your Terminal!"
