@@ -178,6 +178,7 @@ function _qcd_comp() {
   # Path Completion
   if [[ "$LINK_ARG" == */* ]]
   then
+    # Determine Resolved Directory
     if [[ ! -e $CURR_ARG ]]
     then
       RES_DIR="$(cat $QCD_STORE | awk -F ':' '{print $2}' | sort | egrep -s -m1 -x ".*/$LINK_ARG")"
@@ -185,11 +186,12 @@ function _qcd_comp() {
       RES_DIR="$CURR_ARG"
     fi
 
-    SUB_DIRS=$(command ls -l $RES_DIR | egrep -s ^d | awk '{print $9}')
-
     # Error Check Resolved Directory
     if [[ ! -z $RES_DIR ]]
     then
+      # Get Subdirectories
+      SUB_DIRS=$(command ls -l $RES_DIR | egrep -s ^d | awk '{print $9}')
+
       # Generate Word List
       for SUB_DIR in $SUB_DIRS
       do
@@ -205,6 +207,7 @@ function _qcd_comp() {
         fi
       done
 
+      # Set Completion List
       COMPREPLY=($(compgen -W "$WORD_LIST" "$CURR_ARG"))
     fi
   else
@@ -220,6 +223,7 @@ function _qcd_comp() {
       fi
     done
 
+    # Set Completion List
     COMPREPLY=($(compgen -W "$WORD_LIST" "$CURR_ARG"))
   fi
 }
