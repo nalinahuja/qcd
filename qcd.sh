@@ -1,13 +1,28 @@
-#Developed by Nalin Ahuja, nalinahuja22
-
 #!/usr/bin/env bash
 
+# function remove_link() {
+#   # Remove Link From Store
+#   command egrep -s -v "${1} .*" $QCD_STORE > $QCD_TEMP
+#   command mv $QCD_TEMP $QCD_STORE
+# }
+
+# # Remove Linked Path(s)
+# if [[ "$2" = "$FORGET" ]]
+# then
+#   local
+#
+#   remove_directory $(egrep -s -n "$1 .*" $QCD_STORE | cut -d ':' -f1)
+#   return
+# fi
+
 # qcd space delim handling
-# qcd cleanup -c
-# qcd forget -f
+# qcd $LINK -f, forget link(s)
+# qcd -c, cleanup
 
 QCD_STORE=~/.qcd/store
 QCD_TEMP=~/.qcd/temp
+
+FORGET="-f"
 
 b=$(tput bold)
 n=$(tput sgr0)
@@ -15,40 +30,37 @@ n=$(tput sgr0)
 # End Global Variables----------------------------------------------------------------------------------------------------------------------------------------------
 
 function format_dir() {
-  # Format Directory From Home
-  command echo -e "~$(echo -e $1 | cut -c $((${#HOME} + 1))-${#1})"
+  # Format Directory With Symbols
+  command echo -e "${1/$HOME/~}"
 }
 
 function add_directory() {
-  # Store Current Directory Information
-  local dir="$(pwd)/"
-  local ept=$(basename $dir)
+  # Store Directory Information
+  local dir=$(pwd)
+  local ept=$(basename "$dir")
+
+  # Escape Existing Spaces
+  dir="${dir//[ ]/\\ }"
+  ept="${ept//[ ]/\\ }"
 
   # Append To QCD Store If Unique
-  if [[ ! "$dir" = "$HOME/" && -z $(egrep -s -x ".* $dir" $QCD_STORE) ]]
+  if [[ ! "$dir" = "$HOME" && -z $(egrep -s -x ".*:$dir/" $QCD_STORE) ]]
   then
-    command printf "%s %s\n" $ept $dir >> $QCD_STORE
+    command printf "$ept:$dir/\n" >> $QCD_STORE
   fi
 }
 
 function remove_directory() {
-  # Remove Directory By Line Number
-  local del_line=$(egrep -s -n "$1" $QCD_STORE | cut -d ':' -f1)
-  command sed "${del_line}d" $QCD_STORE > $QCD_TEMP
+  # Remove Directory From Store
+  command egrep -s -v ".*:${1}" $QCD_STORE > $QCD_TEMP
   command mv $QCD_TEMP $QCD_STORE
 }
 
 # End Helper Function-----------------------------------------------------------------------------------------------------------------------------------------------
 
 function qcd() {
-  # Store First Argument
-  indicated_dir="$1"
-
-  # Set To Home Directory If Empty
-  if [[ -z $indicated_dir ]]
-  then
-    indicated_dir=~
-  fi
+  # Store Arguments
+  indicated_dir="$@"
 
   # Create QCD Store
   if [[ ! -f $QCD_STORE ]]
@@ -56,37 +68,43 @@ function qcd() {
     command touch $QCD_STORE
   fi
 
+  # Set To Home Directory If No Path
+  if [[ -z $indicated_dir ]]
+  then
+    indicated_dir=~
+  fi
+
   # Determine If Path Is Linked
   if [[ -e $indicated_dir ]]
   then
-    # Change To Unlinked Directory
-    command cd $indicated_dir
+    # Change To Valid Path
+    command cd "$indicated_dir"
 
     # Store Complete Path And Endpoint
     add_directory
   else
-    # Get Path Prefix and Suffix
-    local prefix=$(echo -e "$indicated_dir" | cut -d '/' -f1)
-    local suffix=""
+    # Get Path Link and Subdirectory
+    local link=$(echo -e "$indicated_dir" | cut -d '/' -f1)
+    local subdir=""
 
-    # Get Path Suffix If Non-Empty
-    if [[ "$indicated_dir" == *\/* ]]
+    # Get Path Subdirectory If Non-Empty
+    if [[ "$indicated_dir" == */* ]]
     then
-      suffix=${indicated_dir:${#prefix} + 1}
+      subdir=${indicated_dir:${#link} + 1}
     fi
 
-    # Check For File Link In Store File
-    local res=$(egrep -s -x "$prefix.*" $QCD_STORE)
-    local res_cnt=$(echo "$res" | wc -l)
+    # Check For File Link(s) In Store File
+    local resv=$(egrep -s -x "$link.*" $QCD_STORE)
+    local resc=$(echo "$resv" | wc -l)
 
     # Check Result Count
-    if [[ $res_cnt -gt 1 ]]
+    if [[ $resc -gt 1 ]]
     then
       # Prompt User
-      command echo -e "qcd: Multiple paths linked to ${b}$prefix${n}"
+      command echo -e "qcd: Multiple paths linked to ${b}$link${n}"
 
       # Store Paths In Order Of Absolute Path
-      local paths=$(echo -e "$res" | cut -d ' ' -f2 | sort)
+      local paths=$(echo -e "$resv" | cut -d ':' -f2 | sort)
 
       # Display Options
       local cnt=1
@@ -104,40 +122,40 @@ function qcd() {
       if [[ $ept -lt 1 ]]
       then
         ept=1
-      elif [[ $ept -gt $res_cnt ]]
+      elif [[ $ept -gt $resc ]]
       then
-        ept=$res_cnt
+        ept=$resc
       fi
 
-      # Format Endpoint
-      res=$(echo $paths | cut -d ' ' -f$ept)
+      # Set Endpoint
+      resv=$(echo $paths | cut -d ' ' -f$ept)
     else
-      # Format Endpoint
-      res=$(echo $res | cut -d ' ' -f2)
+      # Set Endpoint
+      resv=$(echo $resv | cut -d ':' -f2)
     fi
 
     # Error Check Result
-    if [[ -z $res ]]
+    if [[ -z $resv ]]
     then
-      # Prompt User
+      # Prompt User Of No Link
       command echo -e "qcd: Cannot link keyword to directory"
-    elif [[ ! -e $res ]]
+    elif [[ ! -e $resv ]]
     then
       # Prompt User Of Error
-      if [[ $res_cnt -gt 1 ]]; then echo; fi
-      command echo -e "qcd: $(format_dir $res): Directory does not exist"
+      if [[ $resc -gt 1 ]]; then echo; fi
+      command echo -e "qcd: $(format_dir $resv): Directory does not exist"
 
       # Remove Invalid Path From QCD Store
-      remove_directory $res
+      remove_directory $resv
     else
       # Change Directory To Linked Path
-      command cd $res
+      command cd "$resv"
 
-      # Check If Suffix Exists And Valid
-      if [[ ! -z $suffix && -e $suffix ]]
+      # Check If Subdirectory Exists
+      if [[ ! -z $subdir && -e $subdir ]]
       then
         # Change Directory To Subdirectory
-        command cd $suffix
+        command cd "$subdir"
 
         # Store Complete Path And Endpoint
         add_directory
@@ -151,31 +169,31 @@ function qcd() {
 function _qcd_comp() {
   # Store Current Commandline Argument
   CURR_ARG=${COMP_WORDS[1]}
-  LINK_ARG=${CURR_ARG:0:$(echo "${COMP_WORDS[1]}" | awk -F "/" '{print length($0)-length($NF)}')}
+  LINK_ARG=$(echo -e $CURR_ARG | cut -d '/' -f1)
 
   # Initialize Word List
   WORD_LIST=""
 
   # Path Completion
-  if [[ "$LINK_ARG" == *\/* ]]
+  if [[ "$CURR_ARG" == */* ]]
   then
     if [[ ! -e $CURR_ARG ]]
     then
-      RES_DIR="$(cat $QCD_STORE | awk '{print $2}' | sort | egrep -s -m1 "$LINK_ARG")"
+      RES_DIR="$(cat $QCD_STORE | awk -F ':' '{print $2}' | sort | egrep -s -m1 -x ".*/$LINK_ARG/")"
     else
       RES_DIR="$CURR_ARG"
     fi
 
     SUB_DIRS=$(command ls -l $RES_DIR | egrep -s ^d | awk '{print $9}')
 
-    # Check RES_DIR
+    # Error Check Resolved Directory
     if [[ ! -z $RES_DIR ]]
     then
-      # Generate WORD_LIST
+      # Generate Word List
       for SUB_DIR in $SUB_DIRS
       do
         # Create Temp Sub-Dir
-        WORD="$LINK_ARG$SUB_DIR"
+        WORD="$LINK_ARG/$SUB_DIR"
 
         # Append Completion Slash
         if [[ ! -e $WORD ]]
@@ -190,7 +208,7 @@ function _qcd_comp() {
     fi
   else
     # Endpoint Completion
-    QUICK_DIRS=$(cat $QCD_STORE | awk '{printf $1 "/\n"}' | sort)
+    QUICK_DIRS=$(cat $QCD_STORE | awk -F ':' '{printf $1 "/\n"}' | sort)
 
     # Remove Duplicate Dirs
     for DIR in $QUICK_DIRS
@@ -208,7 +226,7 @@ function _qcd_comp() {
 # End QCD Completion Function---------------------------------------------------------------------------------------------------------------------------------------
 
 # Call QCD Function
-qcd $1
+qcd $@
 
 # Update Completion List
 if [[ -e $QCD_STORE ]]
