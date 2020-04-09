@@ -168,18 +168,18 @@ function qcd() {
 
 function _qcd_comp() {
   # Store Current Commandline Argument
-  CURR_ARG=${COMP_WORDS[1]}
-  LINK_ARG=$(echo -e $CURR_ARG | cut -d '/' -f1)
+  local CURR_ARG=${COMP_WORDS[1]}
+  local LINK_ARG=${CURR_ARG:0:$(echo "$CURR_ARG" | awk -F "/" '{print length($0)-length($NF)}')}
 
   # Initialize Word List
-  WORD_LIST=""
+  local WORD_LIST=""
 
   # Path Completion
   if [[ "$CURR_ARG" == */* ]]
   then
     if [[ ! -e $CURR_ARG ]]
     then
-      RES_DIR="$(cat $QCD_STORE | awk -F ':' '{print $2}' | sort | egrep -s -m1 -x ".*/$LINK_ARG/")"
+      RES_DIR="$(cat $QCD_STORE | awk -F ':' '{print $2}' | sort | egrep -s -m1 -x ".*/$LINK_ARG")"
     else
       RES_DIR="$CURR_ARG"
     fi
@@ -193,7 +193,7 @@ function _qcd_comp() {
       for SUB_DIR in $SUB_DIRS
       do
         # Create Temp Sub-Dir
-        WORD="$LINK_ARG/$SUB_DIR"
+        WORD="$LINK_ARG$SUB_DIR"
 
         # Append Completion Slash
         if [[ ! -e $WORD ]]
@@ -208,7 +208,7 @@ function _qcd_comp() {
     fi
   else
     # Endpoint Completion
-    QUICK_DIRS=$(cat $QCD_STORE | awk -F ':' '{printf $1 "/\n"}' | sort)
+    local QUICK_DIRS=$(cat $QCD_STORE | awk -F ':' '{printf $1 "/\n"}' | sort)
 
     # Remove Duplicate Dirs
     for DIR in $QUICK_DIRS
