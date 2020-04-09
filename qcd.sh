@@ -169,13 +169,14 @@ function qcd() {
 function _qcd_comp() {
   # Store Current Commandline Argument
   local CURR_ARG=${COMP_WORDS[1]}
-  local LINK_ARG=${CURR_ARG:0:$(echo "$CURR_ARG" | awk -F "/" '{print length($0)-length($NF)}')}
+  local SUBS_LEN=$(echo "$CURR_ARG" | awk -F "/" '{print length($0)-length($NF)}')
+  local LINK_ARG=${CURR_ARG:0:$SUBS_LEN}
 
   # Initialize Word List
   local WORD_LIST=""
 
   # Path Completion
-  if [[ "$CURR_ARG" == */* ]]
+  if [[ "$LINK_ARG" == */* ]]
   then
     if [[ ! -e $CURR_ARG ]]
     then
@@ -204,7 +205,7 @@ function _qcd_comp() {
         fi
       done
 
-      COMPREPLY=($(compgen -W "$WORD_LIST" "${COMP_WORDS[1]}"))
+      COMPREPLY=($(compgen -W "$WORD_LIST" "$CURR_ARG"))
     fi
   else
     # Endpoint Completion
@@ -219,7 +220,7 @@ function _qcd_comp() {
       fi
     done
 
-    COMPREPLY=($(compgen -W "$WORD_LIST" "${COMP_WORDS[1]}"))
+    COMPREPLY=($(compgen -W "$WORD_LIST" "$CURR_ARG"))
   fi
 }
 
