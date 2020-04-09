@@ -11,7 +11,11 @@ Please navigate to the <a href="https://github.com/nalinahuja22/qcd/releases">re
 </p>
 
 <p align="justify">
-Then, navigate to the location where the QCD repository contents have been downloaded and run the <a href="https://github.com/nalinahuja22/qcd/blob/master/install_qcd">install_qcd</a> script. This script will install QCD to your home directory as a hidden folder which contains the QCD program and the store file and add the QCD function to your terminal configuration.
+Then, navigate to the location where the QCD repository contents have been downloaded and run the <a href="https://github.com/nalinahuja22/qcd/blob/master/install_qcd">install_qcd</a> script. This script will install QCD to your home directory as a hidden folder which contains the QCD program and the store file and add the QCD function to your terminal configuration. Restart your terminal window and then type in the folowing command.
+
+```
+source ~/.qcd/comp.sh
+```
 </p>
 
 ## Usage
