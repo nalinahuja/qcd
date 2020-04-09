@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 # qcd space delim handling
+# comp function error in bash_profile
 
 QCD_STORE=~/.qcd/store
 QCD_TEMP=~/.qcd/temp
@@ -25,7 +26,7 @@ function add_directory() {
 
   # Escape Existing Spaces
   dir="${dir//[ ]/\\ }"
-  ept="${ept//[ ]/\\ }"
+  # ept="${ept//[ ]/\\ }"
 
   # Append To QCD Store If Unique
   if [[ ! "$dir" = "$HOME" && -z $(egrep -s -x ".*:$dir/" $QCD_STORE) ]]
@@ -37,13 +38,23 @@ function add_directory() {
 function remove_directory() {
   # Remove Directory From Store
   command egrep -s -v ".*:${1}" $QCD_STORE > $QCD_TEMP
-  command mv $QCD_TEMP $QCD_STORE
+
+  # Update File If Successful
+  if [[ $? = 0 ]]
+  then
+    command mv $QCD_TEMP $QCD_STORE
+  fi
 }
 
 function remove_symbolic_link() {
   # Remove Link From Store
   command egrep -s -v "${1}:.*" $QCD_STORE > $QCD_TEMP
-  command mv $QCD_TEMP $QCD_STORE
+
+  # Update File If Successful
+  if [[ $? = 0 ]]
+  then
+    command mv $QCD_TEMP $QCD_STORE
+  fi
 }
 
 # End Helper Function-----------------------------------------------------------------------------------------------------------------------------------------------
@@ -108,7 +119,7 @@ function qcd() {
 
     # Check For File Link(s) In Store File
     local resv=$(egrep -s -x "$link.*" $QCD_STORE)
-    local resc=$(echo "$resv" | wc -l)
+    local resc=$(echo -e "$resv" | wc -l)
 
     # Check Result Count
     if [[ $resc -gt 1 ]]
@@ -141,10 +152,10 @@ function qcd() {
       fi
 
       # Set Endpoint
-      resv=$(echo $paths | cut -d ' ' -f$ept)
+      resv=$(echo -e $paths | cut -d ' ' -f$ept)
     else
       # Set Endpoint
-      resv=$(echo $resv | cut -d ':' -f2)
+      resv=$(echo -e $resv | cut -d ':' -f2)
     fi
 
     # Error Check Result
@@ -182,7 +193,7 @@ function qcd() {
 function _qcd_comp() {
   # Store Current Commandline Argument
   local CURR_ARG=${COMP_WORDS[1]}
-  local SUBS_LEN=$(echo "$CURR_ARG" | awk -F "/" '{print length($0)-length($NF)}')
+  local SUBS_LEN=$(echo -e "$CURR_ARG" | awk -F "/" '{print length($0)-length($NF)}')
   local LINK_ARG=${CURR_ARG:0:$SUBS_LEN}
 
   # Initialize Word List
