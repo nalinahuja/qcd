@@ -8,8 +8,8 @@ QCD_TEMP=~/.qcd/temp
 CLEAN="-c"
 FORGET="-f"
 
-b=$(tput bold)
-n=$(tput sgr0)
+b=$(command tput bold)
+n=$(command tput sgr0)
 
 # End Global Variables----------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -20,11 +20,11 @@ function format_dir() {
 
 function add_directory() {
   # Store Directory Information
-  local dir=$(pwd)
-  local ept=$(basename "$dir")
+  local dir=$(command pwd)
+  local ept=$(command basename "$dir")
 
   # Append To QCD Store If Unique
-  if [[ ! "$dir" = "$HOME" && -z $(egrep -s -x ".*:$dir/" $QCD_STORE) ]]
+  if [[ ! "$dir" = "$HOME" && -z $(command egrep -s -x ".*:$dir/" $QCD_STORE) ]]
   then
     command printf "$ept:$dir/\n" >> $QCD_STORE
   fi
@@ -65,7 +65,7 @@ function qcd() {
   if [[ "$1" = "$CLEAN" ]]
   then
     # Get Stored Paths
-    local paths=$(cat $QCD_STORE | cut -d ':' -f2 | tr ' ' ':' | sort)
+    local paths=$(command cat $QCD_STORE | command cut -d ':' -f2 | command tr ' ' ':' | command sort)
 
     # Iterate Over Paths
     for path in $paths
@@ -107,7 +107,7 @@ function qcd() {
     add_directory
   else
     # Get Path Link and Subdirectory
-    local link=$(echo -e "$indicated_dir" | cut -d '/' -f1)
+    local link=$(command echo -e "$indicated_dir" | command cut -d '/' -f1)
     local subdir=""
 
     # Get Path Subdirectory If Non-Empty
@@ -117,8 +117,8 @@ function qcd() {
     fi
 
     # Check For File Link(s) In Store File
-    local resv=$(egrep -s -x "$link.*" $QCD_STORE)
-    local resc=$(echo -e "$resv" | wc -l)
+    local resv=$(command egrep -s -x "$link.*" $QCD_STORE)
+    local resc=$(command echo -e "$resv" | command wc -l)
 
     # Check Result Count
     if [[ $resc -gt 1 ]]
@@ -127,7 +127,7 @@ function qcd() {
       command echo -e "qcd: Multiple paths linked to ${b}$link${n}"
 
       # Store Paths In Order Of Absolute Path
-      local paths=$(echo -e "$resv" | cut -d ':' -f2 | sort)
+      local paths=$(command echo -e "$resv" | command cut -d ':' -f2 | command sort)
 
       # Display Options
       local cnt=1
@@ -151,10 +151,10 @@ function qcd() {
       fi
 
       # Set Endpoint
-      resv=$(echo -e $paths | cut -d ' ' -f$ept)
+      resv=$(command echo -e $paths | command cut -d ' ' -f$ept)
     else
       # Set Endpoint
-      resv=$(echo -e $resv | cut -d ':' -f2)
+      resv=$(command echo -e $resv | command cut -d ':' -f2)
     fi
 
     # Error Check Result
@@ -192,7 +192,7 @@ function qcd() {
 function _qcd_comp() {
   # Store Current Commandline Argument
   local CURR_ARG=${COMP_WORDS[1]}
-  local SUBS_LEN=$(echo -e "$CURR_ARG" | awk -F "/" '{print length($0)-length($NF)}')
+  local SUBS_LEN=$(command echo -e "$CURR_ARG" | command awk -F "/" '{print length($0)-length($NF)}')
   local LINK_ARG=${CURR_ARG:0:$SUBS_LEN}
 
   # Initialize Word List
@@ -205,7 +205,7 @@ function _qcd_comp() {
     # Determine Resolved Directory
     if [[ ! -e $CURR_ARG ]]
     then
-      RES_DIR="$(cat $QCD_STORE | awk -F ':' '{print $2}' | sort | egrep -s -m1 -x ".*/$LINK_ARG")"
+      RES_DIR="$(command cat $QCD_STORE | command awk -F ':' '{print $2}' | command sort | command egrep -s -m1 -x ".*/$LINK_ARG")"
     else
       RES_DIR="$CURR_ARG"
     fi
@@ -213,8 +213,8 @@ function _qcd_comp() {
     # Error Check Resolved Directory
     if [[ ! -z $RES_DIR ]]
     then
-      # Get Subdirectories (ERROR)
-      SUB_DIRS=$(command ls -F $RES_DIR | egrep -s -x ".*/")
+      # Get Subdirectories
+      SUB_DIRS=$(command ls -F $RES_DIR | command egrep -s -x ".*/")
       SUB_DIRS=${SUB_DIRS// /:}
       SUB_DIRS=${SUB_DIRS////}
 
@@ -229,11 +229,11 @@ function _qcd_comp() {
       done
 
       # Set Completion List
-      COMPREPLY=($(compgen -W "$(printf "%s\n" "${WORD_LIST[@]}")" "$CURR_ARG"))
+      COMPREPLY=($(command compgen -W "$(command printf "%s\n" "${WORD_LIST[@]}")" "$CURR_ARG"))
     fi
   else
     # Endpoint Completion
-    local QUICK_DIRS=$(cat $QCD_STORE | awk -F ':' '{printf $1 "/\n"}' | tr ' ' ':' | sort)
+    local QUICK_DIRS=$(command cat $QCD_STORE | command awk -F ':' '{printf $1 "/\n"}' | command tr ' ' ':' | command sort)
 
     # Add Linked Directories
     for DIR in $QUICK_DIRS
@@ -249,7 +249,7 @@ function _qcd_comp() {
     done
 
     # Set Completion List
-    COMPREPLY=($(compgen -W "$(printf "%s\n" "${WORD_LIST[@]}")" "$CURR_ARG"))
+    COMPREPLY=($(command compgen -W "$(command printf "%s\n" "${WORD_LIST[@]}")" "$CURR_ARG"))
   fi
 }
 
