@@ -42,7 +42,7 @@ function _qcd_comp() {
         SUB_DIR=${SUB_DIR//:/ }
 
         # Append To Word List
-        WORD_LIST+=("$LINK_ARG$SUB_DIR")
+        WORD_LIST+=("$LINK_ARG$SUB_DIR/")
       done
 
       # Set Completion List
@@ -61,7 +61,7 @@ function _qcd_comp() {
       # Filter Duplicate Dirs
       if [[ ! -e $DIR ]]
       then
-        WORD_LIST+=("$DIR")
+        WORD_LIST+=($DIR)
       fi
     done
 
