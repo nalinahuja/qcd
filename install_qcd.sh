@@ -34,7 +34,7 @@ then
   command mv $QCD_LICE $QCD_FOLD
   command mv $QCD_READ $QCD_FOLD
 
-  source $QCD_COMP
+  source "$QCD_FOLD/comp.sh"
 
   echo -e "→ Installed QCD In ~/.qcd"
 
