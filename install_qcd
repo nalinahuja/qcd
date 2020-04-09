@@ -4,6 +4,7 @@
 
 QCD_FOLD=~/.qcd
 QCD_PROG=./qcd.sh
+QCD_COMP=./comp.sh
 QCD_LICE=./LICENSE
 QCD_READ=./README.md
 
@@ -15,10 +16,10 @@ then
   then
     if [[ -f ~/.bashrc ]]
     then
-      echo -e "# qcd Function (qcd [PATH] [OPTIONS])\n\n. ~/.qcd/qcd.sh\nqcd -c\n" >> ~/.bashrc
+      echo -e "# qcd Function (qcd [PATH] [OPTIONS])\n\n. ~/.qcd/qcd.sh\nsource ~/.qcd/comp.sh\nqcd -c\n" >> ~/.bashrc
     elif [[ -f ~/.bash_profile ]]
     then
-      echo -e "# qcd Function (qcd [PATH] [OPTIONS])\n\n. ~/.qcd/qcd.sh\nqcd -c\n" >> ~/.bash_profile
+      echo -e "# qcd Function (qcd [PATH] [OPTIONS])\n\n. ~/.qcd/qcd.sh\nsource ~/.qcd/comp.sh\nqcd -c\n" >> ~/.bash_profile
     else
       echo -e "ERROR: Failed to Install Command To Terminal Profile. Installation Aborted!"
       exit 1
@@ -29,6 +30,7 @@ then
 
   command mkdir $QCD_FOLD 2> /dev/null
   command mv $QCD_PROG $QCD_FOLD
+  command mv $QCD_COMP $QCD_FOLD
   command mv $QCD_LICE $QCD_FOLD
   command mv $QCD_READ $QCD_FOLD
 
