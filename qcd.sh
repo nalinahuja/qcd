@@ -70,7 +70,6 @@ function qcd() {
         remove_directory $path
       fi
     done
-
     return
   elif [[ "${@:$#}" = "$FORGET" ]]
   then
