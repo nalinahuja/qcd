@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# qcd space delim handling
+# qcd space delim handling (awk $9 error, removal error, cleanup error)
 # comp function error in bash_profile
 
 QCD_STORE=~/.qcd/store
@@ -211,21 +211,16 @@ function _qcd_comp() {
     if [[ ! -z $RES_DIR ]]
     then
       # Get Subdirectories
-      SUB_DIRS=$(command ls -l $RES_DIR | egrep -s ^d | awk '{print $9}')
+      SUB_DIRS=$(command ls -CF $RES_DIR | egrep -s -x ".*/" | tr ' ' ':')
 
       # Generate Word List
       for SUB_DIR in $SUB_DIRS
       do
-        # Create Temp Sub-Dir
-        WORD="$LINK_ARG$SUB_DIR"
+        # Expand Symbols
+        SUB_DIR=${SUB_DIR//:/ }
 
-        # Append Completion Slash
-        if [[ ! -e $WORD ]]
-        then
-          WORD_LIST+=("$WORD/")
-        else
-          WORD_LIST+=("$WORD")
-        fi
+        # Append To Word List
+        WORD_LIST+=("$LINK_ARG$SUB_DIR")
       done
 
       # Set Completion List
