@@ -1,27 +1,11 @@
 #!/usr/bin/env bash
 
-# function remove_link() {
-#   # Remove Link From Store
-#   command egrep -s -v "${1} .*" $QCD_STORE > $QCD_TEMP
-#   command mv $QCD_TEMP $QCD_STORE
-# }
-
-# # Remove Linked Path(s)
-# if [[ "$2" = "$FORGET" ]]
-# then
-#   local
-#
-#   remove_directory $(egrep -s -n "$1 .*" $QCD_STORE | cut -d ':' -f1)
-#   return
-# fi
-
 # qcd space delim handling
-# qcd $LINK -f, forget link(s)
-# qcd -c, cleanup
 
 QCD_STORE=~/.qcd/store
 QCD_TEMP=~/.qcd/temp
 
+CLEAN="-c"
 FORGET="-f"
 
 b=$(tput bold)
@@ -56,17 +40,47 @@ function remove_directory() {
   command mv $QCD_TEMP $QCD_STORE
 }
 
+function remove_link() {
+  # Remove Link From Store
+  command egrep -s -v "${1}:.*" $QCD_STORE > $QCD_TEMP
+  command mv $QCD_TEMP $QCD_STORE
+}
+
 # End Helper Function-----------------------------------------------------------------------------------------------------------------------------------------------
 
 function qcd() {
-  # Store Arguments
-  indicated_dir="$@"
-
   # Create QCD Store
   if [[ ! -f $QCD_STORE ]]
   then
     command touch $QCD_STORE
   fi
+
+  # Check For Flags
+  if [[ "$1" = "$CLEAN" ]]
+  then
+    # Get Stored Paths
+    local paths=$(cat $QCD_STORE | cut -d ':' -f2 | sort)
+
+    # Iterate Over Paths
+    for path in $paths
+    do
+      # Remove Path If Invalid
+      if [[ ! -e $path ]]
+      then
+        remove_directory $path
+      fi
+    done
+
+    return
+  elif [[ "${@:$#}" = "$FORGET" ]]
+  then
+    local link=$(echo -e "${@:0:$(($# - 1))}" | tr '/' ' ')
+    remove_link $link
+    return
+  fi
+
+  # Store Arguments
+  indicated_dir="$@"
 
   # Set To Home Directory If No Path
   if [[ -z $indicated_dir ]]
