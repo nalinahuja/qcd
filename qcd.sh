@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-# comp function error in bash_profile
-
 QCD_STORE=~/.qcd/store
 QCD_TEMP=~/.qcd/temp
 
