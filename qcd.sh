@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+#documentation!
+#bash profile fixing
+
 QCD_STORE=~/.qcd/store
 QCD_TEMP=~/.qcd/temp
 
@@ -41,7 +44,7 @@ function remove_directory() {
 
 function remove_symbolic_link() {
   # Remove Link From Store
-  command egrep -s -v -x "${@////}.*" $QCD_STORE > $QCD_TEMP
+  command egrep -s -v -x "${@////}:.*" $QCD_STORE > $QCD_TEMP
 
   # Update File If Successful
   if [[ $? = 0 ]]
