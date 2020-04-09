@@ -40,7 +40,7 @@ function remove_directory() {
   command mv $QCD_TEMP $QCD_STORE
 }
 
-function remove_link() {
+function remove_symbolic_link() {
   # Remove Link From Store
   command egrep -s -v "${1}:.*" $QCD_STORE > $QCD_TEMP
   command mv $QCD_TEMP $QCD_STORE
@@ -74,7 +74,7 @@ function qcd() {
   elif [[ "${@:$#}" = "$FORGET" ]]
   then
     local link=$(echo -e "${@:0:$(($# - 1))}" | tr '/' ' ')
-    remove_link $link
+    remove_symbolic_link $link
     return
   fi
 
