@@ -15,12 +15,12 @@ then
   then
     if [[ -f ~/.bashrc ]]
     then
-      echo -e "\n. ~/.qcd/qcd.sh\nqcd -c\n" >> ~/.bashrc
+      echo -e "# qcd Function (qcd [PATH] [OPTIONS])\n\n. ~/.qcd/qcd.sh\nqcd -c\n" >> ~/.bashrc
     elif [[ -f ~/.bash_profile ]]
     then
-      echo -e "\n. ~/.qcd/qcd.sh\nqcd -c\n" >> ~/.bash_profile
+      echo -e "# qcd Function (qcd [PATH] [OPTIONS])\n\n. ~/.qcd/qcd.sh\nqcd -c\n" >> ~/.bash_profile
     else
-      echo -e "ERROR: Failed to Add Command To Terminal Config. Aborting Installation."
+      echo -e "ERROR: Failed to Install Command To Terminal Profile. Aborting Installation."
       exit 1
     fi
 
