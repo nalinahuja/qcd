@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-# qcd space delim handling (awk $9 error, removal error, cleanup error)
 # comp function error in bash_profile
 
 QCD_STORE=~/.qcd/store
@@ -33,7 +32,7 @@ function add_directory() {
 
 function remove_directory() {
   # Remove Directory From Store
-  command egrep -s -v -x ".*:$@" $QCD_STORE > $QCD_TEMP
+  command egrep -s -v -x ".*:${@}" $QCD_STORE > $QCD_TEMP
 
   # Update File If Successful
   if [[ $? = 0 ]]
@@ -44,7 +43,7 @@ function remove_directory() {
 
 function remove_symbolic_link() {
   # Remove Link From Store
-  command egrep -s -v -x "$@:.*" $QCD_STORE > $QCD_TEMP
+  command egrep -s -v -x "${@////}.*" $QCD_STORE > $QCD_TEMP
 
   # Update File If Successful
   if [[ $? = 0 ]]
@@ -66,11 +65,14 @@ function qcd() {
   if [[ "$1" = "$CLEAN" ]]
   then
     # Get Stored Paths
-    local paths=$(cat $QCD_STORE | cut -d ':' -f2 | sort)
+    local paths=$(cat $QCD_STORE | cut -d ':' -f2 | tr ' ' ':' | sort)
 
     # Iterate Over Paths
     for path in $paths
     do
+      # Expand Symbols
+      path=${path//:/ }
+
       # Remove Path If Invalid
       if [[ ! -e $path ]]
       then
@@ -80,7 +82,7 @@ function qcd() {
     return
   elif [[ "${@:$#}" = "$FORGET" ]]
   then
-    local link=$(echo -e "${@:0:$(($# - 1))}" | tr '/' ' ')
+    local link="${@:0:$(($# - 1))}"
     remove_symbolic_link "$link"
     return
   fi
