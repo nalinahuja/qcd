@@ -83,6 +83,7 @@ function qcd() {
     return
   elif [[ "${@:$#}" = "$FORGET" ]]
   then
+    # Remove Symbolic Link
     local link="${@:0:$(($# - 1))}"
     remove_symbolic_link "$link"
     return
@@ -251,15 +252,10 @@ function _qcd_comp() {
   fi
 }
 
-# End QCD Completion Function---------------------------------------------------------------------------------------------------------------------------------------
-
-# Call QCD Function
-qcd $@
-
 # Update Completion List
 if [[ -e $QCD_STORE ]]
 then
   command complete -o nospace -o dirnames -A directory -F _qcd_comp -X ".*" qcd
 fi
 
-# End Main----------------------------------------------------------------------------------------------------------------------------------------------------------
+# End QCD Completion Function---------------------------------------------------------------------------------------------------------------------------------------
