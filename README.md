@@ -17,9 +17,16 @@ Once you have completed the above task, navigate to the location where the QCD r
 ## Usage
 
 <p align="justify">
-Just like the command cd, simply indicate a valid path or keyword related to a path you have been to previously and QCD will resolve the directory and switch to it. QCD has the ability complete the path based on the contents of the current directory and previously visited endpoints. If multiple paths exist to the same endpoint, you will have to manually select which one to jump to. If the keyword or indicated directory in the is not found, an error will appear.
+Just like the command cd, simply indicate a valid path from the current directory or keyword related to a path you have previously visited and QCD will resolve the directory and switch to it. QCD has the ability complete the path based on the contents of the current directory and previously visited endpoints. This means that if you want to go to a subdirectory of a previously visited directory, you only need to specify the keyword to that directory followed by the subdirectory. If multiple paths exist to the same endpoint, you will have to manually select which one to jump to. If the keyword or indicated directory in the is not found, an error will appear. The user also has the ability to manage the linked paths they have stored. By indicating -f after a link, QCD will remove all instances of the link from the store file and it will not show up unless you revisit that directory. Additionally, the user can choose to clean their store file of invalid directories by indicating only -c after the QCD command.
 </p>
 
 ```
+# Navigate To Valid Path
 qcd $PATH
+
+# Navigate To/Forget Linked Path
+qcd $LINK [-f]
+
+# Clean Store File
+qcd -c
 ```
