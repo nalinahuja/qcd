@@ -24,10 +24,6 @@ function add_directory() {
   local dir=$(pwd)
   local ept=$(basename "$dir")
 
-  # Escape Existing Spaces
-  dir="${dir//[ ]/\\ }"
-  # ept="${ept//[ ]/\\ }"
-
   # Append To QCD Store If Unique
   if [[ ! "$dir" = "$HOME" && -z $(egrep -s -x ".*:$dir/" $QCD_STORE) ]]
   then
@@ -37,7 +33,7 @@ function add_directory() {
 
 function remove_directory() {
   # Remove Directory From Store
-  command egrep -s -v ".*:${1}" $QCD_STORE > $QCD_TEMP
+  command egrep -s -v -x ".*:$@" $QCD_STORE > $QCD_TEMP
 
   # Update File If Successful
   if [[ $? = 0 ]]
@@ -48,7 +44,7 @@ function remove_directory() {
 
 function remove_symbolic_link() {
   # Remove Link From Store
-  command egrep -s -v "${1}:.*" $QCD_STORE > $QCD_TEMP
+  command egrep -s -v -x "$@:.*" $QCD_STORE > $QCD_TEMP
 
   # Update File If Successful
   if [[ $? = 0 ]]
@@ -78,14 +74,14 @@ function qcd() {
       # Remove Path If Invalid
       if [[ ! -e $path ]]
       then
-        remove_directory $path
+        remove_directory "$path"
       fi
     done
     return
   elif [[ "${@:$#}" = "$FORGET" ]]
   then
     local link=$(echo -e "${@:0:$(($# - 1))}" | tr '/' ' ')
-    remove_symbolic_link $link
+    remove_symbolic_link "$link"
     return
   fi
 
@@ -170,7 +166,7 @@ function qcd() {
       command echo -e "qcd: $(format_dir $resv): Directory does not exist"
 
       # Remove Invalid Path From QCD Store
-      remove_directory $resv
+      remove_directory "$resv"
     else
       # Change Directory To Linked Path
       command cd "$resv"
@@ -197,7 +193,8 @@ function _qcd_comp() {
   local LINK_ARG=${CURR_ARG:0:$SUBS_LEN}
 
   # Initialize Word List
-  local WORD_LIST=""
+  local WORD_LIST=()
+  local IFS=$'\n'
 
   # Path Completion
   if [[ "$LINK_ARG" == */* ]]
@@ -225,30 +222,34 @@ function _qcd_comp() {
         # Append Completion Slash
         if [[ ! -e $WORD ]]
         then
-          WORD_LIST="${WORD_LIST} $WORD/"
+          WORD_LIST+=("$WORD/")
         else
-          WORD_LIST="${WORD_LIST} $WORD"
+          WORD_LIST+=("$WORD")
         fi
       done
 
       # Set Completion List
-      COMPREPLY=($(compgen -W "$WORD_LIST" "$CURR_ARG"))
+      COMPREPLY=($(compgen -W "$(printf "%s\n" "${WORD_LIST[@]}")" "$CURR_ARG"))
     fi
   else
     # Endpoint Completion
-    local QUICK_DIRS=$(cat $QCD_STORE | awk -F ':' '{printf $1 "/\n"}' | sort)
+    local QUICK_DIRS=$(cat $QCD_STORE | awk -F ':' '{printf $1 "/\n"}' | tr ' ' ':' | sort)
 
-    # Remove Duplicate Dirs
+    # Add Linked Directories
     for DIR in $QUICK_DIRS
     do
+      # Expand Symbols
+      DIR=${DIR//:/ }
+
+      # Filter Duplicate Dirs
       if [[ ! -e $DIR ]]
       then
-        WORD_LIST="${WORD_LIST} $DIR"
+        WORD_LIST+=("$DIR")
       fi
     done
 
     # Set Completion List
-    COMPREPLY=($(compgen -W "$WORD_LIST" "$CURR_ARG"))
+    COMPREPLY=($(compgen -W "$(printf "%s\n" "${WORD_LIST[@]}")" "$CURR_ARG"))
   fi
 }
 
