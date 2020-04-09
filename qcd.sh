@@ -2,9 +2,6 @@
 
 #!/usr/bin/env bash
 
-#documentation!
-#bash profile fixing
-
 QCD_STORE=~/.qcd/store
 QCD_TEMP=~/.qcd/temp
 
