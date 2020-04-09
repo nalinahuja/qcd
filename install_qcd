@@ -20,7 +20,7 @@ then
     then
       echo -e "# qcd Function (qcd [PATH] [OPTIONS])\n\n. ~/.qcd/qcd.sh\nqcd -c\n" >> ~/.bash_profile
     else
-      echo -e "ERROR: Failed to Install Command To Terminal Profile. Aborting Installation."
+      echo -e "ERROR: Failed to Install Command To Terminal Profile. Installation Aborted!"
       exit 1
     fi
 
@@ -39,5 +39,5 @@ elif [ $confirm == n ] || [ $confirm == N ]
 then
   echo -e "\nQCD Installation Aborted!"
 else
-  echo -e "\nInvalid Flag, Installation Aborted!"
+  echo -e "\nERROR: Invalid Flag, Installation Aborted!"
 fi

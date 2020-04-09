@@ -213,8 +213,10 @@ function _qcd_comp() {
     # Error Check Resolved Directory
     if [[ ! -z $RES_DIR ]]
     then
-      # Get Subdirectories
-      SUB_DIRS=$(command ls -CF $RES_DIR | egrep -s -x ".*/" | tr ' ' ':')
+      # Get Subdirectories (ERROR)
+      SUB_DIRS=$(command ls -F $RES_DIR | egrep -s -x ".*/")
+      SUB_DIRS=${SUB_DIRS// /:}
+      SUB_DIRS=${SUB_DIRS////}
 
       # Generate Word List
       for SUB_DIR in $SUB_DIRS
