@@ -125,37 +125,59 @@ function qcd() {
     # Check Result Count
     if [[ $resc -gt 1 ]]
     then
-      # Prompt User
-      command echo -e "qcd: Multiple paths linked to ${b}$link${n}"
-
       # Store Paths In Order Of Absolute Path
       local paths=$(command echo -e "$resv" | command cut -d ':' -f2 | command sort)
 
-      # will have to do a hidden check on the paths to see if the subdir matches
+      # Store Path Match
+      local pmatch=""
 
-      # Display Options
-      local cnt=1
-      for path in $paths
-      do
-        path=$(format_dir $path)
-        command printf "(%d) %s\n" $cnt $path
-        cnt=$((cnt + 1))
-      done
-
-      # Format Selected Endpoint
-      command read -p "Endpoint: " ept
-
-      # Error Check Bounds
-      if [[ $ept -lt 1 ]]
+      # Determine Linked Subdirectory
+      if [[ ! -z $subdir ]]
       then
-        ept=1
-      elif [[ $ept -gt $resc ]]
-      then
-        ept=$resc
+        for path in $paths
+        do
+          path="${path}${subdir}"
+          if [[ -e $path ]]
+          then
+            pmatch=$path
+            break
+          fi
+        done
       fi
 
-      # Set Endpoint
-      resv=$(command echo -e $paths | command cut -d ' ' -f$ept)
+      # List Matching Links
+      if [[ -z $pmatch ]]
+      then
+        # Prompt User
+        command echo -e "qcd: Multiple paths linked to ${b}$link${n}"
+
+        # Display Options
+        local cnt=1
+        for path in $paths
+        do
+          path=$(format_dir $path)
+          command printf "(%d) %s\n" $cnt $path
+          cnt=$((cnt + 1))
+        done
+
+        # Format Selected Endpoint
+        command read -p "Endpoint: " ept
+
+        # Error Check Bounds
+        if [[ $ept -lt 1 ]]
+        then
+          ept=1
+        elif [[ $ept -gt $resc ]]
+        then
+          ept=$resc
+        fi
+
+        # Set Endpoint
+        resv=$(command echo -e $paths | command cut -d ' ' -f$ept)
+      else
+        # Set Endpoint
+        resv=$pmatch
+      fi
     else
       # Set Endpoint
       resv=$(command echo -e $resv | command cut -d ':' -f2)
