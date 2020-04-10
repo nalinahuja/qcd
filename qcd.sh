@@ -2,6 +2,8 @@
 
 #!/usr/bin/env bash
 
+#duplicate link, subdir completion
+
 QCD_STORE=~/.qcd/store
 QCD_TEMP=~/.qcd/temp
 
@@ -128,6 +130,8 @@ function qcd() {
 
       # Store Paths In Order Of Absolute Path
       local paths=$(command echo -e "$resv" | command cut -d ':' -f2 | command sort)
+
+      # will have to do a hidden check on the paths to see if the subdir matches
 
       # Display Options
       local cnt=1

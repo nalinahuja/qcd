@@ -22,7 +22,7 @@ function _qcd_comp() {
     # Determine Resolved Directory
     if [[ ! -e $CURR_ARG ]]
     then
-      RES_DIR="$(command cat $QCD_STORE | command awk -F ':' '{print $2}' | command sort | command egrep -s -m1 -x ".*/$LINK_ARG")"
+      RES_DIR="$(command cat $QCD_STORE | command awk -F ':' '{print $2}' | command sort | command egrep -s -x ".*/$LINK_ARG")"
     else
       RES_DIR="$CURR_ARG"
     fi
