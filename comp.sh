@@ -41,8 +41,13 @@ function _qcd_comp() {
         # Expand Symbols
         SUB_DIR=${SUB_DIR//:/ }
 
-        # Append To Word List
-        WORD_LIST+=("$LINK_ARG$SUB_DIR/")
+        # Append Completion Slash
+       if [[ ! -e $LINK_ARG ]]
+       then
+         WORD_LIST+=("$LINK_ARG$SUB_DIR/")
+       else
+         WORD_LIST+=("$LINK_ARG$SUB_DIR")
+       fi
       done
 
       # Set Completion List
