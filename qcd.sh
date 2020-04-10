@@ -2,8 +2,6 @@
 
 #!/usr/bin/env bash
 
-#duplicate link, subdir completion
-
 QCD_STORE=~/.qcd/store
 QCD_TEMP=~/.qcd/temp
 
