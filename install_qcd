@@ -28,17 +28,18 @@ then
     echo -e "→ Installed QCD Command To Terminal Config"
   fi
 
-  # Install Program Files
+  # Install QCD Program Files
   command mkdir $QCD_FOLD 2> /dev/null
   command mv $QCD_PROG $QCD_FOLD 2> /dev/null
   command mv $QCD_LICE $QCD_FOLD 2> /dev/null
   command mv $QCD_READ $QCD_FOLD 2> /dev/null
 
-  # Update Terminal Environment
+  # Update Bash Environment
   . ~/.qcd/qcd.sh
 
-  # Finish Installation
+  # Finish QCD Installation
   echo -e "→ Installed QCD In ~/.qcd"
+  echo -e "\nPlease Restart Your Terminal"
 elif [ $confirm == n ] || [ $confirm == N ]
 then
   echo -e "\nQCD Installation Aborted!"
