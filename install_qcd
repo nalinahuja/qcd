@@ -15,10 +15,10 @@ then
   then
     if [[ -f ~/.bashrc ]]
     then
-      echo -e "\n# qcd Function (qcd [PATH/LINK] [OPTIONS])\n\n~/.qcd/comp.sh\nqcd -c\n" >> ~/.bashrc
+      echo -e "\n# qcd Function (qcd [PATH/LINK] [OPTIONS])\n\nsource ~/.qcd/qcd.sh\nqcd -c\n" >> ~/.bashrc
     elif [[ -f ~/.bash_profile ]]
     then
-      echo -e "\n# qcd Function (qcd [PATH/LINK] [OPTIONS])\n\n~/.qcd/comp.sh\nqcd -c\n" >> ~/.bash_profile
+      echo -e "\n# qcd Function (qcd [PATH/LINK] [OPTIONS])\n\nsource ~/.qcd/qcd.sh\nqcd -c\n" >> ~/.bash_profile
     else
       echo -e "ERROR: Failed to Install Command To Terminal Profile. Installation Aborted!"
       exit 1
@@ -33,6 +33,8 @@ then
   command mv $QCD_READ $QCD_FOLD 2> /dev/null
 
   echo -e "→ Installed QCD In ~/.qcd"
+
+  . ~/.qcd/qcd.sh
 
   echo -e "\nQCD Successfully Installed"
 elif [ $confirm == n ] || [ $confirm == N ]
