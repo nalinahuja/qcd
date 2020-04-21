@@ -190,8 +190,13 @@ function qcd() {
       command echo -e "qcd: Cannot link keyword to directory"
     elif [[ ! -e $resv ]]
     then
+      # Print Separator
+      if [[ $resc -gt 1 ]]
+      then
+        echo
+      fi
+
       # Prompt User Of Error
-      if [[ $resc -gt 1 ]]; then echo; fi
       command echo -e "qcd: $(format_dir $resv): Directory does not exist"
 
       # Remove Invalid Path From QCD Store
