@@ -38,6 +38,8 @@ function remove_directory() {
   if [[ $? = 0 ]]
   then
     command mv $QCD_TEMP $QCD_STORE
+  else
+    command rm $QCD_TEMP
   fi
 }
 
@@ -49,6 +51,8 @@ function remove_symbolic_link() {
   if [[ $? = 0 ]]
   then
     command mv $QCD_TEMP $QCD_STORE
+  else
+    command rm $QCD_TEMP
   fi
 }
 
