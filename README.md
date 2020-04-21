@@ -11,15 +11,15 @@ Please navigate to the <a href="https://github.com/nalinahuja22/qcd/releases">re
 </p>
 
 <p align="justify">
-Then, navigate to the location where the QCD repository contents have been downloaded and run the <a href="https://github.com/nalinahuja22/qcd/blob/master/install_qcd.sh">install_qcd</a> script. This script will install QCD to your home directory as a hidden folder which contains the QCD program and the store file and add the QCD function to your terminal configuration. Then source your bash profile to source the program into your terminal.
+Then, navigate to the location where the QCD repository contents have been downloaded and run the <a href="https://github.com/nalinahuja22/qcd/blob/master/install_qcd.sh">install_qcd</a> script. This script will install QCD to your home directory as a hidden folder which contains the QCD program and add the QCD command to your terminal configuration. When the install script finishes, please restart your terminal and source your terminal profile to fully configure the installation.
 </p>
 
 ## Usage
 
 <p align="justify">
-Just like the command cd, simply indicate a valid path from the current directory or keyword related to a path you have previously visited and QCD will resolve the directory and switch to it. QCD has the ability complete the path based on the contents of the current directory and previously visited ones. QCD can also resolve full paths to subdirectories of linked paths by simply indicating the link followed by a subdirectory of that link, just like a normal path, and QCD will automatically expand the link and navigate to the subdirectory if it exists.
+Just like the command cd, simply indicate a valid path from the current directory or keyword related to a path you have previously visited and QCD will resolve the directory and switch to it. QCD has the ability complete the path based on the contents of the current directory and previously visited ones. QCD can also resolve full paths to subdirectories of linked paths by simply indicating the link followed by a subdirectory of that link, just like a normal path, and QCD will automatically expand the link and navigate to the subdirectory if it exists. QCD also comes featured with a custom completion script that allows completion of linked paths and their subdirectories.
 
-The user also has the ability to manage the symbolic links stored. By indicating -f after a link, QCD will remove all instances of the link from the store file and it will not show up unless you revisit that directory. Additionally, the user can choose to clean their store file of invalid directories by indicating only -c after the QCD command. However, this command is really not necessary to use often since QCD automatically cleans the store file when a new shell session is started.
+The user also has the ability to manage the symbolic links stored. By indicating -f after a link, QCD will remove all instances of the link from the store file and it will not show up unless you revisit that directory. Additionally, the user can choose to clean their store file of invalid directories by indicating only -c after the QCD command. However, it's not necessary to manually clean the store file since QCD automatically cleans the store file when a new shell session is started.
 </p>
 
 ```
