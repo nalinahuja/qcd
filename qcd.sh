@@ -2,7 +2,7 @@
 
 #!/usr/bin/env bash
 
-# todo, . vs source and file coalese
+# todo file coalese
 
 QCD_STORE=~/.qcd/store
 QCD_TEMP=~/.qcd/temp
