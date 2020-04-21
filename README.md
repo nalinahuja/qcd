@@ -24,11 +24,11 @@ The user also has the ability to manage the symbolic links stored. By indicating
 
 ```
 # Navigate To Valid Path
-qcd $PATH
+qcd [PATH]
 
 # Navigate To/Forget Linked Path
-qcd $LINK [-f]
+qcd [LINK] [-f]
 
 # Clean Store File
-qcd -c
+qcd [-c]
 ```
