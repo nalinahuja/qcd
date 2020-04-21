@@ -11,6 +11,7 @@ read -p "Please Confirm Installation of QCD [y/n]: " confirm
 
 if [ $confirm == y ] || [ $confirm == Y ]
 then
+  # Add Command To Bash Profile
   if [[ ! -e $QCD_FOLD ]]
   then
     if [[ -f ~/.bashrc ]]
@@ -27,16 +28,17 @@ then
     echo -e "→ Installed QCD Command To Terminal Config"
   fi
 
+  # Install Program Files
   command mkdir $QCD_FOLD 2> /dev/null
   command mv $QCD_PROG $QCD_FOLD 2> /dev/null
   command mv $QCD_LICE $QCD_FOLD 2> /dev/null
   command mv $QCD_READ $QCD_FOLD 2> /dev/null
 
-  echo -e "→ Installed QCD In ~/.qcd"
-
+  # Update Terminal Environment
   . ~/.qcd/qcd.sh
 
-  echo -e "\nQCD Successfully Installed"
+  # Finish Installation
+  echo -e "→ Installed QCD In ~/.qcd"
 elif [ $confirm == n ] || [ $confirm == N ]
 then
   echo -e "\nQCD Installation Aborted!"
