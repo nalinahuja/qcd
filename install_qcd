@@ -28,13 +28,13 @@ then
   fi
 
   command mkdir $QCD_FOLD 2> /dev/null
-  command mv $QCD_PROG $QCD_FOLD
-  command mv $QCD_LICE $QCD_FOLD
-  command mv $QCD_READ $QCD_FOLD
+  command mv $QCD_PROG $QCD_FOLD 2> /dev/null
+  command mv $QCD_LICE $QCD_FOLD 2> /dev/null
+  command mv $QCD_READ $QCD_FOLD 2> /dev/null
 
   echo -e "→ Installed QCD In ~/.qcd"
 
-  echo -e "\nQCD Successfully Installed, Please Restart Your Terminal!"
+  echo -e "\nQCD Successfully Installed"
 elif [ $confirm == n ] || [ $confirm == N ]
 then
   echo -e "\nQCD Installation Aborted!"
