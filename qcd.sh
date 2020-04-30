@@ -2,6 +2,8 @@
 
 #!/usr/bin/env bash
 
+# todo, 2> /dev/null for grep commands
+
 QCD_STORE=~/.qcd/store
 QCD_TEMP=~/.qcd/temp
 
@@ -87,7 +89,7 @@ function qcd() {
   elif [[ "${@:$#}" = "$FORGET" ]]
   then
     # Remove Symbolic Link
-    local link="${@:0:$(($# - 1))}"
+    local link="${@:1:1}"
     remove_symbolic_link "$link"
     return
   fi
