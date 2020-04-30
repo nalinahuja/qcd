@@ -24,14 +24,14 @@ The user also has the ability to manage the symbolic links stored by QCD. By ind
 
 ```
 Help:
-  qcd -h                Show Usage
+  qcd -hShow Usage
 
 Change Directories:
-  qcd [path]			      Change To Valid Path
-  qcd [link]/[subdir]		Change To Linked Path With Opt. Subdir
+  qcd [path]            Change To Valid Path
+  qcd [link]/[subdir]   Change To Linked Path With Opt. Subdir
 
 Link Management:
-  qcd -c			          Cleanup Store File
-  qcd -f		            Forget Current Directory
-  qcd [link] -f	      	Forget Symbolic Link
+  qcd -c                Cleanup Store File
+  qcd -f                Forget Current Directory
+  qcd [link] -f         Forget Symbolic Link
 ```
