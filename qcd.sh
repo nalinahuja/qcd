@@ -2,8 +2,6 @@
 
 #!/usr/bin/env bash
 
-# todo, 2> /dev/null for grep commands
-
 QCD_STORE=~/.qcd/store
 QCD_TEMP=~/.qcd/temp
 
