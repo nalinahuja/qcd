@@ -70,7 +70,7 @@ function qcd() {
   if [[ "$1" = "$HELP" ]]
   then
     # Print Help
-    echo -e "${b}Qcd Usage${n}\n\n  Change Directories:\n    qcd [path]\t\t\tChange To Valid Path\n    qcd [link]/[subdir]\t\tChange To Linked Path With Opt. Subdir\n\n  Link Management:\n    qcd -c\t\t\tCleanup Store File\n    qcd -f\t\t\tForget Current Directory\n    qcd [link] -f\t\tForget Symbolic Link\n"
+    echo -e "${b}Qcd Usage${n}\n\n  Help:\n    qcd -h\t\t\tShow Usage\n\n  Change Directories:\n    qcd [path]\t\t\tChange To Valid Path\n    qcd [link]/[subdir]\t\tChange To Linked Path With Opt. Subdir\n\n  Link Management:\n    qcd -c\t\t\tCleanup Store File\n    qcd -f\t\t\tForget Current Directory\n    qcd [link] -f\t\tForget Symbolic Link\n"
 
     # Terminate Program
     return
