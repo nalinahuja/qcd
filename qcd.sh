@@ -99,7 +99,7 @@ function qcd() {
   elif [[ "${@:$#}" = "$FORGET" ]]
   then
     # Symbolic Link
-    local link="${@:0:1}"
+    local link="${@:1:1}"
 
     # Determine Removal Type
     if [[ "$link" = "$FORGET" ]]
