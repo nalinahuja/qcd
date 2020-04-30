@@ -5,6 +5,7 @@
 QCD_STORE=~/.qcd/store
 QCD_TEMP=~/.qcd/temp
 
+HELP="-h"
 CLEAN="-c"
 FORGET="-f"
 
@@ -66,7 +67,14 @@ function qcd() {
   fi
 
   # Check For Flags
-  if [[ "$1" = "$CLEAN" ]]
+  if [[ "$1" = "$HELP" ]]
+  then
+    # Print Help
+    echo -e "${b}Qcd Usage${n}\n\n  Change Directories:\n    qcd [path]\t\t\tChange To Valid Path\n    qcd [link]/[subdir]\t\tChange To Linked Path With Opt. Subdir\n\n  Link Management:\n    qcd -c\t\t\tCleanup Store File\n    qcd -f\t\t\tForget Current Directory\n    qcd [link] -f\t\tForget Symbolic Link\n"
+
+    # Terminate Program
+    return
+  elif [[ "$1" = "$CLEAN" ]]
   then
     # Get Stored Paths
     local paths=$(command cat $QCD_STORE | command cut -d ':' -f2 | command tr ' ' ':' | command sort)
@@ -83,12 +91,24 @@ function qcd() {
         remove_directory "$path"
       fi
     done
+
+    # Terminate Program
     return
   elif [[ "${@:$#}" = "$FORGET" ]]
   then
-    # Remove Symbolic Link
-    local link="${@:1:1}"
-    remove_symbolic_link "$link"
+    # Symbolic Link
+    local link="${@:0:1}"
+
+    # Determine Removal Type
+    if [[ "$link" = "$FORGET" ]]
+    then
+      local path=$(command pwd)
+      remove_directory "$path/"
+    else
+      remove_symbolic_link "$link"
+    fi
+
+    # Terminate Program
     return
   fi
 
