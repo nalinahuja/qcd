@@ -2,8 +2,6 @@
 
 #!/usr/bin/env bash
 
-#todo, combine cleanup in source command
-
 QCD_STORE=~/.qcd/store
 QCD_TEMP=~/.qcd/temp
 
