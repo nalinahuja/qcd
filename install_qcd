@@ -16,10 +16,10 @@ then
   then
     if [[ -f ~/.bashrc ]]
     then
-      echo -e "\n# qcd Function (qcd [PATH/LINK] [OPTIONS])\n\nsource ~/.qcd/qcd.sh\nqcd -c\n" >> ~/.bashrc
+      echo -e "\n# qcd Function (qcd [PATH/LINK] [OPTIONS])\n\nsource ~/.qcd/qcd.sh\n"  >> ~/.bashrc
     elif [[ -f ~/.bash_profile ]]
     then
-      echo -e "\n# qcd Function (qcd [PATH/LINK] [OPTIONS])\n\nsource ~/.qcd/qcd.sh\nqcd -c\n" >> ~/.bash_profile
+      echo -e "\n# qcd Function (qcd [PATH/LINK] [OPTIONS])\n\nsource ~/.qcd/qcd.sh\n" >> ~/.bash_profile
     else
       echo -e "ERROR: Failed to Install Command To Terminal Profile. Installation Aborted!"
       exit 1
