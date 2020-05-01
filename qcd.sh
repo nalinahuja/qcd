@@ -2,6 +2,8 @@
 
 #!/usr/bin/env bash
 
+#todo, combine cleanup in source command
+
 QCD_STORE=~/.qcd/store
 QCD_TEMP=~/.qcd/temp
 
@@ -321,4 +323,7 @@ then
   command complete -o nospace -o dirnames -A directory -F _qcd_comp -X ".*" qcd
 fi
 
-# End QCD Completion Function----------------------------------------------------------------------------------------------------------------------------------------
+# Cleanup File
+qcd -c
+
+# End QCD Initialization---------------------------------------------------------------------------------------------------------------------------------------------
