@@ -2,6 +2,9 @@
 
 #!/usr/bin/env bash
 
+#todo, input error handling
+#todo, do not suggest self dir
+
 QCD_STORE=~/.qcd/store
 QCD_TEMP=~/.qcd/temp
 
