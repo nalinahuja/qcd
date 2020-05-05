@@ -3,7 +3,8 @@
 #!/usr/bin/env bash
 
 #todo, input error handling
-#todo, do not suggest self dir
+#todo, do not suggest pwd
+#todo, frequency flag suggestions
 
 QCD_STORE=~/.qcd/store
 QCD_TEMP=~/.qcd/temp
