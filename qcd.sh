@@ -2,6 +2,8 @@
 
 #!/usr/bin/env bash
 
+#todo, offset sorting work to when store is modified
+
 QCD_STORE=~/.qcd/store
 QCD_TEMP=~/.qcd/temp
 
