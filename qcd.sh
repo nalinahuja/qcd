@@ -308,7 +308,7 @@ function _qcd_comp() {
       # Filter Duplicate Dirs
       if [[ ! -e $QUICK_DIR ]]
       then
-        # Exlude Self Directory
+        # Exlude Current Directory
         if [[ $rem = false && "$QUICK_DIR" = "$(basename $(pwd))/" ]]
         then
           rem=true
