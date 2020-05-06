@@ -2,8 +2,6 @@
 
 #!/usr/bin/env bash
 
-#todo, frequency flag suggestions
-
 QCD_STORE=~/.qcd/store
 QCD_TEMP=~/.qcd/temp
 
