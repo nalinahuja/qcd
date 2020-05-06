@@ -297,17 +297,26 @@ function _qcd_comp() {
   else
     # Endpoint Completion
     local QUICK_DIRS=$(command cat $QCD_STORE | command awk -F ':' '{printf $1 "/\n"}' | command tr ' ' ':' | command sort)
+    local rem=false
 
     # Add Linked Directories
-    for DIR in $QUICK_DIRS
+    for QUICK_DIR in $QUICK_DIRS
     do
       # Expand Symbols
-      DIR=${DIR//:/ }
+      QUICK_DIR=${QUICK_DIR//:/ }
 
       # Filter Duplicate Dirs
-      if [[ ! -e $DIR ]]
+      if [[ ! -e $QUICK_DIR ]]
       then
-        WORD_LIST+=($DIR)
+        # Exlude Self Directory
+        if [[ $rem = false && "$QUICK_DIR" = "$(basename $(pwd))/" ]]
+        then
+          rem=true
+          continue
+        fi
+
+        # Add Dirs To Word List
+        WORD_LIST+=($QUICK_DIR)
       fi
     done
 
