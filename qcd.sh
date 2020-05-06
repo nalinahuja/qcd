@@ -72,9 +72,10 @@ function qcd() {
   if [[ "$1" = "$HELP" ]]
   then
     # Print Help
-    printf "${b}QCD Usage${n}\n\n  Help:\n    qcd -h\t\t\tShow Usage\n\n"
-    printf "  Change Directories:\n    qcd [path]\t\t\tChange To Valid Path\n    qcd [link]/[subdir]\t\tChange To Linked Path With Opt. Subdir\n\n"
-    printf "  Link Management:\n    qcd -c\t\t\tCleanup Store File\n    qcd -f\t\t\tForget Current Directory\n    qcd [link] -f\t\tForget Symbolic Link\n\n"
+    command printf "${b}QCD Utility${n}\n\n"
+    command printf "Usage:\n  %s\t\t\t    %s\n  %s\t\t    %s\n  %s   %s\n\n" "qcd" "Change To Home Directory" "qcd [path]" "Change To Local Path" "qcd [link]/[subdir]/..." "Change To Linked Path"
+    command printf "Options:\n  %s\t\t %s\n  %s\t\t %s\n  %s\t\t %s\n  %s\t %s\n\n" "-h" "Show Help" "-c" "Clean Store File" "-f" "Forget Current Directory" "[link] -f" "Forget Symbolic Link"
+    command printf "Developed by nalinahuja22\n"
 
     # Terminate Program
     return
@@ -308,7 +309,7 @@ function _qcd_comp() {
       if [[ ! -e $QUICK_DIR ]]
       then
         # Exlude Current Directory
-        if [[ $rem = false && "$QUICK_DIR" = "$(basename $(pwd))/" ]]
+        if [[ $rem = false && "$QUICK_DIR" = "$(command basename $(command pwd))/" ]]
         then
           rem=true
           continue
