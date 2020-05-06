@@ -2,7 +2,6 @@
 
 #!/usr/bin/env bash
 
-#todo, do not suggest pwd
 #todo, frequency flag suggestions
 
 QCD_STORE=~/.qcd/store
