@@ -5,12 +5,12 @@
 QCD_STORE=~/.qcd/store
 QCD_TEMP=~/.qcd/temp
 
+TRUE=1
+FALSE=0
+
 HELP="-h"
 CLEAN="-c"
 FORGET="-f"
-
-TRUE=1
-FALSE=0
 
 b=$(command tput bold)
 n=$(command tput sgr0)
