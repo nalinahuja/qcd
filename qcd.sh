@@ -260,7 +260,6 @@ function _qcd_comp() {
 
   # Initialize Word List
   local WORD_LIST=()
-  local IFS=$'\n'
 
   # Path Completion
   if [[ "$LINK_ARG" == */* ]]
@@ -304,8 +303,8 @@ function _qcd_comp() {
     local QUICK_DIRS=$(command cat $QCD_STORE | command awk -F ':' '{printf $1 "/\n"}' | command tr ' ' ':')
 
     # Resolve Current Directory Name
-    local curr_dir="$(command basename $(command pwd))/"
-    local rem=$FALSE
+    local CURR_DIR="$(command basename $(command pwd))/"
+    local REM=$FALSE
 
     # Add Linked Directories
     for QUICK_DIR in $QUICK_DIRS
@@ -317,9 +316,9 @@ function _qcd_comp() {
       if [[ ! -e $QUICK_DIR ]]
       then
         # Exlude Current Directory
-        if [[ $rem -eq $FALSE && "$QUICK_DIR" =  "$curr_dir" ]]
+        if [[ $REM -eq $FALSE && "$QUICK_DIR" =  "$CURR_DIR" ]]
         then
-          rem=$TRUE
+          REM=$TRUE
           continue
         fi
 
