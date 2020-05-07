@@ -2,14 +2,15 @@
 
 #!/usr/bin/env bash
 
-#todo, offset sorting work to when store is modified
-
 QCD_STORE=~/.qcd/store
 QCD_TEMP=~/.qcd/temp
 
 HELP="-h"
 CLEAN="-c"
 FORGET="-f"
+
+TRUE=1
+FALSE=0
 
 b=$(command tput bold)
 n=$(command tput sgr0)
@@ -26,10 +27,14 @@ function add_directory() {
   local dir=$(command pwd)
   local ept=$(command basename "$dir")
 
-  # Append To QCD Store If Unique
+  # Check If Directory Is Unique
   if [[ ! "$dir" = "$HOME" && -z $(command egrep -s -x ".*:$dir/" $QCD_STORE) ]]
   then
+    # Append Directory Data To QCD Store
     command printf "$ept:$dir/\n" >> $QCD_STORE
+
+    # Sort QCD Store
+    command sort -o $QCD_STORE -n -t ':' -k2 $QCD_STORE
   fi
 }
 
@@ -82,7 +87,7 @@ function qcd() {
   elif [[ "$1" = "$CLEAN" ]]
   then
     # Get Stored Paths
-    local paths=$(command cat $QCD_STORE | command cut -d ':' -f2 | command tr ' ' ':' | command sort)
+    local paths=$(command cat $QCD_STORE | command cut -d ':' -f2 | command tr ' ' ':')
 
     # Iterate Over Paths
     for path in $paths
@@ -153,7 +158,7 @@ function qcd() {
     if [[ $resc -gt 1 ]]
     then
       # Store Paths In Order Of Absolute Path
-      local paths=$(command echo -e "$resv" | command cut -d ':' -f2 | command sort)
+      local paths=$(command echo -e "$resv" | command cut -d ':' -f2)
 
       # Store Path Match
       local pmatch=""
@@ -263,7 +268,7 @@ function _qcd_comp() {
     # Determine Resolved Directory
     if [[ ! -e $CURR_ARG ]]
     then
-      RES_DIR="$(command cat $QCD_STORE | command awk -F ':' '{print $2}' | command sort | command egrep -s -x ".*/$LINK_ARG")"
+      RES_DIR="$(command cat $QCD_STORE | command awk -F ':' '{print $2}' | command egrep -s -x ".*/$LINK_ARG")"
     else
       RES_DIR="$CURR_ARG"
     fi
@@ -296,8 +301,11 @@ function _qcd_comp() {
     fi
   else
     # Endpoint Completion
-    local QUICK_DIRS=$(command cat $QCD_STORE | command awk -F ':' '{printf $1 "/\n"}' | command tr ' ' ':' | command sort)
-    local rem=false
+    local QUICK_DIRS=$(command cat $QCD_STORE | command awk -F ':' '{printf $1 "/\n"}' | command tr ' ' ':')
+
+    # Resolve Current Directory Name
+    local curr_dir="$(command basename $(command pwd))/"
+    local rem=$FALSE
 
     # Add Linked Directories
     for QUICK_DIR in $QUICK_DIRS
@@ -309,9 +317,9 @@ function _qcd_comp() {
       if [[ ! -e $QUICK_DIR ]]
       then
         # Exlude Current Directory
-        if [[ $rem = false && "$QUICK_DIR" = "$(command basename $(command pwd))/" ]]
+        if [[ $rem -eq $FALSE && "$QUICK_DIR" =  "$curr_dir" ]]
         then
-          rem=true
+          rem=$TRUE
           continue
         fi
 
