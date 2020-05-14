@@ -24,7 +24,7 @@ The user also has the ability to manage the symbolic links stored by QCD. By ind
 
 ```
 Help:
-  qcd -h                   Show Usage
+  qcd -h                   Show This Usage
 
 Change Directories:
   qcd [path]               Change To Valid Path
