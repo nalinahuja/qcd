@@ -43,7 +43,7 @@ function remove_directory() {
   command egrep -s -v -x ".*:${@}" $QCD_STORE > $QCD_TEMP
 
   # Update File If Successful
-  if [[ $? = 0 ]]
+  if [[ $? -eq 0 ]]
   then
     command mv $QCD_TEMP $QCD_STORE
   else
@@ -56,7 +56,7 @@ function remove_symbolic_link() {
   command egrep -s -v -x "${@////}:.*" $QCD_STORE > $QCD_TEMP
 
   # Update File If Successful
-  if [[ $? = 0 ]]
+  if [[ $? -eq 0 ]]
   then
     command mv $QCD_TEMP $QCD_STORE
   else
@@ -79,7 +79,7 @@ function qcd() {
     # Print Help
     command printf "${b}QCD Utility${n}\n\n"
     command printf "Usage:\n  %s\t\t\t    %s\n  %s\t\t    %s\n  %s   %s\n\n" "qcd" "Change To Home Directory" "qcd [path]" "Change To Local Path" "qcd [link]/[subdir]/..." "Change To Linked Path"
-    command printf "Options:\n  %s\t\t %s\n  %s\t\t %s\n  %s\t\t %s\n  %s\t %s\n\n" "-h" "Show Help" "-c" "Clean Store File" "-f" "Forget Current Directory" "[link] -f" "Forget Symbolic Link"
+    command printf "Options:\n  %s\t\t    %s\n  %s\t\t    %s\n  %s\t\t    %s\n  %s\t\t    %s\n\n" "qcd -h" "Show This Help" "qcd -c" "Clean Store File" "qcd -f" "Forget Current Directory" "qcd [link] -f" "Forget Symbolic Link"
     command printf "Developed by nalinahuja22\n"
 
     # Terminate Program
