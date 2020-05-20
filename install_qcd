@@ -1,6 +1,6 @@
-#Developed by Nalin Ahuja, nalinahuja22
-
 #!/usr/bin/env bash
+
+#Developed by Nalin Ahuja, nalinahuja22
 
 QCD_FOLD=~/.qcd
 QCD_PROG=./qcd.sh

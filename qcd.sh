@@ -1,6 +1,6 @@
-#Developed by Nalin Ahuja, nalinahuja22
-
 #!/usr/bin/env bash
+
+#Developed by Nalin Ahuja, nalinahuja22
 
 QCD_STORE=~/.qcd/store
 QCD_TEMP=~/.qcd/temp
@@ -316,7 +316,7 @@ function _qcd_comp() {
       if [[ ! -e $QUICK_DIR ]]
       then
         # Exlude Current Directory
-        if [[ $REM -eq $FALSE && "$QUICK_DIR" =  "$CURR_DIR" ]]
+        if [[ $REM -eq $FALSE && "$QUICK_DIR" = "$CURR_DIR" ]]
         then
           REM=$TRUE
           continue
