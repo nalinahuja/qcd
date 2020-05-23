@@ -151,7 +151,7 @@ function qcd() {
     fi
 
     # Check For File Link(s) In Store File
-    local resv=$(command egrep -s -x "$link.*" $QCD_STORE  2> /dev/null)
+    local resv=$(command egrep -s -x "$link.*" $QCD_STORE 2> /dev/null)
     local resc=$(command echo -e "$resv" | command wc -l)
 
     # Check Result Count
@@ -296,7 +296,7 @@ function _qcd_comp() {
       done
 
       # Set Completion List
-      COMPREPLY=($(command compgen -W "$(command printf "%s\n" "${WORD_LIST[@]}")" "$CURR_ARG"))
+      COMPREPLY=($(command compgen -W "$(command printf "%s\n" "${WORD_LIST[@]}")" "$CURR_ARG" 2> /dev/null))
     fi
   else
     # Endpoint Completion
@@ -328,7 +328,7 @@ function _qcd_comp() {
     done
 
     # Set Completion List
-    COMPREPLY=($(command compgen -W "$(command printf "%s\n" "${WORD_LIST[@]}")" "$CURR_ARG"))
+    COMPREPLY=($(command compgen -W "$(command printf "%s\n" "${WORD_LIST[@]}")" "$CURR_ARG" 2> /dev/null))
   fi
 }
 
