@@ -11,9 +11,7 @@ Please navigate to the <a href="https://github.com/nalinahuja22/qcd/releases">re
 </p>
 
 <p align="justify">
-Then, navigate to the location where the QCD repository contents have been downloaded on your machine and run the <a href="https://github.com/nalinahuja22/qcd/blob/master/install_qcd.sh">install_qcd</a> script. This executable script will install QCD to your home directory as a hidden folder which contains the QCD program and add the QCD command to your terminal configuration. When the install script finishes, please restart your terminal and source your terminal profile to fully configure the installation.
-
-To update QCD to a newer release, simply follow the same installation process. Don't worry, your store file will not be modified during installation.
+Then, navigate to the location where the QCD repository contents have been downloaded on your machine and run the <a href="https://github.com/nalinahuja22/qcd/blob/master/install_qcd.sh">install_qcd</a> script. This executable script will install QCD to your home directory as a hidden folder which contains the QCD program and add the QCD command to your terminal configuration. When the install script finishes, please restart your terminal and source your terminal profile to fully configure the installation.<br><br>To update QCD to a newer release, simply follow the same installation process. Don't worry, your store file will not be modified during installation.
 </p>
 
 ## Usage
