@@ -2,6 +2,9 @@
 
 #Developed by Nalin Ahuja, nalinahuja22
 
+# TODO, substring detection
+# TODO, link frequency rating
+
 TRUE=1
 FALSE=0
 
