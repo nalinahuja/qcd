@@ -104,14 +104,14 @@ function qcd() {
     return
   elif [[ "${@:$#}" = "$QCD_FORGET" ]]
   then
-    # Symbolic Link
+    # Get Symbolic Link
     local link="${@:1:1}"
 
     # Determine Removal Type
     if [[ "$link" = "$QCD_FORGET" ]]
     then
       local path=$(command pwd)
-      remove_directory "$path/"
+      remove_directory "$path"
     else
       remove_symbolic_link "$link"
     fi
