@@ -2,20 +2,20 @@
 
 #Developed by Nalin Ahuja, nalinahuja22
 
-QCD_STORE=~/.qcd/store
-QCD_TEMP=~/.qcd/temp
-
 TRUE=1
 FALSE=0
 
-HELP="-h"
-CLEAN="-c"
-FORGET="-f"
+QCD_HELP="-h"
+QCD_CLEAN="-c"
+QCD_FORGET="-f"
+
+QCD_STORE=~/.qcd/store
+QCD_TEMP=~/.qcd/temp
 
 b=$(command tput bold)
 n=$(command tput sgr0)
 
-# End Global Variables----------------------------------------------------------------------------------------------------------------------------------------------
+# End Defined Constants----------------------------------------------------------------------------------------------------------------------------------------------
 
 function format_dir() {
   # Format Directory With Symbols
@@ -74,7 +74,7 @@ function qcd() {
   fi
 
   # Check For Flags
-  if [[ "$1" = "$HELP" ]]
+  if [[ "$1" = "$QCD_HELP" ]]
   then
     # Print Help
     command printf "${b}QCD Utility${n}\n\n"
@@ -84,7 +84,7 @@ function qcd() {
 
     # Terminate Program
     return
-  elif [[ "$1" = "$CLEAN" ]]
+  elif [[ "$1" = "$QCD_CLEAN" ]]
   then
     # Get Stored Paths
     local paths=$(command cat $QCD_STORE | command cut -d ':' -f2 | command tr ' ' ':')
@@ -104,13 +104,13 @@ function qcd() {
 
     # Terminate Program
     return
-  elif [[ "${@:$#}" = "$FORGET" ]]
+  elif [[ "${@:$#}" = "$QCD_FORGET" ]]
   then
     # Symbolic Link
     local link="${@:1:1}"
 
     # Determine Removal Type
-    if [[ "$link" = "$FORGET" ]]
+    if [[ "$link" = "$QCD_FORGET" ]]
     then
       local path=$(command pwd)
       remove_directory "$path/"
