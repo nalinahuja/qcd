@@ -23,24 +23,6 @@ function format_dir() {
   command echo -e "${1/$HOME/~}"
 }
 
-function clean_store() {
-  # Get Stored Paths
-  local paths=$(command cat $QCD_STORE | command cut -d ':' -f2 | command tr ' ' ':')
-
-  # Iterate Over Paths
-  for path in $paths
-  do
-    # Expand Symbols
-    path=${path//:/ }
-
-    # Remove Path If Invalid
-    if [[ ! -e $path ]]
-    then
-      remove_directory "$path"
-    fi
-  done
-}
-
 function add_directory() {
   # Store Directory Information
   local dir=$(command pwd)
@@ -102,7 +84,21 @@ function qcd() {
     return
   elif [[ "$1" = "$QCD_CLEAN" ]]
   then
-    clean_store
+    # Get Stored Paths
+    local paths=$(command cat $QCD_STORE | command cut -d ':' -f2 | command tr ' ' ':')
+
+    # Iterate Over Paths
+    for path in $paths
+    do
+      # Expand Symbols
+      path=${path//:/ }
+
+      # Remove Path If Invalid
+      if [[ ! -e $path ]]
+      then
+        remove_directory "$path"
+      fi
+    done
 
     # Terminate Program
     return
