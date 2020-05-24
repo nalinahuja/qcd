@@ -2,8 +2,6 @@
 
 #Developed by Nalin Ahuja, nalinahuja22
 
-# TODO, link frequency rating
-
 TRUE=1
 FALSE=0
 
