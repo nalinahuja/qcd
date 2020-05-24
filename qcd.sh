@@ -23,12 +23,24 @@ function format_dir() {
   command echo -e "${1/$HOME/~}"
 }
 
+function update_store() {
+  # Check Exit Status
+  if [[ $1 -eq 0 ]]
+  then
+    # Update Store File
+    command mv $QCD_TEMP $QCD_STORE
+  else
+    # Remove Temp File
+    command rm $QCD_TEMP
+  fi
+}
+
 function add_directory() {
   # Store Directory Information
   local dir=$(command pwd)
   local ept=$(command basename "$dir")
 
-  # Check If Directory Is Unique
+  # Store If Directory Is Unique
   if [[ ! "$dir" = "$HOME" && -z $(command egrep -s -x ".*:$dir/" $QCD_STORE) ]]
   then
     # Append Directory Data To QCD Store
@@ -44,12 +56,7 @@ function remove_directory() {
   command egrep -s -v -x ".*:${@}" $QCD_STORE > $QCD_TEMP
 
   # Update File If Successful
-  if [[ $? -eq 0 ]]
-  then
-    command mv $QCD_TEMP $QCD_STORE
-  else
-    command rm $QCD_TEMP
-  fi
+  update_store $?
 }
 
 function remove_symbolic_link() {
@@ -57,12 +64,7 @@ function remove_symbolic_link() {
   command egrep -s -v -x "${@////}:.*" $QCD_STORE > $QCD_TEMP
 
   # Update File If Successful
-  if [[ $? -eq 0 ]]
-  then
-    command mv $QCD_TEMP $QCD_STORE
-  else
-    command rm $QCD_TEMP
-  fi
+  update_store $?
 }
 
 # End Helper Function-----------------------------------------------------------------------------------------------------------------------------------------------
