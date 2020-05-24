@@ -2,7 +2,6 @@
 
 #Developed by Nalin Ahuja, nalinahuja22
 
-# TODO, substring detection
 # TODO, link frequency rating
 
 TRUE=1
@@ -145,12 +144,12 @@ function qcd() {
   else
     # Get Path Link and Subdirectory
     local link=$(command echo -e "$indicated_dir" | command cut -d '/' -f1)
-    local subdir=""
+    local sdir=""
 
     # Get Path Subdirectory If Non-Empty
     if [[ "$indicated_dir" == */* ]]
     then
-      subdir=${indicated_dir:${#link} + 1}
+      sdir=${indicated_dir:${#link} + 1}
     fi
 
     # Check For File Link(s) In Store File
@@ -167,11 +166,11 @@ function qcd() {
       local pmatch=""
 
       # Determine Linked Subdirectory
-      if [[ ! -z $subdir ]]
+      if [[ ! -z $sdir ]]
       then
         for path in $paths
         do
-          path="${path}${subdir}"
+          path="${path}${sdir}"
           if [[ -e $path ]]
           then
             pmatch=$path
@@ -241,10 +240,10 @@ function qcd() {
       command cd "$resv"
 
       # Check If Subdirectory Exists
-      if [[ ! -z $subdir && -e $subdir ]]
+      if [[ ! -z $sdir && -e $sdir ]]
       then
         # Change Directory To Subdirectory
-        command cd "$subdir"
+        command cd "$sdir"
 
         # Store Complete Path And Endpoint
         add_directory
