@@ -46,5 +46,5 @@ elif [ $confirm == n ] || [ $confirm == N ]
 then
   echo -e "\nQCD Installation Aborted!"
 else
-  echo -e "\nERROR: Invalid Flag, Installation Aborted!"
+  echo -e "\nERROR: Invalid Input, Installation Aborted!"
 fi
