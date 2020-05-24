@@ -111,7 +111,7 @@ function qcd() {
     if [[ "$link" = "$QCD_FORGET" ]]
     then
       local path=$(command pwd)
-      remove_directory "$path"
+      remove_directory "$path/"
     else
       remove_symbolic_link "$link"
     fi
