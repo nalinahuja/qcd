@@ -5,9 +5,9 @@
 TRUE=1
 FALSE=0
 
-QCD_HELP="-h"
-QCD_CLEAN="-c"
-QCD_FORGET="-f"
+HELP="-h"
+CLEAN="-c"
+FORGET="-f"
 
 QCD_STORE=~/.qcd/store
 QCD_TEMP=~/.qcd/temp
@@ -75,14 +75,14 @@ function qcd() {
   fi
 
   # Check For Flags
-  if [[ "$1" = "$QCD_HELP" ]]
+  if [[ "$1" = "$HELP" ]]
   then
     # Print Help
     cat $QCD_HELP
 
     # Terminate Program
     return
-  elif [[ "$1" = "$QCD_CLEAN" ]]
+  elif [[ "$1" = "$CLEAN" ]]
   then
     # Get Stored Paths
     local paths=$(command cat $QCD_STORE | command cut -d ':' -f2 | command tr ' ' ':')
@@ -102,13 +102,13 @@ function qcd() {
 
     # Terminate Program
     return
-  elif [[ "${@:$#}" = "$QCD_FORGET" ]]
+  elif [[ "${@:$#}" = "$FORGET" ]]
   then
     # Get Symbolic Link
     local link="${@:1:1}"
 
     # Determine Removal Type
-    if [[ "$link" = "$QCD_FORGET" ]]
+    if [[ "$link" = "$FORGET" ]]
     then
       local path=$(command pwd)
       remove_directory "$path/"
