@@ -3,6 +3,7 @@
 #Developed by Nalin Ahuja, nalinahuja22
 
 QCD_FOLD=~/.qcd
+QCD_HELP=./help
 QCD_PROG=./qcd.sh
 QCD_LICE=./LICENSE
 QCD_READ=./README.md
@@ -31,11 +32,12 @@ then
   # Install QCD Program Files
   command mkdir $QCD_FOLD 2> /dev/null
   command mv $QCD_PROG $QCD_FOLD 2> /dev/null
+  command mv $QCD_HELP $QCD_FOLD 2> /dev/null
   command mv $QCD_LICE $QCD_FOLD 2> /dev/null
   command mv $QCD_READ $QCD_FOLD 2> /dev/null
 
   # Update Bash Environment
-  . ~/.qcd/qcd.sh
+  source ~/.qcd/qcd.sh
 
   # Finish QCD Installation
   echo -e "→ Installed QCD In ~/.qcd"
