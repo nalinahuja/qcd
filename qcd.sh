@@ -2,13 +2,10 @@
 
 #Developed by Nalin Ahuja, nalinahuja22
 
-# TODO, link frequency rating (qcd [link] -r)
-
 TRUE=1
 FALSE=0
 
 HELP="-h"
-RANK="-r"
 CLEAN="-c"
 FORGET="-f"
 
