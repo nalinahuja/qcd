@@ -11,6 +11,7 @@ QCD_FORGET="-f"
 
 QCD_STORE=~/.qcd/store
 QCD_TEMP=~/.qcd/temp
+QCD_HELP=~/.qcd/help
 
 b=$(command tput bold)
 n=$(command tput sgr0)
@@ -20,6 +21,24 @@ n=$(command tput sgr0)
 function format_dir() {
   # Format Directory With Symbols
   command echo -e "${1/$HOME/~}"
+}
+
+function clean_store() {
+  # Get Stored Paths
+  local paths=$(command cat $QCD_STORE | command cut -d ':' -f2 | command tr ' ' ':')
+
+  # Iterate Over Paths
+  for path in $paths
+  do
+    # Expand Symbols
+    path=${path//:/ }
+
+    # Remove Path If Invalid
+    if [[ ! -e $path ]]
+    then
+      remove_directory "$path"
+    fi
+  done
 }
 
 function add_directory() {
@@ -77,30 +96,13 @@ function qcd() {
   if [[ "$1" = "$QCD_HELP" ]]
   then
     # Print Help
-    command printf "${b}QCD Utility${n}\n\n"
-    command printf "Usage:\n  %s\t\t\t    %s\n  %s\t\t    %s\n  %s   %s\n\n" "qcd" "Change To Home Directory" "qcd [path]" "Change To Local Path" "qcd [link]/[subdir]/..." "Change To Linked Path"
-    command printf "Options:\n  %s\t\t    %s\n  %s\t\t    %s\n  %s\t\t    %s\n  %s\t\t    %s\n\n" "qcd -h" "Show This Help" "qcd -c" "Clean Store File" "qcd -f" "Forget Current Directory" "qcd [link] -f" "Forget Symbolic Link"
-    command printf "Developed by nalinahuja22\n"
+    cat $QCD_HELP
 
     # Terminate Program
     return
   elif [[ "$1" = "$QCD_CLEAN" ]]
   then
-    # Get Stored Paths
-    local paths=$(command cat $QCD_STORE | command cut -d ':' -f2 | command tr ' ' ':')
-
-    # Iterate Over Paths
-    for path in $paths
-    do
-      # Expand Symbols
-      path=${path//:/ }
-
-      # Remove Path If Invalid
-      if [[ ! -e $path ]]
-      then
-        remove_directory "$path"
-      fi
-    done
+    clean_store
 
     # Terminate Program
     return
