@@ -2,8 +2,6 @@
 
 #Developed by Nalin Ahuja, nalinahuja22
 
-# TODO, frequency consideration during multiple matches
-
 TRUE=1
 FALSE=0
 
