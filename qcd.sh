@@ -2,6 +2,8 @@
 
 #Developed by Nalin Ahuja, nalinahuja22
 
+# TODO, frequency consideration
+
 TRUE=1
 FALSE=0
 
