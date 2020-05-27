@@ -198,7 +198,6 @@ function qcd() {
         # Error Check Input
         if [[ -z $ept || $ept = "q" ]]
         then
-          # Terminate Program
           return
         fi
 
