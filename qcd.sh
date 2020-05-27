@@ -195,6 +195,13 @@ function qcd() {
         # Format Selected Endpoint
         command read -p "Endpoint: " ept
 
+        # Error Check Input
+        if [[ -z $ept || $ept = "q" ]]
+        then
+          # Terminate Program
+          return
+        fi
+
         # Error Check Bounds
         if [[ $ept -lt 1 ]]
         then
