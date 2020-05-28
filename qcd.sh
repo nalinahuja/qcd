@@ -5,6 +5,7 @@
 TRUE=1
 FALSE=0
 
+QUIT="q"
 HELP="-h"
 CLEAN="-c"
 FORGET="-f"
@@ -196,7 +197,7 @@ function qcd() {
         command read -p "Endpoint: " ept
 
         # Error Check Input
-        if [[ -z $ept || $ept = "q" || ! $ept =~ ^[0-9]+$ ]]
+        if [[ -z $ept || $ept = $QUIT || ! $ept =~ ^[0-9]+$ ]]
         then
           # Terminate Program
           return
