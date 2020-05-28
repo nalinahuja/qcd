@@ -196,8 +196,9 @@ function qcd() {
         command read -p "Endpoint: " ept
 
         # Error Check Input
-        if [[ -z $ept || $ept = "q" ]]
+        if [[ -z $ept || $ept = "q" || ! $ept =~ ^[0-9]+$ ]]
         then
+          # Terminate Program
           return
         fi
 
