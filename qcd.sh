@@ -21,7 +21,7 @@ n=$(command tput sgr0)
 
 function format_dir() {
   # Format Directory With Symbols
-  command echo -e "${1/$HOME/\~}"
+  command echo -e ${1/$HOME/\~}
 }
 
 function update_store() {
