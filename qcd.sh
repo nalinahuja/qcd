@@ -207,7 +207,7 @@ function qcd() {
           return
         fi
 
-        # Error Check Bounds
+        # Error Check Input Bounds
         if [[ $ept -lt 1 ]]
         then
           ept=1
