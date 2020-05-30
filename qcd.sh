@@ -169,7 +169,10 @@ function qcd() {
       then
         for path in $paths
         do
+          # Generate Full Paths
           path="${path}${sdir}"
+
+          # Check Path Existence
           if [[ -e $path ]]
           then
             pmatch=$path
