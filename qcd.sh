@@ -175,6 +175,7 @@ function qcd() {
           # Check Path Existence
           if [[ -e $path ]]
           then
+            # Select Path
             pmatch=$path
             break
           fi
