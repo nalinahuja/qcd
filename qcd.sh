@@ -197,7 +197,7 @@ function qcd() {
           cnt=$((cnt + 1))
         done
 
-        # Read Selected Endpoint
+        # Read Input
         command read -p "Endpoint: " ept
 
         # Error Check Input
