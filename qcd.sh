@@ -288,7 +288,7 @@ function _qcd_comp() {
     if [[ ! -z $RES_DIR ]]
     then
       # Get Subdirectories
-      SUB_DIRS=$(command ls -F $RES_DIR | command egrep -s -x ".*/")
+      SUB_DIRS=$(command ls -F $RES_DIR 2> /dev/null | command egrep -s -x ".*/")
       SUB_DIRS=${SUB_DIRS// /:}
       SUB_DIRS=${SUB_DIRS////}
 
