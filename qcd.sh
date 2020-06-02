@@ -2,6 +2,10 @@
 
 #Developed by Nalin Ahuja, nalinahuja22
 
+#todo, list option
+#todo, default frequency list override
+#todo, multiple subdir and link match list option
+
 TRUE=1
 FALSE=0
 
