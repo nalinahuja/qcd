@@ -10,7 +10,6 @@ FALSE=0
 
 QUIT="q"
 HELP="-h"
-LIST="-l"
 CLEAN="-c"
 FORGET="-f"
 
