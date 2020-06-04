@@ -4,13 +4,13 @@
 
 #todo, list option
 #todo, default frequency list override
-#todo, multiple subdir and link match list option
 
 TRUE=1
 FALSE=0
 
 QUIT="q"
 HELP="-h"
+LIST="-l"
 CLEAN="-c"
 FORGET="-f"
 
@@ -171,35 +171,62 @@ function qcd() {
       # Determine Linked Subdirectory
       if [[ ! -z $sdir ]]
       then
+        # Store Filtered Paths
+        local filtered_paths=""
+
+        #Reset Result Count
+        resc=0
+
+        # Iterate Over Matched Paths
         for path in $paths
         do
-          # Generate Full Paths
+          # Generate Complete Paths
           path="${path}${sdir}"
 
           # Check Path Existence
           if [[ -e $path ]]
           then
-            # Select Path
-            pmatch=$path
-            break
+            # Select Matched Path
+            if [[ -z $pmatch ]]
+            then
+              # Select Path
+              pmatch=$path
+            else
+              # Unselect Path
+              pmatch=""
+            fi
+
+            # Add Path To Filtered List
+            filtered_paths="${filtered_paths}$path "
+            resc=$((resc + 1))
           fi
         done
+
+        # Assign Filtered Paths
+        if [[ -z $pmatch ]]
+        then
+          paths=$filtered_paths
+        fi
       fi
 
       # List Matching Links
       if [[ -z $pmatch ]]
       then
-        # Prompt User
-        command echo -e "qcd: Multiple paths linked to ${b}$link${n}"
+        # Generate Prompt
+        command echo -e "qcd: Multiple paths linked to ${b}$indicated_dir${n}" > $QCD_TEMP
 
-        # Display Options
+        # Generate Path Options
         local cnt=1
         for path in $paths
         do
           path=$(format_dir $path)
-          command printf "(%d) %s\n" $cnt $path
+          command printf "(%d) %s\n" $cnt $path >> $QCD_TEMP
           cnt=$((cnt + 1))
         done
+
+        # Display Prompt
+        command cat $QCD_TEMP
+        command rm  $QCD_TEMP
 
         # Read Input
         command read -p "Endpoint: " ept
