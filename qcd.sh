@@ -215,14 +215,14 @@ function qcd() {
       if [[ -z $pmatch ]]
       then
         # Generate Prompt
-        command echo -e "qcd: Multiple paths linked to ${b}$indicated_dir${n}" > $QCD_TEMP
+        command echo -e "qcd: Multiple paths linked to ${b}${indicated_dir%/}${n}" > $QCD_TEMP
 
         # Generate Path Options
         local cnt=1
         for path in $paths
         do
           path=$(format_dir $path)
-          command printf "(%d) %s\n" $cnt $path >> $QCD_TEMP
+          command printf "(%d) %s\n" $cnt ${path%/} >> $QCD_TEMP
           cnt=$((cnt + 1))
         done
 
