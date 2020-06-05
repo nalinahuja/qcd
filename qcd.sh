@@ -170,6 +170,9 @@ function qcd() {
         # Store Filtered Paths
         local filtered_paths=""
 
+        # Initialize Ignore Boolean
+        local ignore_paths=$FALSE
+
         #Reset Result Count
         resc=0
 
@@ -183,13 +186,16 @@ function qcd() {
           if [[ -e $path ]]
           then
             # Select Matched Path
-            if [[ -z $pmatch ]]
+            if [[ -z $pmatch && $ignore_paths -eq $FALSE ]]
             then
               # Select Path
               pmatch=$path
             else
               # Unselect Path
               pmatch=""
+
+              # Set Ignore Boolean
+              ignore_paths=$TRUE
             fi
 
             # Add Path To Filtered List
