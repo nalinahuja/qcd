@@ -155,7 +155,7 @@ function qcd() {
     fi
 
     # Check For File Link(s) In Store File
-    local resv=$(command egrep -s -x "$link.*" $QCD_STORE 2> /dev/null)
+    local resv=$(command egrep -s -x "$link.*:.*" $QCD_STORE 2> /dev/null)
     local resc=$(command echo -e "$resv" | command wc -l)
 
     # Check Result Count
