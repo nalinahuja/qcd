@@ -225,7 +225,6 @@ function qcd() {
 
         # Display Prompt
         command cat $QCD_TEMP
-        command rm  $QCD_TEMP
 
         # Read Input
         command read -p "Endpoint: " ept
