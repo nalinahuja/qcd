@@ -263,9 +263,10 @@ function qcd() {
       command echo -e "qcd: Cannot link keyword to directory"
     elif [[ ! -e $resv ]]
     then
-      # Print Separator
+      # Check Result Count
       if [[ $resc -gt 1 ]]
       then
+        # Print Separator
         echo
       fi
 
