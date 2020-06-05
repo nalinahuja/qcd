@@ -2,9 +2,6 @@
 
 #Developed by Nalin Ahuja, nalinahuja22
 
-#todo, default frequency list override
-#todo, list option for frequency select override
-
 TRUE=1
 FALSE=0
 
