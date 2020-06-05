@@ -158,7 +158,7 @@ function qcd() {
     # Check Result Count
     if [[ $resc -gt 1 ]]
     then
-      # Store Paths In Order Of Absolute Path
+      # Store Matching Absolute Paths
       local paths=$(command echo -e "$resv" | command cut -d ':' -f2)
 
       # Store Path Match
@@ -204,7 +204,7 @@ function qcd() {
           fi
         done
 
-        # Assign Filtered Paths
+        # Assign Filtered Absolute Paths
         if [[ -z $pmatch ]]
         then
           paths=$filtered_paths
