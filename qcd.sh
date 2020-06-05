@@ -191,11 +191,11 @@ function qcd() {
               # Select Path
               pmatch=$path
             else
-              # Unselect Path
-              pmatch=""
-
               # Set Ignore Boolean
               ignore_paths=$TRUE
+
+              # Unselect Path
+              pmatch=""
             fi
 
             # Add Path To Filtered List
