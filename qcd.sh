@@ -108,7 +108,7 @@ function qcd() {
     return
   elif [[ "$1" = "$REMEMBER" ]]
   then
-    # Add Current Directory
+    # Add Current  Directory
     add_directory
 
     # Terminate Program
