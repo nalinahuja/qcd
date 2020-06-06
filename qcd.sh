@@ -9,6 +9,7 @@ QUIT="q"
 HELP="-h"
 CLEAN="-c"
 FORGET="-f"
+REMEMBER="-r"
 
 QCD_STORE=~/.qcd/store
 QCD_TEMP=~/.qcd/temp
@@ -102,6 +103,13 @@ function qcd() {
         remove_directory "$path"
       fi
     done
+
+    # Terminate Program
+    return
+  elif [[ "$1" = "$REMEMBER" ]]
+  then
+    # Add Current Directory
+    add_directory
 
     # Terminate Program
     return
