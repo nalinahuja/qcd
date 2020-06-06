@@ -32,5 +32,6 @@ Options:
   qcd -h                    Show This Help
   qcd -c                    Clean Store File
   qcd -f                    Forget Current Dir
+  qcd -r                    Remember Current Dir
   qcd [link] -f             Forget Symbolic Link
 ```
