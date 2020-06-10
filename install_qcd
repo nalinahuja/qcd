@@ -61,7 +61,7 @@ then
   # Determine Appropriate Message
   if [[ $upgrade -eq $TRUE ]]
   then
-    echo -e "→ Upgraded QCD to $version"
+    echo -e "→ Upgraded QCD To $version"
   else
     echo -e "→ Installed QCD $version In ~/.qcd"
   fi
