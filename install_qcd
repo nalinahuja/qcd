@@ -58,7 +58,7 @@ then
   # Update Bash Environment
   source ~/.qcd/qcd.sh
 
-  # Finish QCD Installation
+  # Determine Appropriate Message
   if [[ $upgrade -eq $TRUE ]]
   then
     echo -e "→ Upgraded QCD to $version"
@@ -66,6 +66,7 @@ then
     echo -e "→ Installed QCD $version In ~/.qcd"
   fi
 
+  # Finish QCD Installation
   echo -e "\nPlease Restart Your Terminal"
 elif [ $confirm == n ] || [ $confirm == N ]
 then
