@@ -161,7 +161,7 @@ function qcd() {
 
     # Check For File Link(s) In Store File
     local resv=$(command egrep -s -x "$link.*:.*" $QCD_STORE 2> /dev/null)
-    local resc=0
+    local resc=$(command echo -e "$resv" | command wc -l)
 
     # Check Result Count
     if [[ $resc -gt 1 ]]
@@ -175,11 +175,14 @@ function qcd() {
       # Store Filtered Paths
       local filtered_paths=""
 
+      # Store Current Directory
+      local dir=$(command pwd)
+
       # Initialize Ignore Boolean
       local ignore_paths=$FALSE
 
-      # Store Current Directory
-      local dir=$(command pwd)
+      # Reset Result Count
+      resc=0
 
       # Iterate Over Matched Paths
       for path in $paths
@@ -188,7 +191,7 @@ function qcd() {
         path="${path}${sdir}"
 
         # Check Path Existence
-        if [[ -e $path && ! "${dir%/}" = "${path%/}" ]]
+        if [[ -e $path && ! "${path%/}" = "${dir%/}" ]]
         then
           # Select Matched Path
           if [[ -z $pmatch && $ignore_paths -eq $FALSE ]]
@@ -251,11 +254,11 @@ function qcd() {
         # Set Manually Selected Endpoint
         resv=$(command echo -e $paths | command cut -d ' ' -f$ept)
       else
-        # Set Automatically Selected Endpoint
+        # Set Resolved Endpoint
         resv=$pmatch
       fi
     else
-      # Set To Minimum Selection
+      # Set Automatically Selected Endpoint
       resv=$(command echo -e $resv | command cut -d ':' -f2)
     fi
 
