@@ -2,14 +2,26 @@
 
 #Developed by Nalin Ahuja, nalinahuja22
 
+TRUE=1
+FALSE=0
+
 QCD_FOLD=~/.qcd
 QCD_HELP=./help
 QCD_PROG=./qcd.sh
 QCD_LICE=./LICENSE
 QCD_READ=./README.md
 
-read -p "Please Confirm Installation of QCD [y/n]: " confirm
+# End Defined Constants----------------------------------------------------------------------------------------------------------------------------------------------
 
+upgrade=$TRUE
+version=$(cat $QCD_HELP | head -n1 | awk '{print $4}')
+
+# End Global Variables-----------------------------------------------------------------------------------------------------------------------------------------------
+
+# Prompt User For Confirmation
+read -p "Please Confirm Installation of QCD $version [y/n]: " confirm
+
+# Process Input
 if [ $confirm == y ] || [ $confirm == Y ]
 then
   # Add Command To Bash Profile
@@ -17,16 +29,23 @@ then
   then
     if [[ -f ~/.bashrc ]]
     then
+      # Add To .bashrc
       echo -e "\n# qcd Function (qcd [PATH/LINK] [OPTIONS])\n\nsource ~/.qcd/qcd.sh\n"  >> ~/.bashrc
     elif [[ -f ~/.bash_profile ]]
     then
+      # Add To .bash_profile
       echo -e "\n# qcd Function (qcd [PATH/LINK] [OPTIONS])\n\nsource ~/.qcd/qcd.sh\n" >> ~/.bash_profile
     else
+      # Throw An Error And Exit
       echo -e "ERROR: Failed to Install Command To Terminal Profile. Installation Aborted!"
       exit 1
     fi
 
+    # Confirm Command Installation
     echo -e "→ Installed QCD Command To Terminal Config"
+
+    # Set Upgrade Indicator
+    upgrade=$TRUE
   fi
 
   # Install QCD Program Files
@@ -40,11 +59,19 @@ then
   source ~/.qcd/qcd.sh
 
   # Finish QCD Installation
-  echo -e "→ Installed QCD In ~/.qcd"
+  if [[ $upgrade -eq $TRUE ]]
+  then
+    echo -e "→ Upgraded QCD to $version"
+  else
+    echo -e "→ Installed QCD $version In ~/.qcd"
+  fi
+
   echo -e "\nPlease Restart Your Terminal"
 elif [ $confirm == n ] || [ $confirm == N ]
 then
+  # Abort Installation
   echo -e "\nQCD Installation Aborted!"
 else
+  # Abort Installation
   echo -e "\nERROR: Invalid Input, Installation Aborted!"
 fi
