@@ -43,7 +43,7 @@ function add_directory() {
   local ept=$(command basename "$dir")
 
   # Store If Directory Is Unique
-  if [[ ! "$dir" = "$HOME" && -z $(command egrep -s -x ".*:$dir/" $QCD_STORE) ]]
+  if [[ ! "${dir%/}" = "${HOME%/}" && -z $(command egrep -s -x ".*:$dir/" $QCD_STORE) ]]
   then
     # Append Directory Data To QCD Store
     command printf "$ept:$dir/\n" >> $QCD_STORE
