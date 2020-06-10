@@ -172,51 +172,50 @@ function qcd() {
       # Store Path Match
       local pmatch=""
 
-      # Determine Linked Subdirectory
-      if [[ ! -z $sdir ]]
-      then
-        # Store Filtered Paths
-        local filtered_paths=""
+      # Store Filtered Paths
+      local filtered_paths=""
 
-        # Initialize Ignore Boolean
-        local ignore_paths=$FALSE
+      # Initialize Ignore Boolean
+      local ignore_paths=$FALSE
 
-        #Reset Result Count
-        resc=0
+      # Store Current Directory
+      local dir=$(command pwd)
 
-        # Iterate Over Matched Paths
-        for path in $paths
-        do
-          # Generate Complete Paths
-          path="${path}${sdir}"
+      #Reset Result Count
+      resc=0
 
-          # Check Path Existence
-          if [[ -e $path ]]
-          then
-            # Select Matched Path
-            if [[ -z $pmatch && $ignore_paths -eq $FALSE ]]
-            then
-              # Select Path
-              pmatch=$path
-            else
-              # Set Ignore Boolean
-              ignore_paths=$TRUE
+      # Iterate Over Matched Paths
+      for path in $paths
+      do
+        # Generate Complete Paths
+        path="${path}${sdir}"
 
-              # Unselect Path
-              pmatch=""
-            fi
-
-            # Add Path To Filtered List
-            filtered_paths="${filtered_paths}$path "
-            resc=$((resc + 1))
-          fi
-        done
-
-        # Assign Filtered Absolute Paths
-        if [[ -z $pmatch ]]
+        # Check Path Existence
+        if [[ -e $path && ! "${dir%/}" = "${path%/}" ]]
         then
-          paths=$filtered_paths
+          # Select Matched Path
+          if [[ -z $pmatch && $ignore_paths -eq $FALSE ]]
+          then
+            # Select Path
+            pmatch=$path
+          else
+            # Set Ignore Boolean
+            ignore_paths=$TRUE
+
+            # Unselect Path
+            pmatch=""
+          fi
+
+          # Add Path To Filtered List
+          filtered_paths="${filtered_paths}$path "
+          resc=$((resc + 1))
         fi
+      done
+
+      # Assign Filtered Absolute Paths
+      if [[ -z $pmatch ]]
+      then
+        paths=$filtered_paths
       fi
 
       # List Matching Links
