@@ -57,7 +57,7 @@ function remove_directory() {
   # Remove Directory From Store
   command egrep -s -v -x ".*:${@}" $QCD_STORE > $QCD_TEMP
 
-  # Update File If Successful
+  # Update Store File If Successful
   update_store $?
 }
 
@@ -65,7 +65,7 @@ function remove_symbolic_link() {
   # Remove Link From Store
   command egrep -s -v -x "${@////}:.*" $QCD_STORE > $QCD_TEMP
 
-  # Update File If Successful
+  # Update Store File If Successful
   update_store $?
 }
 
@@ -82,7 +82,7 @@ function qcd() {
   if [[ "$1" = "$HELP" ]]
   then
     # Print Help
-    cat $QCD_HELP
+    command cat $QCD_HELP
 
     # Terminate Program
     return
@@ -161,7 +161,7 @@ function qcd() {
 
     # Check For File Link(s) In Store File
     local resv=$(command egrep -s -x "$link.*:.*" $QCD_STORE 2> /dev/null)
-    local resc=$(command echo -e "$resv" | command wc -l)
+    local resc=0
 
     # Check Result Count
     if [[ $resc -gt 1 ]]
@@ -181,13 +181,10 @@ function qcd() {
       # Store Current Directory
       local dir=$(command pwd)
 
-      #Reset Result Count
-      resc=0
-
       # Iterate Over Matched Paths
       for path in $paths
       do
-        # Generate Complete Paths
+        # Form Complete Path
         path="${path}${sdir}"
 
         # Check Path Existence
@@ -212,15 +209,12 @@ function qcd() {
         fi
       done
 
-      # Assign Filtered Absolute Paths
-      if [[ -z $pmatch ]]
-      then
-        paths=$filtered_paths
-      fi
-
       # List Matching Links
       if [[ -z $pmatch ]]
       then
+        # Assign Filtered Absolute Paths
+        paths=$filtered_paths
+
         # Generate Prompt
         command echo -e "qcd: Multiple paths linked to ${b}${indicated_dir%/}${n}" > $QCD_TEMP
 
@@ -244,25 +238,24 @@ function qcd() {
         then
           # Terminate Program
           return
-        fi
-
-        # Error Check Input Bounds
-        if [[ $ept -lt 1 ]]
+        elif [[ $ept -lt 1 ]]
         then
+          # Set To Minimum Selection
           ept=1
         elif [[ $ept -gt $resc ]]
         then
+          # Set To Maximum Selection
           ept=$resc
         fi
 
-        # Set Endpoint
+        # Set Manually Selected Endpoint
         resv=$(command echo -e $paths | command cut -d ' ' -f$ept)
       else
-        # Set Endpoint
+        # Set Automatically Selected Endpoint
         resv=$pmatch
       fi
     else
-      # Set Endpoint
+      # Set To Minimum Selection
       resv=$(command echo -e $resv | command cut -d ':' -f2)
     fi
 
