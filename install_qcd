@@ -45,7 +45,7 @@ then
     echo -e "→ Installed QCD Command To Terminal Config"
 
     # Set Upgrade Indicator
-    upgrade=$TRUE
+    upgrade=$FALSE
   fi
 
   # Install QCD Program Files
