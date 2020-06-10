@@ -1,7 +1,7 @@
 ## QCD
 
 <p align="justify">
-QCD is a bash utility that allows the user to quickly change from one directory to another by specifying a valid path or symbolic link to the program as a commandline argument. QCD works completely locally by storing symbolic links in a file called <i>store</i> which is by located within the program folder <i>~/.qcd</i>. QCD learns which directories you visit by storing symbolic links and their respective absolute paths and storing them in a way such that if a keyword is passed to QCD, the program can resolve the absolute path from the keyword if it has been seen by QCD. The program is designed to deliver a snappy experience while still packing a lot of functionality.
+QCD is a bash utility that allows the user to quickly change from one directory to another by specifying a valid path or symbolic link to the program as a commandline argument. QCD utilizes common builtin commands to achieve this functionality and works completely locally by storing symbolic links in a file called <i>store</i> which is located within the program folder <i>~/.qcd</i>. QCD learns which directories you visit by storing symbolic links and their corresponding absolute paths in a way such that if a symbolic link is passed to QCD, the program can resolve the absolute path and navigate to that directory so long as QCD has visited it previously. The program is designed to deliver a snappy experience while still packing a lot of functionality.
 </p>
 
 ## Install QCD
