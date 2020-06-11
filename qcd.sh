@@ -303,19 +303,24 @@ function qcd() {
 function _qcd_comp() {
   # Store Current Commandline Argument
   local CURR_ARG=${COMP_WORDS[1]}
+
+  # Obtain Symbolic Link
+  local LINK_ARG=$(echo -e "$CURR_ARG" | cut -d "/" -f1)
+
+  # Obtain Truncated Path
   local SUBS_LEN=$(command echo -e "$CURR_ARG" | command awk -F "/" '{print length($0)-length($NF)}')
-  local LINK_ARG=${CURR_ARG:0:$SUBS_LEN}
+  local SUBS_ARG=${CURR_ARG:0:$SUBS_LEN}
 
   # Initialize Word List
   local WORD_LIST=()
 
   # Path Completion
-  if [[ "$LINK_ARG" == */* ]]
+  if [[ "$CURR_ARG" == */* ]]
   then
     # Determine Resolved Directory
     if [[ ! -e $CURR_ARG ]]
     then
-      RES_DIR="$(command cat $QCD_STORE | command awk -F ':' '{print $2}' | command egrep -s -x ".*/$LINK_ARG")"
+      RES_DIR="$(dirname $(command cat $QCD_STORE | command egrep -s -x "$LINK_ARG:.*" | command awk -F ':' '{print $2}'))/$SUBS_ARG"
     else
       RES_DIR="$CURR_ARG"
     fi
@@ -325,6 +330,8 @@ function _qcd_comp() {
     then
       # Get Subdirectories
       SUB_DIRS=$(command ls -F $RES_DIR 2> /dev/null | command egrep -s -x ".*/")
+
+      # Compress Symbols
       SUB_DIRS=${SUB_DIRS// /:}
       SUB_DIRS=${SUB_DIRS////}
 
@@ -334,13 +341,8 @@ function _qcd_comp() {
         # Expand Symbols
         SUB_DIR=${SUB_DIR//:/ }
 
-        # Append Completion Slash
-       if [[ ! -e $LINK_ARG ]]
-       then
-         WORD_LIST+=("$LINK_ARG$SUB_DIR/")
-       else
-         WORD_LIST+=("$LINK_ARG$SUB_DIR")
-       fi
+        # Add Path To Wordlist
+        WORD_LIST+=("$SUBS_ARG$SUB_DIR/")
       done
 
       # Set Completion List
