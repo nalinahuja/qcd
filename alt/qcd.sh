@@ -21,7 +21,7 @@ n=$(command tput sgr0)
 # End Defined Constants----------------------------------------------------------------------------------------------------------------------------------------------
 
 function format_dir() {
-  # Format Home Directory
+  # Format Directory With Symbols
   command echo -e ${1/$HOME/\~}
 }
 
@@ -42,13 +42,13 @@ function add_directory() {
   local dir=$(command pwd)
   local ept=$(command basename "$dir")
 
-  # Store Directory If Unique
+  # Store If Directory Is Unique
   if [[ ! "${dir%/}" = "${HOME%/}" && -z $(command egrep -s -x ".*:$dir/" $QCD_STORE) ]]
   then
-    # Append Directory Data To Store File
+    # Append Directory Data To QCD Store
     command printf "$ept:$dir/\n" >> $QCD_STORE
 
-    # Sort Store File
+    # Sort QCD Store
     command sort -o $QCD_STORE -n -t ':' -k2 $QCD_STORE
   fi
 }
@@ -57,7 +57,7 @@ function remove_directory() {
   # Remove Directory From Store
   command egrep -s -v -x ".*:${@}" $QCD_STORE > $QCD_TEMP
 
-  # Update Store If Successful
+  # Update Store File If Successful
   update_store $?
 }
 
@@ -65,24 +65,44 @@ function remove_symbolic_link() {
   # Remove Link From Store
   command egrep -s -v -x "${@////}:.*" $QCD_STORE > $QCD_TEMP
 
-  # Update Store If Successful
+  # Update Store File If Successful
   update_store $?
 }
 
 # End Helper Function-----------------------------------------------------------------------------------------------------------------------------------------------
 
 function qcd() {
-  # Create Store File
+  # Create QCD Store
   if [[ ! -f $QCD_STORE ]]
   then
     command touch $QCD_STORE
   fi
 
-  # Check For Commandline Flags
+  # Check For Flags
   if [[ "$1" = "$HELP" ]]
   then
     # Print Help
     command cat $QCD_HELP
+
+    # Terminate Program
+    return
+  elif [[ "$1" = "$CLEAN" ]]
+  then
+    # Get Stored Paths
+    local paths=$(command cat $QCD_STORE | command cut -d ':' -f2 | command tr ' ' ':')
+
+    # Iterate Over Paths
+    for path in $paths
+    do
+      # Expand Symbols
+      path=${path//:/ }
+
+      # Remove Path If Invalid
+      if [[ ! -e $path ]]
+      then
+        remove_directory "$path"
+      fi
+    done
 
     # Terminate Program
     return
@@ -109,32 +129,12 @@ function qcd() {
 
     # Terminate Program
     return
-  elif [[ "$1" = "$CLEAN" ]]
-  then
-    # Get Compressed Paths From Store File
-    local paths=$(command cat $QCD_STORE | command cut -d ':' -f2 | command tr ' ' ':')
-
-    # Iterate Over Paths
-    for path in $paths
-    do
-      # Expand Symbols
-      path=${path//:/ }
-
-      # Remove Path If Invalid
-      if [[ ! -e $path ]]
-      then
-        remove_directory "$path"
-      fi
-    done
-
-    # Terminate Program
-    return
   fi
 
-  # Store Commandline Arguments
+  # Store Arguments
   indicated_dir="$@"
 
-  # Set To Home Directory If No Arguments
+  # Set To Home Directory If No Path
   if [[ -z $indicated_dir ]]
   then
     indicated_dir=~
@@ -149,7 +149,7 @@ function qcd() {
     # Store Complete Path And Endpoint
     add_directory
   else
-    # Get Path Link and Relative Subdirectory
+    # Get Path Link and Subdirectory
     local link=$(command echo -e "$indicated_dir" | command cut -d '/' -f1)
     local sdir=""
 
@@ -159,7 +159,7 @@ function qcd() {
       sdir=${indicated_dir:${#link} + 1}
     fi
 
-    # Store Symbolic Linkages From Store File
+    # Check For File Link(s) In Store File
     local resv=$(command egrep -s -x "$link.*:.*" $QCD_STORE 2> /dev/null)
     local resc=$(command echo -e "$resv" | command wc -l)
 
@@ -169,14 +169,14 @@ function qcd() {
       # Store Matching Absolute Paths
       local paths=$(command echo -e "$resv" | command cut -d ':' -f2 | command tr ' ' ':')
 
-      # Store Current Directory
-      local dir=$(command pwd)
-
-      # Initialize Path Match
+      # Store Path Match
       local pmatch=""
 
-      # Initialize Filtered Paths
+      # Store Filtered Paths
       local fpaths=""
+
+      # Store Current Directory
+      local dir=$(command pwd)
 
       # Initialize Ignore Boolean
       local ignore_paths=$FALSE
@@ -184,7 +184,7 @@ function qcd() {
       # Reset Result Count
       resc=0
 
-      # Iterate Over Paths
+      # Iterate Over Matched Paths
       for path in $paths
       do
         # Expand Symbols
@@ -231,10 +231,8 @@ function qcd() {
         local cnt=1
         for path in $paths
         do
-          # Format Path
+          # Format Path And Expand Symbols
           path=$(format_dir $path)
-
-          # Expand Symbols
           path=${path//:/ }
 
           # Output Path As Option
@@ -263,14 +261,14 @@ function qcd() {
           ept=$resc
         fi
 
-        # Set Endpoint
+        # Set Manually Selected Endpoint
         resv=$(command echo -e $paths | command cut -d ' ' -f$ept)
       else
-        # Set Endpoint
+        # Set Resolved Endpoint
         resv=$pmatch
       fi
     else
-      # Set Endpoint
+      # Set Automatically Selected Endpoint
       resv=$(command echo -e $resv | command cut -d ':' -f2)
     fi
 
@@ -326,7 +324,7 @@ function _qcd_comp() {
   if [[ "$CURR_ARG" == */* ]]
   then
     # Obtain Symbolic Link
-    local LINK_ARG=$(command echo -e "$CURR_ARG" | command cut -d "/" -f1)
+    local LINK_ARG=$(echo -e "$CURR_ARG" | cut -d "/" -f1)
     local LINK_LEN=${#LINK_ARG}
 
     # Obtain Truncated Path
@@ -340,22 +338,20 @@ function _qcd_comp() {
     # Resolve Linked Directories
     if [[ ! -e $CURR_ARG ]]
     then
-      # Obtain Compressed Linked Paths From Store File
+      # Obtain Linked Paths From Store File
       LINK_PATHS=$(command cat $QCD_STORE | command egrep -s -x "$LINK_ARG:.*" | command awk -F ':' '{print $2}' | command tr ' ' ':')
 
-      # Iterate Over Paths
+      # Iterate Over Linked Paths
       for LINK_PATH in $LINK_PATHS
       do
-        # Expand Symbols
         LINK_PATH=${LINK_PATH//:/ }
 
         # Form Resolved Directory
         RES_DIR="$LINK_PATH$SUBS_ARG"
 
-        # Add Resolved Valid Directory
+        # Add Resolved Directory If Valid
         if [[ -e $RES_DIR ]]
         then
-          # Compress Symbols
           RES_DIR=${RES_DIR// /:}
           RES_DIRS="${RES_DIRS}$RES_DIR "
         fi
@@ -368,18 +364,8 @@ function _qcd_comp() {
     # Error Check Resolved Directory
     if [[ ! -z $RES_DIRS ]]
     then
-      # Initialize Subdirectories
-      SUB_DIRS=""
-
-      # Store Subdirectories Of Resolved Directories
-      for RES_DIR in $RES_DIRS
-      do
-        # Expand Symbols
-        RES_DIR=${RES_DIR//:/ }
-
-        # Add Subdirectory To List
-        SUB_DIRS="${SUB_DIRS}$(command ls -F "$RES_DIR" | command egrep -s -x ".*/")"
-      done
+      # Store Subdirectories
+      SUB_DIRS=$(command ls -F "${RES_DIR//:/ }" | command egrep -s -x ".*/")
 
       # Compress Symbols
       SUB_DIRS=${SUB_DIRS// /:}
