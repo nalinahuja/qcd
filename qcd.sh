@@ -378,7 +378,7 @@ function _qcd_comp() {
         RES_DIR=${RES_DIR//:/ }
 
         # Add Subdirectory To List
-        SUB_DIRS="${SUB_DIRS}$(command ls -F "$RES_DIR" | command egrep -s -x ".*/")"
+        SUB_DIRS="${SUB_DIRS}$(command ls -F "$RES_DIR" 2> /dev/null | command egrep -s -x ".*/")"
       done
 
       # Compress Symbols
