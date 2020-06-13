@@ -22,7 +22,7 @@ version=$(cat $QCD_HELP | head -n1 | awk '{print $4}')
 read -p "Please Confirm Installation of QCD ($version) [y/n]: " confirm
 
 # Process Input
-if [ $confirm == y ] || [ $confirm == Y ]
+if [ "$confirm" == y ] || [ "$confirm" == Y ]
 then
   # Add Command To Bash Profile
   if [[ ! -e $QCD_FOLD ]]
@@ -68,7 +68,7 @@ then
 
   # Finish QCD Installation
   echo -e "\nPlease Restart Your Terminal"
-elif [ $confirm == n ] || [ $confirm == N ]
+elif [ "$confirm" == n ] || [ "$confirm" == N ]
 then
   # Abort Installation
   echo -e "\nQCD Installation Aborted!"
