@@ -224,7 +224,7 @@ function qcd() {
         # Replace Path Results
         paths=$fpaths
 
-        # Error Check Filtered Paths
+        # Error Check Path Results
         if [[ -z $paths ]]
         then
           # Terminate Program
