@@ -30,19 +30,19 @@ then
     if [[ -f ~/.bashrc ]]
     then
       # Add To .bashrc
-      command echo -e "\n# qcd Function (qcd [PATH/LINK] [OPTIONS])\n\nsource ~/.qcd/qcd.sh\n"  >> ~/.bashrc
+      echo -e "\n# qcd Function (qcd [PATH/LINK] [OPTIONS])\n\nsource ~/.qcd/qcd.sh\n"  >> ~/.bashrc
     elif [[ -f ~/.bash_profile ]]
     then
       # Add To .bash_profile
-      command echo -e "\n# qcd Function (qcd [PATH/LINK] [OPTIONS])\n\nsource ~/.qcd/qcd.sh\n" >> ~/.bash_profile
+      echo -e "\n# qcd Function (qcd [PATH/LINK] [OPTIONS])\n\nsource ~/.qcd/qcd.sh\n" >> ~/.bash_profile
     else
       # Throw An Error And Exit
-      command echo -e "ERROR: Failed to Install Command To Terminal Profile. Installation Aborted!"
+      echo -e "ERROR: Failed to Install Command To Terminal Profile. Installation Aborted!"
       command exit 1
     fi
 
     # Confirm Command Installation
-    command echo -e "→ Installed QCD Command To Terminal Config"
+    echo -e "→ Installed QCD Command To Terminal Config"
 
     # Set Upgrade Indicator
     upgrade=$FALSE
@@ -61,20 +61,20 @@ then
   # Determine Appropriate Message
   if [[ $upgrade -eq $TRUE ]]
   then
-    command echo -e "→ Upgraded QCD To $version"
+    echo -e "→ Upgraded QCD To $version"
   else
-    command echo -e "→ Installed QCD $version In ~/.qcd"
+    echo -e "→ Installed QCD $version In ~/.qcd"
   fi
 
   # Finish QCD Installation
-  command echo -e "\nPlease Restart Your Terminal"
+  echo -e "\nPlease Restart Your Terminal"
 elif [ "$confirm" == n ] || [ "$confirm" == N ]
 then
   # Abort Installation
-  command echo -e "\nQCD Installation Aborted!"
+  echo -e "\nQCD Installation Aborted!"
 else
   # Abort Installation
-  command echo -e "\nERROR: Invalid Input, Installation Aborted!"
+  echo -e "\nERROR: Invalid Input, Installation Aborted!"
 fi
 
 # End QCD Installation------------------------------------------------------------------------------------------------------------------------------------------------
