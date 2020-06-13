@@ -224,6 +224,13 @@ function qcd() {
         # Replace Path Results
         paths=$fpaths
 
+        # Error Check Filtered Paths
+        if [[ -z $paths ]]
+        then
+          # Terminate Program
+          return
+        fi
+
         # Generate Prompt
         command echo -e "qcd: Multiple paths linked to ${b}${indicated_dir%/}${n}" > $QCD_TEMP
 
@@ -378,11 +385,10 @@ function _qcd_comp() {
         RES_DIR=${RES_DIR//:/ }
 
         # Add Subdirectory To List
-        SUB_DIRS="${SUB_DIRS}$(command ls -F "$RES_DIR" 2> /dev/null | command egrep -s -x ".*/")"
+        SUB_DIRS="${SUB_DIRS}$(command ls -F "$RES_DIR" 2> /dev/null | command egrep -s -x ".*/" | command tr ' ' ':') "
       done
 
       # Compress Symbols
-      SUB_DIRS=${SUB_DIRS// /:}
       SUB_DIRS=${SUB_DIRS////}
 
       # Generate Word List
@@ -391,8 +397,13 @@ function _qcd_comp() {
         # Expand Symbols
         SUB_DIR=${SUB_DIR//:/ }
 
-        # Add Path To Wordlist
-        WORD_LIST+=("$LINK_ARG/$SUBS_ARG$SUB_DIR/")
+        # Append Completion Slash
+        if [[ ! -e $LINK_ARG ]]
+        then
+          WORD_LIST+=("$LINK_ARG/$SUBS_ARG$SUB_DIR/")
+        else
+          WORD_LIST+=("$LINK_ARG/$SUBS_ARG$SUB_DIR")
+        fi
       done
 
       # Set IFS For COMREPLY
