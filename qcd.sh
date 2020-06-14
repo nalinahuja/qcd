@@ -231,6 +231,8 @@ function qcd() {
           return
         fi
 
+        command echo -e " "
+
         # Generate Prompt
         command echo -e "qcd: Multiple paths linked to ${b}${indicated_dir%/}${n}" > $QCD_TEMP
 
