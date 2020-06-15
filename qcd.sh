@@ -416,12 +416,12 @@ function _qcd_comp() {
       COMPREPLY=($(command compgen -W "$(command printf "%s\n" "${WORD_LIST[@]}")" "$CURR_ARG" 2> /dev/null))
     fi
   else
-    # Endpoint Completion
+    # Linked Directory Completion
     local QUICK_DIRS=$(command cat $QCD_STORE | command awk -F ':' '{printf $1 "/\n"}' | command tr ' ' ':')
 
-    # Resolve Current Directory Name
+    # Store Current Directory Fields
     local CURR_DIR="$(command basename $(command pwd))/"
-    local REM=$FALSE
+    local CURR_REM=$FALSE
 
     # Add Linked Directories
     for QUICK_DIR in $QUICK_DIRS
@@ -433,9 +433,9 @@ function _qcd_comp() {
       if [[ ! -e $QUICK_DIR ]]
       then
         # Exlude Current Directory
-        if [[ $REM -eq $FALSE && "$QUICK_DIR" = "$CURR_DIR" ]]
+        if [[ $CURR_REM -eq $FALSE && "$QUICK_DIR" = "$CURR_DIR" ]]
         then
-          REM=$TRUE
+          CURR_REM=$TRUE
           continue
         fi
 
