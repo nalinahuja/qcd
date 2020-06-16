@@ -302,7 +302,7 @@ function qcd() {
       fi
 
       # Prompt User Of Error
-      command echo -e "qcd: $(format_dir $resv): Directory does not exist"
+      command echo -e "qcd: $(format_dir "${resv%/}"): Directory does not exist"
 
       # Remove Invalid Path From QCD Store
       remove_directory "$resv"
