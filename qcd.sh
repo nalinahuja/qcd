@@ -298,7 +298,7 @@ function qcd() {
       if [[ $resc -gt 1 ]]
       then
         # Print Separator
-        echo
+        command echo
       fi
 
       # Prompt User Of Error
