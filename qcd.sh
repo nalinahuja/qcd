@@ -43,7 +43,7 @@ QCD_UPDATE=~/.qcd/update.zip
 QCD_INSTALL=~/.qcd/install_qcd
 
 # Release Link
-QCD_RELEASE="https://github.com/nalinahuja22/qcd/releases/latest"
+QCD_RELEASES="https://github.com/nalinahuja22/qcd/releases/latest"
 
 # End Defined Constants----------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -132,7 +132,7 @@ function qcd() {
       command echo -en "→ Downloading updates...\r"
 
       # Get Release Link
-      rlink=$(command curl -s -L $QCD_RELEASE | command egrep -s -o "\".*zip\"")
+      rlink=$(command curl -s -L $QCD_RELEASES | command egrep -s -o "\".*zip\"")
 
       # Download Release Program Files
       command curl -s -L "https://github.com${rlink//\"/}" > $QCD_UPDATE
