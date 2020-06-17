@@ -19,7 +19,6 @@ n=$(command tput sgr0)
 # Actions
 QUIT="q"
 YES="y"
-NO="n"
 
 # Option Flags
 CLEAN="-c"
@@ -141,7 +140,7 @@ function qcd() {
       if [[ ! -f $QCD_UPDATE ]]
       then
         # Display Prompt
-        command echo -e "→ Update failed           "
+        command echo -e "→ Failed to download update"
 
         # Terminate Program
         return $ERR
