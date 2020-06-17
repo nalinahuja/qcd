@@ -1,15 +1,18 @@
 [1mQCD Utility - v1.9(B[m
 
 [1mUsage:(B[m
-  qcd                       Change To Home Dir
-  qcd [path]                Change To Valid Path
-  qcd [link]/[subdir]/...   Change To Linked Path
+  qcd                       Change to home directory
+  qcd [path]                Change to valid directory
+  qcd [link]/[subdir]/...   Change to linked directory
 
 [1mOptions:(B[m
-  qcd -h                    Show This Help
-  qcd -c                    Clean Store File
-  qcd -f                    Forget Current Dir
-  qcd -r                    Remember Current Dir
-  qcd [link] -f             Forget Symbolic Link
+  qcd -h                    Show this help
+  qcd -v                    Show current version
+  qcd -u                    Update to latest version
+
+  qcd -c                    Clean store file
+  qcd -r                    Remember present directory
+  qcd -f                    Forget only present directory
+  qcd [link] -f             Forget all matching symbolic links
 
 Developed by Nalin Ahuja, nalinahuja22

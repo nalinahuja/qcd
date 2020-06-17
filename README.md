@@ -11,7 +11,7 @@ Please navigate to the <a href="https://github.com/nalinahuja22/qcd/releases">re
 </p>
 
 <p align="justify">
-Then, navigate to the location where the QCD repository contents have been downloaded to on your machine and run the <a href="https://github.com/nalinahuja22/qcd/blob/master/install_qcd.sh">install_qcd</a> script. This executable will install QCD to your home directory as a hidden folder <i>~/.qcd</i> which contains the QCD shell program and add the QCD command to your terminal configuration. When the install script finishes, please restart your terminal and source your terminal profile to fully configure the installation.<br><br>To update QCD to a newer release, simply follow the same installation process. Don't worry, your store file will not be modified during the update.
+Then, navigate to the location where the QCD repository contents have been downloaded to on your machine and run the <a href="https://github.com/nalinahuja22/qcd/blob/master/install_qcd.sh">install_qcd</a> script. This executable will install QCD to your home directory as a hidden folder <i>~/.qcd</i> which contains the QCD shell program and add the QCD command to your terminal configuration. When the install script finishes, please restart your terminal and source your terminal profile to fully configure the installation.<br><br>To update QCD to a newer release, simply follow the same installation process or use the update flag as described in the usage section. Don't worry, your store file will not be modified during the update.
 </p>
 
 ## Usage
@@ -22,14 +22,17 @@ Just like the builtin command <i>cd</i>, simply indicate a valid path or keyword
 
 ```
 Usage:
-  qcd                       Change To Home Dir
-  qcd [path]                Change To Valid Path
-  qcd [link]/[subdir]/...   Change To Linked Path
+  qcd                       Change to home directory
+  qcd [path]                Change to valid directory
+  qcd [link]/[subdir]/...   Change to linked directory
 
 Options:
-  qcd -h                    Show This Help
-  qcd -c                    Clean Store File
-  qcd -f                    Forget Current Dir
-  qcd -r                    Remember Current Dir
-  qcd [link] -f             Forget Symbolic Link
+  qcd -h                    Show this help
+  qcd -v                    Show current version
+  qcd -u                    Update to latest version
+
+  qcd -c                    Clean store file
+  qcd -r                    Remember present directory
+  qcd -f                    Forget only present directory
+  qcd [link] -f             Forget all matching symbolic links
 ```
