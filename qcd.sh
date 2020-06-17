@@ -59,7 +59,7 @@ function update_store() {
     command mv $QCD_TEMP $QCD_STORE
   else
     # Remove Temp File
-    command rm $QCD_TEMP
+    command rm $QCD_TEMP 2> /dev/null
   fi
 }
 
@@ -153,11 +153,11 @@ function qcd() {
       command unzip -o -j $QCD_UPDATE -d $QCD_FOLD &> /dev/null
 
       # Cleanup Installation
-      command rm $QCD_UPDATE
-      command rm $QCD_INSTALL
+      command rm $QCD_UPDATE 2> /dev/null
+      command rm $QCD_INSTALL 2> /dev/null
 
       # Update Bash Environment
-      command source $QCD_PROG
+      command source $QCD_PROG &> /dev/null
 
       # Display Prompt
       command echo -e "→ Update complete         "
