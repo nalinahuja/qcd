@@ -2,21 +2,48 @@
 
 #Developed by Nalin Ahuja, nalinahuja22
 
+# End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Returns
+OK=0
+ERR=1
+
+# Booleans
 TRUE=1
 FALSE=0
 
+# Text Formatting
+b=$(command tput bold)
+n=$(command tput sgr0)
+
+# Actions
 QUIT="q"
-HELP="-h"
+YES="y"
+NO="n"
+
+# Option Flags
 CLEAN="-c"
 FORGET="-f"
 REMEMBER="-r"
 
-QCD_STORE=~/.qcd/store
-QCD_TEMP=~/.qcd/temp
-QCD_HELP=~/.qcd/help
+# Standalone Flags
+HELP="-h"
+UPDATE="-u"
+VERSION="-v"
 
-b=$(command tput bold)
-n=$(command tput sgr0)
+# Program Files
+QCD_FOLD=~/.qcd
+QCD_HELP=~/.qcd/help
+QCD_TEMP=~/.qcd/temp
+QCD_STORE=~/.qcd/store
+
+# Update Files
+QCD_PROG=~/.qcd/qcd.sh
+QCD_SETUP=~/.qcd/install_qcd
+QCD_UPDATE=~/.qcd/update.zip
+
+# Resource Link
+QCD_RELEASE="https://github.com/nalinahuja22/qcd/releases/latest"
 
 # End Defined Constants----------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -78,37 +105,85 @@ function qcd() {
     command touch $QCD_STORE
   fi
 
-  # Check For Commandline Flags
+  # Check For Standalone Flags
   if [[ "$1" = "$HELP" ]]
   then
     # Print Help
     command cat $QCD_HELP
 
     # Terminate Program
-    return
-  elif [[ "$1" = "$REMEMBER" ]]
+    return $OK
+  elif [[ "$1" = "$VERSION" ]]
+  then
+    # Print Version
+    command cat $QCD_HELP | command head -n1
+
+    # Terminate Program
+    return $OK
+  elif [[ "$1" = "$UPDATE" ]]
+  then
+    # Read User Input
+    command read -p "qcd: Confirm update [y/n]: " confirm
+
+    # Determine Action
+    if [[ "${confirm//Y/y}" == $YES ]]
+    then
+      # Display Prompt
+      command echo -en "→ Downloading updates...\r"
+
+      # Get Release Link
+      rlink=$(command curl -s -L $QCD_RELEASE | command egrep -s -o "\".*zip\"")
+
+      # Download Release Program Files
+      command curl -s -L "https://github.com${rlink//\"/}" > $QCD_UPDATE
+
+      # Display Prompt
+      command echo -en "→ Installing updates... \r"
+
+      # Extract And Install Release Program Files
+      command unzip -o -j $QCD_UPDATE -d $QCD_FOLD &> /dev/null
+
+      # Cleanup Installation
+      command rm $QCD_SETUP
+      command rm $QCD_UPDATE
+
+      # Update Bash Environment
+      command source $QCD_PROG
+
+      # Display Prompt
+      command echo -e "→ Installation complete   "
+    else
+      # Display Prompt
+      command echo -e "→ Update aborted"
+    fi
+
+    # Terminate Program
+    return $OK
+  fi
+
+  # Check For Option Flags
+  if [[ "$1" = "$REMEMBER" ]]
   then
     # Add Current Directory
     add_directory
 
     # Terminate Program
-    return
+    return $OK
   elif [[ "${@:$#}" = "$FORGET" ]]
   then
-    # Get Symbolic Link
-    local link="${@:1:1}"
-
     # Determine Removal Type
-    if [[ "$link" = "$FORGET" ]]
+    if [[ $# -eq 1 ]]
     then
-      local path=$(command pwd)
-      remove_directory "$path/"
-    else
-      remove_symbolic_link "$link"
+      # Remove Current Dir
+      remove_directory "$(command pwd)/"
+    elif [[ $# -eq 2 ]]
+    then
+      # Remove Symbolic Link
+      remove_symbolic_link "$1"
     fi
 
     # Terminate Program
-    return
+    return $OK
   elif [[ "$1" = "$CLEAN" ]]
   then
     # Get Compressed Paths From Store File
@@ -128,7 +203,7 @@ function qcd() {
     done
 
     # Terminate Program
-    return
+    return $OK
   fi
 
   # Store Commandline Arguments
@@ -148,6 +223,9 @@ function qcd() {
 
     # Store Complete Path And Endpoint
     add_directory
+
+    # Terminate Program
+    return $OK
   else
     # Get Path Link and Relative Subdirectory
     local link=$(command echo -e "$indicated_dir" | command cut -d '/' -f1)
@@ -228,7 +306,7 @@ function qcd() {
         if [[ -z $paths ]]
         then
           # Terminate Program
-          return
+          return $OK
         fi
 
         # Display Prompt
@@ -248,7 +326,7 @@ function qcd() {
           path=${path//:/ }
 
           # Output Path As Option
-          command printf "(%d) %s\n" $cnt "${path%/}" >> $QCD_TEMP
+          command printf "(%s) %s\n" "$cnt" "${path%/}" >> $QCD_TEMP
           cnt=$((cnt + 1))
         done
 
@@ -262,7 +340,7 @@ function qcd() {
         if [[ -z $ept || $ept = $QUIT || ! $ept =~ ^[0-9]+$ ]]
         then
           # Terminate Program
-          return
+          return $ERR
         elif [[ $ept -lt 1 ]]
         then
           # Set To Minimum Selection
@@ -292,6 +370,9 @@ function qcd() {
     then
       # Prompt User Of No Link
       command echo -e "qcd: Cannot link keyword to directory"
+
+      # Terminate Program
+      return $ERR
     elif [[ ! -e $resv ]]
     then
       # Check Result Count
@@ -306,6 +387,9 @@ function qcd() {
 
       # Remove Invalid Path From QCD Store
       remove_directory "$resv"
+
+      # Terminate Program
+      return $ERR
     else
       # Change Directory To Linked Path
       command cd "$resv"
@@ -319,6 +403,9 @@ function qcd() {
         # Store Complete Path And Endpoint
         add_directory
       fi
+
+      # Terminate Program
+      return $OK
     fi
   fi
 }

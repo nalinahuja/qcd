@@ -56,7 +56,7 @@ then
   command mv $QCD_READ $QCD_FOLD 2> /dev/null
 
   # Update Bash Environment
-  command source ~/.qcd/qcd.sh
+  command source $QCD_FOLD/qcd.sh
 
   # Determine Appropriate Message
   if [[ $upgrade -eq $TRUE ]]
