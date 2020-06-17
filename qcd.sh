@@ -137,6 +137,16 @@ function qcd() {
       # Download Release Program Files
       command curl -s -L "https://github.com${rlink//\"/}" > $QCD_UPDATE
 
+      # Error Check Download
+      if [[ ! -f $QCD_UPDATE ]]
+      then
+        # Display Prompt
+        command echo -e "→ Update failed           "
+
+        # Terminate Program
+        return $ERR
+      fi
+
       # Display Prompt
       command echo -en "→ Installing updates... \r"
 
@@ -151,7 +161,7 @@ function qcd() {
       command source $QCD_PROG
 
       # Display Prompt
-      command echo -e "→ Installation complete   "
+      command echo -e "→ Update complete         "
     else
       # Display Prompt
       command echo -e "→ Update aborted"
