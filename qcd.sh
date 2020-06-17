@@ -17,8 +17,8 @@ b=$(command tput bold)
 n=$(command tput sgr0)
 
 # Actions
-QUIT="q"
 YES="y"
+QUIT="q"
 
 # Option Flags
 CLEAN="-c"
@@ -128,7 +128,7 @@ function qcd() {
     if [[ "${confirm//Y/y}" == $YES ]]
     then
       # Display Prompt
-      command echo -en "→ Downloading updates...\r"
+      command echo -en "→ Downloading update...\r"
 
       # Get Release Link
       rlink=$(command curl -s -L $QCD_RELEASES | command egrep -s -o "\".*zip\"")
