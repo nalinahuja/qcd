@@ -39,8 +39,8 @@ QCD_STORE=~/.qcd/store
 
 # Update Files
 QCD_PROG=~/.qcd/qcd.sh
-QCD_SETUP=~/.qcd/install_qcd
 QCD_UPDATE=~/.qcd/update.zip
+QCD_INSTALL=~/.qcd/install_qcd
 
 # Release Link
 QCD_RELEASE="https://github.com/nalinahuja22/qcd/releases/latest"
@@ -144,8 +144,8 @@ function qcd() {
       command unzip -o -j $QCD_UPDATE -d $QCD_FOLD &> /dev/null
 
       # Cleanup Installation
-      command rm $QCD_SETUP
       command rm $QCD_UPDATE
+      command rm $QCD_INSTALL
 
       # Update Bash Environment
       command source $QCD_PROG
