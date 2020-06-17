@@ -42,7 +42,7 @@ QCD_PROG=~/.qcd/qcd.sh
 QCD_UPDATE=~/.qcd/update.zip
 QCD_INSTALL=~/.qcd/install_qcd
 
-# Release Link
+# Releases Link
 QCD_RELEASES="https://github.com/nalinahuja22/qcd/releases/latest"
 
 # End Defined Constants----------------------------------------------------------------------------------------------------------------------------------------------
