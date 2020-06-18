@@ -4,19 +4,19 @@
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
-# Returns
+# Return Values
 OK=0
 ERR=1
 
-# Booleans
+# Conditional Booleans
 TRUE=1
 FALSE=0
 
 # Text Formatting
-b=$(command tput bold)
-n=$(command tput sgr0)
+B=$(command tput bold)
+N=$(command tput sgr0)
 
-# Actions
+# Program Actions
 YES="y"
 QUIT="q"
 
@@ -32,22 +32,20 @@ VERSION="-v"
 
 # Program Files
 QCD_FOLD=~/.qcd
-QCD_HELP=~/.qcd/help
-QCD_TEMP=~/.qcd/temp
-QCD_STORE=~/.qcd/store
+QCD_HELP=$QCD_FOLD/help
+QCD_TEMP=$QCD_FOLD/temp
+QCD_STORE=$QCD_FOLD/store
 
 # Update Files
-QCD_PROG=~/.qcd/qcd.sh
-QCD_UPDATE=~/.qcd/update.zip
-QCD_INSTALL=~/.qcd/install_qcd
+QCD_UPDATE=$QCD_FOLD/update.zip
 
-# Releases Link
-QCD_RELEASES="https://github.com/nalinahuja22/qcd/releases/latest"
+# Release Link
+QCD_RELEASES="https://api.github.com/repos/nalinahuja22/qcd/releases/latest"
 
 # End Defined Constants----------------------------------------------------------------------------------------------------------------------------------------------
 
 function format_dir() {
-  # Format Home Directory
+  # Compress Home Directory
   command echo -e ${1/$HOME/\~}
 }
 
@@ -95,7 +93,7 @@ function remove_symbolic_link() {
   update_store $?
 }
 
-# End Helper Function-----------------------------------------------------------------------------------------------------------------------------------------------
+# End Helper Functions-----------------------------------------------------------------------------------------------------------------------------------------------
 
 function qcd() {
   # Create Store File
@@ -131,12 +129,12 @@ function qcd() {
       command echo -en "→ Downloading update...\r"
 
       # Get Release Link
-      rlink=$(command curl -s -L $QCD_RELEASES | command egrep -s -o "\".*zip\"")
+      release_url=$(command curl -s -L $QCD_RELEASES | command egrep -s -o "https.*zipball.*")
 
       # Download Release Program Files
-      command curl -s -L "https://github.com${rlink//\"/}" > $QCD_UPDATE
+      command curl -s -L "${release_url/\",/}" > $QCD_UPDATE
 
-      # Error Check Download
+      # Error Check Update
       if [[ ! -f $QCD_UPDATE ]]
       then
         # Display Prompt
@@ -154,10 +152,10 @@ function qcd() {
 
       # Cleanup Installation
       command rm $QCD_UPDATE 2> /dev/null
-      command rm $QCD_INSTALL 2> /dev/null
+      command rm $QCD_FOLD/install_qcd 2> /dev/null
 
       # Update Bash Environment
-      command source $QCD_PROG &> /dev/null
+      command source $QCD_FOLD/qcd.sh &> /dev/null
 
       # Display Prompt
       command echo -e "→ Update complete         "
@@ -183,10 +181,9 @@ function qcd() {
     # Determine Removal Type
     if [[ $# -eq 1 ]]
     then
-      # Remove Current Dir
+      # Remove Current Directory
       remove_directory "$(command pwd)/"
-    elif [[ $# -eq 2 ]]
-    then
+    else
       # Remove Symbolic Link
       remove_symbolic_link "$1"
     fi
@@ -204,7 +201,7 @@ function qcd() {
       # Expand Symbols
       path=${path//:/ }
 
-      # Remove Path If Invalid
+      # Remove Invalid Paths
       if [[ ! -e $path ]]
       then
         remove_directory "$path"
@@ -215,7 +212,7 @@ function qcd() {
     return $OK
   fi
 
-  # Store Commandline Arguments
+  # Store Command Line Arguments
   indicated_dir="$@"
 
   # Set To Home Directory If No Arguments
@@ -224,10 +221,10 @@ function qcd() {
     indicated_dir=~
   fi
 
-  # Determine If Path Is Linked
+  # Determine If Directory Is Linked
   if [[ -e $indicated_dir ]]
   then
-    # Change To Valid Path
+    # Change To Valid Directory
     command cd "$indicated_dir"
 
     # Store Complete Path And Endpoint
@@ -236,17 +233,17 @@ function qcd() {
     # Terminate Program
     return $OK
   else
-    # Get Path Link and Relative Subdirectory
+    # Get Directory Link and Relative Subdirectory
     local link=$(command echo -e "$indicated_dir" | command cut -d '/' -f1)
     local sdir=""
 
-    # Get Path Subdirectory If Non-Empty
+    # Get Subdirectory If Non-Empty
     if [[ "$indicated_dir" == */* ]]
     then
       sdir=${indicated_dir:${#link} + 1}
     fi
 
-    # Store Symbolic Linkages From Store File
+    # Get Symbolic Linkages From Store File
     local resv=$(command egrep -s -x "$link.*:.*" $QCD_STORE 2> /dev/null)
     local resc=$(command echo -e "$resv" | command wc -l)
 
@@ -274,16 +271,13 @@ function qcd() {
       # Iterate Over Paths
       for path in $paths
       do
-        # Expand Symbols
-        path=${path//:/ }
+        # Form Expanded Complete Path
+        path="${path//:/ }${sdir}"
 
-        # Form Complete Path
-        path="${path}${sdir}"
-
-        # Check Path Existence
+        # Check Path Validity
         if [[ -e $path && ! "${path%/}" = "${dir%/}" ]]
         then
-          # Select Matched Path
+          # Determine Path Match
           if [[ -z $pmatch && $ignore_paths -eq $FALSE ]]
           then
             # Select Path
@@ -296,11 +290,8 @@ function qcd() {
             pmatch=""
           fi
 
-          # Compress Symbols
-          path=${path// /:}
-
-          # Add Path To Filtered List
-          fpaths="${fpaths}$path "
+          # Add Compressed Path To Filtered List
+          fpaths="${fpaths}${path// /:} "
           resc=$((resc + 1))
         fi
       done
@@ -322,20 +313,20 @@ function qcd() {
         command echo -en "qcd: Generating option list...\r"
 
         # Generate Prompt
-        command echo -e "qcd: Multiple paths linked to ${b}${indicated_dir%/}${n}" > $QCD_TEMP
+        command echo -e "qcd: Multiple paths linked to ${B}${indicated_dir%/}${N}" > $QCD_TEMP
 
         # Generate Path Options
         local cnt=1
         for path in $paths
         do
           # Format Path
-          path=$(format_dir $path)
+          path=$(format_dir "$path")
 
           # Expand Symbols
           path=${path//:/ }
 
           # Output Path As Option
-          command printf "(%s) %s\n" "$cnt" "${path%/}" >> $QCD_TEMP
+          command printf "($cnt) ${path%/}\n" >> $QCD_TEMP
           cnt=$((cnt + 1))
         done
 
@@ -360,14 +351,14 @@ function qcd() {
           ept=$resc
         fi
 
-        # Set Endpoint
+        # Set Manually Selected Endpoint
         resv=$(command echo -e $paths | command cut -d ' ' -f$ept)
       else
-        # Set Endpoint
+        # Set Automatically Selected Endpoint
         resv=$pmatch
       fi
     else
-      # Set Endpoint
+      # Set Default Endpoint
       resv=$(command echo -e $resv | command cut -d ':' -f2)
     fi
 
@@ -394,22 +385,22 @@ function qcd() {
       # Prompt User Of Error
       command echo -e "qcd: $(format_dir "${resv%/}"): Directory does not exist"
 
-      # Remove Invalid Path From QCD Store
+      # Remove Current Directory
       remove_directory "$resv"
 
       # Terminate Program
       return $ERR
     else
-      # Change Directory To Linked Path
+      # Switch To Linked Path
       command cd "$resv"
 
       # Check If Subdirectory Exists
       if [[ ! -z $sdir && -e $sdir ]]
       then
-        # Change Directory To Subdirectory
+        # Switch To Subdirectory
         command cd "$sdir"
 
-        # Store Complete Path And Endpoint
+        # Add Current Directory
         add_directory
       fi
 
@@ -452,18 +443,13 @@ function _qcd_comp() {
       # Iterate Over Paths
       for LINK_PATH in $LINK_PATHS
       do
-        # Expand Symbols
-        LINK_PATH=${LINK_PATH//:/ }
-
-        # Form Resolved Directory
-        RES_DIR="$LINK_PATH$SUBS_ARG"
+        # Form Expanded Resolved Directory
+        RES_DIR="${LINK_PATH//:/ }$SUBS_ARG"
 
         # Add Resolved Valid Directory
         if [[ -e $RES_DIR ]]
         then
-          # Compress Symbols
-          RES_DIR=${RES_DIR// /:}
-          RES_DIRS="${RES_DIRS}$RES_DIR "
+          RES_DIRS="${RES_DIRS}${RES_DIR// /:}"
         fi
       done
     else
@@ -480,11 +466,8 @@ function _qcd_comp() {
       # Store Subdirectories Of Resolved Directories
       for RES_DIR in $RES_DIRS
       do
-        # Expand Symbols
-        RES_DIR=${RES_DIR//:/ }
-
         # Add Subdirectory To List
-        SUB_DIRS="${SUB_DIRS}$(command ls -F "$RES_DIR" 2> /dev/null | command egrep -s -x ".*/" | command tr ' ' ':') "
+        SUB_DIRS="${SUB_DIRS}$(command ls -F "${RES_DIR//:/ }" 2> /dev/null | command egrep -s -x ".*/" | command tr ' ' ':') "
       done
 
       # Compress Symbols
@@ -525,7 +508,7 @@ function _qcd_comp() {
       # Expand Symbols
       QUICK_DIR=${QUICK_DIR//:/ }
 
-      # Filter Duplicate Dirs
+      # Filter Duplicate Directories
       if [[ ! -e $QUICK_DIR ]]
       then
         # Exlude Current Directory
@@ -535,7 +518,7 @@ function _qcd_comp() {
           continue
         fi
 
-        # Add Dirs To Word List
+        # Add Directories To Word List
         WORD_LIST+=("$QUICK_DIR")
       fi
     done
@@ -550,13 +533,14 @@ function _qcd_comp() {
 
 # End QCD Completion Function----------------------------------------------------------------------------------------------------------------------------------------
 
-# Initialize Completion Function
-if [[ -e $QCD_STORE ]]
+# Initialize QCD
+if [[ -f $QCD_STORE ]]
 then
+  # Initialize Completion Function
   command complete -o nospace -o dirnames -A directory -F _qcd_comp -X ".*" qcd
-fi
 
-# Cleanup File
-qcd -c
+  # Cleanup Store File
+  qcd -c
+fi
 
 # End QCD Initialization---------------------------------------------------------------------------------------------------------------------------------------------
