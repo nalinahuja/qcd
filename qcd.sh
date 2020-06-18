@@ -129,13 +129,14 @@ function qcd() {
       # Verify Dependencies
       command curl &> /dev/null
 
+      # Check Return Value
       if [[ $? -eq $NFD ]]
       then
         # Display Prompt
-        command echo -e "\r→ Curl dependency not installed"
+        command echo -e "→ Curl dependency not installed"
 
         # Terminate Program
-        return $ERR
+        return $NFD
       fi
 
       # Display Prompt
