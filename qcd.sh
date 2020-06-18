@@ -126,7 +126,7 @@ function qcd() {
     # Determine Action
     if [[ "${confirm//Y/y}" == $YES ]]
     then
-      # Verify Dependencies
+      # Verify Dependency
       command curl &> /dev/null
 
       # Check Return Value
