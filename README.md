@@ -1,7 +1,7 @@
 ## QCD
 
 <p align="justify">
-QCD is a bash utility that allows the user to quickly change from one directory to another by specifying a valid path or symbolic link to the program as a commandline argument. QCD utilizes common builtin commands to achieve this functionality and works completely locally by storing symbolic links in a file called <i>store</i> which is located within the program folder <i>~/.qcd</i>. QCD learns which directories you visit by storing symbolic links and their corresponding absolute paths in a way such that if a symbolic link is passed to QCD, the program can resolve the absolute path and navigate to that directory so long as QCD has visited it previously. The program is designed to deliver a snappy experience while still packing a lot of functionality.
+QCD is a bash utility that allows the user to quickly change from one directory to another by specifying a valid path or symbolic link to the program as a command line argument. QCD utilizes common builtin commands to achieve this functionality and works completely locally by storing symbolic links in a file called <i>store</i> which is located within the program folder <i>~/.qcd</i>. QCD learns which directories you visit by storing symbolic links and their corresponding absolute paths in a way such that if a symbolic link is passed to QCD, the program can resolve the absolute path and navigate to that directory so long as QCD has visited it previously. The program is designed to deliver a snappy experience while still packing a lot of functionality.
 </p>
 
 ## Install QCD
@@ -11,7 +11,13 @@ Please navigate to the <a href="https://github.com/nalinahuja22/qcd/releases">re
 </p>
 
 <p align="justify">
-Then, navigate to the location where the QCD repository contents have been downloaded to on your machine and run the <a href="https://github.com/nalinahuja22/qcd/blob/master/install_qcd.sh">install_qcd</a> script. This executable will install QCD to your home directory as a hidden folder <i>~/.qcd</i> which contains the QCD shell program and add the QCD command to your terminal configuration. When the install script finishes, please restart your terminal and source your terminal profile to fully configure the installation.<br><br>To update QCD to a newer release, simply follow the same installation process or use the update flag as described in the usage section. Don't worry, your store file will not be modified during the update.
+Then, navigate to the location where the QCD repository contents have been downloaded to on your machine and run the <a href="https://github.com/nalinahuja22/qcd/blob/master/install_qcd.sh">install_qcd</a> script. This executable will install QCD to your home directory as a hidden folder <i>~/.qcd</i> which contains the QCD shell program and add the QCD command to your terminal configuration. When the install script finishes, please restart your terminal and source your terminal profile to fully configure the installation.<br><br>To update QCD to a newer release, simply follow the same installation process or use the -u flag as described in the usage section. Don't worry, your store file will not be modified during the update.
+</p>
+
+## Dependencies
+
+<p align="justify">
+QCD does not require any dependencies to operate as a command line utility. The only dependency it requires is the <i>curl</i> command which is used internally by QCD to download updates when using the -u flag. Please make sure that this command is installed on your machine if you want to use the self update functionality within QCD.
 </p>
 
 ## Usage

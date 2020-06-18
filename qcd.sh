@@ -7,6 +7,7 @@
 # Return Values
 OK=0
 ERR=1
+NFD=127
 
 # Conditional Booleans
 TRUE=1
@@ -125,11 +126,33 @@ function qcd() {
     # Determine Action
     if [[ "${confirm//Y/y}" == $YES ]]
     then
+      # Verify Dependencies
+      command curl &> /dev/null
+
+      if [[ $? -eq $NFD ]]
+      then
+        # Display Prompt
+        command echo -e "\r→ Curl dependency not installed"
+
+        # Terminate Program
+        return $ERR
+      fi
+
       # Display Prompt
       command echo -en "→ Downloading update "
 
       # Get Release Link
       release_url=$(command curl -s -L $QCD_RELEASES | command egrep -s -o "https.*zipball.*")
+
+      # Error Check Release Link
+      if [[ $? -gt $OK || -z $release_url ]]
+      then
+        # Display Prompt
+        command echo -e "\r→ Failed to resolve update download link"
+
+        # Terminate Program
+        return $ERR
+      fi
 
       # Download Release Program Files
       command curl -s -L "${release_url/\",/}" > $QCD_UPDATE
