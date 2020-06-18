@@ -51,7 +51,7 @@ function format_dir() {
 
 function update_store() {
   # Check Exit Status
-  if [[ $1 -eq 0 ]]
+  if [[ $1 -eq $OK ]]
   then
     # Update Store File
     command mv $QCD_TEMP $QCD_STORE
@@ -135,7 +135,7 @@ function qcd() {
       command curl -s -L "${release_url/\",/}" > $QCD_UPDATE
 
       # Error Check Update
-      if [[ ! -f $QCD_UPDATE ]]
+      if [[ $? -gt $OK || ! -f $QCD_UPDATE ]]
       then
         # Display Prompt
         command echo -e "→ Failed to download update"
@@ -149,6 +149,16 @@ function qcd() {
 
       # Extract And Install Release Program Files
       command unzip -o -j $QCD_UPDATE -d $QCD_FOLD &> /dev/null
+
+      # Error Check Installation
+      if [[ $? -gt $OK ]]
+      then
+        # Display Prompt
+        command echo -e "→ Failed to install update"
+
+        # Terminate Program
+        return $ERR
+      fi
 
       # Cleanup Installation
       command rm $QCD_UPDATE 2> /dev/null
