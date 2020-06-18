@@ -119,7 +119,7 @@ function qcd() {
     return $OK
   elif [[ "$1" = "$UPDATE" ]]
   then
-    # Read User Input
+    # Prompt User For Confirmation
     command read -p "qcd: Confirm update [y/n]: " confirm
 
     # Determine Action

@@ -2,9 +2,16 @@
 
 #Developed by Nalin Ahuja, nalinahuja22
 
+# End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Conditional Booleans
 TRUE=1
 FALSE=0
 
+# Program Actions
+YES="y"
+
+# Install Files
 QCD_FOLD=~/.qcd
 QCD_HELP=./help
 QCD_PROG=./qcd.sh
@@ -13,16 +20,19 @@ QCD_READ=./README.md
 
 # End Defined Constants----------------------------------------------------------------------------------------------------------------------------------------------
 
+# Initialize Update Boolean
 upgrade=$TRUE
+
+# Get Installation Version
 version=$(command cat $QCD_HELP | command head -n1 | command awk '{print $4}')
 
 # End Global Variables-----------------------------------------------------------------------------------------------------------------------------------------------
 
 # Prompt User For Confirmation
-command read -p "Please Confirm Installation of QCD ($version) [y/n]: " confirm
+command read -p "Please confirm installation of QCD ($version) [y/n]: " confirm
 
-# Process Input
-if [ "$confirm" == y ] || [ "$confirm" == Y ]
+# Determine Action
+if [[ "${confirm//Y/y}" == $YES ]]
 then
   # Add Command To Bash Profile
   if [[ ! -e $QCD_FOLD ]]
@@ -36,13 +46,15 @@ then
       # Add To .bash_profile
       command echo -e "\n# qcd Function (qcd [PATH/LINK] [OPTIONS])\n\nsource ~/.qcd/qcd.sh\n" >> ~/.bash_profile
     else
-      # Throw An Error And Exit
+      # Display Error
       command echo -e "ERROR: Failed to Install Command To Terminal Profile. Installation Aborted!"
+
+      # Exit Installation
       command exit 1
     fi
 
     # Confirm Command Installation
-    command echo -e "→ Installed QCD Command To Terminal Config"
+    command echo -e "→ Installed QCD command to terminal configuration"
 
     # Set Upgrade Indicator
     upgrade=$FALSE
@@ -61,20 +73,16 @@ then
   # Determine Appropriate Message
   if [[ $upgrade -eq $TRUE ]]
   then
-    command echo -e "→ Upgraded QCD To $version"
+    command echo -e "→ Upgraded QCD to $version"
   else
-    command echo -e "→ Installed QCD $version In ~/.qcd"
+    command echo -e "→ Installed QCD $version in ~/.qcd"
   fi
 
-  # Finish QCD Installation
-  command echo -e "\nPlease Restart Your Terminal"
-elif [ "$confirm" == n ] || [ "$confirm" == N ]
-then
-  # Abort Installation
-  command echo -e "\nQCD Installation Aborted!"
+  # Finish Installation
+  command echo -e "\nPlease restart your terminal"
 else
   # Abort Installation
-  command echo -e "\nERROR: Invalid Input, Installation Aborted!"
+  command echo -e "\nQCD installation aborted"
 fi
 
 # End QCD Installation------------------------------------------------------------------------------------------------------------------------------------------------
