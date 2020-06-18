@@ -449,7 +449,7 @@ function _qcd_comp() {
         # Add Resolved Valid Directory
         if [[ -e $RES_DIR ]]
         then
-          RES_DIRS="${RES_DIRS}${RES_DIR// /:}"
+          RES_DIRS="${RES_DIRS}${RES_DIR// /:} "
         fi
       done
     else
