@@ -149,7 +149,7 @@ function qcd() {
       if [[ $? -gt $OK || -z $release_url ]]
       then
         # Display Prompt
-        command echo -e "\r→ Failed to resolve update download link"
+        command echo -e "\r→ Failed to resolve download link for update"
 
         # Terminate Program
         return $ERR
