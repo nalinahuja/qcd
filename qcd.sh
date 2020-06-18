@@ -126,7 +126,7 @@ function qcd() {
     if [[ "${confirm//Y/y}" == $YES ]]
     then
       # Display Prompt
-      command echo -en "→ Downloading update...\r"
+      command echo -en "→ Downloading update"
 
       # Get Release Link
       release_url=$(command curl -s -L $QCD_RELEASES | command egrep -s -o "https.*zipball.*")
@@ -138,14 +138,14 @@ function qcd() {
       if [[ $? -gt $OK || ! -f $QCD_UPDATE ]]
       then
         # Display Prompt
-        command echo -e "→ Failed to download update"
+        command echo -e "\r→ Failed to download update"
 
         # Terminate Program
         return $ERR
       fi
 
       # Display Prompt
-      command echo -en "→ Installing updates... \r"
+      command echo -en "\r→ Installing updates"
 
       # Extract And Install Release Program Files
       command unzip -o -j $QCD_UPDATE -d $QCD_FOLD &> /dev/null
@@ -154,7 +154,7 @@ function qcd() {
       if [[ $? -gt $OK ]]
       then
         # Display Prompt
-        command echo -e "→ Failed to install update"
+        command echo -e "\r→ Failed to install update"
 
         # Terminate Program
         return $ERR
@@ -168,7 +168,7 @@ function qcd() {
       command source $QCD_FOLD/qcd.sh &> /dev/null
 
       # Display Prompt
-      command echo -e "→ Update complete         "
+      command echo -e "\r→ Update complete      "
     else
       # Display Prompt
       command echo -e "→ Update aborted"
