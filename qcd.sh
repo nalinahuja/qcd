@@ -63,13 +63,15 @@ function update_store() {
 }
 
 function add_directory() {
-  # Store Directory Information
+  # Get Current Directory
   local dir=$(command pwd)
-  local ept=$(command basename "$dir")
 
   # Store Directory If Unique
   if [[ ! "${dir%/}" = "${HOME%/}" && -z $(command egrep -s -x ".*:$dir/" $QCD_STORE) ]]
   then
+    # Get Basename Of Current Directory
+    local ept=$(command basename "$dir")
+
     # Append Directory Data To Store File
     command printf "$ept:$dir/\n" >> $QCD_STORE
 
