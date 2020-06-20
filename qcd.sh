@@ -263,7 +263,7 @@ function qcd() {
     # Change To Valid Directory
     command cd "$indicated_dir"
 
-    # Store Complete Path And Endpoint
+    # Add Current Directory
     (add_directory &)
 
     # Terminate Program
