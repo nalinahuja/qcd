@@ -437,7 +437,7 @@ function qcd() {
         command cd "$sdir"
 
         # Add Current Directory
-        add_directory
+        add_directory &
       fi
 
       # Terminate Program
