@@ -264,7 +264,7 @@ function qcd() {
     command cd "$indicated_dir"
 
     # Store Complete Path And Endpoint
-    add_directory
+    (add_directory &)
 
     # Terminate Program
     return $OK
