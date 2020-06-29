@@ -31,7 +31,7 @@ Usage:
   qcd                       Change to home directory
   qcd [path]                Change to valid directory
   qcd [link]/[subdir]/...   Change to linked directory
-  qcd [num]..               Change to Nth parent directory
+  qcd [N]..                 Change to Nth parent directory
 
 Options:
   qcd -h                    Show this help
