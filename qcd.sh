@@ -259,22 +259,16 @@ function qcd() {
   then
     # Set To Home Directory If Empty Input
     indicated_dir=~
-  else
-    # Check For Back Directory Expansion
-    local expanded_dir=$(command echo -e "$indicated_dir" | command egrep -s -x "[0-9]+..")
+  elif [[ "$indicated_dir" =~ [0-9]+\.\. ]]
+  then
+    # Get Relative Back Directory Height
+    local back_height=${indicated_dir:0:$((${#indicated_dir} - 2))}
 
-    # Expand Symbols
-    if [[ ! -z $expanded_dir ]]
-    then
-      # Get Relative Back Directory Height
-      local back_height=${expanded_dir:0:$((${#expanded_dir} - 2))}
+    # Generate Expanded Relative Back Directory
+    local expanded_dir=$(command printf "%${back_height}s")
 
-      # Generate Expanded Relative Back Directory
-      local expanded_dir=$(command printf "%${back_height}s")
-
-      # Update Indicated Directory
-      indicated_dir="${expanded_dir// /$HWD}"
-    fi
+    # Update Indicated Directory
+    indicated_dir="${expanded_dir// /$HWD}"
   fi
 
   # Determine If Directory Is Linked
