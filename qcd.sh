@@ -31,7 +31,7 @@ HELP="-h"
 UPDATE="-u"
 VERSION="-v"
 
-# Higher Directory Value
+# Higher Directory Constant
 HWD="../"
 
 # Program Files
