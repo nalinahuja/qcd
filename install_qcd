@@ -47,7 +47,7 @@ then
       command echo -e "\n# qcd Function (qcd [PATH/LINK] [OPTIONS])\n\nsource ~/.qcd/qcd.sh\n" >> ~/.bash_profile
     else
       # Display Error
-      command echo -e "ERROR: Failed to Install Command To Terminal Profile. Installation Aborted!"
+      command echo -e "ERROR: Failed to install command to terminal profile. Installation aborted!"
 
       # Exit Installation
       command exit 1
