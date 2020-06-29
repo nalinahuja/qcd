@@ -257,7 +257,7 @@ function qcd() {
   # Format Indicated Directory
   if [[ -z $indicated_dir ]]
   then
-    # Set To Home Directory If No Arguments
+    # Set To Home Directory If Empty Input
     indicated_dir=~
   else
     # Check For Back Directory Expansion
