@@ -252,7 +252,7 @@ function qcd() {
   fi
 
   # Store Command Line Arguments
-  indicated_dir="$@"
+  local indicated_dir="$@"
 
   # Format Indicated Directory
   if [[ -z $indicated_dir ]]
@@ -261,16 +261,16 @@ function qcd() {
     indicated_dir=~
   else
     # Check For Back Directory Expansion
-    expanded_dir=$(command echo -e "$indicated_dir" | command egrep -s -x "[0-9]+..")
+    local expanded_dir=$(command echo -e "$indicated_dir" | command egrep -s -x "[0-9]+..")
 
     # Expand Symbols
     if [[ ! -z $expanded_dir ]]
     then
       # Get Relative Back Directory Height
-      back_height=${expanded_dir:0:$((${#expanded_dir} - 2))}
+      local back_height=${expanded_dir:0:$((${#expanded_dir} - 2))}
 
       # Generate Expanded Relative Back Directory
-      expanded_dir=$(command printf "%${back_height}s")
+      local expanded_dir=$(command printf "%${back_height}s")
 
       # Update Indicated Directory
       indicated_dir="${expanded_dir// /$HWD}"
