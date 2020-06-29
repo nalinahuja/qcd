@@ -31,6 +31,9 @@ HELP="-h"
 UPDATE="-u"
 VERSION="-v"
 
+# Higher Directory Value
+HWD="../"
+
 # Program Files
 QCD_FOLD=~/.qcd
 QCD_HELP=$QCD_FOLD/help
@@ -251,10 +254,27 @@ function qcd() {
   # Store Command Line Arguments
   indicated_dir="$@"
 
-  # Set To Home Directory If No Arguments
+  # Format Indicated Directory
   if [[ -z $indicated_dir ]]
   then
+    # Set To Home Directory If No Arguments
     indicated_dir=~
+  else
+    # Check For Back Directory Expansion
+    expanded_dir=$(command echo -e "$indicated_dir" | command egrep -s -x "[0-9]+..")
+
+    # Expand Symbols
+    if [[ ! -z $expanded_dir ]]
+    then
+      # Get Relative Back Directory Height
+      back_height=${expanded_dir:0:$((${#expanded_dir} - 2))}
+
+      # Generate Expanded Relative Back Directory
+      expanded_dir=$(command printf "%${back_height}s")
+
+      # Update Indicated Directory
+      indicated_dir="${expanded_dir// /$HWD}"
+    fi
   fi
 
   # Determine If Directory Is Linked
