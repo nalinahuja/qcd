@@ -265,10 +265,10 @@ function qcd() {
     local back_height=${indicated_dir:0:$((${#indicated_dir} - 2))}
 
     # Generate Expanded Relative Back Directory
-    local expanded_dir=$(command printf "%${back_height}s")
+    local back_dir=$(command printf "%${back_height}s")
 
     # Update Indicated Directory
-    indicated_dir="${expanded_dir// /$HWD}"
+    indicated_dir="${back_dir// /$HWD}"
   fi
 
   # Determine If Directory Is Linked
