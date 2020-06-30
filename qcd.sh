@@ -259,7 +259,7 @@ function qcd() {
   then
     # Set To Home Directory If Empty Input
     indicated_dir=~
-  elif [[ "$indicated_dir" =~ [0-9]+\.\. ]]
+  elif [[ "$indicated_dir" =~ ^[0-9]+\.\.$ ]]
   then
     # Get Relative Back Directory Height
     local back_height=${indicated_dir:0:$((${#indicated_dir} - 2))}
