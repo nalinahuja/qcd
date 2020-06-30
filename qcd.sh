@@ -321,7 +321,7 @@ function qcd() {
       # Iterate Over Paths
       for path in $paths
       do
-        # Form Expanded Complete Path
+        # Form Complete Uncompressed Path
         path="${path//:/ }${sdir}"
 
         # Check Path Validity
@@ -333,10 +333,8 @@ function qcd() {
             # Select Path
             pmatch=$path
           else
-            # Set Ignore Boolean
-            ignore_paths=$TRUE
-
             # Unselect Path
+            ignore_paths=$TRUE
             pmatch=""
           fi
 
@@ -402,14 +400,14 @@ function qcd() {
         fi
 
         # Set Manually Selected Endpoint
-        resv=$(command echo -e $paths | command cut -d ' ' -f$ept)
+        resv=$(command echo -e "$paths" | command cut -d ' ' -f$ept)
       else
         # Set Automatically Selected Endpoint
         resv=$pmatch
       fi
     else
       # Set Default Endpoint
-      resv=$(command echo -e $resv | command cut -d ':' -f2)
+      resv=$(command echo -e "$resv" | command cut -d ':' -f2)
     fi
 
     # Expand Symbols
