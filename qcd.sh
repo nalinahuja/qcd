@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+#TODO, relative directories in auto complete
+#TODO, documentation updates
+
 #Developed by Nalin Ahuja, nalinahuja22
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -7,6 +10,7 @@
 # Return Values
 OK=0
 ERR=1
+CONT=2
 NFD=127
 
 # Conditional Booleans
@@ -101,35 +105,29 @@ function remove_symbolic_link() {
 
 # End Helper Functions-----------------------------------------------------------------------------------------------------------------------------------------------
 
-function qcd() {
-  # Create Store File
-  if [[ ! -f $QCD_STORE ]]
-  then
-    command touch $QCD_STORE
-  fi
-
+function parse_standalone_flags() {
   # Check For Standalone Flags
-  if [[ "$1" = "$HELP" ]]
+  if [[ "${1/--help/$HELP}" = "$HELP" ]]
   then
     # Print Help
     command cat $QCD_HELP
 
     # Terminate Program
     return $OK
-  elif [[ "$1" = "$VERSION" ]]
+  elif [[ "${1/--version/$VERSION}" = "$VERSION" ]]
   then
     # Print Version
     command cat $QCD_HELP | command head -n1
 
     # Terminate Program
     return $OK
-  elif [[ "$1" = "$UPDATE" ]]
+  elif [[ "${1/--update/$UPDATE}" = "$UPDATE" ]]
   then
     # Prompt User For Confirmation
     command read -p "qcd: Confirm update [y/n]: " confirm
 
     # Determine Action
-    if [[ "${confirm//Y/y}" == $YES ]]
+    if [[ "${confirm//Y/$YES}" == $YES ]]
     then
       # Verify Dependency
       command curl &> /dev/null
@@ -151,7 +149,7 @@ function qcd() {
       release_url=$(command curl -s -L $QCD_RELEASES | command egrep -s -o "https.*zipball.*")
 
       # Error Check Release Link
-      if [[ $? -gt $OK || -z $release_url ]]
+      if [[ ! $? -eq $OK || -z $release_url ]]
       then
         # Display Prompt
         command echo -e "\r→ Failed to resolve download link for update"
@@ -164,7 +162,7 @@ function qcd() {
       command curl -s -L "${release_url/\",/}" > $QCD_UPDATE
 
       # Error Check Update
-      if [[ $? -gt $OK || ! -f $QCD_UPDATE ]]
+      if [[ ! $? -eq $OK || ! -f $QCD_UPDATE ]]
       then
         # Display Prompt
         command echo -e "\r→ Failed to download update"
@@ -176,11 +174,11 @@ function qcd() {
       # Display Prompt
       command echo -en "\r→ Installing updates "
 
-      # Extract And Install Release Program Files
+      # Extract And Install Program Files
       command unzip -o -j $QCD_UPDATE -d $QCD_FOLD &> /dev/null
 
       # Error Check Installation
-      if [[ $? -gt $OK ]]
+      if [[ ! $? -eq $OK ]]
       then
         # Display Prompt
         command echo -e "\r→ Failed to install update"
@@ -207,6 +205,11 @@ function qcd() {
     return $OK
   fi
 
+  # Continue Program
+  return $CONT
+}
+
+function parse_option_flags() {
   # Check For Option Flags
   if [[ "$1" = "$REMEMBER" ]]
   then
@@ -251,13 +254,46 @@ function qcd() {
     return $OK
   fi
 
+  # Continue Program
+  return $CONT
+}
+
+# End Argument Parser Functions--------------------------------------------------------------------------------------------------------------------------------------
+
+function qcd() {
+  # Create Store File
+  if [[ ! -f $QCD_STORE ]]
+  then
+    command touch $QCD_STORE
+  fi
+
+  # Parse Arguments For Standalone Flags
+  parse_standalone_flags $@
+
+  # Check Function Return
+  if [[ ! $? -eq $CONT ]]
+  then
+    # Terminate Program
+    return $?
+  fi
+
+  # Parse Arguments For Option Flags
+  parse_option_flags $@
+
+  # Check Function Return
+  if [[ ! $? -eq $CONT ]]
+  then
+    # Terminate Program
+    return $?
+  fi
+
   # Store Command Line Arguments
   local indicated_dir="$@"
 
   # Format Indicated Directory
   if [[ -z $indicated_dir ]]
   then
-    # Set To Home Directory If Empty Input
+    # Set To Home Directory On Empty Input
     indicated_dir=~
   elif [[ "$indicated_dir" =~ ^[0-9]+\.\.$ ]]
   then
@@ -267,7 +303,7 @@ function qcd() {
     # Generate Expanded Relative Back Directory
     local back_dir=$(command printf "%${back_height}s")
 
-    # Update Indicated Directory
+    # Set To Expanded Relative Back Directory
     indicated_dir="${back_dir// /$HWD}"
   fi
 
@@ -384,12 +420,15 @@ function qcd() {
         # Read User Input
         command read -p "Endpoint: " ept
 
-        # Error Check Input
-        if [[ -z $ept || $ept = $QUIT || ! $ept =~ ^[0-9]+$ ]]
+        # Error Check Input Format
+        if [[ -z $ept || ! $ept =~ ^[0-9]+$ ]]
         then
           # Terminate Program
           return $ERR
-        elif [[ $ept -lt 1 ]]
+        fi
+
+        # Error Check Input Range
+        if [[ $ept -lt 1 ]]
         then
           # Set To Minimum Selection
           ept=1
@@ -563,11 +602,9 @@ function _qcd_comp() {
         if [[ $CURR_REM -eq $FALSE && "$QUICK_DIR" = "$CURR_DIR" ]]
         then
           CURR_REM=$TRUE
-          continue
+        else
+          WORD_LIST+=("$QUICK_DIR")
         fi
-
-        # Add Directories To Word List
-        WORD_LIST+=("$QUICK_DIR")
       fi
     done
 
@@ -585,7 +622,7 @@ function _qcd_comp() {
 if [[ -f $QCD_STORE ]]
 then
   # Initialize Completion Function
-  command complete -o nospace -o filenames -A directory -F _qcd_comp -X ".*" qcd
+  command complete -o nospace -o filenames -F _qcd_comp qcd
 
   # Cleanup Store File
   qcd -c

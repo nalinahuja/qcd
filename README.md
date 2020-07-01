@@ -34,9 +34,9 @@ Usage:
   qcd [N]..                 Change to Nth parent directory
 
 Options:
-  qcd -h                    Show this help
-  qcd -v                    Show current version
-  qcd -u                    Update to latest version
+  qcd -h, --help            Show this help
+  qcd -v, --version         Show current version
+  qcd -u, --update          Update to latest version
 
   qcd -c                    Clean store file
   qcd -r                    Remember present directory
