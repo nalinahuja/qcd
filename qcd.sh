@@ -2,6 +2,7 @@
 
 #TODO, relative directories in auto complete
 #TODO, documentation updates
+#TODO, multi word link ignore in PWD
 
 #Developed by Nalin Ahuja, nalinahuja22
 
@@ -86,16 +87,28 @@ function add_directory() {
 }
 
 function remove_directory() {
+  # Format Input
+  format_dir="${@}"
+
   # Remove Directory From Store
-  command egrep -s -v -x ".*:${@}" $QCD_STORE > $QCD_TEMP
+  command egrep -s -v -x ".*:${format_dir}" $QCD_STORE > $QCD_TEMP
+
+  # Store Removal Status
+  rem_status=$?
 
   # Update Store If Successful
-  update_store $?
+  update_store $rem_status
 }
 
 function remove_symbolic_link() {
+  # Format Input
+  format_link="${@%/}"
+
   # Remove Link From Store
-  command egrep -s -v -x "${@////}:.*" $QCD_STORE > $QCD_TEMP
+  command egrep -s -v -x "${format_link}:.*" $QCD_STORE > $QCD_TEMP
+
+  # Store Removal Status
+  rem_status=$?
 
   # Update Store If Successful
   update_store $?
@@ -121,7 +134,7 @@ function parse_option_flags() {
       remove_directory "$(command pwd)/"
     else
       # Remove Symbolic Link
-      remove_symbolic_link "$1"
+      remove_symbolic_link "${@:0:$#}"
     fi
 
     # Terminate Program
@@ -265,6 +278,8 @@ function qcd() {
     command touch $QCD_STORE
   fi
 
+  # End Pre-Execution Validation-------------------------------------------------------------------------------------------------------------------------------------
+
   # Parse Arguments For Option Flags
   parse_option_flags $@
 
@@ -285,25 +300,32 @@ function qcd() {
     return $?
   fi
 
+  # End Argument Parsing---------------------------------------------------------------------------------------------------------------------------------------------
+
   # Store Command Line Arguments
   local indicated_dir="$@"
 
-  # Format Indicated Directory
+  # Check For Empty Input
   if [[ -z $indicated_dir ]]
   then
-    # Set To Home Directory On Empty Input
+    # Set To Home Directory
     indicated_dir=~
-  elif [[ $indicated_dir =~ ^[0-9]+\.\.$ ]]
+  fi
+
+  # Check For Compressed Back Directory
+  if [[ $indicated_dir =~ ^[0-9]+\.\.$ ]]
   then
-    # Get Relative Back Directory Height
+    # Get Back Directory Height
     local back_height=${indicated_dir:0:$((${#indicated_dir} - 2))}
 
-    # Generate Expanded Relative Back Directory
+    # Generate Expanded Back Directory
     local back_dir=$(command printf "%${back_height}s")
 
-    # Set To Expanded Relative Back Directory
+    # Set To Expanded Back Directory
     indicated_dir="${back_dir// /$HWD}"
   fi
+
+  # End Input Formatting And Validation------------------------------------------------------------------------------------------------------------------------------
 
   # Determine If Directory Is Linked
   if [[ -e "$indicated_dir" ]]
@@ -322,7 +344,7 @@ function qcd() {
     local sdir=""
 
     # Get Subdirectory If Non-Empty
-    if [[ "$indicated_dir" == */* ]]
+    if [[ $indicated_dir == */* ]]
     then
       sdir=${indicated_dir:${#link} + 1}
     fi
@@ -620,7 +642,7 @@ function _qcd_comp() {
 if [[ -f $QCD_STORE ]]
 then
   # Initialize Completion Function
-  command complete -o nospace -o filenames -F _qcd_comp qcd
+  command complete -o nospace -o filenames -A directory -F _qcd_comp -X ".*" qcd
 
   # Cleanup Store File
   qcd -c
