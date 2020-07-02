@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-#TODO, relative directories in auto complete
 #TODO, documentation updates
-#TODO, multi word link ignore in PWD
+#TODO, relative directories in auto complete
+#TODO, absolute path compression delimiter change
 
 #Developed by Nalin Ahuja, nalinahuja22
 
@@ -358,23 +358,23 @@ function qcd() {
     # Check Result Count
     if [[ $resc -gt 1 ]]
     then
-      # Store Matching Absolute Paths
-      local paths=$(command echo -e "$resv" | command cut -d ':' -f2 | command tr ' ' ':')
-
-      # Store Current Directory
-      local dir=$(command pwd)
+      # Reset Result Count
+      resc=0
 
       # Initialize Path Match
-      local pmatch=""
+      local mpath=""
 
       # Initialize Filtered Paths
       local fpaths=""
 
       # Initialize Ignore Boolean
-      local ignore_paths=$FALSE
+      local ignore=$FALSE
 
-      # Reset Result Count
-      resc=0
+      # Store Current Directory
+      local cdir=$(command pwd)
+
+      # Store Matching Absolute Paths
+      local paths=$(command echo -e "$resv" | command cut -d ':' -f2 | command tr ' ' ':')
 
       # Iterate Over Paths
       for path in $paths
@@ -383,17 +383,17 @@ function qcd() {
         path="${path//:/ }${sdir}"
 
         # Check Path Validity
-        if [[ -e "$path" && ! "${path%/}" = "${dir%/}" ]]
+        if [[ -e "$path" && ! "${path%/}" = "${cdir%/}" ]]
         then
           # Determine Path Match
-          if [[ -z $pmatch && $ignore_paths -eq $FALSE ]]
+          if [[ -z $mpath && $ignore -eq $FALSE ]]
           then
             # Select Path
-            pmatch=$path
+            mpath=$path
           else
             # Unselect Path
-            ignore_paths=$TRUE
-            pmatch=""
+            ignore=$TRUE
+            mpath=""
           fi
 
           # Add Compressed Path To Filtered List
@@ -403,7 +403,7 @@ function qcd() {
       done
 
       # List Matching Links
-      if [[ -z $pmatch ]]
+      if [[ -z $mpath ]]
       then
         # Replace Path Results
         paths=$fpaths
@@ -460,14 +460,14 @@ function qcd() {
           ept=$resc
         fi
 
-        # Set Manually Selected Endpoint
+        # Set To Manually Selected Endpoint
         resv=$(command echo -e "$paths" | command cut -d ' ' -f$ept)
       else
-        # Set Automatically Selected Endpoint
-        resv=$pmatch
+        # Set To Automatically Selected Endpoint
+        resv=$mpath
       fi
     else
-      # Set Default Endpoint
+      # Set To Default Endpoint
       resv=$(command echo -e "$resv" | command cut -d ':' -f2)
     fi
 
@@ -610,7 +610,7 @@ function _qcd_comp() {
     local QUICK_DIRS=$(command cat $QCD_STORE | command awk -F ':' '{printf $1 "/\n"}' | command tr ' ' ':')
 
     # Store Current Directory Fields
-    local CURR_DIR="$(command basename $(command pwd))/"
+    local CURR_DIR=$(command basename "$(command pwd)")
     local CURR_REM=$FALSE
 
     # Add Linked Directories
@@ -623,7 +623,7 @@ function _qcd_comp() {
       if [[ ! -e "$QUICK_DIR" ]]
       then
         # Exlude Current Directory
-        if [[ $CURR_REM -eq $FALSE && "$QUICK_DIR" = "$CURR_DIR" ]]
+        if [[ $CURR_REM -eq $FALSE && "${QUICK_DIR%/}" = "${CURR_DIR%/}" ]]
         then
           CURR_REM=$TRUE
         else
@@ -649,7 +649,7 @@ then
   command complete -o nospace -o filenames -A directory -F _qcd_comp -X ".*" qcd
 
   # Cleanup Store File
-  qcd -c
+  (qcd -c &)
 fi
 
 # End QCD Initialization---------------------------------------------------------------------------------------------------------------------------------------------
