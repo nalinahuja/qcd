@@ -21,7 +21,7 @@ FALSE=0
 B=$(command tput bold)
 N=$(command tput sgr0)
 
-# Program Actions
+# User Actions
 YES="y"
 QUIT="q"
 
@@ -43,8 +43,6 @@ QCD_FOLD=~/.qcd
 QCD_HELP=$QCD_FOLD/help
 QCD_TEMP=$QCD_FOLD/temp
 QCD_STORE=$QCD_FOLD/store
-
-# Update Files
 QCD_UPDATE=$QCD_FOLD/update.zip
 
 # Release Link
@@ -104,6 +102,55 @@ function remove_symbolic_link() {
 }
 
 # End Helper Functions-----------------------------------------------------------------------------------------------------------------------------------------------
+
+function parse_option_flags() {
+  # Check For Option Flags
+  if [[ "$1" = "$REMEMBER" ]]
+  then
+    # Add Current Directory
+    add_directory
+
+    # Terminate Program
+    return $OK
+  elif [[ "${@:$#}" = "$FORGET" ]]
+  then
+    # Determine Removal Type
+    if [[ $# -eq 1 ]]
+    then
+      # Remove Current Directory
+      remove_directory "$(command pwd)/"
+    else
+      # Remove Symbolic Link
+      remove_symbolic_link "$1"
+    fi
+
+    # Terminate Program
+    return $OK
+  elif [[ "$1" = "$CLEAN" ]]
+  then
+    # Get Compressed Paths From Store File
+    local paths=$(command cat $QCD_STORE | command cut -d ':' -f2 | command tr ' ' ':')
+
+    # Iterate Over Paths
+    for path in $paths
+    do
+      # Expand Symbols
+      path=${path//:/ }
+
+      # Remove Invalid Paths
+      if [[ ! -e "$path" ]]
+      then
+        remove_directory "$path"
+      fi
+    done
+
+    # Terminate Program
+    return $OK
+  fi
+
+  # Continue Program
+  return $CONT
+}
 
 function parse_standalone_flags() {
   # Check For Standalone Flags
@@ -209,55 +256,6 @@ function parse_standalone_flags() {
   return $CONT
 }
 
-function parse_option_flags() {
-  # Check For Option Flags
-  if [[ "$1" = "$REMEMBER" ]]
-  then
-    # Add Current Directory
-    add_directory
-
-    # Terminate Program
-    return $OK
-  elif [[ "${@:$#}" = "$FORGET" ]]
-  then
-    # Determine Removal Type
-    if [[ $# -eq 1 ]]
-    then
-      # Remove Current Directory
-      remove_directory "$(command pwd)/"
-    else
-      # Remove Symbolic Link
-      remove_symbolic_link "$1"
-    fi
-
-    # Terminate Program
-    return $OK
-  elif [[ "$1" = "$CLEAN" ]]
-  then
-    # Get Compressed Paths From Store File
-    local paths=$(command cat $QCD_STORE | command cut -d ':' -f2 | command tr ' ' ':')
-
-    # Iterate Over Paths
-    for path in $paths
-    do
-      # Expand Symbols
-      path=${path//:/ }
-
-      # Remove Invalid Paths
-      if [[ ! -e $path ]]
-      then
-        remove_directory "$path"
-      fi
-    done
-
-    # Terminate Program
-    return $OK
-  fi
-
-  # Continue Program
-  return $CONT
-}
-
 # End Argument Parser Functions--------------------------------------------------------------------------------------------------------------------------------------
 
 function qcd() {
@@ -267,8 +265,8 @@ function qcd() {
     command touch $QCD_STORE
   fi
 
-  # Parse Arguments For Standalone Flags
-  parse_standalone_flags $@
+  # Parse Arguments For Option Flags
+  parse_option_flags $@
 
   # Check Function Return
   if [[ ! $? -eq $CONT ]]
@@ -277,8 +275,8 @@ function qcd() {
     return $?
   fi
 
-  # Parse Arguments For Option Flags
-  parse_option_flags $@
+  # Parse Arguments For Standalone Flags
+  parse_standalone_flags $@
 
   # Check Function Return
   if [[ ! $? -eq $CONT ]]
@@ -295,7 +293,7 @@ function qcd() {
   then
     # Set To Home Directory On Empty Input
     indicated_dir=~
-  elif [[ "$indicated_dir" =~ ^[0-9]+\.\.$ ]]
+  elif [[ $indicated_dir =~ ^[0-9]+\.\.$ ]]
   then
     # Get Relative Back Directory Height
     local back_height=${indicated_dir:0:$((${#indicated_dir} - 2))}
@@ -308,7 +306,7 @@ function qcd() {
   fi
 
   # Determine If Directory Is Linked
-  if [[ -e $indicated_dir ]]
+  if [[ -e "$indicated_dir" ]]
   then
     # Change To Valid Directory
     command cd "$indicated_dir"
@@ -361,7 +359,7 @@ function qcd() {
         path="${path//:/ }${sdir}"
 
         # Check Path Validity
-        if [[ -e $path && ! "${path%/}" = "${dir%/}" ]]
+        if [[ -e "$path" && ! "${path%/}" = "${dir%/}" ]]
         then
           # Determine Path Match
           if [[ -z $pmatch && $ignore_paths -eq $FALSE ]]
@@ -460,7 +458,7 @@ function qcd() {
 
       # Terminate Program
       return $ERR
-    elif [[ ! -e $resv ]]
+    elif [[ ! -e "$resv" ]]
     then
       # Check Result Count
       if [[ $resc -gt 1 ]]
@@ -482,7 +480,7 @@ function qcd() {
       command cd "$resv"
 
       # Check If Subdirectory Exists
-      if [[ ! -z $sdir && -e $sdir ]]
+      if [[ ! -z $sdir && -e "$sdir" ]]
       then
         # Switch To Subdirectory
         command cd "$sdir"
@@ -522,7 +520,7 @@ function _qcd_comp() {
     local RES_DIRS=""
 
     # Resolve Linked Directories
-    if [[ ! -e $CURR_ARG ]]
+    if [[ ! -e "$CURR_ARG" ]]
     then
       # Obtain Compressed Linked Paths From Store File
       LINK_PATHS=$(command cat $QCD_STORE | command egrep -s -x "$LINK_ARG:.*" | command awk -F ':' '{print $2}' | command tr ' ' ':')
@@ -534,7 +532,7 @@ function _qcd_comp() {
         RES_DIR="${LINK_PATH//:/ }$SUBS_ARG"
 
         # Add Resolved Valid Directory
-        if [[ -e $RES_DIR ]]
+        if [[ -e "$RES_DIR" ]]
         then
           RES_DIRS="${RES_DIRS}${RES_DIR// /:} "
         fi
@@ -567,7 +565,7 @@ function _qcd_comp() {
         SUB_DIR=${SUB_DIR//:/ }
 
         # Append Completion Slash
-        if [[ ! -e $LINK_ARG ]]
+        if [[ ! -e "$LINK_ARG" ]]
         then
           WORD_LIST+=("$LINK_ARG/$SUBS_ARG$SUB_DIR/")
         else
@@ -596,7 +594,7 @@ function _qcd_comp() {
       QUICK_DIR=${QUICK_DIR//:/ }
 
       # Filter Duplicate Directories
-      if [[ ! -e $QUICK_DIR ]]
+      if [[ ! -e "$QUICK_DIR" ]]
       then
         # Exlude Current Directory
         if [[ $CURR_REM -eq $FALSE && "$QUICK_DIR" = "$CURR_DIR" ]]
