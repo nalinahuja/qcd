@@ -339,8 +339,10 @@ function qcd() {
     # Terminate Program
     return $OK
   else
-    # Get Directory Link and Relative Subdirectory
+    # Store Directory Link
     local link=$(command echo -e "$indicated_dir" | command cut -d '/' -f1)
+
+    # Initialize Relative Subdirectory
     local sdir=""
 
     # Get Subdirectory If Non-Empty
@@ -351,7 +353,7 @@ function qcd() {
 
     # Get Symbolic Linkages From Store File
     local resv=$(command egrep -s -x "$link.*:.*" $QCD_STORE 2> /dev/null)
-    local resc=$(command echo -e "$resv" | command wc -l)
+    local resc=$(command echo -e "$resv" | command wc -l 2> /dev/null)
 
     # Check Result Count
     if [[ $resc -gt 1 ]]
@@ -515,6 +517,8 @@ function qcd() {
       return $OK
     fi
   fi
+
+  # End Path Resolution----------------------------------------------------------------------------------------------------------------------------------------------
 }
 
 # End QCD Function---------------------------------------------------------------------------------------------------------------------------------------------------
