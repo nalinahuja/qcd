@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+#TODO, refactoring
 #TODO, documentation updates
 #TODO, relative directories in auto complete
 #TODO, absolute path compression delimiter change
@@ -18,9 +19,7 @@ NFD=127
 TRUE=1
 FALSE=0
 
-# Text Formatting
-B=$(command tput bold)
-N=$(command tput sgr0)
+# End Defined Numerical Constants------------------------------------------------------------------------------------------------------------------------------------
 
 # User Actions
 YES="y"
@@ -36,8 +35,14 @@ HELP="-h"
 UPDATE="-u"
 VERSION="-v"
 
-# Higher Directory Constant
+# Text Formatting
+B=$(command tput bold)
+N=$(command tput sgr0)
+
+# Higher Directory Pattern
 HWD="../"
+
+# End Defined String Constants---------------------------------------------------------------------------------------------------------------------------------------
 
 # Program Files
 QCD_FOLD=~/.qcd
@@ -46,10 +51,10 @@ QCD_TEMP=$QCD_FOLD/temp
 QCD_STORE=$QCD_FOLD/store
 QCD_UPDATE=$QCD_FOLD/update.zip
 
-# Release Link
+# Update Release Link
 QCD_RELEASES="https://api.github.com/repos/nalinahuja22/qcd/releases/latest"
 
-# End Defined Constants----------------------------------------------------------------------------------------------------------------------------------------------
+# End Defined Program Constants--------------------------------------------------------------------------------------------------------------------------------------
 
 function format_dir() {
   # Compress Home Directory
