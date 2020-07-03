@@ -28,18 +28,18 @@ Just like the builtin command <i>cd</i>, simply indicate a valid path or keyword
 
 ```
 Usage:
-  qcd                       Change to home directory
-  qcd [path]                Change to valid directory
-  qcd [link]/[subdir]/...   Change to linked directory
-  qcd [N]..                 Change to Nth parent directory
+  qcd                         Change to home directory
+  qcd [path]                  Change to valid directory
+  qcd [link]/[subdir]/...     Change to linked directory
+  qcd [N]..                   Change to Nth parent directory
 
 Options:
-  qcd -h, --help            Show this help
-  qcd -v, --version         Show current version
-  qcd -u, --update          Update to latest version
+  qcd [-h, --help]            Show this help
+  qcd [-v, --version]         Show current version
+  qcd [-u, --update]          Update to latest version
 
-  qcd -c                    Clean store file
-  qcd -r                    Remember present directory
-  qcd -f                    Forget only present directory
-  qcd [link] -f             Forget all matching symbolic links
+  qcd [-c, --clean]           Clean store file
+  qcd [-r, --remember]        Remember present directory
+  qcd [-f, --forget]          Forget only present directory
+  qcd [link] [-f, --forget]   Forget all matching symbolic links
 ```
