@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-#TODO, documentation updates
+#TODO, documentation updates (reserved characters)
 #TODO, relative directories in auto complete
 
 #Developed by Nalin Ahuja, nalinahuja22
