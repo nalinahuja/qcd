@@ -122,15 +122,18 @@ function remove_symbolic_link() {
 # End Helper Functions-----------------------------------------------------------------------------------------------------------------------------------------------
 
 function parse_option_flags() {
+  # Get Argument Flag
+  flag=${@:$#}
+
   # Check For Option Flags
-  if [[ "$1" = "$REMEMBER" ]]
+  if [[ "${flag/--remember/$REMEMBER}" = "$REMEMBER" ]]
   then
     # Add Current Directory
     add_directory
 
     # Terminate Program
     return $OK
-  elif [[ "${@:$#}" = "$FORGET" ]]
+  elif [[ "${flag/--forget/$FORGET}" = "$FORGET" ]]
   then
     # Determine Removal Type
     if [[ $# -eq 1 ]]
@@ -144,17 +147,14 @@ function parse_option_flags() {
 
     # Terminate Program
     return $OK
-  elif [[ "$1" = "$CLEAN" ]]
+  elif [[ "${flag/--clean/$CLEAN}" = "$CLEAN" ]]
   then
     # Get Compressed Paths From Store File
-    local paths=$(command cat $QCD_STORE | command cut -d ':' -f2 | command tr ' ' ':')
+    local paths=$(command cat $QCD_STORE | command awk -F ':' '{print $2}')
 
     # Iterate Over Paths
     for path in $paths
     do
-      # Expand Symbols
-      path=${path//:/ }
-
       # Remove Invalid Paths
       if [[ ! -e "$path" ]]
       then
@@ -171,22 +171,25 @@ function parse_option_flags() {
 }
 
 function parse_standalone_flags() {
+  # Get Argument Flag
+  flag=${@:$#}
+
   # Check For Standalone Flags
-  if [[ "${1/--help/$HELP}" = "$HELP" ]]
+  if [[ "${flag/--help/$HELP}" = "$HELP" ]]
   then
     # Print Help
     command cat $QCD_HELP
 
     # Terminate Program
     return $OK
-  elif [[ "${1/--version/$VERSION}" = "$VERSION" ]]
+  elif [[ "${flag/--version/$VERSION}" = "$VERSION" ]]
   then
     # Print Version
     command cat $QCD_HELP | command head -n1
 
     # Terminate Program
     return $OK
-  elif [[ "${1/--update/$UPDATE}" = "$UPDATE" ]]
+  elif [[ "${flag/--update/$UPDATE}" = "$UPDATE" ]]
   then
     # Prompt User For Confirmation
     command read -p "qcd: Confirm update [y/n]: " confirm
@@ -543,7 +546,7 @@ function _qcd_comp() {
     local LINK_LEN=${#LINK_ARG}
 
     # Obtain Truncated Path
-    local SUBS_LEN=$(command echo -e "$CURR_ARG" | command awk -F "/" '{print length($0)-length($NF)}')
+    local SUBS_LEN=$(command echo -e "$CURR_ARG" | command awk -F '/' '{print length($0)-length($NF)}')
     local SUBS_ARG=${CURR_ARG:0:$SUBS_LEN}
     SUBS_ARG=${SUBS_ARG:$LINK_LEN + 1}
 
