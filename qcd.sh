@@ -675,17 +675,22 @@ function _qcd_comp() {
 
 # End QCD Completion Function----------------------------------------------------------------------------------------------------------------------------------------
 
-# Initialize QCD
-if [[ -f $QCD_STORE ]]
-then
-  # Initialize Completion Function
-  command complete -o nospace -o filenames -A directory -F _qcd_comp qcd
+function _qcd_init() {
+  # Initialize QCD
+  if [[ -f $QCD_STORE ]]
+  then
+    # Initialize Completion Function
+    command complete -o nospace -o filenames -A directory -F _qcd_comp qcd
 
-  # Set Completion To Ignore Hidden Files
-  command bind 'set match-hidden-files off'
+    # Set Completion Engine To Ignore Hidden Files
+    command bind 'set match-hidden-files off'
 
-  # Cleanup Store File
-  (qcd -c &)
-fi
+    # Cleanup Store File
+    (qcd -c &)
+  fi
+}
+
+# Initialize QCD Utility
+_qcd_init
 
 # End QCD Initialization---------------------------------------------------------------------------------------------------------------------------------------------
