@@ -18,7 +18,6 @@ FALSE=0
 
 # User Actions
 YES="y"
-QUIT="q"
 
 # Option Flags
 CLEAN="-c"
@@ -34,7 +33,8 @@ VERSION="-v"
 B=$(command tput bold)
 N=$(command tput sgr0)
 
-# Higher Directory Pattern
+# Directory Patterns
+CWD="."
 HWD="../"
 
 # End Defined String Constants---------------------------------------------------------------------------------------------------------------------------------------
@@ -118,17 +118,17 @@ function remove_symbolic_link() {
 
 function parse_option_flags() {
   # Get Argument Flag
-  flag=${@:$#}
+  flag="${@:$#}"
 
   # Check For Option Flags
-  if [[ "${flag/--remember/$REMEMBER}" = "$REMEMBER" ]]
+  if [[ "${flag/--remember/$REMEMBER}" == "$REMEMBER" ]]
   then
     # Add Current Directory
     add_directory
 
     # Terminate Program
     return $OK
-  elif [[ "${flag/--forget/$FORGET}" = "$FORGET" ]]
+  elif [[ "${flag/--forget/$FORGET}" == "$FORGET" ]]
   then
     # Determine Removal Type
     if [[ $# -eq 1 ]]
@@ -142,7 +142,7 @@ function parse_option_flags() {
 
     # Terminate Program
     return $OK
-  elif [[ "${flag/--clean/$CLEAN}" = "$CLEAN" ]]
+  elif [[ "${flag/--clean/$CLEAN}" == "$CLEAN" ]]
   then
     # Get Compressed Paths From Store File
     local paths=$(command cat $QCD_STORE | command awk -F ':' '{print $2}')
@@ -173,30 +173,30 @@ function parse_option_flags() {
 
 function parse_standalone_flags() {
   # Get Argument Flag
-  flag=${@:$#}
+  flag="${@:$#}"
 
   # Check For Standalone Flags
-  if [[ "${flag/--help/$HELP}" = "$HELP" ]]
+  if [[ "${flag/--help/$HELP}" == "$HELP" ]]
   then
     # Print Help
     command cat $QCD_HELP
 
     # Terminate Program
     return $OK
-  elif [[ "${flag/--version/$VERSION}" = "$VERSION" ]]
+  elif [[ "${flag/--version/$VERSION}" == "$VERSION" ]]
   then
     # Print Version
     command cat $QCD_HELP | command head -n1
 
     # Terminate Program
     return $OK
-  elif [[ "${flag/--update/$UPDATE}" = "$UPDATE" ]]
+  elif [[ "${flag/--update/$UPDATE}" == "$UPDATE" ]]
   then
     # Prompt User For Confirmation
     command read -p "qcd: Confirm update [y/n]: " confirm
 
     # Determine Action
-    if [[ "${confirm//Y/$YES}" == $YES ]]
+    if [[ "${confirm//Y/$YES}" == "$YES" ]]
     then
       # Verify Dependency
       command curl &> /dev/null
@@ -337,7 +337,7 @@ function qcd() {
   # End Input Formatting And Validation------------------------------------------------------------------------------------------------------------------------------
 
   # Determine If Directory Is Linked
-  if [[ -e "$indicated_dir" ]]
+  if [[ -e "${indicated_dir//\\ /}" ]]
   then
     # Change To Valid Directory
     command cd "$indicated_dir"
@@ -606,6 +606,9 @@ function _qcd_comp() {
         SUB_DIRS="${SUB_DIRS}${SUB_DIR} "
       done
 
+      # Format Symbolic Link
+      LINK_ARG="${LINK_ARG}/"
+
       # Format Subdirectories
       SUB_DIRS=${SUB_DIRS////}
 
@@ -616,10 +619,10 @@ function _qcd_comp() {
         SUB_DIR=${SUB_DIR//:/ }
 
         # Generate Linked Subdirectory
-        LINK_SUB="$LINK_ARG/$SUBS_ARG$SUB_DIR"
+        LINK_SUB="${LINK_ARG}${SUBS_ARG}${SUB_DIR}"
 
         # Add Linked Subdirectories
-        if [[ ! -e "${LINK_ARG//\\ / }" ]]
+        if [[ ! -e "${LINK_SUB//\\ / }" ]]
         then
           WORD_LIST+=("$LINK_SUB/")
         else
@@ -627,7 +630,7 @@ function _qcd_comp() {
         fi
       done
 
-      # Set IFS For COMREPLY
+      # Set IFS
       local IFS=$'\n'
 
       # Set Completion List
@@ -647,22 +650,17 @@ function _qcd_comp() {
       # Expand Symbols
       QUICK_DIR=${QUICK_DIR//:/ }
 
-      # Filter Duplicate Directories
+      # Filter Symbolic Links
       if [[ ! -e "$QUICK_DIR" ]]
       then
-        # Exlude Current Directory
         if [[ $CURR_REM -eq $FALSE && "${QUICK_DIR%/}" = "${CURR_DIR%/}" ]]
         then
+          # Exlude Current Directory
           CURR_REM=$TRUE
-        else
-          # Add Linked Directories Of Similar Visibility
-          if [[ "${CURR_ARG:0:1}" == "." && "${QUICK_DIR:0:1}" == "." ]]
-          then
-            WORD_LIST+=("$QUICK_DIR")
-          elif [[ ! "${CURR_ARG:0:1}" == "." && ! "${QUICK_DIR:0:1}" == "." ]]
-          then
-            WORD_LIST+=("$QUICK_DIR")
-          fi
+        elif [[ "${CURR_ARG:0:1}" == "$CWD" && "${QUICK_DIR:0:1}" == "$CWD" || ! "${CURR_ARG:0:1}" == "$CWD" && ! "${QUICK_DIR:0:1}" == "$CWD" ]]
+        then
+          # Add Symbolic Links Of Similar Visibility
+          WORD_LIST+=("$QUICK_DIR")
         fi
       fi
     done
