@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-#TODO, documentation updates (reserved characters)
+#TODO, documentation updates (reserved characters, flags)
 #TODO, relative directories in auto complete
 
 #Developed by Nalin Ahuja, nalinahuja22
@@ -568,7 +568,7 @@ function _qcd_comp() {
     # Resolve Linked Directories
     if [[ ! -e "$CURR_ARG" ]]
     then
-      # Obtain Compressed Linked Paths From Store File
+      # Store Compressed Linked Paths From Store File
       LINK_PATHS=$(command cat $QCD_STORE | command egrep -s -x "$LINK_ARG:.*" | command awk -F ':' '{print $2}' | command tr ' ' ':')
 
       # Iterate Over Linked Paths
@@ -632,10 +632,10 @@ function _qcd_comp() {
       COMPREPLY=($(command compgen -W "$(command printf "%s\n" "${WORD_LIST[@]}")" "$CURR_ARG" 2> /dev/null))
     fi
   else
-    # Linked Directory Completion
+    # Store Compressed Symbolic Links From Store File
     local QUICK_DIRS=$(command cat $QCD_STORE | command awk -F ':' '{printf $1 "/\n"}' | command tr ' ' ':')
 
-    # Store Current Directory Fields
+    # Store Current Directory Data
     local CURR_DIR=$(command basename "$(command pwd)")
     local CURR_REM=$FALSE
 
@@ -672,7 +672,8 @@ function _qcd_comp() {
 if [[ -f $QCD_STORE ]]
 then
   # Initialize Completion Function
-  command complete -o nospace -o filenames -A directory -F _qcd_comp -X ".*" qcd
+  command complete -o nospace -o filenames -F _qcd_comp qcd
+  # command complete -o nospace -o filenames -A directory -F _qcd_comp -X ".*" qcd
 
   # Cleanup Store File
   (qcd -c &)
