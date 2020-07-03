@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 #TODO, documentation updates (reserved characters, flags)
-#TODO, relative directories in auto complete
 
 #Developed by Nalin Ahuja, nalinahuja22
 
@@ -354,6 +353,11 @@ function qcd() {
     # Store Directory Link
     local link=$(command echo -e "$indicated_dir" | command cut -d '/' -f1)
 
+    # Escape Regex Characters
+    link="${link//\*/\*}"
+    link="${link//\?/\?}"
+    link="${link//\./\.}"
+
     # Initialize Relative Subdirectory
     local sdir=""
 
@@ -653,6 +657,7 @@ function _qcd_comp() {
         then
           CURR_REM=$TRUE
         else
+          # TODO, ignore hidden files unless the dot is present
           WORD_LIST+=("$QUICK_DIR")
         fi
       fi
@@ -672,7 +677,10 @@ function _qcd_comp() {
 if [[ -f $QCD_STORE ]]
 then
   # Initialize Completion Function
-  command complete -o nospace -o filenames -A directory -F _qcd_comp -X ".*" qcd
+  command complete -o nospace -o filenames -A directory -F _qcd_comp qcd
+
+  # Set Completion To Ignore Hidden Files
+  command bind 'set match-hidden-files off'
 
   # Cleanup Store File
   (qcd -c &)
