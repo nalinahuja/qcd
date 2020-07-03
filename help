@@ -7,13 +7,13 @@
   qcd [N]..                 Change to Nth parent directory
 
 [1mOptions:(B[m
-  qcd -h, --help            Show this help
-  qcd -v, --version         Show current version
-  qcd -u, --update          Update to latest version
+  qcd [-h, --help]          Show this help
+  qcd [-v, --version]       Show current version
+  qcd [-u, --update]        Update to latest version
 
-  qcd -c                    Clean store file
-  qcd -r                    Remember present directory
-  qcd -f                    Forget only present directory
+  qcd [-c, --clean]         Clean store file
+  qcd [-r, --remember]      Remember present directory
+  qcd [-f, --forget]        Forget only present directory
   qcd [link] -f             Forget all matching symbolic links
 
 Developed by Nalin Ahuja, nalinahuja22

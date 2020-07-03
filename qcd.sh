@@ -657,8 +657,13 @@ function _qcd_comp() {
         then
           CURR_REM=$TRUE
         else
-          # TODO, ignore hidden files unless the dot is present
-          WORD_LIST+=("$QUICK_DIR")
+          if [[ "${CURR_ARG:0:1}" == "." && "${QUICK_DIR:0:1}" == "." ]]
+          then
+            WORD_LIST+=("$QUICK_DIR")
+          elif [[ ! "${CURR_ARG:0:1}" == "." && ! "${QUICK_DIR:0:1}" == "." ]]
+          then
+            WORD_LIST+=("$QUICK_DIR")
+          fi
         fi
       fi
     done
