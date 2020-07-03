@@ -620,7 +620,7 @@ function _qcd_comp() {
         # Generate Linked Subdirectory
         LINK_SUB="$LINK_ARG/$SUBS_ARG$SUB_DIR"
 
-        # Append Completion Slash
+        # Add Linked Subdirectories
         if [[ ! -e "${LINK_ARG//\\ / }" ]]
         then
           WORD_LIST+=("$LINK_SUB/")
@@ -657,6 +657,7 @@ function _qcd_comp() {
         then
           CURR_REM=$TRUE
         else
+          # Add Linked Directories Of Similar Visibility
           if [[ "${CURR_ARG:0:1}" == "." && "${QUICK_DIR:0:1}" == "." ]]
           then
             WORD_LIST+=("$QUICK_DIR")
