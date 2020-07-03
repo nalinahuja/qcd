@@ -613,12 +613,15 @@ function _qcd_comp() {
         # Expand Symbols
         SUB_DIR=${SUB_DIR//:/ }
 
+        # Generate Linked Subdirectory
+        LINK_SUB="$LINK_ARG/$SUBS_ARG$SUB_DIR"
+
         # Append Completion Slash
-        if [[ ! -e "$LINK_ARG" ]]
+        if [[ ! -e "${LINK_ARG//\\ / }" ]]
         then
-          WORD_LIST+=("$LINK_ARG/$SUBS_ARG$SUB_DIR/")
+          WORD_LIST+=("$LINK_SUB/")
         else
-          WORD_LIST+=("$LINK_ARG/$SUBS_ARG$SUB_DIR")
+          WORD_LIST+=("$LINK_SUB")
         fi
       done
 
