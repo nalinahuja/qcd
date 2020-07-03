@@ -554,7 +554,7 @@ function _qcd_comp() {
   if [[ "$CURR_ARG" == */* ]]
   then
     # Obtain Symbolic Link
-    local LINK_ARG=$(command echo -e "$CURR_ARG" | command cut -d "/" -f1)
+    local LINK_ARG=$(command echo -e "$CURR_ARG" | command cut -d '/' -f1)
     local LINK_LEN=${#LINK_ARG}
 
     # Obtain Truncated Path
@@ -569,26 +569,20 @@ function _qcd_comp() {
     if [[ ! -e "$CURR_ARG" ]]
     then
       # Obtain Compressed Linked Paths From Store File
-      LINK_PATHS=$(command cat $QCD_STORE | command egrep -s -x "$LINK_ARG:.*" | command awk -F ':' '{print $2}')
+      LINK_PATHS=$(command cat $QCD_STORE | command egrep -s -x "$LINK_ARG:.*" | command awk -F ':' '{print $2}' | command tr ' ' ':')
 
-      # Set IFS
-      local IFS=$'\n'
-
-      # Iterate Over Paths
+      # Iterate Over Linked Paths
       for LINK_PATH in $LINK_PATHS
       do
-        # Form Expanded Resolved Directory
-        RES_DIR="${LINK_PATH}${SUBS_ARG}"
+        # Form Resolved Directory
+        RES_DIR="${LINK_PATH//:/ }${SUBS_ARG}"
 
-        # Add Compressed Resolved Valid Directory
+        # Add Resolved Directory
         if [[ -e "$RES_DIR" ]]
         then
           RES_DIRS="${RES_DIRS}${RES_DIR// /:} "
         fi
       done
-
-      # Unset IFS
-      unset IFS
     else
       # Resolve Local Directories
       RES_DIRS="$CURR_ARG"
@@ -603,7 +597,7 @@ function _qcd_comp() {
       # Iterate Over Resolved Directories
       for RES_DIR in $RES_DIRS
       do
-        # Add Compressed Subdirectory To List
+        # Add Subdirectory To List
         SUB_DIRS="${SUB_DIRS}$(command ls -F "${RES_DIR//:/ }" 2> /dev/null | command egrep -s -x ".*/" | command tr ' ' ':') "
       done
 
@@ -625,29 +619,26 @@ function _qcd_comp() {
         fi
       done
 
-      # Set IFS
+      # Set IFS For COMREPLY
       local IFS=$'\n'
 
       # Set Completion List
       COMPREPLY=($(command compgen -W "$(command printf "%s\n" "${WORD_LIST[@]}")" "$CURR_ARG" 2> /dev/null))
-
-      # Unset IFS
-      unset IFS
     fi
   else
     # Linked Directory Completion
-    local QUICK_DIRS=$(command cat $QCD_STORE | command awk -F ':' '{printf $1 "/\n"}')
+    local QUICK_DIRS=$(command cat $QCD_STORE | command awk -F ':' '{printf $1 "/\n"}' | command tr ' ' ':')
 
     # Store Current Directory Fields
     local CURR_DIR=$(command basename "$(command pwd)")
     local CURR_REM=$FALSE
 
-    # Set IFS
-    local IFS=$'\n'
-
     # Add Linked Directories
     for QUICK_DIR in $QUICK_DIRS
     do
+      # Expand Symbols
+      QUICK_DIR=${QUICK_DIR//:/ }
+
       # Filter Duplicate Directories
       if [[ ! -e "$QUICK_DIR" ]]
       then
@@ -661,11 +652,11 @@ function _qcd_comp() {
       fi
     done
 
+    # Set IFS
+    local IFS=$'\n'
+
     # Set Completion List
     COMPREPLY=($(command compgen -W "$(command printf "%s\n" "${WORD_LIST[@]}")" "$CURR_ARG" 2> /dev/null))
-
-    # Unset IFS
-    unset IFS
   fi
 }
 
