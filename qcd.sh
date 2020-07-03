@@ -672,8 +672,7 @@ function _qcd_comp() {
 if [[ -f $QCD_STORE ]]
 then
   # Initialize Completion Function
-  command complete -o nospace -o filenames -F _qcd_comp qcd
-  # command complete -o nospace -o filenames -A directory -F _qcd_comp -X ".*" qcd
+  command complete -o nospace -o filenames -A directory -F _qcd_comp -X ".*" qcd
 
   # Cleanup Store File
   (qcd -c &)
