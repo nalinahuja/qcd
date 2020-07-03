@@ -3,7 +3,6 @@
 #TODO, refactoring
 #TODO, documentation updates
 #TODO, relative directories in auto complete
-#TODO, absolute path compression delimiter change
 
 #Developed by Nalin Ahuja, nalinahuja22
 
@@ -152,6 +151,9 @@ function parse_option_flags() {
     # Get Compressed Paths From Store File
     local paths=$(command cat $QCD_STORE | command awk -F ':' '{print $2}')
 
+    # Set IFS
+    local IFS=$'\n'
+
     # Iterate Over Paths
     for path in $paths
     do
@@ -161,6 +163,9 @@ function parse_option_flags() {
         remove_directory "$path"
       fi
     done
+
+    # Unset IFS
+    unset IFS
 
     # Terminate Program
     return $OK
@@ -382,15 +387,18 @@ function qcd() {
       local cdir=$(command pwd)
 
       # Store Matching Absolute Paths
-      local paths=$(command echo -e "$resv" | command cut -d ':' -f2 | command tr ' ' ':')
+      local paths=$(command echo -e "$resv" | command awk -F ':' '{print $2}')
+
+      # Set IFS
+      local IFS=$'\n'
 
       # Iterate Over Paths
       for path in $paths
       do
-        # Form Complete Uncompressed Path
-        path="${path//:/ }${sdir}"
+        # Form Complete Path
+        path="${path}${sdir}"
 
-        # Check Path Validity
+        # Validate Path
         if [[ -e "$path" && ! "${path%/}" = "${cdir%/}" ]]
         then
           # Determine Path Match
@@ -404,11 +412,14 @@ function qcd() {
             mpath=""
           fi
 
-          # Add Compressed Path To Filtered List
-          fpaths="${fpaths}${path// /:} "
+          # Add Path To Filtered List
+          fpaths="${fpaths}${path}:"
           resc=$((resc + 1))
         fi
       done
+
+      # Unset IFS
+      unset IFS
 
       # List Matching Links
       if [[ -z $mpath ]]
@@ -429,6 +440,9 @@ function qcd() {
         # Generate Prompt
         command echo -e "qcd: Multiple paths linked to ${B}${indicated_dir%/}${N}" > $QCD_TEMP
 
+        # Set IFS
+        local IFS=$':'
+
         # Generate Path Options
         local cnt=1
         for path in $paths
@@ -436,13 +450,13 @@ function qcd() {
           # Format Path
           path=$(format_dir "$path")
 
-          # Expand Symbols
-          path=${path//:/ }
-
           # Output Path As Option
           command printf "($cnt) ${path%/}\n" >> $QCD_TEMP
           cnt=$((cnt + 1))
         done
+
+        # Unset IFS
+        unset IFS
 
         # Display Prompt
         command cat $QCD_TEMP
@@ -469,7 +483,7 @@ function qcd() {
         fi
 
         # Set To Manually Selected Endpoint
-        resv=$(command echo -e "$paths" | command cut -d ' ' -f$ept)
+        resv=$(command echo -e "$paths" | command cut -d ':' -f$ept)
       else
         # Set To Automatically Selected Endpoint
         resv=$mpath
@@ -479,13 +493,12 @@ function qcd() {
       resv=$(command echo -e "$resv" | command cut -d ':' -f2)
     fi
 
-    # Expand Symbols
-    resv=${resv//:/ }
+    # End Path Resolution--------------------------------------------------------------------------------------------------------------------------------------------
 
     # Error Check Result
     if [[ -z $resv ]]
     then
-      # Prompt User Of No Link
+      # Display Error
       command echo -e "qcd: Cannot link keyword to directory"
 
       # Terminate Program
@@ -499,11 +512,11 @@ function qcd() {
         command echo
       fi
 
-      # Prompt User Of Error
+      # Display Error
       command echo -e "qcd: $(format_dir "${resv%/}"): Directory does not exist"
 
       # Remove Current Directory
-      remove_directory "$resv"
+      (remove_directory "$resv" &)
 
       # Terminate Program
       return $ERR
@@ -511,7 +524,7 @@ function qcd() {
       # Switch To Linked Path
       command cd "$resv"
 
-      # Check If Subdirectory Exists
+      # Validate Subdirectory
       if [[ ! -z $sdir && -e "$sdir" ]]
       then
         # Switch To Subdirectory
@@ -526,7 +539,7 @@ function qcd() {
     fi
   fi
 
-  # End Path Resolution----------------------------------------------------------------------------------------------------------------------------------------------
+  # End Path Navigation----------------------------------------------------------------------------------------------------------------------------------------------
 }
 
 # End QCD Function---------------------------------------------------------------------------------------------------------------------------------------------------
@@ -556,19 +569,19 @@ function _qcd_comp() {
     # Resolve Linked Directories
     if [[ ! -e "$CURR_ARG" ]]
     then
-      # Obtain Compressed Linked Paths From Store File
-      LINK_PATHS=$(command cat $QCD_STORE | command egrep -s -x "$LINK_ARG:.*" | command awk -F ':' '{print $2}' | command tr ' ' ':')
+      # Obtain Linked Paths From Store File
+      LINK_PATHS=$(command cat $QCD_STORE | command egrep -s -x "$LINK_ARG:.*" | command awk -F ':' '{print $2}')
 
       # Iterate Over Paths
       for LINK_PATH in $LINK_PATHS
       do
         # Form Expanded Resolved Directory
-        RES_DIR="${LINK_PATH//:/ }$SUBS_ARG"
+        RES_DIR="${LINK_PATH}$SUBS_ARG"
 
         # Add Resolved Valid Directory
         if [[ -e "$RES_DIR" ]]
         then
-          RES_DIRS="${RES_DIRS}${RES_DIR// /:} "
+          RES_DIRS="${RES_DIRS}${RES_DIR} "
         fi
       done
     else
@@ -607,7 +620,7 @@ function _qcd_comp() {
         fi
       done
 
-      # Set IFS For COMREPLY
+      # Set IFS
       local IFS=$'\n'
 
       # Set Completion List
@@ -640,7 +653,7 @@ function _qcd_comp() {
       fi
     done
 
-    # Set IFS For COMREPLY
+    # Set IFS
     local IFS=$'\n'
 
     # Set Completion List
