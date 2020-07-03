@@ -597,8 +597,11 @@ function _qcd_comp() {
       # Iterate Over Resolved Directories
       for RES_DIR in $RES_DIRS
       do
+        # Get Linked Subdirectory
+        SUB_DIR=$(command ls -F "${RES_DIR//:/ }" 2> /dev/null | command egrep -s -x ".*/" | command tr ' ' ':')
+
         # Add Subdirectory To List
-        SUB_DIRS="${SUB_DIRS}$(command ls -F "${RES_DIR//:/ }" 2> /dev/null | command egrep -s -x ".*/" | command tr ' ' ':') "
+        SUB_DIRS="${SUB_DIRS}${SUB_DIR} "
       done
 
       # Format Subdirectories
