@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-#TODO, documentation updates (reserved characters, flags)
-
 #Developed by Nalin Ahuja, nalinahuja22
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
