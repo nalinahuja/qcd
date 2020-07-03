@@ -401,7 +401,7 @@ function qcd() {
         if [[ -e "$path" && ! "${path%/}" = "${cdir%/}" ]]
         then
           # Determine Path Match
-          if [[ -z $mpath && $ignore -eq $FALSE ]]
+          if [[ $ignore -eq $FALSE && -z $mpath ]]
           then
             # Select Path
             mpath=$path
