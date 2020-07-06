@@ -562,7 +562,10 @@ function _qcd_comp() {
     local LINK_ARG=$(command echo -e "$CURR_ARG" | command cut -d '/' -f1)
     local LINK_LEN=${#LINK_ARG}
 
-    # Obtain Truncated Path
+    # Obtain Trailing Subdirectory Path
+    local TRAIL_ARG=$(command echo -e "$CURR_ARG" | command awk -F '/' '{print $NF}')
+
+    # Obtain Leading Subdirectory Path
     local SUBS_LEN=$(command echo -e "$CURR_ARG" | command awk -F '/' '{print length($0)-length($NF)}')
     local SUBS_ARG=${CURR_ARG:0:$SUBS_LEN}
     SUBS_ARG=${SUBS_ARG:$LINK_LEN + 1}
@@ -602,8 +605,15 @@ function _qcd_comp() {
       # Iterate Over Resolved Directories
       for RES_DIR in $RES_DIRS
       do
-        # Get Linked Subdirectory
-        SUB_DIR=$(command ls -aF "${RES_DIR//:/ }" 2> /dev/null | command egrep -s -x ".*/" | command tr ' ' ':')
+        # Add Linked Subdirectories Of Similar Visibility
+        if [[ ! "${TRAIL_ARG:0:1}" == "$CWD" ]]
+        then
+          # Get Visible Linked Subdirectory
+          SUB_DIR=$(command ls -F "${RES_DIR//:/ }" 2> /dev/null | command egrep -s -x ".*/" | command tr ' ' ':')
+        else
+          # Get Hidden Linked Subdirectory
+          SUB_DIR=$(command ls -aF "${RES_DIR//:/ }" 2> /dev/null | command egrep -s -x ".*/" | command tr ' ' ':')
+        fi
 
         # Add Subdirectory To List
         SUB_DIRS="${SUB_DIRS}${SUB_DIR} "
