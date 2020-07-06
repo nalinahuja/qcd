@@ -137,7 +137,7 @@ function parse_option_flags() {
       remove_directory "$(command pwd)/"
     else
       # Remove Symbolic Link
-      remove_symbolic_link "${@:0:$#}"
+      remove_symbolic_link "${@:1:$(($# - 1))}"
     fi
 
     # Terminate Program
