@@ -137,7 +137,7 @@ function parse_option_flags() {
       remove_directory "$(command pwd)/"
     else
       # Remove Symbolic Link
-      remove_symbolic_link "${@:1:$(($# - 1))}"
+      remove_symbolic_link "${@:1:1}"
     fi
 
     # Terminate Program
@@ -263,8 +263,11 @@ function parse_standalone_flags() {
       # Update Bash Environment
       command source $QCD_FOLD/qcd.sh &> /dev/null
 
+      # Get Update Version
+      update_version=$(command cat $QCD_HELP | command head -n1 | command awk '{print $4}')
+
       # Display Prompt
-      command echo -e "\r→ Update complete    "
+      command echo -e "\r→ Update complete    \n\nUpdated to $update_version"
     else
       # Display Prompt
       command echo -e "→ Update aborted"
