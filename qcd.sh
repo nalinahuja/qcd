@@ -10,6 +10,9 @@ ERR=1
 CONT=2
 NFD=127
 
+# Timeout Value
+TIMEOUT=5
+
 # Conditional Booleans
 TRUE=1
 FALSE=0
@@ -215,7 +218,7 @@ function parse_standalone_flags() {
       command echo -en "→ Downloading update "
 
       # Get Release Link
-      release_url=$(command curl -s -L $QCD_RELEASES | command egrep -s -o "https.*zipball.*")
+      release_url=$(command curl --connect-timeout $TIMEOUT -s -L $QCD_RELEASES | command egrep -s -o "https.*zipball.*")
 
       # Error Check Release Link
       if [[ ! $? -eq $OK || -z $release_url ]]
@@ -228,7 +231,7 @@ function parse_standalone_flags() {
       fi
 
       # Download Release Program Files
-      command curl -s -L "${release_url/\",/}" > $QCD_UPDATE
+      command curl --connect-timeout $TIMEOUT -s -L "${release_url/\",/}" > $QCD_UPDATE
 
       # Error Check Update
       if [[ ! $? -eq $OK || ! -f $QCD_UPDATE ]]
