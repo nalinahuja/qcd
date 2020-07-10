@@ -11,7 +11,7 @@ CONT=2
 NFD=127
 
 # Timeout Value
-TIMEOUT=5
+TIMEOUT=10
 
 # Conditional Booleans
 TRUE=1
