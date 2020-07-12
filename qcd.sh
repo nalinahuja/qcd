@@ -19,6 +19,9 @@ FALSE=0
 
 # End Defined Numerical Constants------------------------------------------------------------------------------------------------------------------------------------
 
+# Empty String
+ESTR=""
+
 # User Actions
 YES="y"
 
@@ -363,7 +366,7 @@ function qcd() {
     link="${link//\./\.}"
 
     # Initialize Relative Subdirectory
-    local sdir=""
+    local sdir=$ESTR
 
     # Get Subdirectory If Non-Empty
     if [[ $indicated_dir == */* ]]
@@ -371,8 +374,18 @@ function qcd() {
       sdir=${indicated_dir:${#link} + 1}
     fi
 
+    # Initialize Symbolic Link Result
+    local resv=$ESTR
+
     # Get Symbolic Linkages From Store File
-    local resv=$(command egrep -s -x "$link.*:.*" $QCD_STORE 2> /dev/null)
+    if [[ "$indicated_dir" == */ ]]
+    then
+      resv=$(command egrep -s -x "$link:.*" $QCD_STORE 2> /dev/null)
+    else
+      resv=$(command egrep -s -x "$link.*:.*" $QCD_STORE 2> /dev/null)
+    fi
+
+    # Get Count Of Symbolic Linkages
     local resc=$(command echo -e "$resv" | command wc -l 2> /dev/null)
 
     # Check Result Count
@@ -382,10 +395,10 @@ function qcd() {
       resc=0
 
       # Initialize Path Match
-      local mpath=""
+      local mpath=$ESTR
 
       # Initialize Filtered Paths
-      local fpaths=""
+      local fpaths=$ESTR
 
       # Initialize Ignore Boolean
       local ignore=$FALSE
@@ -416,7 +429,7 @@ function qcd() {
           else
             # Unselect Path
             ignore=$TRUE
-            mpath=""
+            mpath=$ESTR
           fi
 
           # Add Path To Filtered List
@@ -574,7 +587,7 @@ function _qcd_comp() {
     SUBS_ARG=${SUBS_ARG:$LINK_LEN + 1}
 
     # Store Resolved Directories
-    local RES_DIRS=""
+    local RES_DIRS=$ESTR
 
     # Resolve Linked Directories
     if [[ ! -e "$CURR_ARG" ]]
@@ -603,7 +616,7 @@ function _qcd_comp() {
     if [[ ! -z $RES_DIRS ]]
     then
       # Initialize Subdirectories
-      SUB_DIRS=""
+      SUB_DIRS=$ESTR
 
       # Iterate Over Resolved Directories
       for RES_DIR in $RES_DIRS
