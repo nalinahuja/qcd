@@ -131,7 +131,7 @@ function parse_option_flags() {
   if [[ "${flag/--remember/$REMEMBER}" == "$REMEMBER" ]]
   then
     # Add Current Directory
-    add_directory
+    (add_directory &)
 
     # Terminate Program
     return $OK
@@ -141,10 +141,10 @@ function parse_option_flags() {
     if [[ $# -eq 1 ]]
     then
       # Remove Current Directory
-      remove_directory "$(command pwd)/"
+      (remove_directory "$(command pwd)/" &)
     else
       # Remove Symbolic Link
-      remove_symbolic_link "${@:1:1}"
+      (remove_symbolic_link "${@:1:1}" &)
     fi
 
     # Terminate Program
@@ -167,7 +167,7 @@ function parse_option_flags() {
       # Remove Invalid Paths
       if [[ ! -e "$path" ]]
       then
-        remove_directory "$path"
+        (remove_directory "$path" &)
       fi
     done
 
