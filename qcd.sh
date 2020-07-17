@@ -26,6 +26,7 @@ ESTR=""
 YES="y"
 
 # Option Flags
+LIST="-l"
 CLEAN="-c"
 FORGET="-f"
 REMEMBER="-r"
@@ -148,9 +149,13 @@ function parse_option_flags() {
 
     # Terminate Program
     return $OK
+  elif [[ "${flag/--list/$LIST}" == "$LIST" ]]
+  then
+    # Terminate Program
+    return $OK
   elif [[ "${flag/--clean/$CLEAN}" == "$CLEAN" ]]
   then
-    # Get Compressed Paths From Store File
+    # Get Paths From Store File
     local paths=$(command cat $QCD_STORE | command awk -F ':' '{print $2}')
 
     # Set IFS
