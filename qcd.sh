@@ -167,7 +167,7 @@ function parse_option_flags() {
       # Remove Invalid Paths
       if [[ ! -e "$path" ]]
       then
-        (remove_directory "$path" &)
+        remove_directory "$path"
       fi
     done
 
