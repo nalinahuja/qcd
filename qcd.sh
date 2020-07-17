@@ -26,7 +26,6 @@ ESTR=""
 YES="y"
 
 # Option Flags
-LIST="-l"
 CLEAN="-c"
 FORGET="-f"
 REMEMBER="-r"
@@ -147,10 +146,6 @@ function parse_option_flags() {
       (remove_symbolic_link "${@:1:1}" &)
     fi
 
-    # Terminate Program
-    return $OK
-  elif [[ "${flag/--list/$LIST}" == "$LIST" ]]
-  then
     # Terminate Program
     return $OK
   elif [[ "${flag/--clean/$CLEAN}" == "$CLEAN" ]]
