@@ -1,4 +1,4 @@
-[1mQCD Utility - v1.10.6(B[m
+[1mQCD Utility - v1.10.7(B[m
 
 [1mUsage:(B[m
   qcd                         Change to home directory
@@ -12,6 +12,7 @@
   qcd [-u, --update]          Update to latest version
 
   qcd [-c, --clean]           Clean store file
+  qcd [-l, --list]            List path linkages
   qcd [-r, --remember]        Remember present directory
   qcd [-f, --forget]          Forget only present directory
   qcd [link] [-f, --forget]   Forget all matching symbolic links

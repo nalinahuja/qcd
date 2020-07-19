@@ -26,6 +26,7 @@ ESTR=""
 YES="y"
 
 # Option Flags
+LIST="-l"
 CLEAN="-c"
 FORGET="-f"
 REMEMBER="-r"
@@ -38,6 +39,7 @@ VERSION="-v"
 # Text Formatting
 B=$(command tput bold)
 N=$(command tput sgr0)
+W=$(tput setaf 0)$(tput setab 7)
 
 # Directory Patterns
 CWD="."
@@ -145,6 +147,37 @@ function parse_option_flags() {
       # Remove Symbolic Link
       (remove_symbolic_link "${@:1:1}" &)
     fi
+
+    # Terminate Program
+    return $OK
+
+  elif [[ "${flag/--list/$LIST}" == "$LIST" ]]
+  then
+    # Display Prompt
+    command echo -en "\rqcd: Generating link map..."
+
+    # Get Linkages From Store File
+    local linkages=$(command cat $QCD_STORE)
+
+    # Get Max Link Length
+    local max_link=$(command echo -e "$linkages" | command awk -F ':' '{print $1}' | command awk '{print length}' | command sort -n | command tail -n1)
+
+    # Format Header
+    command printf "\r${W}%-${max_link}s  %-$(($(tput cols) - max_link - 2))s${N}\n" "Link" "Directory" > $QCD_TEMP
+
+    # Iterate Over Linkages From Store File
+    for linkage in $linkages
+    do
+      # Get Linkage Components
+      local link=$(command echo -e "$linkage" | command awk -F ':' '{print $1}')
+      local path=$(command echo -e "$linkage" | command awk -F ':' '{print $2}')
+
+      # Format Linkage
+      command printf "%-${max_link}s  %s\n" $link $(format_dir "${path%/}") >> $QCD_TEMP
+    done
+
+    # Display Prompt
+    command cat $QCD_TEMP
 
     # Terminate Program
     return $OK
@@ -455,10 +488,10 @@ function qcd() {
         fi
 
         # Display Prompt
-        command echo -en "qcd: Generating option list...\r"
+        command echo -en "\rqcd: Generating option list..."
 
         # Generate Prompt
-        command echo -e "qcd: Multiple paths linked to ${B}${indicated_dir%/}${N}" > $QCD_TEMP
+        command echo -e "\rqcd: Multiple paths linked to ${B}${indicated_dir%/}${N}" > $QCD_TEMP
 
         # Set IFS
         local IFS=$':'
