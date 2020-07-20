@@ -101,11 +101,11 @@ function remove_directory() {
   # Remove Directory From Store
   command egrep -s -v -x ".*:${format_dir}" $QCD_STORE > $QCD_TEMP
 
-  # Store Removal Status
-  rem_status=$?
+  # Store Operation Status
+  status=$?
 
   # Update Store If Successful
-  update_store $rem_status
+  update_store $status
 }
 
 function remove_symbolic_link() {
@@ -115,11 +115,11 @@ function remove_symbolic_link() {
   # Remove Link From Store
   command egrep -s -v -x "${format_link}:.*" $QCD_STORE > $QCD_TEMP
 
-  # Store Removal Status
-  rem_status=$?
+  # Store Operation Status
+  status=$?
 
   # Update Store If Successful
-  update_store $?
+  update_store $status
 }
 
 # End Helper Functions-----------------------------------------------------------------------------------------------------------------------------------------------
@@ -361,21 +361,27 @@ function qcd() {
   # Parse Arguments For Option Flags
   parse_option_flags $@
 
+  # Store Operation Status
+  local status=$?
+
   # Check Function Return
-  if [[ ! $? -eq $CONT ]]
+  if [[ ! $status -eq $CONT ]]
   then
     # Terminate Program
-    return $?
+    return $status
   fi
 
   # Parse Arguments For Standalone Flags
   parse_standalone_flags $@
 
+  # Store Operation Status
+  local status=$?
+
   # Check Function Return
-  if [[ ! $? -eq $CONT ]]
+  if [[ ! $status -eq $CONT ]]
   then
     # Terminate Program
-    return $?
+    return $status
   fi
 
   # End Argument Parsing---------------------------------------------------------------------------------------------------------------------------------------------
