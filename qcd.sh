@@ -176,11 +176,18 @@ function parse_option_flags() {
       return $ERR
     fi
 
+    # Get Terminal Column Count
+    local cols=$(tput cols)
+
     # Get Max Link Length
     local max_link=$(command echo -e "$linkages" | command awk -F ':' '{print $1}' | command awk '{print length}' | command sort -n | command tail -n1)
 
-    # Get Terminal Column Count
-    local cols=$(tput cols)
+    # Error Check Max Link Length
+    if [[ $max_link -lt 4 ]]
+    then
+      # Set To Minimum Padding
+      max_link=4
+    fi
 
     # Format Header
     command printf "\r${W}%-${max_link}s  %-$((cols - max_link - 2))s${N}\n" "Link" "Directory" > $QCD_TEMP
