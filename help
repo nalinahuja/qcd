@@ -12,7 +12,7 @@
   qcd [-u, --update]          Update to latest version
 
   qcd [-c, --clean]           Clean store file
-  qcd [-l, --list]            List all directory linkages
+  qcd [-l, --list]            List directory linkages
   qcd [-r, --remember]        Remember present directory
   qcd [-f, --forget]          Forget only present directory
   qcd [link] [-l, --list]     List matching directory linkages
