@@ -12,9 +12,10 @@
   qcd [-u, --update]          Update to latest version
 
   qcd [-c, --clean]           Clean store file
-  qcd [-l, --list]            List directory linkages
+  qcd [-l, --list]            List all directory linkages
   qcd [-r, --remember]        Remember present directory
   qcd [-f, --forget]          Forget only present directory
-  qcd [link] [-f, --forget]   Forget all matching symbolic links
+  qcd [link] [-l, --list]     List matching directory linkages
+  qcd [link] [-f, --forget]   Forget matching symbolic links
 
 Developed by Nalin Ahuja, nalinahuja22

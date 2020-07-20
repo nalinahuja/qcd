@@ -145,7 +145,7 @@ function parse_option_flags() {
       (remove_directory "$(command pwd)/" &)
     else
       # Remove Symbolic Link
-      (remove_symbolic_link "${@:1:1}" &)
+      (remove_symbolic_link "$1" &)
     fi
 
     # Terminate Program
@@ -159,11 +159,31 @@ function parse_option_flags() {
     # Get Linkages From Store File
     local linkages=$(command cat $QCD_STORE)
 
+    # Determine List Type
+    if [[ $# -gt 1 ]]
+    then
+      # Retain Matching Linkages
+      linkages=$(command echo -e "$linkages"| command egrep -s -x "${1%/}.*:.*" 2> /dev/null)
+    fi
+
+    # Error Check Linkages
+    if [[ -z $linkages ]]
+    then
+      # Display Prompt
+      command echo -e "\rqcd: No linkages found     "
+
+      # Terminate Program
+      return $ERR
+    fi
+
     # Get Max Link Length
     local max_link=$(command echo -e "$linkages" | command awk -F ':' '{print $1}' | command awk '{print length}' | command sort -n | command tail -n1)
 
+    # Get Terminal Column Count
+    local cols=$(tput cols)
+
     # Format Header
-    command printf "\r${W}%-${max_link}s  %-$(($(tput cols) - max_link - 2))s${N}\n" "Link" "Directory" > $QCD_TEMP
+    command printf "\r${W}%-${max_link}s  %-$((cols - max_link - 2))s${N}\n" "Link" "Directory" > $QCD_TEMP
 
     # Iterate Over Linkages From Store File
     for linkage in $linkages
