@@ -190,7 +190,7 @@ function parse_option_flags() {
     fi
 
     # Format Header
-    command printf "\r${W}%-${max_link}s  %-$((cols - max_link - 2))s${N}\n" "Link" "Directory" > $QCD_TEMP
+    command printf "\r${W} %-${max_link}s %-$((cols - max_link - 2))s${N}\n" "Link" "Directory" > $QCD_TEMP
 
     # Iterate Over Linkages From Store File
     for linkage in $linkages
@@ -200,7 +200,7 @@ function parse_option_flags() {
       local path=$(command echo -e "$linkage" | command awk -F ':' '{print $2}')
 
       # Format Linkage
-      command printf "%-${max_link}s  %s\n" $link $(format_dir "${path%/}") >> $QCD_TEMP
+      command printf " %-${max_link}s  %s\n" $link $(format_dir "${path%/}") >> $QCD_TEMP
     done
 
     # Display Prompt
