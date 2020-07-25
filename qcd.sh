@@ -778,7 +778,7 @@ function _qcd_init() {
     command complete -o nospace -o filenames -A directory -F _qcd_comp qcd
 
     # Set Completion Engine To Ignore Hidden Files
-    command bind 'set match-hidden-files off'
+    command bind 'set match-hidden-files off' 2> /dev/null
 
     # Cleanup Store File
     (qcd -c &)
