@@ -426,22 +426,22 @@ function qcd() {
     # Store Directory Link
     local link=$(command echo -e "$indicated_dir" | command cut -d '/' -f1)
 
-    # Escape Regex Characters
-    link="${link//\*/\*}"
-    link="${link//\?/\?}"
-    link="${link//\./\.}"
-
     # Initialize Relative Subdirectory
     local sdir=$ESTR
 
     # Get Subdirectory If Non-Empty
     if [[ $indicated_dir == */* ]]
     then
-      sdir=${indicated_dir:${#link} + 1}
+      sdir=${indicated_dir:$((${#link} + 1))}
     fi
 
     # Initialize Symbolic Link Result
     local resv=$ESTR
+
+    # Escape Regex Characters
+    link="${link//\*/\*}"
+    link="${link//\?/\?}"
+    link="${link//\./\.}"
 
     # Get Symbolic Linkages From Store File
     if [[ "$indicated_dir" == */ ]]
