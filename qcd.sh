@@ -154,7 +154,7 @@ function parse_option_flags() {
   elif [[ "${flag/--list/$LIST}" == "$LIST" ]]
   then
     # Display Prompt
-    command echo -en "\rqcd: Generating link map... "
+    command echo -en "\rqcd: Generating link map..."
 
     # Get Linkages From Store File
     local linkages=$(command cat $QCD_STORE)
@@ -521,7 +521,7 @@ function qcd() {
         fi
 
         # Display Prompt
-        command echo -en "\rqcd: Generating option list... "
+        command echo -en "\rqcd: Generating option list..."
 
         # Generate Prompt
         command echo -e "\rqcd: Multiple paths linked to ${B}${indicated_dir%/}${N}" > $QCD_TEMP
