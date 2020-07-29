@@ -10,6 +10,9 @@ ERR=1
 CONT=2
 NFD=127
 
+# Padding Value
+MIN_P=4
+
 # Timeout Value
 TIMEOUT=10
 
@@ -62,6 +65,18 @@ function format_dir() {
   # Compress Home Directory
   command echo -e ${1/$HOME/\~}
 }
+
+function escape_regex() {
+  # Escape Regex Characters
+  1="${1//\*/\*}"
+  1="${1//\?/\?}"
+  1="${1//\./\.}"
+
+  # Return Formatted String
+  command echo -e "$1"
+}
+
+# End Helper Functions-----------------------------------------------------------------------------------------------------------------------------------------------
 
 function update_store() {
   # Check Exit Status
@@ -121,7 +136,7 @@ function remove_symbolic_link() {
   update_store $status
 }
 
-# End Helper Functions-----------------------------------------------------------------------------------------------------------------------------------------------
+# End Symbolic Link Management Functions-----------------------------------------------------------------------------------------------------------------------------
 
 function parse_option_flags() {
   # Get Argument Flag
@@ -182,10 +197,10 @@ function parse_option_flags() {
     local max_link=$(command echo -e "$linkages" | command awk -F ':' '{print $1}' | command awk '{print length}' | command sort -n | command tail -n1)
 
     # Error Check Max Link Length
-    if [[ $max_link -lt 4 ]]
+    if [[ $max_link -lt $MIN_P ]]
     then
       # Set To Minimum Padding
-      max_link=4
+      max_link=$MIN_P
     fi
 
     # Format Header
@@ -426,34 +441,22 @@ function qcd() {
     local link=$(command echo -e "$indicated_dir" | command cut -d '/' -f1)
 
     # Escape Regex Characters
-    link="${link//\*/\*}"
-    link="${link//\?/\?}"
-    link="${link//\./\.}"
+    link=$(escape_regex "$link")
 
-    # Initialize Relative Subdirectory
-    local sdir=$ESTR
-
-    # Get Subdirectory If Non-Empty
-    if [[ "$indicated_dir" == */* ]]
-    then
-      # Slice From First Forward Slash
-      sdir=${indicated_dir:$((${#link} + 1))}
-    fi
-
-    # Determine Match Type
-    if [[ ! "$indicated_dir" == */ ]]
+    # Check For Indirect Link Matching
+    if [[ ! "$link" == */ ]]
     then
       # Initialize Counter
       local i=0
 
-      # Initialize Wildcard Link
-      local wlink=$ESTR
+      # Initialize New Link
+      local nlink=$ESTR
 
       # Check For Hidden Directory Prefix
-      if [[ "$indicated_dir" == \.* ]]
+      if [[ "$link" == \\\.* ]]
       then
-        # Set Link Override
-        wlink="$ESC$CWD"
+        # Override New Link
+        nlink="$ESC$CWD"
 
         # Shift Counter
         i=2
@@ -466,11 +469,21 @@ function qcd() {
         local c=${link:$i:1}
 
         # Append Wildcard
-        wlink="${wlink}${c}.*"
+        nlink="${nlink}${c}.*"
       done
 
       # Override Link
-      link=$wlink
+      link=$nlink
+    fi
+
+    # Initialize Relative Subdirectory
+    local sdir=$ESTR
+
+    # Get Subdirectory If Non-Empty
+    if [[ "$indicated_dir" == */* ]]
+    then
+      # Slice From First Forward Slash
+      sdir=${indicated_dir:$((${#link} + 1))}
     fi
 
     # Get Symbolic Linkages From Store File
@@ -683,8 +696,17 @@ function _qcd_comp() {
     # Resolve Linked Directories
     if [[ ! -e "$CURR_ARG" ]]
     then
+      # Escape Regex Characters
+      LINK_ARG=$(escape_regex "$LINK_ARG")
+
+      # Check For Indirect Link Matching
+      if [[ -z $(command egrep -s -x "$LINK_ARG:.*") ]]
+      then
+
+      fi
+
       # Store Compressed Linked Paths From Store File
-      LINK_PATHS=$(command cat $QCD_STORE | command egrep -s -x "$LINK_ARG:.*" | command awk -F ':' '{print $2}' | command tr ' ' ':')
+      LINK_PATHS=$(command egrep -s -x "$LINK_ARG:.*" $QCD_STORE | command awk -F ':' '{print $2}' | command tr ' ' ':')
 
       # Iterate Over Linked Paths
       for LINK_PATH in $LINK_PATHS
