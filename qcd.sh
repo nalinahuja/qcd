@@ -722,7 +722,7 @@ function _qcd_comp() {
       local sphrase=$link_arg
 
       # Check For Indirect Link Matching
-      if [[ -z $(command cat $QCD_LINK | command grep "^$sphrase$") ]]
+      if [[ -z $(command cat $QCD_LINKS | command grep "^$sphrase$") ]]
       then
         # Initialize Counter
         local i=0
