@@ -880,7 +880,7 @@ function _qcd_init() {
     command bind 'set match-hidden-files off' 2> /dev/null
 
     # Update Symbolic Link File
-    (update_links)
+    (update_links &)
   fi
 }
 
