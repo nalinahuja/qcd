@@ -436,6 +436,7 @@ function qcd() {
     # Get Subdirectory If Non-Empty
     if [[ "$indicated_dir" == */* ]]
     then
+      # Slice From First Forward Slash
       sdir=${indicated_dir:$((${#link} + 1))}
     fi
 
