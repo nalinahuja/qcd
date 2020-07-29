@@ -10,10 +10,8 @@ ERR=1
 CONT=2
 NFD=127
 
-# Padding Value
-MIN_P=4
-
-# Timeout Value
+# Embedded Values
+MINP=4
 TIMEOUT=10
 
 # Conditional Values
@@ -53,11 +51,11 @@ W=$(tput setaf 0)$(tput setab 7)
 QCD_FOLD=~/.qcd
 QCD_HELP=$QCD_FOLD/help
 QCD_TEMP=$QCD_FOLD/temp
-QCD_LINK=$QCD_FOLD/link
+QCD_LINKS=$QCD_FOLD/links
 QCD_STORE=$QCD_FOLD/store
 QCD_UPDATE=$QCD_FOLD/update.zip
 
-# Update Release Link
+# Update Release URL
 QCD_RELEASES="https://api.github.com/repos/nalinahuja22/qcd/releases/latest"
 
 # End Defined Program Constants--------------------------------------------------------------------------------------------------------------------------------------
@@ -69,7 +67,7 @@ function format_dir() {
 
 function escape_regex() {
   # Get Argument String
-  local fstr="$1"
+  local fstr="$@"
 
   # Escape Regex Characters
   fstr="${fstr//\*/\\*}"
@@ -84,7 +82,7 @@ function escape_regex() {
 
 function update_links() {
   # Store Symbolic Links In Link File
-  command cat $QCD_STORE | command awk -F ':' '{print $1}' > $QCD_LINK
+  command cat $QCD_STORE | command awk -F ':' '{print $1}' > $QCD_LINKS
 }
 
 function update_store() {
@@ -186,7 +184,7 @@ function parse_option_flags() {
 
     # Expand Regex Characters
     sphrase=${sphrase//\*/\.\*}
-    sphrase=${sphrase//\?/\.\?}
+    sphrase=${sphrase//\?/\.}
 
     # Get Linkages From Store File
     local linkages=$(command cat $QCD_STORE)
@@ -215,10 +213,10 @@ function parse_option_flags() {
     local max_link=$(command echo -e "$linkages" | command awk -F ':' '{print $1}' | command awk '{print length}' | command sort -n | command tail -n1)
 
     # Error Check Max Link Length
-    if [[ $max_link -lt $MIN_P ]]
+    if [[ $max_link -lt $MINP ]]
     then
       # Set To Minimum Padding
-      max_link=$MIN_P
+      max_link=$MINP
     fi
 
     # Format Header
@@ -478,7 +476,7 @@ function qcd() {
     link=$(escape_regex "$link")
 
     # Check For Indirect Link Matching
-    if [[ -z $(command cat $QCD_LINK | command grep "^$link$") ]]
+    if [[ -z $(command cat $QCD_LINKS | command grep "^$link$") ]]
     then
       # Initialize Counter
       local i=0
