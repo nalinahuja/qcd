@@ -16,7 +16,7 @@ MIN_P=4
 # Timeout Value
 TIMEOUT=10
 
-# Conditional Booleans
+# Conditional Values
 TRUE=1
 FALSE=0
 
@@ -42,7 +42,7 @@ ESC="\\"
 CWD="."
 HWD="../"
 
-# Text Formatting
+# Text Formatting Strings
 B=$(command tput bold)
 N=$(command tput sgr0)
 W=$(tput setaf 0)$(tput setab 7)
@@ -76,23 +76,15 @@ function escape_regex() {
   local fstr="$1"
 
   # Escape Regex Characters
-  fstr="${fstr//\*/\*}"
-  fstr="${fstr//\?/\?}"
-  fstr="${fstr//\./\.}"
+  fstr="${fstr//\*/\\*}"
+  fstr="${fstr//\?/\\?}"
+  fstr="${fstr//\./\\.}"
 
   # Return Formatted String
   command echo -e "$fstr"
 }
 
 # End Helper Functions-----------------------------------------------------------------------------------------------------------------------------------------------
-
-function update_symlinks() {
-  # Clean Store File
-  qcd -c
-
-  # Update Symbolic Link Store
-  SYM_LINKS=$(command cat $QCD_STORE | command awk -F ':' '{print $1}')
-}
 
 function update_store() {
   # Check Exit Status
@@ -124,7 +116,7 @@ function add_directory() {
   fi
 
   # Update Global Symlink Store
-  update_symlinks
+  update_symbolic_links
 }
 
 function remove_directory() {
@@ -141,7 +133,7 @@ function remove_directory() {
   update_store $status
 
   # Update Global Symlink Store
-  update_symlinks
+  update_symbolic_links
 }
 
 function remove_symbolic_link() {
@@ -158,7 +150,12 @@ function remove_symbolic_link() {
   update_store $status
 
   # Update Global Symlink Store
-  update_symlinks
+  update_symbolic_links
+}
+
+function update_symbolic_links() {
+  # Update Symbolic Link Store
+  SYM_LINKS=$(command cat $QCD_STORE | command awk -F ':' '{print $1}')
 }
 
 # End Symbolic Link Management Functions-----------------------------------------------------------------------------------------------------------------------------
@@ -184,16 +181,22 @@ function parse_option_flags() {
       (remove_directory "$(command pwd)/" &)
     else
       # Remove Symbolic Link
-      (remove_symbolic_link "$1" &)
+      (remove_symbolic_link "${@:0:$#}" &)
     fi
 
     # Terminate Program
     return $OK
-
   elif [[ "${flag/--list/$LIST}" == "$LIST" ]]
   then
     # Display Prompt
     command echo -en "\rqcd: Generating link map..."
+
+    # Define Search Phrase
+    local sphrase="${@:0:$#}"
+
+    # Expand Regex Characters
+    sphrase=${sphrase//\*/\.\*}
+    sphrase=${sphrase//\?/\.\?}
 
     # Get Linkages From Store File
     local linkages=$(command cat $QCD_STORE)
@@ -202,7 +205,7 @@ function parse_option_flags() {
     if [[ $# -gt 1 ]]
     then
       # Retain Matching Linkages
-      linkages=$(command echo -e "$linkages"| command egrep -s -x "${1%/}.*:.*" 2> /dev/null)
+      linkages=$(command echo -e "$linkages"| command egrep -s -x "${sphrase%/}.*:.*" 2> /dev/null)
     fi
 
     # Error Check Linkages
@@ -485,7 +488,7 @@ function qcd() {
     link=$(escape_regex "$link")
 
     # Check For Indirect Link Matching
-    if [[ -z $(command echo -e "$SYM_LINKS" | command grep "^$link\$") ]]
+    if [[ -z $(command echo -e "$SYM_LINKS" | command grep "^$link$") ]]
     then
       # Initialize Counter
       local i=0
@@ -731,7 +734,7 @@ function _qcd_comp() {
       local sphrase=$link_arg
 
       # Check For Indirect Link Matching
-      if [[ -z $(command echo -e "$SYM_LINKS" | command grep "^$sphrase\$") ]]
+      if [[ -z $(command echo -e "$SYM_LINKS" | command grep "^$sphrase$") ]]
       then
         # Initialize Counter
         local i=0
@@ -746,7 +749,7 @@ function _qcd_comp() {
           nlink="$ESC$CWD"
 
           # Shift Counter
-          i=2
+          i=1
         fi
 
         # Wildcard Symbolic Link
@@ -889,7 +892,7 @@ function _qcd_init() {
     command bind 'set match-hidden-files off' 2> /dev/null
 
     # Update Global Symlink Store
-    (update_symlinks &)
+    (update_symbolic_links &)
   fi
 }
 
