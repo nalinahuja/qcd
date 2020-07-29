@@ -67,13 +67,16 @@ function format_dir() {
 }
 
 function escape_regex() {
+  # Get Argument String
+  local fstr="$1"
+
   # Escape Regex Characters
-  1="${1//\*/\*}"
-  1="${1//\?/\?}"
-  1="${1//\./\.}"
+  fstr="${fstr//\*/\*}"
+  fstr="${fstr//\?/\?}"
+  fstr="${fstr//\./\.}"
 
   # Return Formatted String
-  command echo -e "$1"
+  command echo -e "$fstr"
 }
 
 # End Helper Functions-----------------------------------------------------------------------------------------------------------------------------------------------
