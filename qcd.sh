@@ -700,9 +700,36 @@ function _qcd_comp() {
       LINK_ARG=$(escape_regex "$LINK_ARG")
 
       # Check For Indirect Link Matching
-      if [[ -z $(command egrep -s -x "$LINK_ARG:.*") ]]
+      if [[ -z $(command egrep -s -x "$LINK_ARG:.*" $QCD_STORE) ]]
       then
+        # Initialize Counter
+        local i=0
 
+        # Initialize New Link
+        local NLINK=$ESTR
+
+        # Check For Hidden Directory Prefix
+        if [[ "$LINK_ARG" == \\\.* ]]
+        then
+          # Override New Link
+          NLINK="$ESC$CWD"
+
+          # Shift Counter
+          i=2
+        fi
+
+        # Wildcard Symbolic Link
+        for ((;i < ${#LINK_ARG}; i++))
+        do
+          # Get Character At Index
+          local c=${LINK_ARG:$i:1}
+
+          # Append Wildcard
+          NLINK="${NLINK}${c}.*"
+        done
+
+        # Override Link
+        LINK_ARG=$NLINK
       fi
 
       # Store Compressed Linked Paths From Store File
