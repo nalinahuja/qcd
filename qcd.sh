@@ -61,9 +61,14 @@ QCD_RELEASES="https://api.github.com/repos/nalinahuja22/qcd/releases/latest"
 
 # End Defined Program Constants--------------------------------------------------------------------------------------------------------------------------------------
 
+# Symbolic Link Store
+SYM_LINKS=$ESTR
+
+# End Global Variables-----------------------------------------------------------------------------------------------------------------------------------------------
+
 function format_dir() {
   # Compress Home Directory
-  command echo -e ${1/$HOME/\~}
+  command echo -e ${@/$HOME/\~}
 }
 
 function escape_regex() {
@@ -80,6 +85,14 @@ function escape_regex() {
 }
 
 # End Helper Functions-----------------------------------------------------------------------------------------------------------------------------------------------
+
+function update_symlinks() {
+  # Clean Store File
+  qcd -c
+
+  # Update Symbolic Link Store
+  SYM_LINKS=$(command cat $QCD_STORE | command awk -F ':' '{print $1}')
+}
 
 function update_store() {
   # Check Exit Status
@@ -109,6 +122,9 @@ function add_directory() {
     # Sort Store File
     command sort -o $QCD_STORE -n -t ':' -k2 $QCD_STORE
   fi
+
+  # Update Global Symlink Store
+  update_symlinks
 }
 
 function remove_directory() {
@@ -123,6 +139,9 @@ function remove_directory() {
 
   # Update Store If Successful
   update_store $status
+
+  # Update Global Symlink Store
+  update_symlinks
 }
 
 function remove_symbolic_link() {
@@ -137,6 +156,9 @@ function remove_symbolic_link() {
 
   # Update Store If Successful
   update_store $status
+
+  # Update Global Symlink Store
+  update_symlinks
 }
 
 # End Symbolic Link Management Functions-----------------------------------------------------------------------------------------------------------------------------
@@ -209,6 +231,9 @@ function parse_option_flags() {
     # Format Header
     command printf "\r${W} %-${max_link}s %-$((cols - max_link - 2))s${N}\n" "Link" "Directory" > $QCD_TEMP
 
+    # Set IFS
+    local IFS=$'\n'
+
     # Iterate Over Linkages From Store File
     for linkage in $linkages
     do
@@ -219,6 +244,9 @@ function parse_option_flags() {
       # Format Linkage
       command printf " %-${max_link}s  %s\n" $link $(format_dir "${path%/}") >> $QCD_TEMP
     done
+
+    # Unset IFS
+    unset IFS
 
     # Display Prompt
     command cat $QCD_TEMP
@@ -457,7 +485,7 @@ function qcd() {
     link=$(escape_regex "$link")
 
     # Check For Indirect Link Matching
-    if [[ ! "$indicated_dir" == */ ]]
+    if [[ -z $(command echo -e "$SYM_LINKS" | command grep "^$link\$") ]]
     then
       # Initialize Counter
       local i=0
@@ -699,11 +727,44 @@ function _qcd_comp() {
     # Resolve Linked Directories
     if [[ ! -e "$curr_arg" ]]
     then
-      # Escape Regex Characters
-      link_arg=$(escape_regex "$link_arg")
+      # Define Search Phrase
+      local sphrase=$link_arg
+
+      # Check For Indirect Link Matching
+      if [[ -z $(command echo -e "$SYM_LINKS" | command grep "^$sphrase\$") ]]
+      then
+        # Initialize Counter
+        local i=0
+
+        # Initialize New Link
+        local nlink=$ESTR
+
+        # Check For Hidden Directory Prefix
+        if [[ "$link_arg" == \.* ]]
+        then
+          # Override New Link
+          nlink="$ESC$CWD"
+
+          # Shift Counter
+          i=2
+        fi
+
+        # Wildcard Symbolic Link
+        for ((;i < ${#link_arg}; i++))
+        do
+          # Get Character At Index
+          local c=${link_arg:$i:1}
+
+          # Append Wildcard
+          nlink="${nlink}${c}.*"
+        done
+
+        # Override Link
+        sphrase=$nlink
+      fi
 
       # Store Compressed Linked Paths From Store File
-      local link_paths=$(command egrep -s -x "$link_arg:.*" $QCD_STORE | command awk -F ':' '{print $2}' | command tr ' ' ':')
+      local link_paths=$(command egrep -s -x "$sphrase:.*" $QCD_STORE | command awk -F ':' '{print $2}' | command tr ' ' ':')
 
       # Iterate Over Linked Paths
       for link_path in $link_paths
@@ -827,8 +888,8 @@ function _qcd_init() {
     # Set Completion Engine To Ignore Hidden Files
     command bind 'set match-hidden-files off' 2> /dev/null
 
-    # Cleanup Store File
-    (qcd -c &)
+    # Update Global Symlink Store
+    (update_symlinks &)
   fi
 }
 
