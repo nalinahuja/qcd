@@ -53,6 +53,7 @@ W=$(tput setaf 0)$(tput setab 7)
 QCD_FOLD=~/.qcd
 QCD_HELP=$QCD_FOLD/help
 QCD_TEMP=$QCD_FOLD/temp
+QCD_LINK=$QCD_FOLD/link
 QCD_STORE=$QCD_FOLD/store
 QCD_UPDATE=$QCD_FOLD/update.zip
 
@@ -60,11 +61,6 @@ QCD_UPDATE=$QCD_FOLD/update.zip
 QCD_RELEASES="https://api.github.com/repos/nalinahuja22/qcd/releases/latest"
 
 # End Defined Program Constants--------------------------------------------------------------------------------------------------------------------------------------
-
-# Symbolic Link Store
-SYM_LINKS=$ESTR
-
-# End Global Variables-----------------------------------------------------------------------------------------------------------------------------------------------
 
 function format_dir() {
   # Compress Home Directory
@@ -86,12 +82,20 @@ function escape_regex() {
 
 # End Helper Functions-----------------------------------------------------------------------------------------------------------------------------------------------
 
+function update_links() {
+  # Store Symbolic Links In Link File
+  command cat $QCD_STORE | command awk -F ':' '{print $1}' > $QCD_LINK
+}
+
 function update_store() {
   # Check Exit Status
   if [[ $1 -eq $OK ]]
   then
     # Update Store File
     command mv $QCD_TEMP $QCD_STORE
+
+    # Update Symbolic Link File
+    update_links
   else
     # Remove Temp File
     command rm $QCD_TEMP 2> /dev/null
@@ -114,9 +118,6 @@ function add_directory() {
     # Sort Store File
     command sort -o $QCD_STORE -n -t ':' -k2 $QCD_STORE
   fi
-
-  # Update Global Symlink Store
-  update_symbolic_links
 }
 
 function remove_directory() {
@@ -131,9 +132,6 @@ function remove_directory() {
 
   # Update Store If Successful
   update_store $status
-
-  # Update Global Symlink Store
-  update_symbolic_links
 }
 
 function remove_symbolic_link() {
@@ -148,14 +146,6 @@ function remove_symbolic_link() {
 
   # Update Store If Successful
   update_store $status
-
-  # Update Global Symlink Store
-  update_symbolic_links
-}
-
-function update_symbolic_links() {
-  # Update Symbolic Link Store
-  SYM_LINKS=$(command cat $QCD_STORE | command awk -F ':' '{print $1}')
 }
 
 # End Symbolic Link Management Functions-----------------------------------------------------------------------------------------------------------------------------
@@ -404,7 +394,7 @@ function qcd() {
     command touch $QCD_STORE
   fi
 
-  # End Pre-Execution Validation-------------------------------------------------------------------------------------------------------------------------------------
+  # End Validation---------------------------------------------------------------------------------------------------------------------------------------------------
 
   # Parse Arguments For Option Flags
   parse_option_flags $@
@@ -457,7 +447,7 @@ function qcd() {
     indicated_dir="${back_dir// /$HWD}"
   fi
 
-  # End Input Formatting And Validation------------------------------------------------------------------------------------------------------------------------------
+  # End Input Formatting---------------------------------------------------------------------------------------------------------------------------------------------
 
   # Determine If Directory Is Linked
   if [[ -e "${indicated_dir//\\ /}" ]]
@@ -488,7 +478,7 @@ function qcd() {
     link=$(escape_regex "$link")
 
     # Check For Indirect Link Matching
-    if [[ -z $(command echo -e "$SYM_LINKS" | command grep "^$link$") ]]
+    if [[ -z $(command cat $QCD_LINK | command grep "^$link$") ]]
     then
       # Initialize Counter
       local i=0
@@ -734,7 +724,7 @@ function _qcd_comp() {
       local sphrase=$link_arg
 
       # Check For Indirect Link Matching
-      if [[ -z $(command echo -e "$SYM_LINKS" | command grep "^$sphrase$") ]]
+      if [[ -z $(command cat $QCD_LINK | command grep "^$sphrase$") ]]
       then
         # Initialize Counter
         local i=0
@@ -891,8 +881,8 @@ function _qcd_init() {
     # Set Completion Engine To Ignore Hidden Files
     command bind 'set match-hidden-files off' 2> /dev/null
 
-    # Update Global Symlink Store
-    (update_symbolic_links &)
+    # Update Symbolic Link File
+    (update_links)
   fi
 }
 
