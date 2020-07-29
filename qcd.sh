@@ -449,7 +449,7 @@ function qcd() {
       local wlink=$ESTR
 
       # Check For Hidden Directory Prefix
-      if [[ "$indicated_dir" == \.* ]];
+      if [[ "$indicated_dir" == \.* ]]
       then
         # Set Link Override
         wlink="$ESC$CWD"
