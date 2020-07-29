@@ -19,9 +19,6 @@ FALSE=0
 
 # End Defined Numerical Constants------------------------------------------------------------------------------------------------------------------------------------
 
-# User Actions
-YES="y"
-
 # Option Flags
 LIST="-l"
 CLEAN="-c"
@@ -33,8 +30,9 @@ HELP="-h"
 UPDATE="-u"
 VERSION="-v"
 
-# Defined Strings
+# Embedded Strings
 ESTR=""
+YES="y"
 ESC="\\"
 
 # Directory Patterns
@@ -444,30 +442,35 @@ function qcd() {
     # Determine Match Type
     if [[ ! "$indicated_dir" == */ ]]
     then
+      # Initialize Counter
+      local i=0
+
       # Initialize Wildcard Link
       local wlink=$ESTR
 
+      # Check For Hidden Directory Prefix
+      if [[ "$indicated_dir" == \.* ]];
+      then
+        # Set Link Override
+        wlink="$ESC$CWD"
+
+        # Shift Counter
+        i=2
+      fi
+
       # Wildcard Symbolic Link
-      for ((i=0; i < ${#link}; i++))
+      for ((;i < ${#link}; i++))
       do
         # Get Character At Index
         local c=${link:$i:1}
 
         # Append Wildcard
-        if [[ ! "$c" == "$ESC" && ! "$c" == "$CWD" ]]
-        then
-          c="${c}.*"
-        fi
-
-        # Append Character
-        wlink="${wlink}${c}"
+        wlink="${wlink}${c}.*"
       done
 
-      # Override Link Input
+      # Override Link
       link=$wlink
     fi
-
-    echo $link
 
     # Get Symbolic Linkages From Store File
     local resv=$(command egrep -s -x "$link:.*" $QCD_STORE 2> /dev/null)
