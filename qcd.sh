@@ -19,9 +19,6 @@ FALSE=0
 
 # End Defined Numerical Constants------------------------------------------------------------------------------------------------------------------------------------
 
-# Empty String
-ESTR=""
-
 # User Actions
 YES="y"
 
@@ -36,14 +33,18 @@ HELP="-h"
 UPDATE="-u"
 VERSION="-v"
 
-# Text Formatting
-B=$(command tput bold)
-N=$(command tput sgr0)
-W=$(tput setaf 0)$(tput setab 7)
+# Defined Strings
+ESTR=""
+ESC="\\"
 
 # Directory Patterns
 CWD="."
 HWD="../"
+
+# Text Formatting
+B=$(command tput bold)
+N=$(command tput sgr0)
+W=$(tput setaf 0)$(tput setab 7)
 
 # End Defined String Constants---------------------------------------------------------------------------------------------------------------------------------------
 
@@ -96,13 +97,13 @@ function add_directory() {
 
 function remove_directory() {
   # Format Input
-  format_dir="${@}"
+  local format_dir="${@}"
 
   # Remove Directory From Store
   command egrep -s -v -x ".*:${format_dir}" $QCD_STORE > $QCD_TEMP
 
   # Store Operation Status
-  status=$?
+  local status=$?
 
   # Update Store If Successful
   update_store $status
@@ -110,13 +111,13 @@ function remove_directory() {
 
 function remove_symbolic_link() {
   # Format Input
-  format_link="${@%/}"
+  local format_link="${@%/}"
 
   # Remove Link From Store
   command egrep -s -v -x "${format_link}:.*" $QCD_STORE > $QCD_TEMP
 
   # Store Operation Status
-  status=$?
+  local status=$?
 
   # Update Store If Successful
   update_store $status
@@ -126,7 +127,7 @@ function remove_symbolic_link() {
 
 function parse_option_flags() {
   # Get Argument Flag
-  flag="${@:$#}"
+  local flag="${@:$#}"
 
   # Check For Option Flags
   if [[ "${flag/--remember/$REMEMBER}" == "$REMEMBER" ]]
@@ -239,7 +240,7 @@ function parse_option_flags() {
 
 function parse_standalone_flags() {
   # Get Argument Flag
-  flag="${@:$#}"
+  local flag="${@:$#}"
 
   # Check For Standalone Flags
   if [[ "${flag/--help/$HELP}" == "$HELP" ]]
@@ -426,30 +427,50 @@ function qcd() {
     # Store Directory Link
     local link=$(command echo -e "$indicated_dir" | command cut -d '/' -f1)
 
-    # Initialize Relative Subdirectory
-    local sdir=$ESTR
-
-    # Get Subdirectory If Non-Empty
-    if [[ $indicated_dir == */* ]]
-    then
-      sdir=${indicated_dir:$((${#link} + 1))}
-    fi
-
-    # Initialize Symbolic Link Result
-    local resv=$ESTR
-
     # Escape Regex Characters
     link="${link//\*/\*}"
     link="${link//\?/\?}"
     link="${link//\./\.}"
 
-    # Get Symbolic Linkages From Store File
-    if [[ "$indicated_dir" == */ ]]
+    # Initialize Relative Subdirectory
+    local sdir=$ESTR
+
+    # Get Subdirectory If Non-Empty
+    if [[ "$indicated_dir" == */* ]]
     then
-      resv=$(command egrep -s -x "$link:.*" $QCD_STORE 2> /dev/null)
-    else
-      resv=$(command egrep -s -x "$link.*:.*" $QCD_STORE 2> /dev/null)
+      sdir=${indicated_dir:$((${#link} + 1))}
     fi
+
+    # Determine Match Type
+    if [[ ! "$indicated_dir" == */ ]]
+    then
+      # Initialize Wildcard Link
+      local wlink=$ESTR
+
+      # Wildcard Symbolic Link
+      for ((i=0; i < ${#link}; i++))
+      do
+        # Get Character At Index
+        local c=${link:$i:1}
+
+        # Append Wildcard
+        if [[ ! "$c" == "$ESC" && ! "$c" == "$CWD" ]]
+        then
+          c="${c}.*"
+        fi
+
+        # Append Character
+        wlink="${wlink}${c}"
+      done
+
+      # Override Link Input
+      link=$wlink
+    fi
+
+    echo $link
+
+    # Get Symbolic Linkages From Store File
+    local resv=$(command egrep -s -x "$link:.*" $QCD_STORE 2> /dev/null)
 
     # Get Count Of Symbolic Linkages
     local resc=$(command echo -e "$resv" | command wc -l 2> /dev/null)
