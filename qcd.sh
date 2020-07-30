@@ -568,7 +568,7 @@ function qcd() {
       for path in $paths
       do
         # Form Complete Path
-        path="${path}${sdir}"
+        path=$(_escape_dir "${path}${sdir}")
 
         # Validate Path
         if [[ -e "$path" && ! "${path%/}" = "${cdir%/}" ]]
