@@ -744,11 +744,11 @@ function _qcd_comp() {
     # Resolve Linked Directories
     if [[ ! -e "$curr_arg" ]]
     then
-      # Initialize Search Phrase
-      local sphrase=$link_arg
+      # Initialize Local Paths
+      local local_paths=$ESTR
 
       # Check For Indirect Link Matching
-      if [[ -z $(command cat $QCD_LINKS | command grep "^$sphrase$") ]]
+      if [[ -z $(command cat $QCD_LINKS | command grep "^$link_arg$") ]]
       then
         # Initialize Counter
         local i=0
@@ -757,7 +757,7 @@ function _qcd_comp() {
         local nlink=$ESTR
 
         # Check For Hidden Directory Prefix
-        if [[ "$sphrase" == \.* ]]
+        if [[ "$link_arg" == \.* ]]
         then
           # Override New Link
           nlink="$ESC$CWD"
@@ -767,21 +767,21 @@ function _qcd_comp() {
         fi
 
         # Wildcard Symbolic Link
-        for ((;i < ${#sphrase}; i++))
+        for ((;i < ${#link_arg}; i++))
         do
           # Get Character At Index
-          local c=${sphrase:$i:1}
+          local c=${link_arg:$i:1}
 
           # Append Wildcard
           nlink="${nlink}${c}.*"
         done
 
-        # Override Link
-        sphrase=$nlink
+        # Get Compressed Case Insensitive Linked Paths From Store File
+        local link_paths=$(command egrep -s -i -x "$nlink:.*" $QCD_STORE | command awk -F ':' '{print $2}' | command tr ' ' ':')
+      else
+        # Get Compressed Case Sensitive Linked Paths From Store File
+        local link_paths=$(command egrep -s -x "$link_arg:.*" $QCD_STORE | command awk -F ':' '{print $2}' | command tr ' ' ':')
       fi
-
-      # Get Compressed Linked Paths From Store File
-      local link_paths=$(command egrep -s -x "$sphrase:.*" $QCD_STORE | command awk -F ':' '{print $2}' | command tr ' ' ':')
 
       # Iterate Over Linked Paths
       for link_path in $link_paths
