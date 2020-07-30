@@ -187,11 +187,8 @@ function _parse_option_flags() {
     # Display Prompt
     command echo -en "\rqcd: Generating link map..."
 
-    # Clean Store File
-    qcd --clean
-
     # Get Linkages From Store File
-    local linkages=$(command cat $QCD_STORE)
+    local linkages=$(qcd --clean && command cat $QCD_STORE)
 
     # Determine List Type
     if [[ $# -gt 1 ]]
@@ -231,7 +228,7 @@ function _parse_option_flags() {
     fi
 
     # Format Header
-    command printf "\r${W} %-${max_link}s %-$((cols - max_link - 2))s${N}\n" "Link" "Directory" > $QCD_TEMP
+    command printf "\r${W} %-${max_link}s %-$(($cols - $max_link - 2))s${N}\n" "Link" "Directory" > $QCD_TEMP
 
     # Set IFS
     local IFS=$'\n'
@@ -613,7 +610,7 @@ function qcd() {
 
           # Output Path As Option
           command printf "($cnt) ${path%/}\n" >> $QCD_TEMP
-          cnt=$((cnt + 1))
+          cnt=$(($cnt + 1))
         done
 
         # Unset IFS
