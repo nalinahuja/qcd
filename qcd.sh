@@ -432,6 +432,8 @@ function qcd() {
 
   # Store Command Line Arguments
   local indicated_dir="$@"
+  indicated_dir=${indicated_dir//\\ / }
+  indicated_dir=${indicated_dir//\\/}
 
   # Check For Empty Input
   if [[ -z $indicated_dir ]]
@@ -456,7 +458,7 @@ function qcd() {
   # End Input Formatting---------------------------------------------------------------------------------------------------------------------------------------------
 
   # Determine If Directory Is Linked
-  if [[ -e "${indicated_dir//\\ /}" ]]
+  if [[ -e "$indicated_dir" ]]
   then
     # Change To Valid Directory
     command cd "$indicated_dir"
@@ -551,6 +553,8 @@ function qcd() {
       do
         # Form Complete Path
         path="${path}${sdir}"
+        path=${path//\\ / }
+        path=${path//\\/}
 
         # Validate Path
         if [[ -e "$path" && ! "${path%/}" = "${cdir%/}" ]]
@@ -762,7 +766,7 @@ function _qcd_comp() {
         sphrase=$nlink
       fi
 
-      # Store Compressed Linked Paths From Store File
+      # Get Compressed Linked Paths From Store File
       local link_paths=$(command egrep -s -x "$sphrase:.*" $QCD_STORE | command awk -F ':' '{print $2}' | command tr ' ' ':')
 
       # Iterate Over Linked Paths
@@ -770,6 +774,8 @@ function _qcd_comp() {
       do
         # Form Resolved Directory
         local res_dir="${link_path//:/ }${subs_arg}"
+        res_dir=${res_dir//\\ / }
+        res_dir=${res_dir//\\/}
 
         # Add Resolved Directory
         if [[ -e "$res_dir" ]]
