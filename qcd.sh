@@ -744,7 +744,7 @@ function _qcd_comp() {
     # Resolve Linked Directories
     if [[ ! -e "$curr_arg" ]]
     then
-      # Define Search Phrase
+      # Initialize Search Phrase
       local sphrase=$link_arg
 
       # Check For Indirect Link Matching
@@ -757,7 +757,7 @@ function _qcd_comp() {
         local nlink=$ESTR
 
         # Check For Hidden Directory Prefix
-        if [[ "$link_arg" == \.* ]]
+        if [[ "$sphrase" == \.* ]]
         then
           # Override New Link
           nlink="$ESC$CWD"
@@ -767,10 +767,10 @@ function _qcd_comp() {
         fi
 
         # Wildcard Symbolic Link
-        for ((;i < ${#link_arg}; i++))
+        for ((;i < ${#sphrase}; i++))
         do
           # Get Character At Index
-          local c=${link_arg:$i:1}
+          local c=${sphrase:$i:1}
 
           # Append Wildcard
           nlink="${nlink}${c}.*"
@@ -842,7 +842,7 @@ function _qcd_comp() {
         link_sub="${link_arg}${subs_arg}${sub_dir}"
 
         # Add Linked Subdirectories
-        if [[ ! -e "${link_sub//\\ / }" ]]
+        if [[ ! -e "$(_escape_dir "$link_sub")" ]]
         then
           word_list+=("$link_sub/")
         else
