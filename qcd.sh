@@ -142,6 +142,9 @@ function _remove_directory() {
   # Format Input
   local format_dir="${@}"
 
+  # Clean Store File
+  qcd --clean
+
   # Remove Directory From Store
   command egrep -s -v -x ".*:${format_dir}" $QCD_STORE > $QCD_TEMP
 
@@ -155,6 +158,9 @@ function _remove_directory() {
 function _remove_symbolic_link() {
   # Format Input
   local format_link="${@%/}"
+
+  # Clean Store File
+  qcd --clean
 
   # Remove Link From Store
   command egrep -s -v -x "${format_link}:.*" $QCD_STORE > $QCD_TEMP
