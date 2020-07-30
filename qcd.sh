@@ -142,9 +142,6 @@ function _remove_directory() {
   # Format Input
   local format_dir="${@}"
 
-  # Clean Store File
-  qcd --clean
-
   # Remove Directory From Store
   command egrep -s -v -x ".*:${format_dir}" $QCD_STORE > $QCD_TEMP
 
@@ -158,9 +155,6 @@ function _remove_directory() {
 function _remove_symbolic_link() {
   # Format Input
   local format_link="${@%/}"
-
-  # Clean Store File
-  qcd --clean
 
   # Remove Link From Store
   command egrep -s -v -x "${format_link}:.*" $QCD_STORE > $QCD_TEMP
@@ -346,7 +340,7 @@ function _parse_standalone_flags() {
       release_url=$(command curl --connect-timeout $TIMEOUT -s -L $QCD_RELEASES | command egrep -s -o "https.*zipball.*")
 
       # Error Check Release Link
-      if [[ ! $? -eq $OK || -z $release_url ]]
+      if [[ $? -ne $OK || -z $release_url ]]
       then
         # Display Prompt
         command echo -e "\r→ Failed to resolve download link for update"
@@ -359,7 +353,7 @@ function _parse_standalone_flags() {
       command curl --connect-timeout $TIMEOUT -s -L "${release_url/\",/}" > $QCD_UPDATE
 
       # Error Check Update
-      if [[ ! $? -eq $OK || ! -f $QCD_UPDATE ]]
+      if [[ $? -ne $OK || ! -f $QCD_UPDATE ]]
       then
         # Display Prompt
         command echo -e "\r→ Failed to download update"
@@ -375,7 +369,7 @@ function _parse_standalone_flags() {
       command unzip -o -j $QCD_UPDATE -d $QCD_FOLD &> /dev/null
 
       # Error Check Installation
-      if [[ ! $? -eq $OK ]]
+      if [[ $? -ne $OK ]]
       then
         # Display Prompt
         command echo -e "\r→ Failed to install update"
@@ -427,7 +421,7 @@ function qcd() {
   local status=$?
 
   # Check Function Return
-  if [[ ! $status -eq $CONT ]]
+  if [[ $status -ne $CONT ]]
   then
     # Terminate Program
     return $status
@@ -440,7 +434,7 @@ function qcd() {
   local status=$?
 
   # Check Function Return
-  if [[ ! $status -eq $CONT ]]
+  if [[ $status -ne $CONT ]]
   then
     # Terminate Program
     return $status
