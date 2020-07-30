@@ -530,10 +530,10 @@ function qcd() {
         nlink="${nlink}${c}.*"
       done
 
-      # Get Symbolic Linkages From Store File (Case Insensitive)
+      # Get Case Insensitive Symbolic Linkages From Store File
       resv=$(command egrep -s -i -x "$nlink:.*" $QCD_STORE 2> /dev/null)
     else
-      # Get Symbolic Linkages From Store File (Case Sensitive)
+      # Get Case Sensitive Symbolic Linkages From Store File
       resv=$(command egrep -s -x "$link:.*" $QCD_STORE 2> /dev/null)
     fi
 
