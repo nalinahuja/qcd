@@ -60,13 +60,13 @@ QCD_RELEASES="https://api.github.com/repos/nalinahuja22/qcd/releases/latest"
 
 # End Defined Program Constants--------------------------------------------------------------------------------------------------------------------------------------
 
-function format_dir() {
+function _format_dir() {
   # Compress Home Directory
   command echo -e ${@/$HOME/\~}
 }
 
-function escape_regex() {
-  # Get Argument String
+function _escape_regex() {
+  # Store Argument String
   local fstr="$@"
 
   # Escape Regex Characters
@@ -74,23 +74,23 @@ function escape_regex() {
   fstr="${fstr//\?/\\?}"
   fstr="${fstr//\./\\.}"
 
-  # Return Formatted String
+  # Return Escaped String
   command echo -e "$fstr"
 }
 
 # End Helper Functions-----------------------------------------------------------------------------------------------------------------------------------------------
 
-function cleanup() {
+function _cleanup() {
   # Delete Link And Temp Files
   command rm $QCD_LINKS $QCD_TEMP 2> /dev/null
 }
 
-function update_links() {
+function _update_links() {
   # Store Symbolic Links In Link File
   command cat $QCD_STORE | command awk -F ':' '{print $1}' > $QCD_LINKS
 }
 
-function update_store() {
+function _update_store() {
   # Check Exit Status
   if [[ $1 -eq $OK ]]
   then
@@ -98,7 +98,7 @@ function update_store() {
     command mv $QCD_TEMP $QCD_STORE
 
     # Update Symbolic Link File
-    update_links
+    _update_links
   else
     # Remove Temp File
     command rm $QCD_TEMP 2> /dev/null
@@ -122,7 +122,7 @@ function add_directory() {
     command sort -o $QCD_STORE -n -t ':' -k2 $QCD_STORE
 
     # Update Symbolic Link File
-    update_links
+    _update_links
   fi
 }
 
@@ -137,7 +137,7 @@ function remove_directory() {
   local status=$?
 
   # Update Store If Successful
-  update_store $status
+  _update_store $status
 }
 
 function remove_symbolic_link() {
@@ -151,7 +151,7 @@ function remove_symbolic_link() {
   local status=$?
 
   # Update Store If Successful
-  update_store $status
+  _update_store $status
 }
 
 # End Symbolic Link Management Functions-----------------------------------------------------------------------------------------------------------------------------
@@ -186,6 +186,9 @@ function parse_option_flags() {
   then
     # Display Prompt
     command echo -en "\rqcd: Generating link map..."
+
+    # Clean Store File
+    qcd --clean
 
     # Get Linkages From Store File
     local linkages=$(command cat $QCD_STORE)
@@ -241,7 +244,7 @@ function parse_option_flags() {
       local path=$(command echo -e "$linkage" | command awk -F ':' '{print $2}')
 
       # Format Linkage
-      command printf " %-${max_link}s  %s\n" $link $(format_dir "${path%/}") >> $QCD_TEMP
+      command printf " %-${max_link}s  %s\n" $link $(_format_dir "${path%/}") >> $QCD_TEMP
     done
 
     # Unset IFS
@@ -483,7 +486,7 @@ function qcd() {
     fi
 
     # Escape Regex Characters
-    link=$(escape_regex "$link")
+    link=$(_escape_regex "$link")
 
     # Check For Indirect Link Matching
     if [[ -z $(command cat $QCD_LINKS | command grep "^$link$") ]]
@@ -606,7 +609,7 @@ function qcd() {
         for path in $paths
         do
           # Format Path
-          path=$(format_dir "$path")
+          path=$(_format_dir "$path")
 
           # Output Path As Option
           command printf "($cnt) ${path%/}\n" >> $QCD_TEMP
@@ -671,7 +674,7 @@ function qcd() {
       fi
 
       # Display Error
-      command echo -e "qcd: $(format_dir "${resv%/}"): Directory does not exist"
+      command echo -e "qcd: $(_format_dir "${resv%/}"): Directory does not exist"
 
       # Remove Current Directory
       (remove_directory "$resv" &)
@@ -887,14 +890,14 @@ function _qcd_init() {
   # Initialize QCD
   if [[ -f $QCD_STORE ]]
   then
-    # Cleanup Store File
-    (qcd -c &)
+    # Clean Store File
+    (qcd --clean &)
 
     # Populate Link File
-    (update_links &)
+    (_update_links &)
 
     # Remove Link File On Exit
-    command trap cleanup EXIT
+    command trap _cleanup EXIT
 
     # Set Environment To Show Visible Files
     command bind 'set match-hidden-files off' 2> /dev/null
