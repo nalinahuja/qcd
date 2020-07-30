@@ -7,7 +7,7 @@ QCD is a bash utility that extends upon the exisiting capabilities of the builti
 ## Compatibility
 
 <p align="justify">
-QCD is officially compatible with macOS and popular Linux distributions in bash environments between v3.2 to v5.0.
+QCD is compatible with macOS and popular Linux distributions in bash environments between v3.2 and v5.0.
 </p>
 
 ## Dependencies
