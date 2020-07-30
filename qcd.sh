@@ -477,7 +477,6 @@ function qcd() {
 
     # Check For Indirect Link Matching
     if [[ -z $(command cat $QCD_LINKS | command grep "^$link$") ]]
-    # if [[ ! "$indicated_dir" == */ ]]
     then
       # Initialize Counter
       local i=0
