@@ -65,6 +65,18 @@ function _format_dir() {
   command echo -e ${@/$HOME/\~}
 }
 
+function _escape_dir() {
+  # Store Argument Directory
+  local fdir="$@"
+
+  # Escape Characters
+  fdir="${fdir//\\ / }"
+  fdir="${fdir//\\/}"
+
+  # Return Escaped Directory
+  command echo -e "$fdir"
+}
+
 function _escape_regex() {
   # Store Argument String
   local fstr="$@"
@@ -78,7 +90,7 @@ function _escape_regex() {
   command echo -e "$fstr"
 }
 
-# End Helper Functions-----------------------------------------------------------------------------------------------------------------------------------------------
+# End String Functions-----------------------------------------------------------------------------------------------------------------------------------------------
 
 function _cleanup() {
   # Delete Link And Temp Files
@@ -432,27 +444,28 @@ function qcd() {
 
   # Store Command Line Arguments
   local indicated_dir="$@"
-  indicated_dir=${indicated_dir//\\ / }
-  indicated_dir=${indicated_dir//\\/}
 
   # Check For Empty Input
   if [[ -z $indicated_dir ]]
   then
     # Set To Home Directory
     indicated_dir=~
-  fi
+  else
+    # Format Escaped Characters
+    indicated_dir=$(_escape_dir "$indicated_dir")
 
-  # Check For Compressed Back Directory
-  if [[ "$indicated_dir" =~ ^[0-9]+\.\.$ ]]
-  then
-    # Get Back Directory Height
-    local back_height=${indicated_dir:0:$((${#indicated_dir} - 2))}
+    # Check For Compressed Back Directory
+    if [[ "$indicated_dir" =~ ^[0-9]+\.\.$ ]]
+    then
+      # Get Back Directory Height
+      local back_height=${indicated_dir:0:$((${#indicated_dir} - 2))}
 
-    # Generate Expanded Back Directory
-    local back_dir=$(command printf "%${back_height}s")
+      # Generate Expanded Back Directory
+      local back_dir=$(command printf "%${back_height}s")
 
-    # Set To Expanded Back Directory
-    indicated_dir="${back_dir// /$HWD}"
+      # Set To Expanded Back Directory
+      indicated_dir="${back_dir// /$HWD}"
+    fi
   fi
 
   # End Input Formatting---------------------------------------------------------------------------------------------------------------------------------------------
@@ -552,9 +565,7 @@ function qcd() {
       for path in $paths
       do
         # Form Complete Path
-        path="${path}${sdir}"
-        path=${path//\\ / }
-        path=${path//\\/}
+        path=$(_escape_dir "${path}${sdir}")
 
         # Validate Path
         if [[ -e "$path" && ! "${path%/}" = "${cdir%/}" ]]
@@ -773,9 +784,7 @@ function _qcd_comp() {
       for link_path in $link_paths
       do
         # Form Resolved Directory
-        local res_dir="${link_path//:/ }${subs_arg}"
-        res_dir=${res_dir//\\ / }
-        res_dir=${res_dir//\\/}
+        local res_dir=$(_escape_dir "${link_path//:/ }${subs_arg}")
 
         # Add Resolved Directory
         if [[ -e "$res_dir" ]]
@@ -893,7 +902,7 @@ function _qcd_init() {
     # Populate Link File
     (_update_links &)
 
-    # Remove Link File On Exit
+    # Cleanup Files On Exit
     command trap _cleanup EXIT
 
     # Set Environment To Show Visible Files
