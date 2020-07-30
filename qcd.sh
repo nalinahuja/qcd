@@ -55,7 +55,7 @@ QCD_LINKS=$QCD_FOLD/links
 QCD_STORE=$QCD_FOLD/store
 QCD_UPDATE=$QCD_FOLD/update.zip
 
-# Update Release URL
+# Release URL
 QCD_RELEASES="https://api.github.com/repos/nalinahuja22/qcd/releases/latest"
 
 # End Defined Program Constants--------------------------------------------------------------------------------------------------------------------------------------
@@ -81,8 +81,8 @@ function escape_regex() {
 # End Helper Functions-----------------------------------------------------------------------------------------------------------------------------------------------
 
 function cleanup() {
-  # Delete Link Store
-  command rm $QCD_LINKS
+  # Delete Link And Temp Files
+  command rm $QCD_LINKS $QCD_TEMP 2> /dev/null
 }
 
 function update_links() {
@@ -96,6 +96,9 @@ function update_store() {
   then
     # Update Store File
     command mv $QCD_TEMP $QCD_STORE
+
+    # Update Symbolic Link File
+    update_links
   else
     # Remove Temp File
     command rm $QCD_TEMP 2> /dev/null
@@ -135,9 +138,6 @@ function remove_directory() {
 
   # Update Store If Successful
   update_store $status
-
-  # Update Symbolic Link File
-  update_links
 }
 
 function remove_symbolic_link() {
@@ -152,9 +152,6 @@ function remove_symbolic_link() {
 
   # Update Store If Successful
   update_store $status
-
-  # Update Symbolic Link File
-  update_links
 }
 
 # End Symbolic Link Management Functions-----------------------------------------------------------------------------------------------------------------------------
