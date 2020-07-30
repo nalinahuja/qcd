@@ -80,6 +80,11 @@ function escape_regex() {
 
 # End Helper Functions-----------------------------------------------------------------------------------------------------------------------------------------------
 
+function cleanup() {
+  # Delete Link Store
+  command rm $QCD_LINKS
+}
+
 function update_links() {
   # Store Symbolic Links In Link File
   command cat $QCD_STORE | command awk -F ':' '{print $1}' > $QCD_LINKS
@@ -91,9 +96,6 @@ function update_store() {
   then
     # Update Store File
     command mv $QCD_TEMP $QCD_STORE
-
-    # Update Symbolic Link File
-    update_links
   else
     # Remove Temp File
     command rm $QCD_TEMP 2> /dev/null
@@ -115,6 +117,9 @@ function add_directory() {
 
     # Sort Store File
     command sort -o $QCD_STORE -n -t ':' -k2 $QCD_STORE
+
+    # Update Symbolic Link File
+    update_links
   fi
 }
 
@@ -130,6 +135,9 @@ function remove_directory() {
 
   # Update Store If Successful
   update_store $status
+
+  # Update Symbolic Link File
+  update_links
 }
 
 function remove_symbolic_link() {
@@ -144,6 +152,9 @@ function remove_symbolic_link() {
 
   # Update Store If Successful
   update_store $status
+
+  # Update Symbolic Link File
+  update_links
 }
 
 # End Symbolic Link Management Functions-----------------------------------------------------------------------------------------------------------------------------
@@ -162,6 +173,7 @@ function parse_option_flags() {
     return $OK
   elif [[ "${flag/--forget/$FORGET}" == "$FORGET" ]]
   then
+    echo "${@:1:$#}"
     # Determine Removal Type
     if [[ $# -eq 1 ]]
     then
@@ -169,7 +181,7 @@ function parse_option_flags() {
       (remove_directory "$(command pwd)/" &)
     else
       # Remove Symbolic Link
-      (remove_symbolic_link "${@:0:$#}" &)
+      (remove_symbolic_link "${@:1:$#}" &)
     fi
 
     # Terminate Program
@@ -180,7 +192,7 @@ function parse_option_flags() {
     command echo -en "\rqcd: Generating link map..."
 
     # Define Search Phrase
-    local sphrase="${@:0:$#}"
+    local sphrase="${@:1:$#}"
 
     # Expand Regex Characters
     sphrase=${sphrase//\*/\.\*}
@@ -873,14 +885,20 @@ function _qcd_init() {
   # Initialize QCD
   if [[ -f $QCD_STORE ]]
   then
-    # Initialize Completion Function
-    command complete -o nospace -o filenames -A directory -F _qcd_comp qcd
-
-    # Set Completion Engine To Ignore Hidden Files
-    command bind 'set match-hidden-files off' 2> /dev/null
+    # Cleanup Store File
+    (qcd -c &)
 
     # Update Symbolic Link File
     (update_links &)
+
+    # Remove Link Store On Exit
+    command trap cleanup EXIT
+
+    # Set Environment To Show Visible Files
+    command bind 'set match-hidden-files off' 2> /dev/null
+
+    # Initialize Completion Engine
+    command complete -o nospace -o filenames -A directory -F _qcd_comp qcd
   fi
 }
 
