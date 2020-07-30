@@ -140,7 +140,7 @@ function _add_directory() {
 
 function _remove_directory() {
   # Format Input
-  local format_dir="${@}"
+  local format_dir=$(_escape_regex "${@}")
 
   # Remove Directory From Store
   command egrep -s -v -x ".*:${format_dir}" $QCD_STORE > $QCD_TEMP
@@ -154,7 +154,7 @@ function _remove_directory() {
 
 function _remove_symbolic_link() {
   # Format Input
-  local format_link="${@%/}"
+  local format_link=$(_escape_regex "${@%/}")
 
   # Remove Link From Store
   command egrep -s -v -x "${format_link}:.*" $QCD_STORE > $QCD_TEMP
@@ -483,7 +483,7 @@ function qcd() {
     return $OK
   else
     # Store Directory Link
-    local link=$(command echo -e "$indicated_dir" | command cut -d '/' -f1)
+    local dlink=$(command echo -e "$indicated_dir" | command cut -d '/' -f1)
 
     # Initialize Relative Subdirectory
     local sdir=$ESTR
@@ -492,17 +492,17 @@ function qcd() {
     if [[ "$indicated_dir" == */* ]]
     then
       # Slice From First Forward Slash
-      sdir=${indicated_dir:$((${#link} + 1))}
+      sdir=${indicated_dir:$((${#dlink} + 1))}
     fi
 
     # Escape Regex Characters
-    link=$(_escape_regex "$link")
+    dlink=$(_escape_regex "$dlink")
 
     # Initialize Symbolic Linkages
     local resv=$ESTR
 
     # Check For Indirect Link Matching
-    if [[ -z $(command cat $QCD_LINKS | command grep "^$link$") ]]
+    if [[ -z $(command cat $QCD_LINKS | command grep "^$dlink$") ]]
     then
       # Initialize Counter
       local i=0
@@ -521,10 +521,10 @@ function qcd() {
       fi
 
       # Wildcard Symbolic Link
-      for ((;i < ${#link}; i++))
+      for ((;i < ${#dlink}; i++))
       do
         # Get Character At Index
-        local c=${link:$i:1}
+        local c=${dlink:$i:1}
 
         # Append Wildcard
         nlink="${nlink}${c}.*"
@@ -534,7 +534,7 @@ function qcd() {
       resv=$(command egrep -s -i -x "$nlink:.*" $QCD_STORE 2> /dev/null)
     else
       # Get Case Sensitive Symbolic Linkages From Store File
-      resv=$(command egrep -s -x "$link:.*" $QCD_STORE 2> /dev/null)
+      resv=$(command egrep -s -x "$dlink:.*" $QCD_STORE 2> /dev/null)
     fi
 
     # Get Count Of Symbolic Linkages
