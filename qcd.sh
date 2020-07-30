@@ -572,7 +572,7 @@ function qcd() {
 
           # Add Path To Filtered List
           fpaths="${fpaths}${path}:"
-          resc=$((resc + 1))
+          resc=$(($resc + 1))
         fi
       done
 
