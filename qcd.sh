@@ -105,7 +105,7 @@ function _update_store() {
   fi
 }
 
-function add_directory() {
+function _add_directory() {
   # Get Current Directory
   local dir=$(command pwd)
 
@@ -126,7 +126,7 @@ function add_directory() {
   fi
 }
 
-function remove_directory() {
+function _remove_directory() {
   # Format Input
   local format_dir="${@}"
 
@@ -140,7 +140,7 @@ function remove_directory() {
   _update_store $status
 }
 
-function remove_symbolic_link() {
+function _remove_symbolic_link() {
   # Format Input
   local format_link="${@%/}"
 
@@ -156,7 +156,7 @@ function remove_symbolic_link() {
 
 # End Symbolic Link Management Functions-----------------------------------------------------------------------------------------------------------------------------
 
-function parse_option_flags() {
+function _parse_option_flags() {
   # Get Argument Flag
   local flag="${@:$#}"
 
@@ -164,7 +164,7 @@ function parse_option_flags() {
   if [[ "${flag/--remember/$REMEMBER}" == "$REMEMBER" ]]
   then
     # Add Current Directory
-    (add_directory &)
+    (_add_directory &)
 
     # Terminate Program
     return $OK
@@ -174,10 +174,10 @@ function parse_option_flags() {
     if [[ $# -eq 1 ]]
     then
       # Remove Current Directory
-      (remove_directory "$(command pwd)/" &)
+      (_remove_directory "$(command pwd)/" &)
     else
       # Remove Symbolic Link
-      (remove_symbolic_link "${@:1:$(($# - 1))}" &)
+      (_remove_symbolic_link "${@:1:$(($# - 1))}" &)
     fi
 
     # Terminate Program
@@ -269,7 +269,7 @@ function parse_option_flags() {
       # Remove Invalid Paths
       if [[ ! -e "$path" ]]
       then
-        remove_directory "$path"
+        _remove_directory "$path"
       fi
     done
 
@@ -284,7 +284,7 @@ function parse_option_flags() {
   return $CONT
 }
 
-function parse_standalone_flags() {
+function _parse_standalone_flags() {
   # Get Argument Flag
   local flag="${@:$#}"
 
@@ -406,7 +406,7 @@ function qcd() {
   # End Validation---------------------------------------------------------------------------------------------------------------------------------------------------
 
   # Parse Arguments For Option Flags
-  parse_option_flags $@
+  _parse_option_flags $@
 
   # Store Operation Status
   local status=$?
@@ -419,7 +419,7 @@ function qcd() {
   fi
 
   # Parse Arguments For Standalone Flags
-  parse_standalone_flags $@
+  _parse_standalone_flags $@
 
   # Store Operation Status
   local status=$?
@@ -467,7 +467,7 @@ function qcd() {
     command cd "$indicated_dir"
 
     # Add Current Directory
-    (add_directory &)
+    (_add_directory &)
 
     # Terminate Program
     return $OK
@@ -677,7 +677,7 @@ function qcd() {
       command echo -e "qcd: $(_format_dir "${resv%/}"): Directory does not exist"
 
       # Remove Current Directory
-      (remove_directory "$resv" &)
+      (_remove_directory "$resv" &)
 
       # Terminate Program
       return $ERR
@@ -692,7 +692,7 @@ function qcd() {
         command cd "$sdir"
 
         # Add Current Directory
-        (add_directory &)
+        (_add_directory &)
       fi
 
       # Terminate Program
