@@ -170,7 +170,6 @@ function parse_option_flags() {
     return $OK
   elif [[ "${flag/--forget/$FORGET}" == "$FORGET" ]]
   then
-    echo "${@:1:$#}"
     # Determine Removal Type
     if [[ $# -eq 1 ]]
     then
@@ -178,7 +177,7 @@ function parse_option_flags() {
       (remove_directory "$(command pwd)/" &)
     else
       # Remove Symbolic Link
-      (remove_symbolic_link "${@:1:$#}" &)
+      (remove_symbolic_link "${@:1:$(($# - 1))}" &)
     fi
 
     # Terminate Program
@@ -188,19 +187,19 @@ function parse_option_flags() {
     # Display Prompt
     command echo -en "\rqcd: Generating link map..."
 
-    # Define Search Phrase
-    local sphrase="${@:1:$#}"
-
-    # Expand Regex Characters
-    sphrase=${sphrase//\*/\.\*}
-    sphrase=${sphrase//\?/\.}
-
     # Get Linkages From Store File
     local linkages=$(command cat $QCD_STORE)
 
     # Determine List Type
     if [[ $# -gt 1 ]]
     then
+      # Define Search Phrase
+      local sphrase="${@:1:$(($# - 1))}"
+
+      # Expand Regex Characters
+      sphrase=${sphrase//\*/\.\*}
+      sphrase=${sphrase//\?/\.}
+
       # Retain Matching Linkages
       linkages=$(command echo -e "$linkages"| command egrep -s -x "${sphrase%/}.*:.*" 2> /dev/null)
     fi
