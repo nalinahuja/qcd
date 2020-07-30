@@ -498,6 +498,9 @@ function qcd() {
     # Escape Regex Characters
     link=$(_escape_regex "$link")
 
+    # Initialize Symbolic Linkages
+    local resv=$ESTR
+
     # Check For Indirect Link Matching
     if [[ -z $(command cat $QCD_LINKS | command grep "^$link$") ]]
     then
@@ -527,12 +530,12 @@ function qcd() {
         nlink="${nlink}${c}.*"
       done
 
-      # Override Link
-      link=$nlink
+      # Get Symbolic Linkages From Store File (Case Insensitive)
+      resv=$(command egrep -s -i -x "$nlink:.*" $QCD_STORE 2> /dev/null)
+    else
+      # Get Symbolic Linkages From Store File (Case Sensitive)
+      resv=$(command egrep -s -x "$link:.*" $QCD_STORE 2> /dev/null)
     fi
-
-    # Get Symbolic Linkages From Store File
-    local resv=$(command egrep -s -x "$link:.*" $QCD_STORE 2> /dev/null)
 
     # Get Count Of Symbolic Linkages
     local resc=$(command echo -e "$resv" | command wc -l 2> /dev/null)
@@ -565,7 +568,7 @@ function qcd() {
       for path in $paths
       do
         # Form Complete Path
-        path=$(_escape_dir "${path}${sdir}")
+        path="${path}${sdir}"
 
         # Validate Path
         if [[ -e "$path" && ! "${path%/}" = "${cdir%/}" ]]
