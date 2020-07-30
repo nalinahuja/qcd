@@ -433,7 +433,7 @@ function qcd() {
   fi
 
   # Check For Compressed Back Directory
-  if [[ $indicated_dir =~ ^[0-9]+\.\.$ ]]
+  if [[ "$indicated_dir" =~ ^[0-9]+\.\.$ ]]
   then
     # Get Back Directory Height
     local back_height=${indicated_dir:0:$((${#indicated_dir} - 2))}
@@ -477,6 +477,7 @@ function qcd() {
 
     # Check For Indirect Link Matching
     if [[ -z $(command cat $QCD_LINKS | command grep "^$link$") ]]
+    # if [[ ! "$indicated_dir" == */ ]]
     then
       # Initialize Counter
       local i=0
