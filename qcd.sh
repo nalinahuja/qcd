@@ -916,7 +916,7 @@ function _qcd_init() {
   fi
 }
 
-# Initialize QCD Utility
+# Initialize QCD
 _qcd_init
 
 # End QCD Initialization---------------------------------------------------------------------------------------------------------------------------------------------
