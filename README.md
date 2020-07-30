@@ -37,7 +37,6 @@ Usage:
   qcd                         Change to home directory
   qcd [path]                  Change to valid directory
   qcd [link]/[subdir]/...     Change to linked directory
-  qcd [seq]/[subdir]/...      Change to subsequence matched directory
   qcd [N]..                   Change to Nth parent directory
 
 Options:
