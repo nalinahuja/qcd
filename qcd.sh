@@ -888,10 +888,10 @@ function _qcd_init() {
     # Cleanup Store File
     (qcd -c &)
 
-    # Update Symbolic Link File
+    # Populate Link File
     (update_links &)
 
-    # Remove Link Store On Exit
+    # Remove Link File On Exit
     command trap cleanup EXIT
 
     # Set Environment To Show Visible Files
