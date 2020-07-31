@@ -160,7 +160,7 @@ function _remove_directory() {
   command egrep -s -v -x ".*:${fdir}" $QCD_STORE > $QCD_TEMP
 
   # Store Operation Status
-  local status=$?
+  local status=${?}
 
   # Update Store File
   _update_store ${status}
@@ -174,7 +174,7 @@ function _remove_symbolic_link() {
   command egrep -s -v -x "${flink}:.*" $QCD_STORE > $QCD_TEMP
 
   # Store Operation Status
-  local status=$?
+  local status=${?}
 
   # Update Store File
   _update_store ${status}
@@ -437,7 +437,7 @@ function qcd() {
   _parse_option_flags ${@}
 
   # Store Operation Status
-  local status=$?
+  local status=${?}
 
   # Check Function Return
   if [[ ${status} -ne $CONT ]]
@@ -446,10 +446,10 @@ function qcd() {
   fi
 
   # Parse Arguments For Standalone Flags
-  _parse_standalone_flags $@
+  _parse_standalone_flags ${@}
 
   # Store Operation Status
-  local status=$?
+  local status=${?}
 
   # Check Function Return
   if [[ ${status} -ne $CONT ]]
@@ -468,9 +468,6 @@ function qcd() {
     # Set To Home Directory
     dir_arg=~
   else
-    # Format Escaped Characters
-    dir_arg=$(_escape_dir "${dir_arg}")
-
     # Check For Back Directory Pattern
     if [[ "${dir_arg}" =~ ^[0-9]+\.\.$ ]]
     then
@@ -482,6 +479,9 @@ function qcd() {
 
       # Override Commandline Arguments
       dir_arg="${back_dir// /$HWD}"
+    else
+      # Format Escaped Characters
+      dir_arg=$(_escape_dir "${dir_arg}")
     fi
   fi
 
@@ -587,7 +587,7 @@ function qcd() {
       local IFS=$'\n'
 
       # Iterate Over Matched Paths
-      for path in ${pathv}
+      for path in ${pathv[@]}
       do
         # Form Complete Path
         path=$(_escape_dir "${path}${sdir}")
@@ -673,7 +673,7 @@ function qcd() {
         # End Option Verification And Correction---------------------------------------------------------------------------------------------------------------------
 
         # Set To Manually Selected Endpoint
-        pathv="${fpaths[${ept}]}"
+        pathv="${fpaths[$((${ept} - 1))]}"
       else
         # Set To Automatically Selected Endpoint
         pathv=${mpath}
