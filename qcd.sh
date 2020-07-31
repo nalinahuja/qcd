@@ -418,7 +418,7 @@ function _parse_standalone_flags() {
 # End Argument Parser Functions--------------------------------------------------------------------------------------------------------------------------------------
 
 function qcd() {
-  # Create Store File
+  # Check For Store File
   if [[ ! -f $QCD_STORE ]]
   then
     command touch $QCD_STORE
@@ -435,7 +435,6 @@ function qcd() {
   # Check Function Return
   if [[ ${status} -ne $CONT ]]
   then
-    # Terminate Program
     return ${status}
   fi
 
@@ -448,7 +447,6 @@ function qcd() {
   # Check Function Return
   if [[ $status -ne $CONT ]]
   then
-    # Terminate Program
     return $status
   fi
 
@@ -466,21 +464,21 @@ function qcd() {
     # Format Escaped Characters
     indicated_dir=$(_escape_dir "$indicated_dir")
 
-    # Check For Compressed Back Directory
+    # Check For Back Directory Pattern
     if [[ "$indicated_dir" =~ ^[0-9]+\.\.$ ]]
     then
-      # Get Back Directory Height
+      # Determine Back Directory Height
       local back_height=${indicated_dir:0:$((${#indicated_dir} - 2))}
 
       # Generate Expanded Back Directory
       local back_dir=$(command printf "%${back_height}s")
 
-      # Set To Expanded Back Directory
+      # Override Commandline Arguments
       indicated_dir="${back_dir// /$HWD}"
     fi
   fi
 
-  # End Input Formatting---------------------------------------------------------------------------------------------------------------------------------------------
+  # End Input Directory Formatting-----------------------------------------------------------------------------------------------------------------------------------
 
   # Determine If Directory Is Linked
   if [[ -e "$indicated_dir" ]]
@@ -497,41 +495,38 @@ function qcd() {
     # Store Directory Link
     local dlink=$(command echo -e "$indicated_dir" | command cut -d '/' -f1)
 
-    # Initialize Relative Subdirectory
+    # Define Relative Subdirectory
     local sdir=$ESTR
 
-    # Get Subdirectory If Non-Empty
+    # Check For Trailing Subdirectory
     if [[ "$indicated_dir" == */* ]]
     then
-      # Slice From First Delimiter
+      # Get Subdirectory Via Slice
       sdir=${indicated_dir:$((${#dlink} + 1))}
     fi
 
     # Escape Regex Characters
     dlink=$(_escape_regex "$dlink")
 
-    # Initialize Symbolic Linkages
+    # End Input Directory Parsing------------------------------------------------------------------------------------------------------------------------------------
+
+    # Define Matched Symbolic Linkages
     local resv=$ESTR
 
-    # IMPROVE--------------------------------------------------------------------------------------------------------------------------------------------------------
-
     # Check For Indirect Link Matching
-    if [[ -z $(command cat $QCD_LINKS | command grep "^$dlink$") ]]
+    if [[ -z $(command grep "^$dlink$" $QCD_LINKS) ]]
     then
       # Initialize Counter
       local i=0
 
-      # Initialize New Link
+      # Define New Link
       local nlink=$ESTR
 
       # Check For Hidden Directory Prefix
       if [[ "$indicated_dir" == \.* ]]
       then
-        # Override New Link
-        nlink="$ESC$CWD"
-
-        # Shift Counter
-        i=2
+        # Override Parameters
+        i=2; nlink="$ESC$CWD"
       fi
 
       # Wildcard Symbolic Link
@@ -544,17 +539,17 @@ function qcd() {
         nlink="${nlink}${c}.*"
       done
 
-      # Get Case Insensitive Symbolic Linkages From Store File
+      # Get Sequence Matched Symbolic Linkages From Store File
       resv=$(command egrep -s -i -x "$nlink:.*" $QCD_STORE 2> /dev/null)
     else
-      # Get Case Sensitive Symbolic Linkages From Store File
+      # Get Link Matched Symbolic Linkages From Store File
       resv=$(command egrep -s -x "$dlink:.*" $QCD_STORE 2> /dev/null)
     fi
 
-    # ---------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-    # Get Count Of Symbolic Linkages
+    # Get Count Of Matched Symbolic Linkages
     local resc=$(command echo -e "$resv" | command wc -l 2> /dev/null)
+
+    # End Linkage Aquisition-----------------------------------------------------------------------------------------------------------------------------------------
 
     # Check Result Count
     if [[ $resc -gt 1 ]]
@@ -562,14 +557,8 @@ function qcd() {
       # Reset Result Count
       resc=0
 
-      # Initialize Path Match
-      local mpath=$ESTR
-
-      # Initialize Filtered Paths
-      local fpaths=$ESTR
-
-      # Initialize Ignore Boolean
-      local ignore=$FALSE
+      # Define Parameters
+      local mpath=$ESTR fpaths=$ESTR ignore=$FALSE
 
       # Store Current Directory
       local cdir=$(command pwd)
@@ -577,17 +566,19 @@ function qcd() {
       # Store Matching Absolute Paths
       local paths=$(command echo -e "$resv" | command awk -F ':' '{print $2}')
 
+      #TODO: REPLACE WITH AWK SCRIPT---------------------------------------------------------------------------------------------------------------------------------
+
       # Set IFS
       local IFS=$'\n'
 
-      # Iterate Over Paths
+      # Iterate Over Matched Paths
       for path in $paths
       do
         # Form Complete Path
         path=$(_escape_dir "${path}${sdir}")
 
         # Validate Path
-        if [[ -e "$path" && ! "${path%/}" = "${cdir%/}" ]]
+        if [[ -e "$path" && ! "${path%/}" == "${cdir%/}" ]]
         then
           # Determine Path Match
           if [[ $ignore -eq $FALSE && -z $mpath ]]
@@ -608,6 +599,8 @@ function qcd() {
 
       # Unset IFS
       unset IFS
+
+      #--------------------------------------------------------------------------------------------------------------------------------------------------------------
 
       # List Matching Links
       if [[ -z $mpath ]]
