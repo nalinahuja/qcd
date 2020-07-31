@@ -1,0 +1,1 @@
+change variable format from $ to ${} - qcd and _qcd_comp

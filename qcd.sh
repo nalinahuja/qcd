@@ -558,7 +558,7 @@ function qcd() {
       resc=0
 
       # Define Parameters
-      local mpath=$ESTR fpaths=$ESTR
+      local mpath=$ESTR fpaths=()
 
       # Store Current Directory
       local cdir=$(command pwd)
@@ -579,7 +579,7 @@ function qcd() {
         if [[ -e "$path" && ! "${path%/}" == "${cdir%/}" ]]
         then
           # Add Path To Filtered List
-          fpaths="${fpaths}${path}:"
+          fpaths+=("${path}")
           resc=$(($resc + 1))
         fi
       done
@@ -588,9 +588,9 @@ function qcd() {
       unset IFS
 
       # Check For Single Path
-      if [[ $(command echo -e "$fpaths" | command wc -l) -eq 1 ]]
+      if [[ ${#fpaths[@]} -eq 1 ]]
       then
-        mpath="${fpaths%:}"
+        mpath="${fpaths[@]}"
       fi
 
       # End Path Filtering-------------------------------------------------------------------------------------------------------------------------------------------
@@ -599,7 +599,7 @@ function qcd() {
       if [[ -z $mpath ]]
       then
         # Replace Path Results
-        paths=$fpaths
+        paths="${fpaths[@]}"
 
         # Error Check Path Results
         if [[ -z $paths ]]
@@ -614,9 +614,6 @@ function qcd() {
         # Generate Prompt
         command echo -e "\rqcd: Multiple paths linked to ${B}${indicated_dir%/}${N}" > $QCD_TEMP
 
-        # Set IFS
-        local IFS=$':'
-
         # Generate Path Options
         local cnt=1
         for path in $paths
@@ -628,9 +625,6 @@ function qcd() {
           command printf "($cnt) ${path%/}\n" >> $QCD_TEMP
           cnt=$(($cnt + 1))
         done
-
-        # Unset IFS
-        unset IFS
 
         # Display Prompt
         command cat $QCD_TEMP
@@ -657,7 +651,7 @@ function qcd() {
         fi
 
         # Set To Manually Selected Endpoint
-        resv=$(command echo -e "$paths" | command cut -d ':' -f$ept)
+        resv="${fpaths[$ept]}"
       else
         # Set To Automatically Selected Endpoint
         resv=$mpath
