@@ -10,13 +10,13 @@ ERR=1
 CONT=2
 NFD=127
 
+# Boolean Values
+TRUE=1
+FALSE=0
+
 # Embedded Values
 MINP=4
 TIMEOUT=10
-
-# Conditional Values
-TRUE=1
-FALSE=0
 
 # End Defined Numerical Constants------------------------------------------------------------------------------------------------------------------------------------
 
@@ -61,25 +61,32 @@ QCD_RELEASES="https://api.github.com/repos/nalinahuja22/qcd/releases/latest"
 # End Defined Program Constants--------------------------------------------------------------------------------------------------------------------------------------
 
 function _format_dir() {
-  # Compress Home Directory
-  command echo -e ${@/$HOME/\~}
+  # Check For Environment Variable
+  if [[ ! -z $HOME ]]
+  then
+    # Return Compressed Path
+    command echo -e ${@/$HOME/\~}
+  else
+    # Return Original Path
+    command echo -e ${@}
+  fi
 }
 
 function _escape_dir() {
   # Store Argument Directory
-  local fdir="$@"
+  local fdir="${@}"
 
   # Escape Characters
   fdir="${fdir//\\ / }"
   fdir="${fdir//\\/}"
 
   # Return Escaped Directory
-  command echo -e "$fdir"
+  command echo -e "${fdir}"
 }
 
 function _escape_regex() {
   # Store Argument String
-  local fstr="$@"
+  local fstr="${@}"
 
   # Escape Regex Characters
   fstr="${fstr//\*/\\*}"
@@ -87,14 +94,14 @@ function _escape_regex() {
   fstr="${fstr//\./\\.}"
 
   # Return Escaped String
-  command echo -e "$fstr"
+  command echo -e "${fstr}"
 }
 
 # End String Functions-----------------------------------------------------------------------------------------------------------------------------------------------
 
 function _cleanup() {
   # Delete Link And Temp Files
-  command rm $QCD_LINKS $QCD_TEMP 2> /dev/null
+  command rm ${QCD_LINKS} ${QCD_TEMP} 2> /dev/null
 }
 
 function _update_links() {
@@ -104,12 +111,12 @@ function _update_links() {
 
 function _update_store() {
   # Check Exit Status
-  if [[ $1 -eq $OK ]]
+  if [[ ${1} -eq $OK ]]
   then
     # Update Store File
     command mv $QCD_TEMP $QCD_STORE
 
-    # Update Symbolic Link File
+    # Update Link File
     _update_links
   else
     # Remove Temp File
@@ -119,16 +126,16 @@ function _update_store() {
 
 function _add_directory() {
   # Get Current Directory
-  local dir=$(command pwd)
+  local cdir=$(command pwd)
 
   # Store Directory If Unique
-  if [[ ! "${dir%/}" = "${HOME%/}" && -z $(command egrep -s -x ".*:$dir/" $QCD_STORE) ]]
+  if [[ ! "${cdir%/}" == "${HOME%/}" && -z $(command egrep -s -x ".*:${cdir}/" $QCD_STORE) ]]
   then
     # Get Basename Of Current Directory
-    local ept=$(command basename "$dir")
+    local ept=$(command basename "${cdir}")
 
     # Append Directory Data To Store File
-    command printf "$ept:$dir/\n" >> $QCD_STORE
+    command printf "${ept}:${cdir}/\n" >> $QCD_STORE
 
     # Sort Store File
     command sort -o $QCD_STORE -n -t ':' -k2 $QCD_STORE
@@ -139,31 +146,31 @@ function _add_directory() {
 }
 
 function _remove_directory() {
-  # Format Input
-  local format_dir=$(_escape_regex "${@}")
+  # Store Argument Directory
+  local fdir=$(_escape_regex "${@}")
 
   # Remove Directory From Store
-  command egrep -s -v -x ".*:${format_dir}" $QCD_STORE > $QCD_TEMP
+  command egrep -s -v -x ".*:${fdir}" $QCD_STORE > $QCD_TEMP
 
   # Store Operation Status
   local status=$?
 
   # Update Store If Successful
-  _update_store $status
+  _update_store ${status}
 }
 
 function _remove_symbolic_link() {
-  # Format Input
-  local format_link=$(_escape_regex "${@%/}")
+  # Store Argument Link
+  local flink=$(_escape_regex "${@%/}")
 
   # Remove Link From Store
-  command egrep -s -v -x "${format_link}:.*" $QCD_STORE > $QCD_TEMP
+  command egrep -s -v -x "${flink}:.*" $QCD_STORE > $QCD_TEMP
 
   # Store Operation Status
   local status=$?
 
   # Update Store If Successful
-  _update_store $status
+  _update_store ${status}
 }
 
 # End Symbolic Link Management Functions-----------------------------------------------------------------------------------------------------------------------------
@@ -185,11 +192,17 @@ function _parse_option_flags() {
     # Determine Removal Type
     if [[ $# -eq 1 ]]
     then
+      # Get Current Directory
+      local cdir=$(command pwd)
+
       # Remove Current Directory
-      (_remove_directory "$(command pwd)/" &)
+      (_remove_directory "${cdir}/" &)
     else
+      # Get Link Argument
+      local ldir="${@:1:$(($# - 1))}"
+
       # Remove Symbolic Link
-      (_remove_symbolic_link "${@:1:$(($# - 1))}" &)
+      (_remove_symbolic_link "${ldir}" &)
     fi
 
     # Terminate Program
@@ -199,7 +212,7 @@ function _parse_option_flags() {
     # Display Prompt
     command echo -en "\rqcd: Generating link map..."
 
-    # Get Linkages From Store File
+    # Get Valid Linkages From Store File
     local linkages=$(qcd --clean && command cat $QCD_STORE)
 
     # Determine List Type
@@ -213,11 +226,11 @@ function _parse_option_flags() {
       sphrase=${sphrase//\?/\.}
 
       # Retain Matching Linkages
-      linkages=$(command echo -e "$linkages"| command egrep -s -x "${sphrase%/}.*:.*" 2> /dev/null)
+      linkages=$(command echo -e "${linkages}"| command egrep -s -x "${sphrase%/}.*:.*" 2> /dev/null)
     fi
 
     # Error Check Linkages
-    if [[ -z $linkages ]]
+    if [[ -z ${linkages} ]]
     then
       # Display Prompt
       command echo -e "\rqcd: No linkages found      "
@@ -230,30 +243,30 @@ function _parse_option_flags() {
     local cols=$(tput cols)
 
     # Get Max Link Length
-    local max_link=$(command echo -e "$linkages" | command awk -F ':' '{print $1}' | command awk '{print length}' | command sort -n | command tail -n1)
+    local max_link=$(command echo -e "${linkages}" | command awk -F ':' '{print $1}' | command awk '{print length}' | command sort -n | command tail -n1)
 
     # Error Check Max Link Length
-    if [[ $max_link -lt $MINP ]]
+    if [[ ${max_link} -lt $MINP ]]
     then
       # Set To Minimum Padding
       max_link=$MINP
     fi
 
     # Format Header
-    command printf "\r${W} %-${max_link}s %-$(($cols - $max_link - 2))s${N}\n" "Link" "Directory" > $QCD_TEMP
+    command printf "\r${W} %-${max_link}s %-$((${cols} - ${max_link} - 2))s${N}\n" "Link" "Directory" > $QCD_TEMP
 
     # Set IFS
     local IFS=$'\n'
 
     # Iterate Over Linkages From Store File
-    for linkage in $linkages
+    for linkage in ${linkages}
     do
       # Get Linkage Components
-      local link=$(command echo -e "$linkage" | command awk -F ':' '{print $1}')
-      local path=$(command echo -e "$linkage" | command awk -F ':' '{print $2}')
+      local link=$(command echo -e "${linkage}" | command awk -F ':' '{print $1}')
+      local path=$(command echo -e "${linkage}" | command awk -F ':' '{print $2}')
 
       # Format Linkage
-      command printf " %-${max_link}s  %s\n" $link $(_format_dir "${path%/}") >> $QCD_TEMP
+      command printf " %-${max_link}s  %s\n" ${link} $(_format_dir "${path%/}") >> $QCD_TEMP
     done
 
     # Unset IFS
@@ -273,12 +286,12 @@ function _parse_option_flags() {
     local IFS=$'\n'
 
     # Iterate Over Paths
-    for path in $paths
+    for path in ${paths}
     do
       # Remove Invalid Paths
-      if [[ ! -e "$path" ]]
+      if [[ ! -e "${path}" ]]
       then
-        _remove_directory "$path"
+        _remove_directory "${path}"
       fi
     done
 
@@ -340,7 +353,7 @@ function _parse_standalone_flags() {
       release_url=$(command curl --connect-timeout $TIMEOUT -s -L $QCD_RELEASES | command egrep -s -o "https.*zipball.*")
 
       # Error Check Release Link
-      if [[ $? -ne $OK || -z $release_url ]]
+      if [[ $? -ne $OK || -z ${release_url} ]]
       then
         # Display Prompt
         command echo -e "\r→ Failed to resolve download link for update"
@@ -389,7 +402,7 @@ function _parse_standalone_flags() {
       update_version=$(command cat $QCD_HELP | command head -n1 | command awk '{print $4}')
 
       # Display Prompt
-      command echo -e "\r→ Update complete    \n\nUpdated to $update_version"
+      command echo -e "\r→ Update complete    \n\nUpdated to ${update_version}"
     else
       # Display Prompt
       command echo -e "→ Update aborted"
