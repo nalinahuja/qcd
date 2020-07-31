@@ -142,7 +142,7 @@ function _add_directory() {
     local ept=$(command basename "${pwd}")
 
     # Append Directory Data To Store File
-    command printf "${ept}:${pwd}/\n" >> $QCD_STORE
+    command printf "${ept}:${pwd}\n" >> $QCD_STORE
 
     # Sort Store File In Place
     command sort -o $QCD_STORE -n -t ':' -k2 $QCD_STORE
@@ -552,19 +552,7 @@ function qcd() {
     # End Linkage Aquisition-----------------------------------------------------------------------------------------------------------------------------------------
 
     # Initialize Path Array
-    local pathv=()
-
-    # Set IFS
-    local IFS=$'\n'
-
-    # Iterate Over Results
-    for path in ${res}
-    do
-      pathv+=("$path")
-    done
-
-    # Unset IFS
-    unset IFS
+    local pathv=($(command echo -e "$res"))
 
     # Initialize Path Count
     local pathc=${#pathv[@]}
