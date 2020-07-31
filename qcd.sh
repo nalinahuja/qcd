@@ -106,7 +106,7 @@ function _cleanup() {
 
 function _update_links() {
   # Store Symbolic Links In Link File
-  command cat $QCD_STORE | command awk -F ':' '{print $1}' > $QCD_LINKS
+  command awk -F ':' '{print $1}' $QCD_STORE > $QCD_LINKS
 }
 
 function _update_store() {
@@ -140,7 +140,7 @@ function _add_directory() {
     # Sort Store File
     command sort -o $QCD_STORE -n -t ':' -k2 $QCD_STORE
 
-    # Update Symbolic Link File
+    # Update Link File
     _update_links
   fi
 }
@@ -280,7 +280,7 @@ function _parse_option_flags() {
   elif [[ "${flag/--clean/$CLEAN}" == "$CLEAN" ]]
   then
     # Get Paths From Store File
-    local paths=$(command cat $QCD_STORE | command awk -F ':' '{print $2}')
+    local paths=$(command awk -F ':' '{print $2}' $QCD_STORE)
 
     # Set IFS
     local IFS=$'\n'
@@ -428,16 +428,16 @@ function qcd() {
   # End Validation---------------------------------------------------------------------------------------------------------------------------------------------------
 
   # Parse Arguments For Option Flags
-  _parse_option_flags $@
+  _parse_option_flags ${@}
 
   # Store Operation Status
   local status=$?
 
   # Check Function Return
-  if [[ $status -ne $CONT ]]
+  if [[ ${status} -ne $CONT ]]
   then
     # Terminate Program
-    return $status
+    return ${status}
   fi
 
   # Parse Arguments For Standalone Flags
@@ -875,7 +875,7 @@ function _qcd_comp() {
     fi
   else
     # Store Compressed Symbolic Links From Store File
-    local quick_dirs=$(command cat $QCD_STORE | command awk -F ':' '{printf $1 "/\n"}' | command tr ' ' ':')
+    local quick_dirs=$(command awk -F ':' '{printf $1 "/\n"}' $QCD_STORE | command tr ' ' ':')
 
     # Store Current Directory Data
     local curr_dir=$(command basename "$(command pwd)")
