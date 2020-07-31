@@ -491,7 +491,7 @@ function qcd() {
     # Get Subdirectory If Non-Empty
     if [[ "$indicated_dir" == */* ]]
     then
-      # Slice From First Forward Slash
+      # Slice From First Delimiter
       sdir=${indicated_dir:$((${#dlink} + 1))}
     fi
 
@@ -500,6 +500,8 @@ function qcd() {
 
     # Initialize Symbolic Linkages
     local resv=$ESTR
+
+    # IMPROVE--------------------------------------------------------------------------------------------------------------------------------------------------------
 
     # Check For Indirect Link Matching
     if [[ -z $(command cat $QCD_LINKS | command grep "^$dlink$") ]]
@@ -536,6 +538,8 @@ function qcd() {
       # Get Case Sensitive Symbolic Linkages From Store File
       resv=$(command egrep -s -x "$dlink:.*" $QCD_STORE 2> /dev/null)
     fi
+
+    # ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     # Get Count Of Symbolic Linkages
     local resc=$(command echo -e "$resv" | command wc -l 2> /dev/null)
