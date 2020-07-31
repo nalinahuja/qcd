@@ -516,8 +516,8 @@ function qcd() {
 
     # End Input Directory Parsing------------------------------------------------------------------------------------------------------------------------------------
 
-    # Define Linkage Matching Parameters
-    local res=$ESTR
+    # Define Linkage Parameters
+    local pathv pathc
 
     # Check For Indirect Link Matching
     if [[ -z $(command egrep -s -x "^${dlink}$" $QCD_LINKS) ]]
@@ -543,21 +543,16 @@ function qcd() {
       done
 
       # Get Sequence Matched Symbolic Linkages From Store File
-      res=$(command egrep -i -s -x "${slink}:.*" $QCD_STORE 2> /dev/null | command awk -F ':' '{print $2}')
+      pathv=($(command egrep -i -s -x "${slink}:.*" $QCD_STORE 2> /dev/null | command awk -F ':' '{print $2}'))
     else
       # Get Link Matched Symbolic Linkages From Store File
-      res=$(command egrep -s -x "${dlink}:.*" $QCD_STORE 2> /dev/null | command awk -F ':' '{print $2}')
+      pathv=($(command egrep -s -x "${dlink}:.*" $QCD_STORE 2> /dev/null | command awk -F ':' '{print $2}'))
     fi
 
-    # End Linkage Aquisition-----------------------------------------------------------------------------------------------------------------------------------------
-
-    # Initialize Path Array
-    local pathv=($(command echo -e "$res"))
-
     # Initialize Path Count
-    local pathc=${#pathv[@]}
+    pathc=${#pathv[@]}
 
-    # End Linkage Handling-------------------------------------------------------------------------------------------------------------------------------------------
+    # End Linkage Acquisition----------------------------------------------------------------------------------------------------------------------------------------
 
     # Check Result Count
     if [[ $pathc -gt 1 ]]
