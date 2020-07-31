@@ -558,15 +558,13 @@ function qcd() {
       resc=0
 
       # Define Parameters
-      local mpath=$ESTR fpaths=$ESTR ignore=$FALSE
+      local mpath=$ESTR fpaths=$ESTR
 
       # Store Current Directory
       local cdir=$(command pwd)
 
       # Store Matching Absolute Paths
       local paths=$(command echo -e "$resv" | command awk -F ':' '{print $2}')
-
-      #TODO: REPLACE WITH AWK SCRIPT---------------------------------------------------------------------------------------------------------------------------------
 
       # Set IFS
       local IFS=$'\n'
@@ -580,17 +578,6 @@ function qcd() {
         # Validate Path
         if [[ -e "$path" && ! "${path%/}" == "${cdir%/}" ]]
         then
-          # Determine Path Match
-          if [[ $ignore -eq $FALSE && -z $mpath ]]
-          then
-            # Select Path
-            mpath=$path
-          else
-            # Unselect Path
-            ignore=$TRUE
-            mpath=$ESTR
-          fi
-
           # Add Path To Filtered List
           fpaths="${fpaths}${path}:"
           resc=$(($resc + 1))
@@ -600,7 +587,13 @@ function qcd() {
       # Unset IFS
       unset IFS
 
-      #--------------------------------------------------------------------------------------------------------------------------------------------------------------
+      # Check For Single Path
+      if [[ $(command echo -e "$fpaths" | command wc -l) -eq 1 ]]
+      then
+        mpath="${fpaths%:}"
+      fi
+
+      # End Path Filtering-------------------------------------------------------------------------------------------------------------------------------------------
 
       # List Matching Links
       if [[ -z $mpath ]]
