@@ -508,7 +508,6 @@ function qcd() {
     # Check For Trailing Subdirectory
     if [[ "${dir_arg}" == */* ]]
     then
-      # Get Subdirectory Via Slice
       sdir=${dir_arg:$((${#dlink} + 1))}
     fi
 
@@ -518,7 +517,7 @@ function qcd() {
     # End Input Directory Parsing------------------------------------------------------------------------------------------------------------------------------------
 
     # Define Linkage Matching Parameters
-    local resv=$ESTR resc=$FALSE
+    local res=$ESTR
 
     # Check For Indirect Link Matching
     if [[ -z $(command egrep -s -x "^${dlink}$" $QCD_LINKS) ]]
@@ -537,68 +536,77 @@ function qcd() {
       for ((;i < ${#dlink}; i++))
       do
         # Get Character At Index
-        local c=${dlink:$i:1}
+        local c=${dlink:${i}:1}
 
         # Append Wildcard
         slink="${slink}${c}.*"
       done
 
       # Get Sequence Matched Symbolic Linkages From Store File
-      resv=$(command egrep -i -s -x "${slink}:.*" $QCD_STORE 2> /dev/null | command awk -F ':' '{print $2}')
+      res=$(command egrep -i -s -x "${slink}:.*" $QCD_STORE 2> /dev/null | command awk -F ':' '{print $2}')
     else
       # Get Link Matched Symbolic Linkages From Store File
-      resv=$(command egrep -s -x "${dlink}:.*" $QCD_STORE 2> /dev/null | command awk -F ':' '{print $2}')
-    fi
-
-    # Determine If Multiple Linkages Matched
-    if [[ "$resv" =~ :*: ]]
-    then
-      resc=$TRUE
+      res=$(command egrep -s -x "${dlink}:.*" $QCD_STORE 2> /dev/null | command awk -F ':' '{print $2}')
     fi
 
     # End Linkage Aquisition-----------------------------------------------------------------------------------------------------------------------------------------
 
-    # Check Result Count
-    if [[ $resc -eq $TRUE ]]
-    then
-      # Reset Result Count
-      resc=0
+    # Initialize Path Array
+    local pathv=()
 
-      # Define Path Match
+    # Set IFS
+    local IFS=$'\n'
+
+    # Iterate Over Results
+    for path in ${res}
+    do
+      pathv+=("$path")
+    done
+
+    # Unset IFS
+    unset IFS
+
+    # Initialize Path Count
+    local pathc=${#pathv[@]}
+
+    # End Linkage Handling-------------------------------------------------------------------------------------------------------------------------------------------
+
+    # Check Result Count
+    if [[ $pathc -gt 1 ]]
+    then
+      # Define Matched Path
       local mpath=$ESTR
 
-      # Store Matched Paths
-      local paths=$resv
-
-      # Define Filtered Paths
-      local fpaths=()
-
       # Store Current Directory
-      local cdir=$(command pwd)
+      local pwd=$(_get_pwd)
+
+      # Initialize Filtered Paths
+      local fpaths=()
 
       # Set IFS
       local IFS=$'\n'
 
       # Iterate Over Matched Paths
-      for path in $paths
+      for path in ${pathv}
       do
         # Form Complete Path
         path=$(_escape_dir "${path}${sdir}")
 
         # Validate Path
-        if [[ -e "$path" && ! "${path%/}" == "${cdir%/}" ]]
+        if [[ -e "${path}" && ! "${path%/}" == "${pwd%/}" ]]
         then
-          # Add Path To Filtered List
           fpaths+=("${path}")
-          resc=$(($resc + 1))
         fi
       done
 
       # Unset IFS
       unset IFS
 
+      # Update Path Count
+      pathc=${#fpaths[@]}
+
       # Check For Single Path
-      if [[ ${#fpaths[@]} -eq 1 ]]
+      if [[ ${pathc} -eq 1 ]]
       then
         mpath="${fpaths[@]}"
       fi
@@ -606,13 +614,13 @@ function qcd() {
       # End Path Filtering-------------------------------------------------------------------------------------------------------------------------------------------
 
       # List Matching Links
-      if [[ -z $mpath ]]
+      if [[ -z ${mpath} ]]
       then
         # Replace Path Results
-        paths="${fpaths[@]}"
+        pathv="${fpaths[@]}"
 
         # Error Check Path Results
-        if [[ -z $paths ]]
+        if [[ -z ${pathv} ]]
         then
           # Terminate Program
           return $OK
@@ -626,84 +634,88 @@ function qcd() {
 
         # Generate Path Options
         local cnt=1
-        for path in $paths
+        for path in ${pathv}
         do
           # Format Path
-          path=$(_format_dir "$path")
+          path=$(_format_dir "${path}")
 
           # Output Path As Option
-          command printf "($cnt) ${path%/}\n" >> $QCD_TEMP
-          cnt=$(($cnt + 1))
+          command printf "(${cnt}) ${path%/}\n" >> $QCD_TEMP
+          cnt=$((${cnt} + 1))
         done
 
         # Display Prompt
         command cat $QCD_TEMP
 
+        # End Option View--------------------------------------------------------------------------------------------------------------------------------------------
+
         # Read User Input
         command read -p "Endpoint: " ept
 
         # Error Check Input Format
-        if [[ -z $ept || ! $ept =~ ^[0-9]+$ ]]
+        if [[ -z ${ept} || ! ${ept} =~ ^[0-9]+$ ]]
         then
           # Terminate Program
           return $ERR
         fi
 
         # Error Check Input Range
-        if [[ $ept -lt 1 ]]
+        if [[ ${ept} -lt 1 ]]
         then
           # Set To Minimum Selection
           ept=1
-        elif [[ $ept -gt $resc ]]
+        elif [[ ${ept} -gt ${pathc} ]]
         then
           # Set To Maximum Selection
-          ept=$resc
+          ept=${pathc}
         fi
 
+        # End Option Verification And Correction---------------------------------------------------------------------------------------------------------------------
+
         # Set To Manually Selected Endpoint
-        resv="${fpaths[$ept]}"
+        pathv="${fpaths[${ept}]}"
       else
         # Set To Automatically Selected Endpoint
-        resv=$mpath
+        pathv=${mpath}
       fi
     fi
 
     # End Path Resolution--------------------------------------------------------------------------------------------------------------------------------------------
 
     # Error Check Result
-    if [[ -z $resv ]]
+    if [[ -z ${pathv} ]]
     then
       # Display Error
       command echo -e "qcd: Cannot link keyword to directory"
 
       # Terminate Program
       return $ERR
-    elif [[ ! -e "$resv" ]]
+    elif [[ ! -e "${pathv}" ]]
     then
       # Check Result Count
-      if [[ $resc -gt 1 ]]
+      if [[ ${pathc} -gt 1 ]]
       then
         # Print Separator
         command echo
       fi
 
       # Display Error
-      command echo -e "qcd: $(_format_dir "${resv%/}"): Directory does not exist"
+      command echo -e "qcd: $(_format_dir "${pathv%/}"): Directory does not exist"
 
       # Remove Current Directory
-      (_remove_directory "$resv" &)
+      (_remove_directory "${pathv}" &)
 
       # Terminate Program
       return $ERR
     else
       # Switch To Linked Path
-      command cd "$resv"
+      command cd "${pathv}"
 
       # Validate Subdirectory
-      if [[ ! -z $sdir && -e "$sdir" ]]
+      if [[ ! -z ${sdir} && -e "${sdir}" ]]
       then
         # Switch To Subdirectory
-        command cd "$sdir"
+        command cd "${sdir}"
 
         # Add Current Directory
         (_add_directory &)
