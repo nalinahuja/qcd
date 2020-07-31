@@ -1,1 +1,3 @@
-change variable format from $ to ${} - qcd and _qcd_comp
+change variable format from $ to ${} - qcd, _qcd_comp, _qcd_init
+speed code routines - qcd and _qcd_comp
+refactor code - all functions
