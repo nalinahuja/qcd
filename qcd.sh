@@ -60,6 +60,13 @@ QCD_RELEASES="https://api.github.com/repos/nalinahuja22/qcd/releases/latest"
 
 # End Defined Program Constants--------------------------------------------------------------------------------------------------------------------------------------
 
+function _get_pwd() {
+  # Return Present Working Directory
+  command echo -e "$(command pwd)/"
+}
+
+# End Get Functions--------------------------------------------------------------------------------------------------------------------------------------------------
+
 function _format_dir() {
   # Check For Environment Variable
   if [[ ! -z $HOME ]]
@@ -76,7 +83,7 @@ function _escape_dir() {
   # Store Argument Directory
   local fdir="${@}"
 
-  # Escape Characters
+  # Escape Space Characters
   fdir="${fdir//\\ / }"
   fdir="${fdir//\\/}"
 
@@ -114,7 +121,7 @@ function _update_store() {
   if [[ ${1} -eq $OK ]]
   then
     # Update Store File
-    command mv $QCD_TEMP $QCD_STORE
+    command mv $QCD_TEMP $QCD_STORE 2> /dev/null
 
     # Update Link File
     _update_links
@@ -125,17 +132,17 @@ function _update_store() {
 }
 
 function _add_directory() {
-  # Get Current Directory
-  local cdir=$(command pwd)
+  # Store Current Directory
+  local pwd=$(_get_pwd)
 
-  # Store Directory If Unique
-  if [[ ! "${cdir%/}" == "${HOME%/}" && -z $(command egrep -s -x ".*:${cdir}/" $QCD_STORE) ]]
+  # Cache Directory If Unique
+  if [[ ! "${pwd%/}" == "${HOME%/}" && -z $(command egrep -s -x ".*:${pwd}" $QCD_STORE) ]]
   then
     # Get Basename Of Current Directory
-    local ept=$(command basename "${cdir}")
+    local ept=$(command basename "${pwd}")
 
     # Append Directory Data To Store File
-    command printf "${ept}:${cdir}/\n" >> $QCD_STORE
+    command printf "${ept}:${pwd}/\n" >> $QCD_STORE
 
     # Sort Store File In Place
     command sort -o $QCD_STORE -n -t ':' -k2 $QCD_STORE
@@ -173,7 +180,7 @@ function _remove_symbolic_link() {
   _update_store ${status}
 }
 
-# End Symbolic Link Management Functions-----------------------------------------------------------------------------------------------------------------------------
+# End Link Management Functions--------------------------------------------------------------------------------------------------------------------------------------
 
 function _parse_option_flags() {
   # Store Argument Flag
@@ -193,10 +200,10 @@ function _parse_option_flags() {
     if [[ $# -eq 1 ]]
     then
       # Store Current Directory
-      local cdir=$(command pwd)
+      local pwd=$(_get_pwd)
 
       # Remove Current Directory
-      (_remove_directory "${cdir}/" &)
+      (_remove_directory "${pwd}" &)
     else
       # Store Link Argument
       local ldir="${@:1:$(($# - 1))}"
@@ -265,7 +272,7 @@ function _parse_option_flags() {
       local path=$(command echo -e "${linkage}" | command awk -F ':' '{print $2}')
 
       # Format Linkage
-      command printf " %-${max_link}s  %s\n" ${link} $(_format_dir "${path%/}") >> $QCD_TEMP
+      command printf " %-${max_link}s  %s\n" "${link}" "$(_format_dir "${path%/}")" >> $QCD_TEMP
     done
 
     # Unset IFS
@@ -332,7 +339,7 @@ function _parse_standalone_flags() {
     # Determine Action
     if [[ "${confirm//Y/$YES}" == "$YES" ]]
     then
-      # Verify Dependency
+      # Verify Curl Dependency
       command curl &> /dev/null
 
       # Check Return Value
@@ -395,7 +402,7 @@ function _parse_standalone_flags() {
       command rm $QCD_FOLD/install_qcd 2> /dev/null
 
       # Update Bash Environment
-      command source $QCD_FOLD/qcd.sh &> /dev/null
+      command source $QCD_FOLD/qcd.sh 2> /dev/null
 
       # Get Release Version
       release_version=$(command cat $QCD_HELP | command head -n1 | command awk '{print $4}')
