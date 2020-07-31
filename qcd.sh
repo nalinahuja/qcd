@@ -100,7 +100,7 @@ function _escape_regex() {
 # End String Functions-----------------------------------------------------------------------------------------------------------------------------------------------
 
 function _cleanup() {
-  # Delete Link And Temp Files
+  # Remove Link And Temp Files
   command rm ${QCD_LINKS} ${QCD_TEMP} 2> /dev/null
 }
 
@@ -137,7 +137,7 @@ function _add_directory() {
     # Append Directory Data To Store File
     command printf "${ept}:${cdir}/\n" >> $QCD_STORE
 
-    # Sort Store File
+    # Sort Store File In Place
     command sort -o $QCD_STORE -n -t ':' -k2 $QCD_STORE
 
     # Update Link File
@@ -149,13 +149,13 @@ function _remove_directory() {
   # Store Argument Directory
   local fdir=$(_escape_regex "${@}")
 
-  # Remove Directory From Store
+  # Remove Directory From Store File
   command egrep -s -v -x ".*:${fdir}" $QCD_STORE > $QCD_TEMP
 
   # Store Operation Status
   local status=$?
 
-  # Update Store If Successful
+  # Update Store File
   _update_store ${status}
 }
 
@@ -163,20 +163,20 @@ function _remove_symbolic_link() {
   # Store Argument Link
   local flink=$(_escape_regex "${@%/}")
 
-  # Remove Link From Store
+  # Remove Link From Store File
   command egrep -s -v -x "${flink}:.*" $QCD_STORE > $QCD_TEMP
 
   # Store Operation Status
   local status=$?
 
-  # Update Store If Successful
+  # Update Store File
   _update_store ${status}
 }
 
 # End Symbolic Link Management Functions-----------------------------------------------------------------------------------------------------------------------------
 
 function _parse_option_flags() {
-  # Get Argument Flag
+  # Store Argument Flag
   local flag="${@:$#}"
 
   # Check For Option Flags
@@ -192,13 +192,13 @@ function _parse_option_flags() {
     # Determine Removal Type
     if [[ $# -eq 1 ]]
     then
-      # Get Current Directory
+      # Store Current Directory
       local cdir=$(command pwd)
 
       # Remove Current Directory
       (_remove_directory "${cdir}/" &)
     else
-      # Get Link Argument
+      # Store Link Argument
       local ldir="${@:1:$(($# - 1))}"
 
       # Remove Symbolic Link
@@ -212,20 +212,20 @@ function _parse_option_flags() {
     # Display Prompt
     command echo -en "\rqcd: Generating link map..."
 
-    # Get Valid Linkages From Store File
+    # Store Linkages From Store File
     local linkages=$(qcd --clean && command cat $QCD_STORE)
 
     # Determine List Type
     if [[ $# -gt 1 ]]
     then
-      # Define Search Phrase
+      # Initialize Search Phrase
       local sphrase="${@:1:$(($# - 1))}"
 
       # Expand Regex Characters
       sphrase=${sphrase//\*/\.\*}
       sphrase=${sphrase//\?/\.}
 
-      # Retain Matching Linkages
+      # Filter Linkages By Search Phrase
       linkages=$(command echo -e "${linkages}"| command egrep -s -x "${sphrase%/}.*:.*" 2> /dev/null)
     fi
 
@@ -239,16 +239,15 @@ function _parse_option_flags() {
       return $ERR
     fi
 
-    # Get Terminal Column Count
+    # Store Terminal Column Count
     local cols=$(tput cols)
 
-    # Get Max Link Length
+    # Determine Max Link Length
     local max_link=$(command echo -e "${linkages}" | command awk -F ':' '{print $1}' | command awk '{print length}' | command sort -n | command tail -n1)
 
-    # Error Check Max Link Length
+    # Error Check Link Length
     if [[ ${max_link} -lt $MINP ]]
     then
-      # Set To Minimum Padding
       max_link=$MINP
     fi
 
@@ -258,10 +257,10 @@ function _parse_option_flags() {
     # Set IFS
     local IFS=$'\n'
 
-    # Iterate Over Linkages From Store File
+    # Iterate Over Linkages
     for linkage in ${linkages}
     do
-      # Get Linkage Components
+      # Store Linkage Components
       local link=$(command echo -e "${linkage}" | command awk -F ':' '{print $1}')
       local path=$(command echo -e "${linkage}" | command awk -F ':' '{print $2}')
 
@@ -279,7 +278,7 @@ function _parse_option_flags() {
     return $OK
   elif [[ "${flag/--clean/$CLEAN}" == "$CLEAN" ]]
   then
-    # Get Paths From Store File
+    # Store Paths From Store File
     local paths=$(command awk -F ':' '{print $2}' $QCD_STORE)
 
     # Set IFS
@@ -307,7 +306,7 @@ function _parse_option_flags() {
 }
 
 function _parse_standalone_flags() {
-  # Get Argument Flag
+  # Store Argument Flag
   local flag="${@:$#}"
 
   # Check For Standalone Flags
@@ -349,10 +348,10 @@ function _parse_standalone_flags() {
       # Display Prompt
       command echo -en "→ Downloading update "
 
-      # Get Release Link
+      # Determine Release URL
       release_url=$(command curl --connect-timeout $TIMEOUT -s -L $QCD_RELEASES | command egrep -s -o "https.*zipball.*")
 
-      # Error Check Release Link
+      # Error Check Release URL
       if [[ $? -ne $OK || -z ${release_url} ]]
       then
         # Display Prompt
@@ -362,10 +361,10 @@ function _parse_standalone_flags() {
         return $ERR
       fi
 
-      # Download Release Program Files
+      # Download Release Contents
       command curl --connect-timeout $TIMEOUT -s -L "${release_url/\",/}" > $QCD_UPDATE
 
-      # Error Check Update
+      # Error Check Release Contents
       if [[ $? -ne $OK || ! -f $QCD_UPDATE ]]
       then
         # Display Prompt
@@ -398,11 +397,11 @@ function _parse_standalone_flags() {
       # Update Bash Environment
       command source $QCD_FOLD/qcd.sh &> /dev/null
 
-      # Get Update Version
-      update_version=$(command cat $QCD_HELP | command head -n1 | command awk '{print $4}')
+      # Get Release Version
+      release_version=$(command cat $QCD_HELP | command head -n1 | command awk '{print $4}')
 
       # Display Prompt
-      command echo -e "\r→ Update complete    \n\nUpdated to ${update_version}"
+      command echo -e "\r→ Update complete    \n\nUpdated to ${release_version}"
     else
       # Display Prompt
       command echo -e "→ Update aborted"
