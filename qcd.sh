@@ -460,38 +460,38 @@ function qcd() {
   # End Argument Parsing---------------------------------------------------------------------------------------------------------------------------------------------
 
   # Store Command Line Arguments
-  local indicated_dir="$@"
+  local dir_arg="$@"
 
   # Check For Empty Input
-  if [[ -z ${indicated_dir} ]]
+  if [[ -z ${dir_arg} ]]
   then
     # Set To Home Directory
-    indicated_dir=~
+    dir_arg=~
   else
     # Format Escaped Characters
-    indicated_dir=$(_escape_dir "${indicated_dir}")
+    dir_arg=$(_escape_dir "${dir_arg}")
 
     # Check For Back Directory Pattern
-    if [[ "${indicated_dir}" =~ ^[0-9]+\.\.$ ]]
+    if [[ "${dir_arg}" =~ ^[0-9]+\.\.$ ]]
     then
       # Determine Back Directory Height
-      local back_height=${indicated_dir:0:$((${#indicated_dir} - 2))}
+      local back_height=${dir_arg:0:$((${#dir_arg} - 2))}
 
       # Generate Expanded Back Directory
       local back_dir=$(command printf "%${back_height}s")
 
       # Override Commandline Arguments
-      indicated_dir="${back_dir// /$HWD}"
+      dir_arg="${back_dir// /$HWD}"
     fi
   fi
 
   # End Input Directory Formatting-----------------------------------------------------------------------------------------------------------------------------------
 
   # Determine If Directory Is Linked
-  if [[ -e "${indicated_dir}" ]]
+  if [[ -e "${dir_arg}" ]]
   then
     # Change To Valid Directory
-    command cd "${indicated_dir}"
+    command cd "${dir_arg}"
 
     # Add Current Directory
     (_add_directory &)
@@ -500,16 +500,16 @@ function qcd() {
     return $OK
   else
     # Store Directory Link
-    local dlink=$(command echo -e "${indicated_dir}" | command cut -d '/' -f1)
+    local dlink=$(command echo -e "${dir_arg}" | command cut -d '/' -f1)
 
     # Define Relative Subdirectory
     local sdir=$ESTR
 
     # Check For Trailing Subdirectory
-    if [[ "${indicated_dir}" == */* ]]
+    if [[ "${dir_arg}" == */* ]]
     then
       # Get Subdirectory Via Slice
-      sdir=${indicated_dir:$((${#dlink} + 1))}
+      sdir=${dir_arg:$((${#dlink} + 1))}
     fi
 
     # Escape Regex Characters
@@ -517,23 +517,20 @@ function qcd() {
 
     # End Input Directory Parsing------------------------------------------------------------------------------------------------------------------------------------
 
-    # Define Matched Symbolic Linkages
+    # Define Linkage Matching Parameters
     local resv=$ESTR resc=$FALSE
 
     # Check For Indirect Link Matching
-    if [[ -z $(command egrep -s "^${dlink}$" $QCD_LINKS) ]]
+    if [[ -z $(command egrep -s -x "^${dlink}$" $QCD_LINKS) ]]
     then
-      # Initialize Counter
-      local i=0
-
-      # Define New Link
-      local nlink=$ESTR
+      # Initialize Parameters
+      local i=0 slink=$ESTR
 
       # Check For Hidden Directory Prefix
-      if [[ "${indicated_dir}" == \.* ]]
+      if [[ "${dir_arg}" == \.* ]]
       then
         # Override Parameters
-        i=2; nlink="$ESC$CWD"
+        i=2; slink="$ESC$CWD"
       fi
 
       # Wildcard Symbolic Link
@@ -543,11 +540,11 @@ function qcd() {
         local c=${dlink:$i:1}
 
         # Append Wildcard
-        nlink="${nlink}${c}.*"
+        slink="${slink}${c}.*"
       done
 
       # Get Sequence Matched Symbolic Linkages From Store File
-      resv=$(command egrep -i -s -x "${nlink}:.*" $QCD_STORE 2> /dev/null | command awk -F ':' '{print $2}')
+      resv=$(command egrep -i -s -x "${slink}:.*" $QCD_STORE 2> /dev/null | command awk -F ':' '{print $2}')
     else
       # Get Link Matched Symbolic Linkages From Store File
       resv=$(command egrep -s -x "${dlink}:.*" $QCD_STORE 2> /dev/null | command awk -F ':' '{print $2}')
@@ -625,7 +622,7 @@ function qcd() {
         command echo -en "\rqcd: Generating option list..."
 
         # Generate Prompt
-        command echo -e "\rqcd: Multiple paths linked to ${B}${indicated_dir%/}${N}" > $QCD_TEMP
+        command echo -e "\rqcd: Multiple paths linked to ${B}${dir_arg%/}${N}" > $QCD_TEMP
 
         # Generate Path Options
         local cnt=1
