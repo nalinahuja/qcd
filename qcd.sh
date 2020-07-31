@@ -445,9 +445,9 @@ function qcd() {
   local status=$?
 
   # Check Function Return
-  if [[ $status -ne $CONT ]]
+  if [[ ${status} -ne $CONT ]]
   then
-    return $status
+    return ${status}
   fi
 
   # End Argument Parsing---------------------------------------------------------------------------------------------------------------------------------------------
@@ -456,16 +456,16 @@ function qcd() {
   local indicated_dir="$@"
 
   # Check For Empty Input
-  if [[ -z $indicated_dir ]]
+  if [[ -z ${indicated_dir} ]]
   then
     # Set To Home Directory
     indicated_dir=~
   else
     # Format Escaped Characters
-    indicated_dir=$(_escape_dir "$indicated_dir")
+    indicated_dir=$(_escape_dir "${indicated_dir}")
 
     # Check For Back Directory Pattern
-    if [[ "$indicated_dir" =~ ^[0-9]+\.\.$ ]]
+    if [[ "${indicated_dir}" =~ ^[0-9]+\.\.$ ]]
     then
       # Determine Back Directory Height
       local back_height=${indicated_dir:0:$((${#indicated_dir} - 2))}
@@ -481,10 +481,10 @@ function qcd() {
   # End Input Directory Formatting-----------------------------------------------------------------------------------------------------------------------------------
 
   # Determine If Directory Is Linked
-  if [[ -e "$indicated_dir" ]]
+  if [[ -e "${indicated_dir}" ]]
   then
     # Change To Valid Directory
-    command cd "$indicated_dir"
+    command cd "${indicated_dir}"
 
     # Add Current Directory
     (_add_directory &)
@@ -493,28 +493,28 @@ function qcd() {
     return $OK
   else
     # Store Directory Link
-    local dlink=$(command echo -e "$indicated_dir" | command cut -d '/' -f1)
+    local dlink=$(command echo -e "${indicated_dir}" | command cut -d '/' -f1)
 
     # Define Relative Subdirectory
     local sdir=$ESTR
 
     # Check For Trailing Subdirectory
-    if [[ "$indicated_dir" == */* ]]
+    if [[ "${indicated_dir}" == */* ]]
     then
       # Get Subdirectory Via Slice
       sdir=${indicated_dir:$((${#dlink} + 1))}
     fi
 
     # Escape Regex Characters
-    dlink=$(_escape_regex "$dlink")
+    dlink=$(_escape_regex "${dlink}")
 
     # End Input Directory Parsing------------------------------------------------------------------------------------------------------------------------------------
 
     # Define Matched Symbolic Linkages
-    local resv=$ESTR
+    local resv=$ESTR resc=$FALSE
 
     # Check For Indirect Link Matching
-    if [[ -z $(command grep "^$dlink$" $QCD_LINKS) ]]
+    if [[ -z $(command egrep -s "^${dlink}$" $QCD_LINKS) ]]
     then
       # Initialize Counter
       local i=0
@@ -523,7 +523,7 @@ function qcd() {
       local nlink=$ESTR
 
       # Check For Hidden Directory Prefix
-      if [[ "$indicated_dir" == \.* ]]
+      if [[ "${indicated_dir}" == \.* ]]
       then
         # Override Parameters
         i=2; nlink="$ESC$CWD"
@@ -540,31 +540,37 @@ function qcd() {
       done
 
       # Get Sequence Matched Symbolic Linkages From Store File
-      resv=$(command egrep -s -i -x "$nlink:.*" $QCD_STORE 2> /dev/null)
+      resv=$(command egrep -i -s -x "${nlink}:.*" $QCD_STORE 2> /dev/null | command awk -F ':' '{print $2}')
     else
       # Get Link Matched Symbolic Linkages From Store File
-      resv=$(command egrep -s -x "$dlink:.*" $QCD_STORE 2> /dev/null)
+      resv=$(command egrep -s -x "${dlink}:.*" $QCD_STORE 2> /dev/null | command awk -F ':' '{print $2}')
     fi
 
-    # Get Count Of Matched Symbolic Linkages
-    local resc=$(command echo -e "$resv" | command wc -l 2> /dev/null)
+    # Determine If Multiple Linkages Matched
+    if [[ "$resv" =~ :*: ]]
+    then
+      resc=$TRUE
+    fi
 
     # End Linkage Aquisition-----------------------------------------------------------------------------------------------------------------------------------------
 
     # Check Result Count
-    if [[ $resc -gt 1 ]]
+    if [[ $resc -eq $TRUE ]]
     then
       # Reset Result Count
       resc=0
 
-      # Define Parameters
-      local mpath=$ESTR fpaths=()
+      # Define Path Match
+      local mpath=$ESTR
+
+      # Store Matched Paths
+      local paths=$resv
+
+      # Define Filtered Paths
+      local fpaths=()
 
       # Store Current Directory
       local cdir=$(command pwd)
-
-      # Store Matching Absolute Paths
-      local paths=$(command echo -e "$resv" | command awk -F ':' '{print $2}')
 
       # Set IFS
       local IFS=$'\n'
@@ -656,9 +662,6 @@ function qcd() {
         # Set To Automatically Selected Endpoint
         resv=$mpath
       fi
-    else
-      # Set To Default Endpoint
-      resv=$(command echo -e "$resv" | command cut -d ':' -f2)
     fi
 
     # End Path Resolution--------------------------------------------------------------------------------------------------------------------------------------------
