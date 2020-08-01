@@ -260,7 +260,7 @@ function _parse_option_flags() {
     fi
 
     # Format Header
-    command printf "\r${W} %-${max_link}s %-$((${cols} - ${max_link} - 2))s${N}\n" "Link" "Directory" > $QCD_TEMP
+    command printf "\r${W} %-${max_link}s  %-$((${cols} - ${max_link} - 3))s${N}\n" "Link" "Directory" > $QCD_TEMP
 
     # Set IFS
     local IFS=$'\n'
