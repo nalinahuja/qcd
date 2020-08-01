@@ -836,6 +836,9 @@ function _qcd_comp() {
 
       # End Subdirectory Acquisition---------------------------------------------------------------------------------------------------------------------------------
 
+      # Set IFS
+      local IFS=$'\n'
+
       # Format Symbolic Link
       link_arg="${link_arg}/"
 
@@ -854,13 +857,10 @@ function _qcd_comp() {
         fi
       done
 
-      # End Option Generation----------------------------------------------------------------------------------------------------------------------------------------
-
-      # Set IFS
-      local IFS=$'\n'
-
       # Set Completion List
       COMPREPLY=($(command compgen -W "$(command printf "%s\n" "${word_list[@]}")" "${curr_arg}" 2> /dev/null))
+
+      # End Option Generation----------------------------------------------------------------------------------------------------------------------------------------
     fi
   else
     # Get Symbolic Links From Store File
@@ -883,7 +883,7 @@ function _qcd_comp() {
       # Filter Symbolic Links
       if [[ ! -e "${quick_dir}" ]]
       then
-        if [[ ${curr_rem} -eq $FALSE && "${quick_dir%/}" = "${pres_dir%/}" ]]
+        if [[ ${curr_rem} -eq $FALSE && "${quick_dir%/}" == "${pres_dir%/}" ]]
         then
           # Exlude Current Directory
           curr_rem=$TRUE
@@ -895,16 +895,10 @@ function _qcd_comp() {
       fi
     done
 
-    # Unset IFS
-    unset IFS
-
-    # End Option Generation------------------------------------------------------------------------------------------------------------------------------------------
-
-    # Set IFS
-    local IFS=$'\n'
-
     # Set Completion List
     COMPREPLY=($(command compgen -W "$(command printf "%s\n" "${word_list[@]}")" "${curr_arg}" 2> /dev/null))
+
+    # End Option Generation------------------------------------------------------------------------------------------------------------------------------------------
   fi
 }
 
