@@ -343,7 +343,7 @@ function _parse_standalone_flags() {
       command curl &> /dev/null
 
       # Check Return Value
-      if [[ $? -eq $NFD ]]
+      if [[ ${?} -eq $NFD ]]
       then
         # Display Prompt
         command echo -e "→ Curl dependency not installed"
@@ -359,7 +359,7 @@ function _parse_standalone_flags() {
       release_url=$(command curl --connect-timeout $TIMEOUT -s -L $QCD_RELEASES | command egrep -s -o "https.*zipball.*")
 
       # Error Check Release URL
-      if [[ $? -ne $OK || -z ${release_url} ]]
+      if [[ ${?} -ne $OK || -z ${release_url} ]]
       then
         # Display Prompt
         command echo -e "\r→ Failed to resolve download link for update"
@@ -372,7 +372,7 @@ function _parse_standalone_flags() {
       command curl --connect-timeout $TIMEOUT -s -L "${release_url/\",/}" > $QCD_UPDATE
 
       # Error Check Release Contents
-      if [[ $? -ne $OK || ! -f $QCD_UPDATE ]]
+      if [[ ${?} -ne $OK || ! -f $QCD_UPDATE ]]
       then
         # Display Prompt
         command echo -e "\r→ Failed to download update"
@@ -388,7 +388,7 @@ function _parse_standalone_flags() {
       command unzip -o -j $QCD_UPDATE -d $QCD_FOLD &> /dev/null
 
       # Error Check Installation
-      if [[ $? -ne $OK ]]
+      if [[ ${?} -ne $OK ]]
       then
         # Display Prompt
         command echo -e "\r→ Failed to install update"
