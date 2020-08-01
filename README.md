@@ -23,7 +23,7 @@ Please navigate to the <a href="https://github.com/nalinahuja22/qcd/releases">re
 </p>
 
 <p align="justify">
-Then, navigate to the location where the QCD repository contents have been downloaded onto your machine and run the <a href="https://github.com/nalinahuja22/qcd/blob/master/install_qcd">install_qcd</a> script. This executable will install QCD to your home directory in a hidden folder called <code>~/.qcd</code> and add the QCD command to your terminal configuration. When the install script finishes, please restart your terminal and source your terminal profile to fully configure the installation.<br><br>If you would like to do a manual installation of QCD, all you need to do is move the repository contents, besides the <code>install_qcd</code> file, into a folder at <code>~/.qcd</code> which you will have to make yourself. Then add the following line to your bash profile.
+Then, navigate to the location where the QCD repository contents have been downloaded onto your machine and run the <a href="https://github.com/nalinahuja22/qcd/blob/master/install_qcd">install_qcd</a> script. This executable will install QCD to your home directory in a hidden folder called <code>~/.qcd</code> and add the QCD command to your terminal configuration. When the install script finishes, please restart your terminal and source your terminal profile to fully configure the installation.<br><br>If you would like to do a manual installation of QCD, all you need to do is move the repository contents, besides the <a href="https://github.com/nalinahuja22/qcd/blob/master/install_qcd"> file, into a folder at <code>~/.qcd</code> which you will have to make yourself. Then add the following line to your bash profile.
 
 ```
 source ~/.qcd/qcd.sh</code>
