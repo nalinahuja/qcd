@@ -598,7 +598,7 @@ function qcd() {
         pathv=$fpaths
 
         # Error Check Path Results
-        if [[ -z ${pathv} ]]
+        if [[ ${#pathv[@]} -eq 0 ]]
         then
           # Terminate Program
           return $OK
