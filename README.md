@@ -28,7 +28,7 @@ Then, navigate to the location where the QCD repository contents have been downl
 ```
 source ~/.qcd/qcd.sh</code>
 ```
-<br><br>To update QCD to a newer release, simply follow the same installation process or use the <code>-u</code> flag as described in the usage section. Don't worry, your store file will not be modified during the update.
+To update QCD to a newer release, simply follow the same installation process or use the <code>-u</code> flag as described in the usage section. Don't worry, your store file will not be modified during the update.
 </p>
 
 ## Usage
