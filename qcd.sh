@@ -598,7 +598,7 @@ function qcd() {
         pathv=$fpaths
 
         # Error Check Path Results
-        if [[ ${#pathv[@]} -eq 0 ]]
+        if [[ -z $pathv ]]
         then
           # Terminate Program
           return $OK
@@ -715,129 +715,119 @@ function _qcd_comp() {
   # Initialize Word List
   local word_list=()
 
-  # Store Current Commandline Argument
+  # Store Command Line Argument
   local curr_arg=${COMP_WORDS[1]}
 
   # Path Completion
-  if [[ "$curr_arg" == */* ]]
+  if [[ "${curr_arg}" == */* ]]
   then
     # Obtain Symbolic Link
-    local link_arg=$(command echo -e "$curr_arg" | command cut -d '/' -f1)
+    local link_arg=$(command echo -e "${curr_arg}" | command cut -d '/' -f1)
     local link_len=${#link_arg}
 
     # Obtain Trailing Subdirectory Path
-    local trail_arg=$(command echo -e "$curr_arg" | command awk -F '/' '{print $NF}')
+    local trail_arg=$(command echo -e "${curr_arg}" | command awk -F '/' '{print $NF}')
 
     # Obtain Leading Subdirectory Path
-    local subs_len=$(command echo -e "$curr_arg" | command awk -F '/' '{print length($0)-length($NF)}')
-    local subs_arg=${curr_arg:0:$subs_len}
-    subs_arg=${subs_arg:$link_len + 1}
+    local subs_len=$(command echo -e "${curr_arg}" | command awk -F '/' '{print length($0)-length($NF)}')
+    local subs_arg=${curr_arg:0:${subs_len}}
+    subs_arg=${subs_arg:${link_len} + 1}
 
-    # Store Resolved Directories
-    local res_dirs=$ESTR
+    # End Input Parsing----------------------------------------------------------------------------------------------------------------------------------------------
 
     # Resolve Linked Directories
-    if [[ ! -e "$curr_arg" ]]
+    if [[ ! -e "${curr_arg}" ]]
     then
-      # Initialize Local Paths
-      local local_paths=$ESTR
+      # Initialize Link Paths
+      local local_paths=$NSET
 
       # Check For Indirect Link Matching
-      if [[ -z $(command cat $QCD_LINKS | command grep "^$link_arg$") ]]
+      if [[ -z $(command egrep -s -x "^${link_arg}$" $QCD_LINKS) ]]
       then
-        # Initialize Counter
-        local i=0
-
-        # Initialize New Link
-        local nlink=$ESTR
+        # Initialize Parameters
+        local i=0 slink_arg=$ESTR
 
         # Check For Hidden Directory Prefix
-        if [[ "$link_arg" == \.* ]]
+        if [[ "${link_arg}" == \.* ]]
         then
-          # Override New Link
-          nlink="$ESC$CWD"
-
-          # Shift Counter
-          i=1
+          # Override Parameters
+          i=2; slink_arg="$ESC$CWD"
         fi
 
         # Wildcard Symbolic Link
         for ((;i < ${#link_arg}; i++))
         do
           # Get Character At Index
-          local c=${link_arg:$i:1}
+          local c=${link_arg:${i}:1}
 
           # Append Wildcard
-          nlink="${nlink}${c}.*"
+          slink_arg="${slink_arg}${c}.*"
         done
 
-        # Get Compressed Case Insensitive Linked Paths From Store File
-        local link_paths=$(command egrep -s -i -x "$nlink:.*" $QCD_STORE | command awk -F ':' '{print $2}' | command tr ' ' ':')
+        # Get Sequence Matched Symbolic Linkages From Store File
+        link_paths=($(command egrep -s -i -x "${slink_arg}:.*" $QCD_STORE | command awk -F ':' '{print $2}'))
       else
-        # Get Compressed Case Sensitive Linked Paths From Store File
-        local link_paths=$(command egrep -s -x "$link_arg:.*" $QCD_STORE | command awk -F ':' '{print $2}' | command tr ' ' ':')
+        # Get Link Matched Symbolic Linkages From Store File
+        link_paths=($(command egrep -s -x "${link_arg}:.*" $QCD_STORE | command awk -F ':' '{print $2}'))
       fi
 
+      # End Linkage Acquisition--------------------------------------------------------------------------------------------------------------------------------------
+
+      # Initialize Resolved Directories
+      local res_dirs=()
+
       # Iterate Over Linked Paths
-      for link_path in $link_paths
+      for link_path in ${link_paths[@]}
       do
         # Form Resolved Directory
-        local res_dir=$(_escape_dir "${link_path//:/ }${subs_arg}")
+        local res_dir=$(_escape_dir "${link_path}${subs_arg}")
 
         # Add Resolved Directory
-        if [[ -e "$res_dir" ]]
+        if [[ -e "${res_dir}" ]]
         then
-          res_dirs="${res_dirs}${res_dir// /:} "
+          res_dirs+=("${res_dir}")
         fi
       done
     else
       # Resolve Local Directories
-      res_dirs="$curr_arg"
+      res_dirs="${curr_arg}"
     fi
 
+    # End Path Resolution--------------------------------------------------------------------------------------------------------------------------------------------
+
     # Error Check Resolved Directory
-    if [[ ! -z $res_dirs ]]
+    if [[ ! -z ${res_dirs} ]]
     then
       # Initialize Subdirectories
-      local sub_dirs=$ESTR
+      local sub_dirs=()
 
       # Iterate Over Resolved Directories
-      for res_dir in $res_dirs
+      for res_dir in ${res_dirs[@]}
       do
-        # Initialize Subdirectory
-        local sub_dir=$ESTR
-
         # Add Linked Subdirectories Of Similar Visibility
         if [[ ! "${trail_arg:0:1}" == "$CWD" ]]
         then
           # Get Visible Linked Subdirectory
-          sub_dir=$(command ls -F "${res_dir//:/ }" 2> /dev/null | command egrep -s -x ".*/" | command tr ' ' ':')
+          sub_dirs+=("$(command ls -F "${res_dir}" 2> /dev/null | command egrep -s -x ".*/")")
         else
           # Get Hidden Linked Subdirectory
-          sub_dir=$(command ls -aF "${res_dir//:/ }" 2> /dev/null | command egrep -s -x ".*/" | command tr ' ' ':')
+          sub_dirs+=("$(command ls -aF "${res_dir}" 2> /dev/null | command egrep -s -x ".*/")")
         fi
-
-        # Add Subdirectory To List
-        sub_dirs="${sub_dirs}${sub_dir} "
       done
+
+      # End Subdirectory Acquisition---------------------------------------------------------------------------------------------------------------------------------
 
       # Format Symbolic Link
       link_arg="${link_arg}/"
 
-      # Format Subdirectories
-      sub_dirs=${sub_dirs////}
-
       # Add Linked Subdirectories
-      for sub_dir in $sub_dirs
+      for sub_dir in ${sub_dirs[@]}
       do
-        # Expand Symbols
-        sub_dir=${sub_dir//:/ }
-
         # Generate Linked Subdirectory
-        link_sub="${link_arg}${subs_arg}${sub_dir}"
+        link_sub=$(_escape_dir "${link_arg}${subs_arg}${sub_dir}")
 
         # Add Linked Subdirectories
-        if [[ ! -e "$(_escape_dir "$link_sub")" ]]
+        if [[ ! -e "$link_sub" ]]
         then
           word_list+=("$link_sub/")
         else
@@ -845,30 +835,33 @@ function _qcd_comp() {
         fi
       done
 
+      # End Option Generation----------------------------------------------------------------------------------------------------------------------------------------
+
       # Set IFS
       local IFS=$'\n'
 
       # Set Completion List
-      COMPREPLY=($(command compgen -W "$(command printf "%s\n" "${word_list[@]}")" "$curr_arg" 2> /dev/null))
+      COMPREPLY=($(command compgen -W "$(command printf "%s\n" "${word_list[@]}")" "${curr_arg}" 2> /dev/null))
     fi
   else
-    # Store Compressed Symbolic Links From Store File
-    local quick_dirs=$(command awk -F ':' '{printf $1 "/\n"}' $QCD_STORE | command tr ' ' ':')
+    # Get Symbolic Links From Store File
+    local quick_dirs=($(command awk -F ':' '{printf $1 "/\n"}' $QCD_STORE))
 
     # Store Current Directory Data
-    local curr_dir=$(command basename "$(command pwd)")
+    local pres_dir=$(command basename "$(_get_pwd)")
+
+    # Initialize Ignore Boolean
     local curr_rem=$FALSE
 
-    # Add Linked Directories
-    for quick_dir in $quick_dirs
-    do
-      # Expand Symbols
-      quick_dir=${quick_dir//:/ }
+    # End Linkage Acquisition---------------------------------------------------------------------------------------------------------------------------------------- 
 
+    # Add Linked Directories
+    for quick_dir in ${quick_dirs[@]}
+    do
       # Filter Symbolic Links
-      if [[ ! -e "$quick_dir" ]]
+      if [[ ! -e "${quick_dir}" ]]
       then
-        if [[ $curr_rem -eq $FALSE && "${quick_dir%/}" = "${curr_dir%/}" ]]
+        if [[ ${curr_rem} -eq $FALSE && "${quick_dir%/}" = "${pres_dir%/}" ]]
         then
           # Exlude Current Directory
           curr_rem=$TRUE
@@ -880,11 +873,13 @@ function _qcd_comp() {
       fi
     done
 
+    # End Option Generation------------------------------------------------------------------------------------------------------------------------------------------
+
     # Set IFS
     local IFS=$'\n'
 
     # Set Completion List
-    COMPREPLY=($(command compgen -W "$(command printf "%s\n" "${word_list[@]}")" "$curr_arg" 2> /dev/null))
+    COMPREPLY=($(command compgen -W "$(command printf "%s\n" "${word_list[@]}")" "${curr_arg}" 2> /dev/null))
   fi
 }
 
@@ -901,10 +896,10 @@ function _qcd_init() {
     (_update_links &)
 
     # Cleanup Files On Exit
-    command trap _cleanup EXIT
+    command trap _cleanup EXIT &> /dev/null
 
     # Set Environment To Show Visible Files
-    command bind 'set match-hidden-files off' 2> /dev/null
+    command bind 'set match-hidden-files off' &> /dev/null
 
     # Initialize Completion Engine
     command complete -o nospace -o filenames -A directory -F _qcd_comp qcd
