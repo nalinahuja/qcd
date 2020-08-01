@@ -724,7 +724,7 @@ function _qcd_comp() {
   # Store Command Line Argument
   local curr_arg=${COMP_WORDS[1]}
 
-  # Path Completion
+  # Determine Completion Type
   if [[ "${curr_arg}" == */* ]]
   then
     # Obtain Symbolic Link
@@ -757,7 +757,7 @@ function _qcd_comp() {
         if [[ "${link_arg}" == \.* ]]
         then
           # Override Parameters
-          i=2; slink_arg="$ESC$CWD"
+          i=1; slink_arg="$ESC$CWD"
         fi
 
         # Wildcard Symbolic Link
