@@ -15,6 +15,7 @@ TRUE=1
 FALSE=0
 
 # Embedded Values
+NSET=0
 MINP=4
 TIMEOUT=10
 
@@ -505,7 +506,7 @@ function qcd() {
     # Define Relative Subdirectory
     local sdir=$ESTR
 
-    # Check For Trailing Subdirectory
+    # Store Linked Subdirectory If Valid
     if [[ "${dir_arg}" == */* ]]
     then
       sdir=${dir_arg:$((${#dlink} + 1))}
@@ -517,7 +518,7 @@ function qcd() {
     # End Input Directory Parsing------------------------------------------------------------------------------------------------------------------------------------
 
     # Define Linkage Parameters
-    local pathv pathc
+    local pathv=$NSET
 
     # Check For Indirect Link Matching
     if [[ -z $(command egrep -s -x "^${dlink}$" $QCD_LINKS) ]]
@@ -550,12 +551,12 @@ function qcd() {
     fi
 
     # Initialize Path Count
-    pathc=${#pathv[@]}
+    local pathc=${#pathv[@]}
 
     # End Linkage Acquisition----------------------------------------------------------------------------------------------------------------------------------------
 
     # Check Result Count
-    if [[ $pathc -gt 1 ]]
+    if [[ ${pathc} -gt 1 ]]
     then
       # Define Matched Path
       local mpath=$ESTR
@@ -565,9 +566,6 @@ function qcd() {
 
       # Initialize Filtered Paths
       local fpaths=()
-
-      # Set IFS
-      local IFS=$'\n'
 
       # Iterate Over Matched Paths
       for path in ${pathv[@]}
@@ -581,9 +579,6 @@ function qcd() {
           fpaths+=("${path}")
         fi
       done
-
-      # Unset IFS
-      unset IFS
 
       # Update Path Count
       pathc=${#fpaths[@]}
@@ -617,13 +612,15 @@ function qcd() {
 
         # Generate Path Options
         local cnt=1
-        for path in ${pathv}
+        for path in ${pathv[@]}
         do
           # Format Path
           path=$(_format_dir "${path}")
 
           # Output Path As Option
           command printf "(${cnt}) ${path%/}\n" >> $QCD_TEMP
+
+          # Increment Counter
           cnt=$((${cnt} + 1))
         done
 
@@ -656,7 +653,7 @@ function qcd() {
         # End Option Verification And Correction---------------------------------------------------------------------------------------------------------------------
 
         # Set To Manually Selected Endpoint
-        pathv="${fpaths[$((${ept} - 1))]}"
+        pathv="${pathv[$((${ept} - 1))]}"
       else
         # Set To Automatically Selected Endpoint
         pathv=${mpath}
