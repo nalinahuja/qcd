@@ -604,11 +604,8 @@ function qcd() {
       # List Matching Links
       if [[ -z ${mpath} ]]
       then
-        # Replace Path Results
-        pathv=$fpaths
-
         # Error Check Path Results
-        if [[ -z $pathv ]]
+        if [[ -z ${fpaths} ]]
         then
           # Terminate Program
           return $OK
@@ -622,7 +619,7 @@ function qcd() {
 
         # Generate Path Options
         local cnt=1
-        for path in ${pathv[@]}
+        for path in ${fpaths[@]}
         do
           # Format Path
           path=$(_format_dir "${path}")
@@ -663,7 +660,7 @@ function qcd() {
         # End Option Verification And Correction---------------------------------------------------------------------------------------------------------------------
 
         # Set To Manually Selected Endpoint
-        pathv="${pathv[$((${ept} - 1))]}"
+        pathv="${fpaths[$((${ept} - 1))]}"
       else
         # Set To Automatically Selected Endpoint
         pathv=${mpath}
