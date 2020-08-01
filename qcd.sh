@@ -820,14 +820,17 @@ function _qcd_comp() {
       # Iterate Over Resolved Directories
       for res_dir in ${res_dirs[@]}
       do
+        # Set IFS
+        local IFS=$'\n'
+
         # Add Linked Subdirectories Of Similar Visibility
         if [[ ! "${trail_arg:0:1}" == "$CWD" ]]
         then
           # Add Compressed Visible Linked Subdirectories
-          sub_dirs+=("$(command ls -F "${res_dir}" 2> /dev/null | command egrep -s -x ".*/" | command tr ' ' ':')")
+          sub_dirs+=($(command printf "%s\n" $(command ls -F "${res_dir}" 2> /dev/null | command egrep -s -x ".*/")))
         else
           # Add Compressed Linked Subdirectories
-          sub_dirs+=("$(command ls -aF "${res_dir}" 2> /dev/null | command egrep -s -x ".*/" | command tr ' ' ':')")
+          sub_dirs+=($(command printf "%s\n"$(command ls -aF "${res_dir}" 2> /dev/null | command egrep -s -x ".*/")))
         fi
       done
 
@@ -839,12 +842,8 @@ function _qcd_comp() {
       # Add Linked Subdirectories
       for sub_dir in ${sub_dirs[@]}
       do
-        # Expand Subdirectory
-        sub_dir=${sub_dir//:/ }
-        sub_dir=${sub_dir////}
-
         # Generate Linked Subdirectory
-        link_sub=$(_escape_dir "${link_arg}${subs_arg}${sub_dir}")
+        link_sub=$(_escape_dir "${link_arg}${subs_arg}${sub_dir////}")
 
         # Add Linked Subdirectories
         if [[ ! -e "$link_sub" ]]
