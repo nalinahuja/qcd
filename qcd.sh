@@ -824,7 +824,7 @@ function _qcd_comp() {
       for sub_dir in ${sub_dirs[@]}
       do
         # Generate Linked Subdirectory
-        link_sub=$(_escape_dir "${link_arg}${subs_arg}${sub_dir}")
+        link_sub=$(_escape_dir "${link_arg}${subs_arg}${sub_dir////}")
 
         # Add Linked Subdirectories
         if [[ ! -e "$link_sub" ]]
@@ -853,7 +853,7 @@ function _qcd_comp() {
     # Initialize Ignore Boolean
     local curr_rem=$FALSE
 
-    # End Linkage Acquisition---------------------------------------------------------------------------------------------------------------------------------------- 
+    # End Linkage Acquisition----------------------------------------------------------------------------------------------------------------------------------------
 
     # Add Linked Directories
     for quick_dir in ${quick_dirs[@]}
