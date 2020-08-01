@@ -785,6 +785,9 @@ function _qcd_comp() {
 
       # End Linkage Acquisition--------------------------------------------------------------------------------------------------------------------------------------
 
+      # Set IFS
+      local IFS=$'\n'
+
       # Initialize Resolved Directories
       local res_dirs=()
 
@@ -797,9 +800,6 @@ function _qcd_comp() {
         # Add Resolved Directory
         if [[ -e "${res_dir}" ]]
         then
-          # Set IFS
-          local IFS=$'\n'
-
           # Add Resolved Directory To List
           res_dirs+=($(command printf "%s\n" "${res_dir}"))
         fi
