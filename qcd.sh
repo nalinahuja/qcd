@@ -296,7 +296,7 @@ function _parse_option_flags() {
     for path in ${paths}
     do
       # Remove Invalid Paths
-      if [[ ! -e "${path}" ]]
+      if [[ ! -d "${path}" ]]
       then
         _remove_directory "${path}"
       fi
@@ -489,7 +489,7 @@ function qcd() {
   # End Input Directory Formatting-----------------------------------------------------------------------------------------------------------------------------------
 
   # Determine If Directory Is Linked
-  if [[ -e "${dir_arg}" ]]
+  if [[ -d "${dir_arg}" ]]
   then
     # Change To Valid Directory
     command cd "${dir_arg}"
@@ -580,7 +580,7 @@ function qcd() {
         path=$(_escape_dir "${path}${sdir}")
 
         # Validate Path
-        if [[ -e "${path}" && ! "${path%/}" == "${pwd%/}" ]]
+        if [[ -d "${path}" && ! "${path%/}" == "${pwd%/}" ]]
         then
           # Set IFS
           local IFS=$'\n'
@@ -677,7 +677,7 @@ function qcd() {
 
       # Terminate Program
       return $ERR
-    elif [[ ! -e "${pathv}" ]]
+    elif [[ ! -d "${pathv}" ]]
     then
       # Check Result Count
       if [[ ${pathc} -gt 1 ]]
@@ -699,7 +699,7 @@ function qcd() {
       command cd "${pathv}"
 
       # Validate Subdirectory
-      if [[ ! -z ${sdir} && -e "${sdir}" ]]
+      if [[ ! -z ${sdir} && -d "${sdir}" ]]
       then
         # Switch To Subdirectory
         command cd "${sdir}"
@@ -743,7 +743,7 @@ function _qcd_comp() {
     # End Input Parsing----------------------------------------------------------------------------------------------------------------------------------------------
 
     # Resolve Linked Directories
-    if [[ ! -e "${curr_arg}" ]]
+    if [[ ! -d "${curr_arg}" ]]
     then
       # Initialize Link Paths
       local local_paths=$NSET
@@ -799,7 +799,7 @@ function _qcd_comp() {
         local res_dir=$(_escape_dir "${link_path}${subs_arg}")
 
         # Add Resolved Directory
-        if [[ -e "${res_dir}" ]]
+        if [[ -d "${res_dir}" ]]
         then
           # Add Resolved Directory To List
           res_dirs+=($(command printf "%s\n" "${res_dir}"))
@@ -850,7 +850,7 @@ function _qcd_comp() {
         link_sub=$(_escape_dir "${link_arg}${subs_arg}${sub_dir////}")
 
         # Add Linked Subdirectories
-        if [[ ! -e "$link_sub" ]]
+        if [[ ! -d "$link_sub" ]]
         then
           word_list+=("$link_sub/")
         else
@@ -882,7 +882,7 @@ function _qcd_comp() {
     for quick_dir in ${quick_dirs}
     do
       # Filter Symbolic Links
-      if [[ ! -e "${quick_dir}" ]]
+      if [[ ! -d "${quick_dir}" ]]
       then
         if [[ ${curr_rem} -eq $FALSE && "${quick_dir%/}" == "${pres_dir%/}" ]]
         then
