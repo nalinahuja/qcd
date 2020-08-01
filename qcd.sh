@@ -543,11 +543,17 @@ function qcd() {
         slink="${slink}${c}.*"
       done
 
+      # Set IFS
+      local IFS=$'\n'
+
       # Get Sequence Matched Symbolic Linkages From Store File
-      pathv=($(command egrep -i -s -x "${slink}:.*" $QCD_STORE 2> /dev/null | command awk -F ':' '{print $2}'))
+      pathv=($(command printf "%s\n" $(command egrep -i -s -x "${slink}:.*" $QCD_STORE 2> /dev/null | command awk -F ':' '{print $2}')))
     else
+      # Set IFS
+      local IFS=$'\n'
+
       # Get Link Matched Symbolic Linkages From Store File
-      pathv=($(command egrep -s -x "${dlink}:.*" $QCD_STORE 2> /dev/null | command awk -F ':' '{print $2}'))
+      pathv=($(command printf "%s\n" $(command egrep -s -x "${dlink}:.*" $QCD_STORE 2> /dev/null | command awk -F ':' '{print $2}')))
     fi
 
     # Initialize Path Count
@@ -790,7 +796,7 @@ function _qcd_comp() {
       done
     else
       # Resolve Local Directories
-      res_dirs="${curr_arg}"
+      res_dirs=$(_escape_dir "${curr_arg}")
     fi
 
     # End Path Resolution--------------------------------------------------------------------------------------------------------------------------------------------
@@ -849,7 +855,7 @@ function _qcd_comp() {
     fi
   else
     # Get Symbolic Links From Store File
-    local quick_dirs=($(command awk -F ':' '{printf $1 "/\n"}' $QCD_STORE))
+    local quick_dirs=$(command awk -F ':' '{printf $1 "/\n"}' $QCD_STORE)
 
     # Store Current Directory Data
     local pres_dir=$(command basename "$(_get_pwd)")
@@ -859,8 +865,11 @@ function _qcd_comp() {
 
     # End Linkage Acquisition----------------------------------------------------------------------------------------------------------------------------------------
 
+    # Set IFS
+    local IFS=$'\n'
+
     # Add Linked Directories
-    for quick_dir in ${quick_dirs[@]}
+    for quick_dir in ${quick_dirs}
     do
       # Filter Symbolic Links
       if [[ ! -e "${quick_dir}" ]]
@@ -876,6 +885,9 @@ function _qcd_comp() {
         fi
       fi
     done
+
+    # Unset IFS
+    unset IFS
 
     # End Option Generation------------------------------------------------------------------------------------------------------------------------------------------
 
