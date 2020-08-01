@@ -582,7 +582,11 @@ function qcd() {
         # Validate Path
         if [[ -e "${path}" && ! "${path%/}" == "${pwd%/}" ]]
         then
-          fpaths+=("${path}")
+          # Set IFS
+          local IFS=$'\n'
+
+          # Add Filtered Path To List
+          fpaths+=($(command printf "%s\n" "${path}"))
         fi
       done
 
