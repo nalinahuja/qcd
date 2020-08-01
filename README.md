@@ -25,7 +25,9 @@ Please navigate to the <a href="https://github.com/nalinahuja22/qcd/releases">re
 <p align="justify">
 Then, navigate to the location where the QCD repository contents have been downloaded onto your machine and run the <a href="https://github.com/nalinahuja22/qcd/blob/master/install_qcd">install_qcd</a> script. This executable will install QCD to your home directory in a hidden folder called <code>~/.qcd</code> and add the QCD command to your terminal configuration. When the install script finishes, please restart your terminal and source your terminal profile to fully configure the installation.<br><br>To update QCD to a newer release, simply follow the same installation process or use the <code>-u</code> flag as described in the usage section. Don't worry, your store file will not be modified during the update.<br><br>If you would like to do a manual installation, all you need to do is copy the all files in the repository, besides the <code>install_qcd</code> one, into a folder at <code>~/.qcd</code> which you will have to make yourself. Then add the following line to your bash profile.
 
-<code>source ~/.qcd/qcd.sh</code>
+```
+source ~/.qcd/qcd.sh</code>
+```
 </p>
 
 ## Usage
