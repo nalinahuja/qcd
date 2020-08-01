@@ -612,7 +612,7 @@ function qcd() {
 
         # Generate Path Options
         local cnt=1
-        for path in ${pathv[@]}
+        for path in ${pathv}
         do
           # Format Path
           path=$(_format_dir "${path}")
@@ -653,7 +653,7 @@ function qcd() {
         # End Option Verification And Correction---------------------------------------------------------------------------------------------------------------------
 
         # Set To Manually Selected Endpoint
-        pathv="${pathv[$((${ept} - 1))]}"
+        pathv="${fpaths[$((${ept} - 1))]}"
       else
         # Set To Automatically Selected Endpoint
         pathv=${mpath}
