@@ -770,11 +770,17 @@ function _qcd_comp() {
           slink_arg="${slink_arg}${c}.*"
         done
 
+        # Set IFS
+        local IFS=$'\n'
+
         # Get Sequence Matched Symbolic Linkages From Store File
-        link_paths=($(command egrep -s -i -x "${slink_arg}:.*" $QCD_STORE | command awk -F ':' '{print $2}'))
+        link_paths=($(command printf "%s\n" $(command egrep -s -i -x "${slink_arg}:.*" $QCD_STORE | command awk -F ':' '{print $2}')))
       else
+        # Set IFS
+        local IFS=$'\n'
+
         # Get Link Matched Symbolic Linkages From Store File
-        link_paths=($(command egrep -s -x "${link_arg}:.*" $QCD_STORE | command awk -F ':' '{print $2}'))
+        link_paths=($(command printf "%s\n" $(command egrep -s -x "${link_arg}:.*" $QCD_STORE | command awk -F ':' '{print $2}')))
       fi
 
       # End Linkage Acquisition--------------------------------------------------------------------------------------------------------------------------------------
@@ -791,7 +797,11 @@ function _qcd_comp() {
         # Add Resolved Directory
         if [[ -e "${res_dir}" ]]
         then
-          res_dirs+=("${res_dir}")
+          # Set IFS
+          local IFS=$'\n'
+
+          # Add Resolved Directory To List
+          res_dirs+=($(command printf "%s\n" "${res_dir}"))
         fi
       done
     else
