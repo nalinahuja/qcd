@@ -4,11 +4,11 @@
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
-# Conditional Booleans
+# Boolean Values
 TRUE=1
 FALSE=0
 
-# Program Actions
+# Embedded Strings
 YES="y"
 
 # Install Files
@@ -29,7 +29,7 @@ version=$(command cat $QCD_HELP | command head -n1 | command awk '{print $4}')
 # End Global Variables-----------------------------------------------------------------------------------------------------------------------------------------------
 
 # Prompt User For Confirmation
-command read -p "Please confirm installation of QCD ($version) [y/n]: " confirm
+command read -p "Please confirm installation of QCD (${version}) [y/n]: " confirm
 
 # Determine Action
 if [[ "${confirm//Y/$YES}" == $YES ]]
@@ -71,11 +71,11 @@ then
   command source $QCD_FOLD/qcd.sh 2> /dev/null
 
   # Determine Appropriate Message
-  if [[ $upgrade -eq $TRUE ]]
+  if [[ ${upgrade} -eq $TRUE ]]
   then
-    command echo -e "→ Upgraded QCD to $version"
+    command echo -e "→ Upgraded QCD to ${version}"
   else
-    command echo -e "→ Installed QCD $version in ~/.qcd"
+    command echo -e "→ Installed QCD ${version} in ~/.qcd"
   fi
 
   # Finish Installation
