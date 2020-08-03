@@ -831,7 +831,7 @@ function _qcd_comp() {
           sub_dirs+=($(command printf "%s\n" $(command ls -F "${res_dir}" 2> /dev/null | command egrep -s -x ".*/")))
         else
           # Add Compressed Linked Subdirectories
-          sub_dirs+=($(command printf "%s\n"$(command ls -aF "${res_dir}" 2> /dev/null | command egrep -s -x ".*/")))
+          sub_dirs+=($(command printf "%s\n" $(command ls -aF "${res_dir}" 2> /dev/null | command egrep -s -x ".*/")))
         fi
       done
 
