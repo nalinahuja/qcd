@@ -569,7 +569,7 @@ function qcd() {
     local pathv=$NSET
 
     # Check For Indirect Link Matching
-    if [[ -z $(command egrep -s -x "^$(_escape_regex "${dlink}")$" $QCD_LINKS) ]]
+    if [[ -z $(command egrep -s -x "^${dlink}$" $QCD_LINKS) ]]
     then
       # Initialize Parameters
       local i=0 slink=$ESTR
@@ -721,7 +721,7 @@ function qcd() {
     if [[ -z ${pathv} ]]
     then
       # Display Error
-      command echo -e "qcd: Cannot find linkage to directory"
+      command echo -e "qcd: Cannot find link to directory"
 
       # Terminate Program
       return $ERR
@@ -797,7 +797,7 @@ function _qcd_comp() {
       local local_paths=$NSET
 
       # Check For Indirect Link Matching
-      if [[ -z $(command egrep -s -x "^$(_escape_regex "${dlink}")$" $QCD_LINKS) ]]
+      if [[ -z $(command egrep -s -x "^${dlink}$" $QCD_LINKS) ]]
       then
         # Initialize Parameters
         local i=0 slink_arg=$ESTR
@@ -900,9 +900,9 @@ function _qcd_comp() {
         # Add Linked Subdirectories
         if [[ ! -d "${link_sub}" ]]
         then
-          word_list+=("$(_escape_regex "${link_sub}/")")
+          word_list+=("${link_sub}/")
         else
-          word_list+=("$(_escape_regex "${link_sub}")")
+          word_list+=("${link_sub}")
         fi
       done
 
@@ -939,7 +939,7 @@ function _qcd_comp() {
         elif [[ "${curr_arg:0:1}" == "$CWD" && "${quick_dir:0:1}" == "$CWD" || ! "${curr_arg:0:1}" == "$CWD" && ! "${quick_dir:0:1}" == "$CWD" ]]
         then
           # Add Symbolic Links Of Similar Visibility
-          word_list+=("$(_escape_regex "${quick_dir}")")
+          word_list+=("${quick_dir}")
         fi
       fi
     done
