@@ -255,7 +255,7 @@ function _parse_option_flags() {
       local path="${@:1:$(($# - 1))}"
 
       # Get Trailing Path
-      local trail_path=$(command echo -e "${curr_arg}" | command awk -F '/' '{print $NF}')
+      local trail_path=$(command basename "${path}")
 
       # Get Prefix Path
       local prefix_path=${path:0:$((${#path} - ${#trail_path}))}
@@ -781,7 +781,7 @@ function _qcd_comp() {
     local link_len=${#link_arg}
 
     # Obtain Trailing Subdirectory Path
-    local trail_arg=$(command echo -e "${curr_arg}" | command awk -F '/' '{print $NF}')
+    local trail_arg=$(command basename "${curr_arg}")
 
     # Obtain Leading Subdirectory Path
     local subs_len=$(command echo -e "${curr_arg}" | command awk -F '/' '{print length($0)-length($NF)}')
