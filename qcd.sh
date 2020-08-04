@@ -721,7 +721,7 @@ function qcd() {
     if [[ -z ${pathv} ]]
     then
       # Display Error
-      command echo -e "qcd: Cannot find link to directory"
+      command echo -e "qcd: Cannot resolve linkage to directory"
 
       # Terminate Program
       return $ERR
