@@ -569,7 +569,7 @@ function qcd() {
     local pathv=$NSET
 
     # Check For Indirect Link Matching
-    if [[ -z $(command egrep -s -x "^${dlink}$" $QCD_LINKS) ]]
+    if [[ ! ${dir_arg} == */ && -z $(command egrep -s -x "^${dlink}$" $QCD_LINKS) ]]
     then
       # Initialize Parameters
       local i=0 slink=$ESTR
