@@ -255,7 +255,7 @@ function _parse_option_flags() {
       local path="${@:1:$(($# - 1))}"
 
       # Get Trailing Path
-      local trail_path=$(command basename "${path}")
+      local trail_path=$(command echo -e "${curr_arg}" | command awk -F '/' '{print $NF}')
 
       # Get Prefix Path
       local prefix_path=${path:0:$((${#path} - ${#trail_path}))}
