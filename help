@@ -1,4 +1,4 @@
-[1mQCD Utility - v1.13(B[m
+[1mQCD Utility - v1.14(B[m
 
 [1mUsage:(B[m
   qcd                         Change to home directory
@@ -15,7 +15,8 @@
   qcd [-l, --list]            List directory linkages
   qcd [-r, --remember]        Remember present directory
   qcd [-f, --forget]          Forget only present directory
-  qcd [link] [-l, --list]     List matching directory linkages
   qcd [link] [-f, --forget]   Forget matching symbolic links
+  qcd [link] [-l, --list]     List matching directory linkages
+  qcd [path] [-m, --mkdir]    Create and switch to new directory
 
 Developed by Nalin Ahuja, nalinahuja22

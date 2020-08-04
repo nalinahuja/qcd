@@ -26,6 +26,7 @@ LIST="-l"
 CLEAN="-c"
 FORGET="-f"
 REMEMBER="-r"
+MKDIRENT="-m"
 
 # Standalone Flags
 HELP="-h"
@@ -100,6 +101,7 @@ function _escape_regex() {
   fstr="${fstr//\*/\\*}"
   fstr="${fstr//\?/\\?}"
   fstr="${fstr//\./\\.}"
+  fstr="${fstr//\$/\\$}"
 
   # Return Escaped String
   command echo -e "${fstr}"
@@ -215,6 +217,75 @@ function _parse_option_flags() {
 
     # Terminate Program
     return $OK
+  elif [[ "${flag/--clean/$CLEAN}" == "$CLEAN" ]]
+  then
+    # Store Paths From Store File
+    local paths=$(command awk -F ':' '{print $2}' $QCD_STORE)
+
+    # Set IFS
+    local IFS=$'\n'
+
+    # Iterate Over Paths
+    for path in ${paths}
+    do
+      # Remove Invalid Paths
+      if [[ ! -d "${path}" ]]
+      then
+        _remove_directory "${path}"
+      fi
+    done
+
+    # Unset IFS
+    unset IFS
+
+    # Terminate Program
+    return $OK
+  elif [[ "${flag/--mkdir/$MKDIRENT}" == "$MKDIRENT" ]]
+  then
+    # Verify Argument Count
+    if [[ $# -lt 2 ]]
+    then
+      # Display Prompt
+      command echo -e "qcd: Insufficient arguments"
+
+      # Terminate Program
+      return $ERR
+    else
+      # Get Path
+      local path="${@:1:$(($# - 1))}"
+
+      # Get Trailing Path
+      local trail_path=$(command basename "${path}")
+
+      # Get Prefix Path
+      local prefix_path=${path:0:$((${#path} - ${#trail_path}))}
+
+      # Verify Prefix Path
+      if [[ ! -z ${prefix_path} && ! -d "${prefix_path}" ]]
+      then
+        # Display Prompt
+        command echo -e "qcd: Invalid directory path"
+
+        # Terminate Program
+        return $ERR
+      elif [[ -d "${path}" ]]
+      then
+        # Display Prompt
+        command echo -e "qcd: Directory already exists"
+
+        # Terminate Program
+        return $ERR
+      fi
+    fi
+
+    # Create Directory At Location
+    command mkdir "${path}"
+
+    # QCD Into New Directory
+    qcd "${path}"
+
+    # Terminate Program
+    return $OK
   elif [[ "${flag/--list/$LIST}" == "$LIST" ]]
   then
     # Display Prompt
@@ -281,29 +352,6 @@ function _parse_option_flags() {
 
     # Display Prompt
     command cat $QCD_TEMP
-
-    # Terminate Program
-    return $OK
-  elif [[ "${flag/--clean/$CLEAN}" == "$CLEAN" ]]
-  then
-    # Store Paths From Store File
-    local paths=$(command awk -F ':' '{print $2}' $QCD_STORE)
-
-    # Set IFS
-    local IFS=$'\n'
-
-    # Iterate Over Paths
-    for path in ${paths}
-    do
-      # Remove Invalid Paths
-      if [[ ! -d "${path}" ]]
-      then
-        _remove_directory "${path}"
-      fi
-    done
-
-    # Unset IFS
-    unset IFS
 
     # Terminate Program
     return $OK
@@ -521,7 +569,7 @@ function qcd() {
     local pathv=$NSET
 
     # Check For Indirect Link Matching
-    if [[ -z $(command egrep -s -x "^${dlink}$" $QCD_LINKS) ]]
+    if [[ -z $(command egrep -s -x "^$(_escape_regex "${dlink}")$" $QCD_LINKS) ]]
     then
       # Initialize Parameters
       local i=0 slink=$ESTR
@@ -733,7 +781,7 @@ function _qcd_comp() {
     local link_len=${#link_arg}
 
     # Obtain Trailing Subdirectory Path
-    local trail_arg=$(command echo -e "${curr_arg}" | command awk -F '/' '{print $NF}')
+    local trail_arg=$(command basename "${curr_arg}")
 
     # Obtain Leading Subdirectory Path
     local subs_len=$(command echo -e "${curr_arg}" | command awk -F '/' '{print length($0)-length($NF)}')
@@ -749,7 +797,7 @@ function _qcd_comp() {
       local local_paths=$NSET
 
       # Check For Indirect Link Matching
-      if [[ -z $(command egrep -s -x "^${link_arg}$" $QCD_LINKS) ]]
+      if [[ -z $(command egrep -s -x "^$(_escape_regex "${dlink}")$" $QCD_LINKS) ]]
       then
         # Initialize Parameters
         local i=0 slink_arg=$ESTR
@@ -850,11 +898,11 @@ function _qcd_comp() {
         link_sub=$(_escape_dir "${link_arg}${subs_arg}${sub_dir////}")
 
         # Add Linked Subdirectories
-        if [[ ! -d "$link_sub" ]]
+        if [[ ! -d "${link_sub}" ]]
         then
-          word_list+=("$link_sub/")
+          word_list+=("$(_escape_regex "${link_sub}/")")
         else
-          word_list+=("$link_sub")
+          word_list+=("$(_escape_regex "${link_sub}")")
         fi
       done
 
@@ -891,7 +939,7 @@ function _qcd_comp() {
         elif [[ "${curr_arg:0:1}" == "$CWD" && "${quick_dir:0:1}" == "$CWD" || ! "${curr_arg:0:1}" == "$CWD" && ! "${quick_dir:0:1}" == "$CWD" ]]
         then
           # Add Symbolic Links Of Similar Visibility
-          word_list+=("$quick_dir")
+          word_list+=("$(_escape_regex "${quick_dir}")")
         fi
       fi
     done
