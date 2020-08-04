@@ -53,6 +53,7 @@ Options:
   qcd [-l, --list]            List directory linkages
   qcd [-r, --remember]        Remember present directory
   qcd [-f, --forget]          Forget only present directory
-  qcd [link] [-l, --list]     List matching directory linkages
   qcd [link] [-f, --forget]   Forget matching symbolic links
+  qcd [link] [-l, --list]     List matching directory linkages
+  qcd [path] [-m, --mkdir]    Create and switch to new directory
 ```
