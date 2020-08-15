@@ -261,14 +261,14 @@ function _parse_option_flags() {
       local prefix_path=${path:0:$((${#path} - ${#trail_path}))}
 
       # Verify Prefix Path
-      if [[ ! -z ${prefix_path} && ! -d "${prefix_path}" ]]
+      if [[ ! -z ${prefix_path} && ! -d "${prefix_path%/}" ]]
       then
         # Display Prompt
         command echo -e "qcd: Invalid directory path"
 
         # Terminate Program
         return $ERR
-      elif [[ -d "${path}" ]]
+      elif [[ -d "${path%/}" ]]
       then
         # Display Prompt
         command echo -e "qcd: Directory already exists"
