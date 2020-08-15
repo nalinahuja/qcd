@@ -271,7 +271,7 @@ function _parse_option_flags() {
       elif [[ ! -z ${prefix_path} && ! -d "${prefix_path%/}" ]]
       then
         # Display Prompt
-        command echo -e "qcd: Invalid directory path"
+        command echo -e "qcd: Invalid path to new directory"
 
         # Terminate Program
         return $ERR
