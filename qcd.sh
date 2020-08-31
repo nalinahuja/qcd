@@ -548,20 +548,24 @@ function qcd() {
     # Terminate Program
     return $OK
   else
-    # Store Directory Link
-    local dlink=$(command echo -e "${dir_arg}" | command cut -d '/' -f1)
+    # Define Directory Components
+    local dlink=$ESTR sdir=$ESTR
 
-    # Define Relative Subdirectory
-    local sdir=$ESTR
+    # Define Default Suffix Length
+    local suf_len=${#dir_arg}
 
-    # Store Linked Subdirectory If Valid
+    # Store Linked Subdirectory
     if [[ "${dir_arg}" == */* ]]
     then
-      sdir=${dir_arg:$((${#dlink} + 1))}
+      # Store Subdirectory Suffix
+      sdir=${dir_arg#*/}
+
+      # Store Suffix Length
+      suf_len=$((${#dir_arg} - ${#sdir} - 1))
     fi
 
     # Escape Regex Characters
-    dlink=$(_escape_regex "${dlink}")
+    dlink=$(_escape_regex "${dir_arg:0:${suf_len}}")
 
     # End Input Directory Parsing------------------------------------------------------------------------------------------------------------------------------------
 
@@ -582,7 +586,7 @@ function qcd() {
       fi
 
       # Wildcard Symbolic Link
-      for ((;i < ${#dlink}; i++))
+      for ((; i < ${#dlink}; i++))
       do
         # Get Character At Index
         local c=${dlink:${i}:1}
