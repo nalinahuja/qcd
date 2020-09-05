@@ -139,7 +139,7 @@ function _add_directory() {
   local pwd=$(_get_pwd)
 
   # Cache Directory If Unique
-  if [[ ! "${pwd%/}" == "${HOME%/}" && -z $(command egrep -s -x ".*:${pwd}" $QCD_STORE) ]]
+  if [[ ! "${pwd%/}" == "${HOME%/}" && -z $(command egrep -s -x ".*:${pwd}" $QCD_STORE 2> /dev/null) ]]
   then
     # Get Basename Of Current Directory
     local ept=$(command basename "${pwd}")
@@ -160,7 +160,7 @@ function _remove_directory() {
   local fdir=$(_escape_regex "${@}")
 
   # Remove Directory From Store File
-  command egrep -s -v -x ".*:${fdir}" $QCD_STORE > $QCD_TEMP
+  command egrep -s -v -x ".*:${fdir}" $QCD_STORE > $QCD_TEMP 2> /dev/null
 
   # Store Operation Status
   local status=${?}
@@ -174,7 +174,7 @@ function _remove_symbolic_link() {
   local flink=$(_escape_regex "${@%/}")
 
   # Remove Link From Store File
-  command egrep -s -v -x "${flink}:.*" $QCD_STORE > $QCD_TEMP
+  command egrep -s -v -x "${flink}:.*" $QCD_STORE > $QCD_TEMP 2> /dev/null
 
   # Store Operation Status
   local status=${?}
@@ -405,7 +405,7 @@ function _parse_standalone_flags() {
       command echo -en "→ Downloading update "
 
       # Determine Release URL
-      release_url=$(command curl --connect-timeout $TIMEOUT -s -L $QCD_RELEASES | command egrep -s -o "https.*zipball.*")
+      release_url=$(command curl --connect-timeout $TIMEOUT -s -L $QCD_RELEASES | command egrep -s -o "https.*zipball.*" 2> /dev/null)
 
       # Error Check Release URL
       if [[ ${?} -ne $OK || -z ${release_url} ]]
@@ -573,7 +573,7 @@ function qcd() {
     local pathv=$NSET
 
     # Check For Indirect Link Matching
-    if [[ -z $(command egrep -s -x "^${dlink}$" $QCD_LINKS) ]]
+    if [[ -z $(command egrep -s -x "^${dlink}$" $QCD_LINKS 2> /dev/null) ]]
     then
       # Initialize Parameters
       local i=0 slink=$ESTR
@@ -801,7 +801,7 @@ function _qcd_comp() {
       local local_paths=$NSET
 
       # Check For Indirect Link Matching
-      if [[ -z $(command egrep -s -x "^${link_arg}$" $QCD_LINKS) ]]
+      if [[ -z $(command egrep -s -x "^${link_arg}$" $QCD_LINKS 2> /dev/null) ]]
       then
         # Initialize Parameters
         local i=0 slink_arg=$ESTR
@@ -827,13 +827,13 @@ function _qcd_comp() {
         local IFS=$'\n'
 
         # Get Sequence Matched Symbolic Linkages From Store File
-        link_paths=($(command printf "%s\n" $(command egrep -s -i -x "${slink_arg}:.*" $QCD_STORE | command awk -F ':' '{print $2}')))
+        link_paths=($(command printf "%s\n" $(command egrep -s -i -x "${slink_arg}:.*" $QCD_STORE 2> /dev/null | command awk -F ':' '{print $2}')))
       else
         # Set IFS
         local IFS=$'\n'
 
         # Get Link Matched Symbolic Linkages From Store File
-        link_paths=($(command printf "%s\n" $(command egrep -s -x "${link_arg}:.*" $QCD_STORE | command awk -F ':' '{print $2}')))
+        link_paths=($(command printf "%s\n" $(command egrep -s -x "${link_arg}:.*" $QCD_STORE 2> /dev/null | command awk -F ':' '{print $2}')))
       fi
 
       # End Linkage Acquisition--------------------------------------------------------------------------------------------------------------------------------------
@@ -880,10 +880,10 @@ function _qcd_comp() {
         if [[ ! "${trail_arg:0:1}" == "$CWD" ]]
         then
           # Add Compressed Visible Linked Subdirectories
-          sub_dirs+=($(command printf "%s\n" $(command ls -F "${res_dir}" 2> /dev/null | command egrep -s -x ".*/")))
+          sub_dirs+=($(command printf "%s\n" $(command ls -F "${res_dir}" 2> /dev/null | command egrep -s -x ".*/" 2> /dev/null)))
         else
           # Add Compressed Linked Subdirectories
-          sub_dirs+=($(command printf "%s\n" $(command ls -aF "${res_dir}" 2> /dev/null | command egrep -s -x ".*/")))
+          sub_dirs+=($(command printf "%s\n" $(command ls -aF "${res_dir}" 2> /dev/null | command egrep -s -x ".*/" 2> /dev/null)))
         fi
       done
 
