@@ -3,7 +3,6 @@
 # TODO, make ZSH and BASH versions of QCD!
 # TODO, completion script argument parsing!
 # TODO, speed improvements
-# TODO, refactor codebase
 
 #Developed by Nalin Ahuja, nalinahuja22
 
@@ -582,13 +581,13 @@ function qcd() {
     if [[ -z $(command egrep -s -x "^${dlink}$" ${QCD_LINKS} 2> /dev/null) ]]
     then
       # Initialize Parameters
-      local i=0 slink=${ESTR}
+      local i=0 wlink=${ESTR}
 
       # Check For Hidden Directory Prefix
       if [[ "${dir_arg}" == \.* ]]
       then
         # Override Parameters
-        i=2; slink="${ESC}${CWD}"
+        i=2; wlink="${ESC}${CWD}"
       fi
 
       # Wildcard Symbolic Link
@@ -598,14 +597,14 @@ function qcd() {
         local c=${dlink:${i}:1}
 
         # Append Wildcard
-        slink="${slink}${c}.*"
+        wlink="${wlink}${c}.*"
       done
 
       # Set IFS
       local IFS=$'\n'
 
       # Get Sequence Matched Symbolic Linkages From Store File
-      pathv=($(command printf "%s\n" $(command egrep -i -s -x "${slink}:.*" ${QCD_STORE} 2> /dev/null | command awk -F ':' '{print $2}')))
+      pathv=($(command printf "%s\n" $(command egrep -i -s -x "${wlink}:.*" ${QCD_STORE} 2> /dev/null | command awk -F ':' '{print $2}')))
     else
       # Set IFS
       local IFS=$'\n'
@@ -808,13 +807,13 @@ function _qcd_comp() {
       if [[ -z $(command egrep -s -x "^${link_arg}$" ${QCD_LINKS} 2> /dev/null) ]]
       then
         # Initialize Parameters
-        local i=0 slink_arg=${ESTR}
+        local i=0 wlink=${ESTR}
 
         # Check For Hidden Directory Prefix
         if [[ "${link_arg}" == \.* ]]
         then
           # Override Parameters
-          i=1; slink_arg="${ESC}${CWD}"
+          i=1; wlink="${ESC}${CWD}"
         fi
 
         # Wildcard Symbolic Link
@@ -824,14 +823,14 @@ function _qcd_comp() {
           local c=${link_arg:${i}:1}
 
           # Append Wildcard
-          slink_arg="${slink_arg}${c}.*"
+          wlink="${wlink}${c}.*"
         done
 
         # Set IFS
         local IFS=$'\n'
 
         # Get Sequence Matched Symbolic Linkages From Store File
-        link_paths=($(command printf "%s\n" $(command egrep -s -i -x "${slink_arg}:.*" ${QCD_STORE} 2> /dev/null | command awk -F ':' '{print $2}')))
+        link_paths=($(command printf "%s\n" $(command egrep -s -i -x "${wlink}:.*" ${QCD_STORE} 2> /dev/null | command awk -F ':' '{print $2}')))
       else
         # Set IFS
         local IFS=$'\n'
