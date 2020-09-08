@@ -50,7 +50,7 @@ HWD="../"
 # Text Formatting Strings
 B=$(command tput bold)
 N=$(command tput sgr0)
-W=$(tput setaf 0)$(tput setab 7)
+W=$(command tput setaf 0)$(command tput setab 7)
 
 # End Defined String Constants---------------------------------------------------------------------------------------------------------------------------------------
 
@@ -195,14 +195,14 @@ function _parse_option_flags() {
   local flag="${@:$#}"
 
   # Check For Option Flags
-  if [[ "${flag/--remember/$REMEMBER}" == "${REMEMBER}" ]]
+  if [[ "${flag/--remember/${REMEMBER}}" == "${REMEMBER}" ]]
   then
     # Add Current Directory
     (_add_directory &)
 
     # Terminate Program
     return ${OK}
-  elif [[ "${flag/--forget/$FORGET}" == "$FORGET" ]]
+  elif [[ "${flag/--forget/${FORGET}}" == "${FORGET}" ]]
   then
     # Determine Removal Type
     if [[ $# -eq 1 ]]
@@ -222,7 +222,7 @@ function _parse_option_flags() {
 
     # Terminate Program
     return ${OK}
-  elif [[ "${flag/--clean/$CLEAN}" == "${CLEAN}" ]]
+  elif [[ "${flag/--clean/${CLEAN}}" == "${CLEAN}" ]]
   then
     # Store Paths From Store File
     local paths=$(command awk -F ':' '{print $2}' ${QCD_STORE})
@@ -245,7 +245,7 @@ function _parse_option_flags() {
 
     # Terminate Program
     return ${OK}
-  elif [[ "${flag/--mkdir/$MKDIRENT}" == "${MKDIRENT}" ]]
+  elif [[ "${flag/--mkdir/${MKDIRENT}}" == "${MKDIRENT}" ]]
   then
     # Verify Argument Count
     if [[ $# -lt 2 ]]
@@ -265,7 +265,7 @@ function _parse_option_flags() {
       # Get Prefix Path
       local prefix_path="${path:0:$((${#path} - ${#trail_path}))}"
 
-      # Verify Prefix Path
+      # Verify Path Components
       if [[ -d "${path%/}" ]]
       then
         # Display Prompt
@@ -291,7 +291,7 @@ function _parse_option_flags() {
 
     # Terminate Program
     return ${OK}
-  elif [[ "${flag/--list/$LIST}" == "${LIST}" ]]
+  elif [[ "${flag/--list/${LIST}}" == "${LIST}" ]]
   then
     # Display Prompt
     command echo -en "\rqcd: Generating link map..."
@@ -324,7 +324,7 @@ function _parse_option_flags() {
     fi
 
     # Store Terminal Column Count
-    local cols=$(tput cols)
+    local cols=$(command tput cols)
 
     # Determine Max Link Length
     local max_link=$(command echo -e "${linkages}" | command awk -F ':' '{print $1}' | command awk '{print length}' | command sort -n | command tail -n1)
@@ -371,95 +371,95 @@ function _parse_standalone_flags() {
   local flag="${@:$#}"
 
   # Check For Standalone Flags
-  if [[ "${flag/--help/$HELP}" == "$HELP" ]]
+  if [[ "${flag/--help/${HELP}}" == "${HELP}" ]]
   then
     # Print Help
-    command cat $QCD_HELP
+    command cat ${QCD_HELP}
 
     # Terminate Program
-    return $OK
-  elif [[ "${flag/--version/$VERSION}" == "$VERSION" ]]
+    return ${OK}
+  elif [[ "${flag/--version/${VERSION}}" == "${VERSION}" ]]
   then
     # Print Version
-    command cat $QCD_HELP | command head -n1
+    command cat ${QCD_HELP} | command head -n1
 
     # Terminate Program
-    return $OK
-  elif [[ "${flag/--update/$UPDATE}" == "$UPDATE" ]]
+    return ${OK}
+  elif [[ "${flag/--update/${UPDATE}}" == "${UPDATE}" ]]
   then
     # Prompt User For Confirmation
     command read -p "qcd: Confirm update [y/n]: " confirm
 
     # Determine Action
-    if [[ "${confirm//Y/$YES}" == "$YES" ]]
+    if [[ "${confirm//Y/${YES}}" == "${YES}" ]]
     then
       # Verify Curl Dependency
       command curl &> /dev/null
 
       # Check Return Value
-      if [[ ${?} -eq $NFD ]]
+      if [[ ${?} -eq ${NFD} ]]
       then
         # Display Prompt
         command echo -e "→ Curl dependency not installed"
 
         # Terminate Program
-        return $NFD
+        return ${NFD}
       fi
 
       # Display Prompt
       command echo -en "→ Downloading update "
 
       # Determine Release URL
-      release_url=$(command curl --connect-timeout $TOUT -s -L $QCD_RELEASES | command egrep -s -o "https.*zipball.*" 2> /dev/null)
+      release_url=$(command curl --connect-timeout ${TOUT} -s -L ${QCD_RELEASES} | command egrep -s -o "https.*zipball.*" 2> /dev/null)
 
       # Error Check Release URL
-      if [[ ${?} -ne $OK || -z ${release_url} ]]
+      if [[ ${?} -ne ${OK} || -z ${release_url} ]]
       then
         # Display Prompt
         command echo -e "\r→ Failed to resolve download link for update"
 
         # Terminate Program
-        return $ERR
+        return ${ERR}
       fi
 
       # Download Release Contents
-      command curl --connect-timeout $TOUT -s -L "${release_url/\",/}" > $QCD_UPDATE
+      command curl --connect-timeout ${TOUT} -s -L "${release_url/\",/}" > ${QCD_UPDATE}
 
       # Error Check Release Contents
-      if [[ ${?} -ne $OK || ! -f $QCD_UPDATE ]]
+      if [[ ${?} -ne ${OK} || ! -f ${QCD_UPDATE} ]]
       then
         # Display Prompt
         command echo -e "\r→ Failed to download update"
 
         # Terminate Program
-        return $ERR
+        return ${ERR}
       fi
 
       # Display Prompt
       command echo -en "\r→ Installing updates "
 
       # Extract And Install Program Files
-      command unzip -o -j $QCD_UPDATE -d $QCD_FOLD &> /dev/null
+      command unzip -o -j ${QCD_UPDATE} -d ${QCD_FOLD} &> /dev/null
 
       # Error Check Installation
-      if [[ ${?} -ne $OK ]]
+      if [[ ${?} -ne ${OK} ]]
       then
         # Display Prompt
         command echo -e "\r→ Failed to install update"
 
         # Terminate Program
-        return $ERR
+        return ${ERR}
       fi
 
       # Cleanup Installation
-      command rm $QCD_UPDATE 2> /dev/null
-      command rm $QCD_FOLD/install_qcd 2> /dev/null
+      command rm ${QCD_UPDATE} 2> /dev/null
+      command rm ${QCD_FOLD}/install_qcd 2> /dev/null
 
       # Update Bash Environment
-      command source $QCD_FOLD/qcd.sh 2> /dev/null
+      command source ${QCD_FOLD}/qcd.sh 2> /dev/null
 
       # Get Release Version
-      release_version=$(command cat $QCD_HELP | command head -n1 | command awk '{print $4}')
+      release_version=$(command cat ${QCD_HELP} | command head -n1 | command awk '{print $4}')
 
       # Display Prompt
       command echo -e "\r→ Update complete    \n\nUpdated to ${release_version}"
@@ -469,20 +469,21 @@ function _parse_standalone_flags() {
     fi
 
     # Terminate Program
-    return $OK
+    return ${OK}
   fi
 
   # Continue Program
-  return $CONT
+  return ${CONT}
 }
 
 # End Argument Parser Functions--------------------------------------------------------------------------------------------------------------------------------------
 
 function qcd() {
   # Check For Store File
-  if [[ ! -f $QCD_STORE ]]
+  if [[ ! -f ${QCD_STORE} ]]
   then
-    command touch $QCD_STORE
+    # Create Store File
+    command touch ${QCD_STORE}
   fi
 
   # End Validation---------------------------------------------------------------------------------------------------------------------------------------------------
@@ -494,7 +495,7 @@ function qcd() {
   local status=${?}
 
   # Check Function Return
-  if [[ ${status} -ne $CONT ]]
+  if [[ ${status} -ne ${CONT} ]]
   then
     return ${status}
   fi
@@ -506,7 +507,7 @@ function qcd() {
   local status=${?}
 
   # Check Function Return
-  if [[ ${status} -ne $CONT ]]
+  if [[ ${status} -ne ${CONT} ]]
   then
     return ${status}
   fi
@@ -532,7 +533,7 @@ function qcd() {
       local back_dir=$(command printf "%${back_height}s")
 
       # Override Commandline Arguments
-      dir_arg="${back_dir// /$HWD}"
+      dir_arg="${back_dir// /${HWD}}"
     else
       # Format Escaped Characters
       dir_arg=$(_escape_dir "${dir_arg}")
@@ -551,10 +552,10 @@ function qcd() {
     (_add_directory &)
 
     # Terminate Program
-    return $OK
+    return ${OK}
   else
     # Define Directory Components
-    local dlink=$ESTR sdir=$ESTR
+    local dlink=${ESTR} sdir=${ESTR}
 
     # Define Default Suffix Length
     local suf_len=${#dir_arg}
@@ -575,19 +576,19 @@ function qcd() {
     # End Input Directory Parsing------------------------------------------------------------------------------------------------------------------------------------
 
     # Define Linkage Parameters
-    local pathv=$NSET
+    local pathv=${NSET}
 
     # Check For Indirect Link Matching
-    if [[ -z $(command egrep -s -x "^${dlink}$" $QCD_LINKS 2> /dev/null) ]]
+    if [[ -z $(command egrep -s -x "^${dlink}$" ${QCD_LINKS} 2> /dev/null) ]]
     then
       # Initialize Parameters
-      local i=0 slink=$ESTR
+      local i=0 slink=${ESTR}
 
       # Check For Hidden Directory Prefix
       if [[ "${dir_arg}" == \.* ]]
       then
         # Override Parameters
-        i=2; slink="$ESC$CWD"
+        i=2; slink="${ESC}${CWD}"
       fi
 
       # Wildcard Symbolic Link
@@ -604,13 +605,13 @@ function qcd() {
       local IFS=$'\n'
 
       # Get Sequence Matched Symbolic Linkages From Store File
-      pathv=($(command printf "%s\n" $(command egrep -i -s -x "${slink}:.*" $QCD_STORE 2> /dev/null | command awk -F ':' '{print $2}')))
+      pathv=($(command printf "%s\n" $(command egrep -i -s -x "${slink}:.*" ${QCD_STORE} 2> /dev/null | command awk -F ':' '{print $2}')))
     else
       # Set IFS
       local IFS=$'\n'
 
       # Get Link Matched Symbolic Linkages From Store File
-      pathv=($(command printf "%s\n" $(command egrep -s -x "${dlink}:.*" $QCD_STORE 2> /dev/null | command awk -F ':' '{print $2}')))
+      pathv=($(command printf "%s\n" $(command egrep -s -x "${dlink}:.*" ${QCD_STORE} 2> /dev/null | command awk -F ':' '{print $2}')))
     fi
 
     # Initialize Path Count
@@ -622,7 +623,7 @@ function qcd() {
     if [[ ${pathc} -gt 1 ]]
     then
       # Define Matched Path
-      local mpath=$ESTR
+      local mpath=${ESTR}
 
       # Store Current Directory
       local pwd=$(_get_pwd)
@@ -658,21 +659,21 @@ function qcd() {
 
       # End Path Filtering-------------------------------------------------------------------------------------------------------------------------------------------
 
-      # List Matching Links
+      # List Matching Paths
       if [[ -z ${mpath} ]]
       then
         # Error Check Path Results
         if [[ -z ${fpaths} ]]
         then
           # Terminate Program
-          return $OK
+          return ${OK}
         fi
 
         # Display Prompt
         command echo -en "\rqcd: Generating option list..."
 
         # Generate Prompt
-        command echo -e "\rqcd: Multiple paths linked to ${B}${dir_arg%/}${N}" > $QCD_TEMP
+        command echo -e "\rqcd: Multiple paths linked to ${B}${dir_arg%/}${N}" > ${QCD_TEMP}
 
         # Generate Path Options
         local cnt=1
@@ -682,14 +683,14 @@ function qcd() {
           path=$(_format_dir "${path}")
 
           # Output Path As Option
-          command printf "(${cnt}) ${path%/}\n" >> $QCD_TEMP
+          command printf "(${cnt}) ${path%/}\n" >> ${QCD_TEMP}
 
           # Increment Counter
           cnt=$((${cnt} + 1))
         done
 
         # Display Prompt
-        command cat $QCD_TEMP
+        command cat ${QCD_TEMP}
 
         # End Option View--------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -700,7 +701,7 @@ function qcd() {
         if [[ -z ${ept} || ! ${ept} =~ ^[0-9]+$ ]]
         then
           # Terminate Program
-          return $ERR
+          return ${ERR}
         fi
 
         # Error Check Input Range
@@ -733,7 +734,7 @@ function qcd() {
       command echo -e "qcd: Cannot resolve linkage to directory"
 
       # Terminate Program
-      return $ERR
+      return ${ERR}
     elif [[ ! -d "${pathv}" ]]
     then
       # Check Result Count
@@ -750,7 +751,7 @@ function qcd() {
       (_remove_directory "${pathv}" &)
 
       # Terminate Program
-      return $ERR
+      return ${ERR}
     else
       # Switch To Linked Path
       command cd "${pathv}"
@@ -766,7 +767,7 @@ function qcd() {
       fi
 
       # Terminate Program
-      return $OK
+      return ${OK}
     fi
   fi
 
