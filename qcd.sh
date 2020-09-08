@@ -921,7 +921,7 @@ function _qcd_comp() {
     fi
   else
     # Get Symbolic Links From Link File
-    local link_dirs=$(command awk '{print $0}' ${QCD_LINKS})
+    local link_dirs=$(command awk '{print $0 "/\n"}' ${QCD_LINKS})
 
     # Store Current Directory
     local pwd=$(command basename "$(_get_pwd)")
