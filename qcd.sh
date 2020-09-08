@@ -803,19 +803,19 @@ function _qcd_comp() {
     if [[ ! -d "${curr_arg}" ]]
     then
       # Initialize Link Paths
-      local local_paths=$NSET
+      local link_paths=${NSET}
 
       # Check For Indirect Link Matching
-      if [[ -z $(command egrep -s -x "^${link_arg}$" $QCD_LINKS 2> /dev/null) ]]
+      if [[ -z $(command egrep -s -x "^${link_arg}$" ${QCD_LINKS} 2> /dev/null) ]]
       then
         # Initialize Parameters
-        local i=0 slink_arg=$ESTR
+        local i=0 slink_arg=${ESTR}
 
         # Check For Hidden Directory Prefix
         if [[ "${link_arg}" == \.* ]]
         then
           # Override Parameters
-          i=1; slink_arg="$ESC$CWD"
+          i=1; slink_arg="${ESC}${CWD}"
         fi
 
         # Wildcard Symbolic Link
@@ -832,13 +832,13 @@ function _qcd_comp() {
         local IFS=$'\n'
 
         # Get Sequence Matched Symbolic Linkages From Store File
-        link_paths=($(command printf "%s\n" $(command egrep -s -i -x "${slink_arg}:.*" $QCD_STORE 2> /dev/null | command awk -F ':' '{print $2}')))
+        link_paths=($(command printf "%s\n" $(command egrep -s -i -x "${slink_arg}:.*" ${QCD_STORE} 2> /dev/null | command awk -F ':' '{print $2}')))
       else
         # Set IFS
         local IFS=$'\n'
 
         # Get Link Matched Symbolic Linkages From Store File
-        link_paths=($(command printf "%s\n" $(command egrep -s -x "${link_arg}:.*" $QCD_STORE 2> /dev/null | command awk -F ':' '{print $2}')))
+        link_paths=($(command printf "%s\n" $(command egrep -s -x "${link_arg}:.*" ${QCD_STORE} 2> /dev/null | command awk -F ':' '{print $2}')))
       fi
 
       # End Linkage Acquisition--------------------------------------------------------------------------------------------------------------------------------------
@@ -882,7 +882,7 @@ function _qcd_comp() {
         local IFS=$'\n'
 
         # Add Linked Subdirectories Of Similar Visibility
-        if [[ ! "${trail_arg:0:1}" == "$CWD" ]]
+        if [[ ! "${trail_arg:0:1}" == "${CWD}" ]]
         then
           # Add Compressed Visible Linked Subdirectories
           sub_dirs+=($(command printf "%s\n" $(command ls -F "${res_dir}" 2> /dev/null | command egrep -s -x ".*/" 2> /dev/null)))
@@ -906,17 +906,19 @@ function _qcd_comp() {
         # Generate Linked Subdirectory
         link_sub=$(_escape_dir "${link_arg}${subs_arg}${sub_dir////}")
 
-        # Add Linked Subdirectories
+        # Determine Subdirectory Existence
         if [[ ! -d "${link_sub}" ]]
         then
-          word_list+=("${link_sub}/")
-        else
-          word_list+=("${link_sub}")
+          # Append Completion Slash
+          link_sub="${link_sub}/"
         fi
+
+        # Append To Linked Subdirectory
+        comp_list+=("${link_sub}")
       done
 
       # Set Completion List
-      COMPREPLY=($(command compgen -W "$(command printf "%s\n" "${word_list[@]}")" "${curr_arg}" 2> /dev/null))
+      COMPREPLY=($(command compgen -W "$(command printf "%s\n" "${comp_list[@]}")" "${curr_arg}" 2> /dev/null))
 
       # End Option Generation----------------------------------------------------------------------------------------------------------------------------------------
     fi
