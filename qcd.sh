@@ -778,8 +778,8 @@ function qcd() {
 # End QCD Function---------------------------------------------------------------------------------------------------------------------------------------------------
 
 function _qcd_comp() {
-  # Initialize Word List
-  local word_list=()
+  # Initialize Completion List
+  local comp_list=()
 
   # Store Command Line Argument
   local curr_arg=${COMP_WORDS[1]}
@@ -789,15 +789,13 @@ function _qcd_comp() {
   then
     # Obtain Symbolic Link
     local link_arg=$(command echo -e "${curr_arg}" | command cut -d '/' -f1)
-    local link_len=${#link_arg}
 
     # Obtain Trailing Subdirectory Path
     local trail_arg=$(command echo -e "${curr_arg}" | command awk -F '/' '{print $NF}')
 
     # Obtain Leading Subdirectory Path
     local subs_len=$(command echo -e "${curr_arg}" | command awk -F '/' '{print length($0)-length($NF)}')
-    local subs_arg=${curr_arg:0:${subs_len}}
-    subs_arg=${subs_arg:${link_len} + 1}
+    local subs_arg=${curr_arg:$((${#link_arg} + 1)):$((${subs_len} - ${#link_arg} - 1))}
 
     # End Input Parsing----------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -923,40 +921,41 @@ function _qcd_comp() {
       # End Option Generation----------------------------------------------------------------------------------------------------------------------------------------
     fi
   else
-    # Get Symbolic Links From Store File
-    local quick_dirs=$(command awk -F ':' '{printf $1 "/\n"}' $QCD_STORE)
+    # Get Symbolic Links From Link File
+    local link_dirs=$(command awk '{print $0}' ${QCD_LINKS})
 
-    # Store Current Directory Data
-    local pres_dir=$(command basename "$(_get_pwd)")
+    # Store Current Directory
+    local pwd=$(command basename "$(_get_pwd)")
 
     # Initialize Ignore Boolean
-    local curr_rem=$FALSE
+    local curr_rem=${FALSE}
 
     # End Linkage Acquisition----------------------------------------------------------------------------------------------------------------------------------------
 
     # Set IFS
     local IFS=$'\n'
 
-    # Add Linked Directories
-    for quick_dir in ${quick_dirs}
+    # Iterate Over Symbolic Links
+    for link_dir in ${link_dirs}
     do
-      # Filter Symbolic Links
-      if [[ ! -d "${quick_dir}" ]]
+      # Add Symbolic Links Outside Of Current Directory
+      if [[ ! -d "${link_dir}" ]]
       then
-        if [[ ${curr_rem} -eq $FALSE && "${quick_dir%/}" == "${pres_dir%/}" ]]
+        # Ignore Linkages
+        if [[ ${curr_rem} -eq ${FALSE} && "${link_dir%/}" == "${pwd%/}" ]]
         then
           # Exlude Current Directory
           curr_rem=$TRUE
-        elif [[ "${curr_arg:0:1}" == "$CWD" && "${quick_dir:0:1}" == "$CWD" || ! "${curr_arg:0:1}" == "$CWD" && ! "${quick_dir:0:1}" == "$CWD" ]]
+        elif [[ "${curr_arg:0:1}" == "${CWD}" && "${link_dir:0:1}" == "${CWD}" || ! "${curr_arg:0:1}" == "${CWD}" && ! "${link_dir:0:1}" == "${CWD}" ]]
         then
           # Add Symbolic Links Of Similar Visibility
-          word_list+=("${quick_dir}")
+          comp_list+=("${link_dir}")
         fi
       fi
     done
 
     # Set Completion List
-    COMPREPLY=($(command compgen -W "$(command printf "%s\n" "${word_list[@]}")" "${curr_arg}" 2> /dev/null))
+    COMPREPLY=($(command compgen -W "$(command printf "%s\n" "${comp_list[@]}")" "${curr_arg}" 2> /dev/null))
 
     # End Option Generation------------------------------------------------------------------------------------------------------------------------------------------
   fi
@@ -966,7 +965,7 @@ function _qcd_comp() {
 
 function _qcd_init() {
   # Initialize QCD
-  if [[ -f $QCD_STORE ]]
+  if [[ -f ${QCD_STORE} ]]
   then
     # Clean Store File
     (qcd --clean &)
