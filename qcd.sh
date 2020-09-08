@@ -3,6 +3,7 @@
 # TODO, make ZSH and BASH versions of QCD!
 # TODO, completion script argument parsing!
 # TODO, speed improvements
+# TODO, refactor codebase
 
 #Developed by Nalin Ahuja, nalinahuja22
 
