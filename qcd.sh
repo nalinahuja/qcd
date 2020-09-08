@@ -190,8 +190,6 @@ function _remove_symbolic_link() {
 
 # End Link Management Functions--------------------------------------------------------------------------------------------------------------------------------------
 
-# REFACTOR BELOW
-
 function _parse_option_flags() {
   # Store Argument Flag
   local flag="${@:$#}"
