@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# TODO, make ZSH and BASH versions of QCD!
+# TODO, completion script argument parsing!
+# TODO, speed improvements
+
 #Developed by Nalin Ahuja, nalinahuja22
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -17,7 +21,7 @@ FALSE=0
 # Embedded Values
 NSET=0
 MINP=4
-TIMEOUT=10
+TOUT=10
 
 # End Defined Numerical Constants------------------------------------------------------------------------------------------------------------------------------------
 
@@ -71,7 +75,7 @@ function _get_pwd() {
 
 function _format_dir() {
   # Check For Environment Variable
-  if [[ ! -z $HOME ]]
+  if [[ ! -z ${HOME} ]]
   then
     # Return Compressed Path
     command echo -e ${@/$HOME/\~}
@@ -116,21 +120,21 @@ function _cleanup() {
 
 function _update_links() {
   # Store Symbolic Links In Link File
-  command awk -F ':' '{print $1}' $QCD_STORE > $QCD_LINKS
+  command awk -F ':' '{print $1}' ${QCD_STORE} > ${QCD_LINKS}
 }
 
 function _update_store() {
   # Check Exit Status
-  if [[ ${1} -eq $OK ]]
+  if [[ ${1} -eq ${OK} ]]
   then
     # Update Store File
-    command mv $QCD_TEMP $QCD_STORE 2> /dev/null
+    command mv ${QCD_TEMP} ${QCD_STORE} 2> /dev/null
 
     # Update Link File
     _update_links
   else
     # Remove Temp File
-    command rm $QCD_TEMP 2> /dev/null
+    command rm ${QCD_TEMP} 2> /dev/null
   fi
 }
 
@@ -139,16 +143,16 @@ function _add_directory() {
   local pwd=$(_get_pwd)
 
   # Cache Directory If Unique
-  if [[ ! "${pwd%/}" == "${HOME%/}" && -z $(command egrep -s -x ".*:${pwd}" $QCD_STORE 2> /dev/null) ]]
+  if [[ ! "${pwd%/}" == "${HOME%/}" && -z $(command egrep -s -x ".*:${pwd}" ${QCD_STORE} 2> /dev/null) ]]
   then
     # Get Basename Of Current Directory
     local ept=$(command basename "${pwd}")
 
     # Append Directory Data To Store File
-    command printf "${ept}:${pwd}\n" >> $QCD_STORE
+    command printf "${ept}:${pwd}\n" >> ${QCD_STORE}
 
     # Sort Store File In Place
-    command sort -o $QCD_STORE -n -t ':' -k2 $QCD_STORE
+    command sort -o ${QCD_STORE} -n -t ':' -k2 ${QCD_STORE}
 
     # Update Link File
     _update_links
@@ -160,7 +164,7 @@ function _remove_directory() {
   local fdir=$(_escape_regex "${@}")
 
   # Remove Directory From Store File
-  command egrep -s -v -x ".*:${fdir}" $QCD_STORE > $QCD_TEMP 2> /dev/null
+  command egrep -s -v -x ".*:${fdir}" ${QCD_STORE} > ${QCD_TEMP} 2> /dev/null
 
   # Store Operation Status
   local status=${?}
@@ -174,7 +178,7 @@ function _remove_symbolic_link() {
   local flink=$(_escape_regex "${@%/}")
 
   # Remove Link From Store File
-  command egrep -s -v -x "${flink}:.*" $QCD_STORE > $QCD_TEMP 2> /dev/null
+  command egrep -s -v -x "${flink}:.*" ${QCD_STORE} > ${QCD_TEMP} 2> /dev/null
 
   # Store Operation Status
   local status=${?}
@@ -185,18 +189,20 @@ function _remove_symbolic_link() {
 
 # End Link Management Functions--------------------------------------------------------------------------------------------------------------------------------------
 
+# REFACTOR BELOW
+
 function _parse_option_flags() {
   # Store Argument Flag
   local flag="${@:$#}"
 
   # Check For Option Flags
-  if [[ "${flag/--remember/$REMEMBER}" == "$REMEMBER" ]]
+  if [[ "${flag/--remember/$REMEMBER}" == "${REMEMBER}" ]]
   then
     # Add Current Directory
     (_add_directory &)
 
     # Terminate Program
-    return $OK
+    return ${OK}
   elif [[ "${flag/--forget/$FORGET}" == "$FORGET" ]]
   then
     # Determine Removal Type
@@ -216,11 +222,11 @@ function _parse_option_flags() {
     fi
 
     # Terminate Program
-    return $OK
-  elif [[ "${flag/--clean/$CLEAN}" == "$CLEAN" ]]
+    return ${OK}
+  elif [[ "${flag/--clean/$CLEAN}" == "${CLEAN}" ]]
   then
     # Store Paths From Store File
-    local paths=$(command awk -F ':' '{print $2}' $QCD_STORE)
+    local paths=$(command awk -F ':' '{print $2}' ${QCD_STORE})
 
     # Set IFS
     local IFS=$'\n'
@@ -239,8 +245,8 @@ function _parse_option_flags() {
     unset IFS
 
     # Terminate Program
-    return $OK
-  elif [[ "${flag/--mkdir/$MKDIRENT}" == "$MKDIRENT" ]]
+    return ${OK}
+  elif [[ "${flag/--mkdir/$MKDIRENT}" == "${MKDIRENT}" ]]
   then
     # Verify Argument Count
     if [[ $# -lt 2 ]]
@@ -249,7 +255,7 @@ function _parse_option_flags() {
       command echo -e "qcd: Insufficient arguments"
 
       # Terminate Program
-      return $ERR
+      return ${ERR}
     else
       # Get Path
       local path="${@:1:$(($# - 1))}"
@@ -258,7 +264,7 @@ function _parse_option_flags() {
       local trail_path=$(command basename "${path}")
 
       # Get Prefix Path
-      local prefix_path=${path:0:$((${#path} - ${#trail_path}))}
+      local prefix_path="${path:0:$((${#path} - ${#trail_path}))}"
 
       # Verify Prefix Path
       if [[ -d "${path%/}" ]]
@@ -267,14 +273,14 @@ function _parse_option_flags() {
         command echo -e "qcd: Directory already exists"
 
         # Terminate Program
-        return $ERR
+        return ${ERR}
       elif [[ ! -z ${prefix_path} && ! -d "${prefix_path%/}" ]]
       then
         # Display Prompt
         command echo -e "qcd: Invalid path to new directory"
 
         # Terminate Program
-        return $ERR
+        return ${ERR}
       fi
     fi
 
@@ -285,14 +291,14 @@ function _parse_option_flags() {
     qcd "${path}"
 
     # Terminate Program
-    return $OK
-  elif [[ "${flag/--list/$LIST}" == "$LIST" ]]
+    return ${OK}
+  elif [[ "${flag/--list/$LIST}" == "${LIST}" ]]
   then
     # Display Prompt
     command echo -en "\rqcd: Generating link map..."
 
     # Store Linkages From Store File
-    local linkages=$(qcd --clean && command cat $QCD_STORE)
+    local linkages=$(qcd --clean && command cat ${QCD_STORE})
 
     # Determine List Type
     if [[ $# -gt 1 ]]
@@ -315,7 +321,7 @@ function _parse_option_flags() {
       command echo -e "\rqcd: No linkages found      "
 
       # Terminate Program
-      return $ERR
+      return ${ERR}
     fi
 
     # Store Terminal Column Count
@@ -325,13 +331,13 @@ function _parse_option_flags() {
     local max_link=$(command echo -e "${linkages}" | command awk -F ':' '{print $1}' | command awk '{print length}' | command sort -n | command tail -n1)
 
     # Error Check Link Length
-    if [[ ${max_link} -lt $MINP ]]
+    if [[ ${max_link} -lt ${MINP} ]]
     then
-      max_link=$MINP
+      max_link=${MINP}
     fi
 
     # Format Header
-    command printf "\r${W} %-${max_link}s  %-$((${cols} - ${max_link} - 3))s${N}\n" "Link" "Directory" > $QCD_TEMP
+    command printf "\r${W} %-${max_link}s  %-$((${cols} - ${max_link} - 3))s${N}\n" "Link" "Directory" > ${QCD_TEMP}
 
     # Set IFS
     local IFS=$'\n'
@@ -344,21 +350,21 @@ function _parse_option_flags() {
       local path=$(command echo -e "${linkage}" | command awk -F ':' '{print $2}')
 
       # Format Linkage
-      command printf " %-${max_link}s  %s\n" "${link}" "$(_format_dir "${path%/}")" >> $QCD_TEMP
+      command printf " %-${max_link}s  %s\n" "${link}" "$(_format_dir "${path%/}")" >> ${QCD_TEMP}
     done
 
     # Unset IFS
     unset IFS
 
     # Display Prompt
-    command cat $QCD_TEMP
+    command cat ${QCD_TEMP}
 
     # Terminate Program
-    return $OK
+    return ${OK}
   fi
 
   # Continue Program
-  return $CONT
+  return ${CONT}
 }
 
 function _parse_standalone_flags() {
@@ -405,7 +411,7 @@ function _parse_standalone_flags() {
       command echo -en "→ Downloading update "
 
       # Determine Release URL
-      release_url=$(command curl --connect-timeout $TIMEOUT -s -L $QCD_RELEASES | command egrep -s -o "https.*zipball.*" 2> /dev/null)
+      release_url=$(command curl --connect-timeout $TOUT -s -L $QCD_RELEASES | command egrep -s -o "https.*zipball.*" 2> /dev/null)
 
       # Error Check Release URL
       if [[ ${?} -ne $OK || -z ${release_url} ]]
@@ -418,7 +424,7 @@ function _parse_standalone_flags() {
       fi
 
       # Download Release Contents
-      command curl --connect-timeout $TIMEOUT -s -L "${release_url/\",/}" > $QCD_UPDATE
+      command curl --connect-timeout $TOUT -s -L "${release_url/\",/}" > $QCD_UPDATE
 
       # Error Check Release Contents
       if [[ ${?} -ne $OK || ! -f $QCD_UPDATE ]]
