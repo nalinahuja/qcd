@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 
-# TODO, make ZSH and BASH versions of QCD!
-# TODO, completion script argument parsing!
-
 #Developed by Nalin Ahuja, nalinahuja22
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
