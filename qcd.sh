@@ -527,7 +527,7 @@ function qcd() {
       # Generate Expanded Back Directory
       local back_dir=$(command printf "%${back_height}s")
 
-      # Override Commandline Arguments
+      # Override Command Line Arguments
       dir_arg="${back_dir// /${HWD}}"
     else
       # Format Escaped Characters
