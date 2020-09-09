@@ -806,13 +806,13 @@ function _qcd_comp() {
       if [[ -z $(command egrep -s -x "^${link_arg}$" ${QCD_LINKS} 2> /dev/null) ]]
       then
         # Initialize Parameters
-        local i=0 wlink=${ESTR}
+        local i=0 wlink_arg=${ESTR}
 
         # Check For Hidden Directory Prefix
         if [[ "${link_arg}" == \.* ]]
         then
           # Override Parameters
-          i=1; wlink="${ESC}${CWD}"
+          i=1; wlink_arg="${ESC}${CWD}"
         fi
 
         # Wildcard Symbolic Link
@@ -822,14 +822,14 @@ function _qcd_comp() {
           local c=${link_arg:${i}:1}
 
           # Append Wildcard
-          wlink="${wlink}${c}.*"
+          wlink_arg="${wlink_arg}${c}.*"
         done
 
         # Set IFS
         local IFS=$'\n'
 
         # Get Sequence Matched Symbolic Linkages From Store File
-        link_paths=($(command printf "%s\n" $(command egrep -s -i -x "${wlink}:.*" ${QCD_STORE} 2> /dev/null | command awk -F ':' '{print $2}')))
+        link_paths=($(command printf "%s\n" $(command egrep -s -i -x "${wlink_arg}:.*" ${QCD_STORE} 2> /dev/null | command awk -F ':' '{print $2}')))
       else
         # Set IFS
         local IFS=$'\n'
@@ -901,7 +901,7 @@ function _qcd_comp() {
       for sub_dir in ${sub_dirs[@]}
       do
         # Generate Linked Subdirectory
-        link_sub=$(_escape_dir "${link_arg}${subs_arg}${sub_dir////}")
+        link_sub=$(_escape_dir "${link_arg}${subs_arg}${sub_dir%/}")
 
         # Determine Subdirectory Existence
         if [[ ! -d "${link_sub}" ]]
