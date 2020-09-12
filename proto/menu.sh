@@ -15,10 +15,10 @@ SHOW=2
 function set_cursor_state() {
   if [[ ${1} == ${HIDE} ]]
   then
-    command tput civis
+    command tput civis 2> /dev/null
   elif [[ ${1} == ${SHOW} ]]
   then
-    command tput cnorm
+    command tput cnorm 2> /dev/null
   fi
 }
 
@@ -44,7 +44,7 @@ function display_menu() {
   local sel_line=0
 
   # Set Cursor To State On Exit
-  command trap set_cursor_state ${SHOW} EXIT
+  command trap set_cursor_state ${SHOW} EXIT &> /dev/null
 
   # Hide Cursor
   set_cursor_state ${HIDE}
