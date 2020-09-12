@@ -6,17 +6,20 @@ W=$(command tput setaf 0)$(command tput setab 7)
 ESC=$(command printf "\033")
 
 UP=1
-DN=2
-EN=3
+DOWN=2
+ENTER=3
+EXIT=0
 
 HIDE=1
 SHOW=2
 
+ERR=-1
+
 function set_cursor_state() {
-  if [[ ${1} == ${HIDE} ]]
+  if [[ ${1} -eq ${HIDE} ]]
   then
     command tput civis 2> /dev/null
-  elif [[ ${1} == ${SHOW} ]]
+  elif [[ ${1} -eq ${SHOW} ]]
   then
     command tput cnorm 2> /dev/null
   fi
@@ -32,10 +35,10 @@ function read_input() {
     command echo -e "$UP"
   elif [[ ${key} == "$ESC[B" ]]
   then
-    command echo -e "$DN"
+    command echo -e "$DOWN"
   elif [[ -z ${key} ]]
   then
-    command echo -e "$EN"
+    command echo -e "$ENTER"
   fi
 }
 
@@ -73,11 +76,11 @@ function display_menu() {
     local key=$(read_input)
 
     # Determine Cursor Position
-    if [[ ${key} == ${UP} ]]
+    if [[ ${key} -eq ${UP} ]]
     then
       # Go Up
       sel_line=$((${sel_line} - 1))
-    elif [[ ${key} == $DN ]]
+    elif [[ ${key} -eq ${DOWN} ]]
     then
       # Go Down
       sel_line=$((${sel_line} + 1))
