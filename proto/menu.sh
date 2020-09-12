@@ -43,6 +43,9 @@ function display_menu() {
   # Initialize Line Number
   local sel_line=0
 
+  # Set Cursor To State On Exit
+  command trap set_cursor_state ${SHOW} EXIT
+
   # Hide Cursor
   set_cursor_state ${HIDE}
 
@@ -57,7 +60,7 @@ function display_menu() {
     do
       if [[ ${oi} -eq ${sel_line} ]]
       then
-        command printf " ${W}${opt}${N} \n"
+        command printf "${W} ${opt} ${N}\n"
       else
         command printf " ${opt} \n"
       fi
@@ -103,6 +106,6 @@ function display_menu() {
   return ${sel_line}
 }
 
-display_menu "~/Documents/Lectures" "~/dev/leetcode" "~/dev/lightwave"
+display_menu "~/Documents/Lectures" "~/dev/leetcode" "~/dev/lightwave" "~/Documents/Lectures" "~/dev/leetcode" "~/dev/lightwave" "~/Documents/Lectures" "~/dev/leetcode" "~/dev/lightwave"
 
 command echo -e "\nSelected option ${?}"
