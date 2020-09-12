@@ -5,69 +5,104 @@ W=$(command tput setaf 0)$(command tput setab 7)
 
 ESC=$(command printf "\033")
 
+UP=1
+DN=2
+EN=3
+
+HIDE=1
+SHOW=2
+
+function set_cursor_state() {
+  if [[ ${1} == ${HIDE} ]]
+  then
+    command tput civis
+  elif [[ ${1} == ${SHOW} ]]
+  then
+    command tput cnorm
+  fi
+}
+
 function read_input() {
+  # Read User Input
   command read -s -n3 key 2> /dev/null
 
-  if [[ ${key} == "$ESC[A" ]]; then echo "up"; fi
-  if [[ ${key} == "$ESC[B" ]]; then echo "down"; fi
-  if [[ -z ${key} || ${key} == "q" ]]; then echo "empty"; fi
+  # Determine Action
+  if [[ ${key} == "$ESC[A" ]]
+  then
+    command echo -e "$UP"
+  elif [[ ${key} == "$ESC[B" ]]
+  then
+    command echo -e "$DN"
+  elif [[ -z ${key} ]]
+  then
+    command echo -e "$EN"
+  fi
 }
 
 function display_menu() {
+  # Initialize Line Number
+  local sel_line=0
 
-  tput civis
-  local curr_line=0
+  # Hide Cursor
+  set_cursor_state ${HIDE}
 
+  # Begin Selection Loop
   while true
   do
-    local ai=0
-    for arg in "$@"
+    # Intiailize Option Index
+    local oi=0
+
+    # Print All Options
+    for opt in "${@}"
     do
-      if [[ $ai -eq $curr_line ]]
+      if [[ ${oi} -eq ${sel_line} ]]
       then
-        printf "${W}${arg}${N}  \n"
+        command printf " ${W}${opt}${N} \n"
       else
-        printf "${arg}  \n"
+        command printf " ${opt} \n"
       fi
 
-      ai=$((ai + 1))
+      # Increment Option Index
+      oi=$((${oi} + 1))
     done
 
-    in=$(read_input)
+    # Read User Input
+    local key=$(read_input)
 
-    if [[ $in == "up" ]]
+    # Determine Cursor Position
+    if [[ ${key} == ${UP} ]]
     then
-      curr_line=$(($curr_line - 1))
-    elif [[ $in == "down" ]]
+      # Go Up
+      sel_line=$((${sel_line} - 1))
+    elif [[ ${key} == $DN ]]
     then
-      curr_line=$(($curr_line + 1))
+      # Go Down
+      sel_line=$((${sel_line} + 1))
     else
-      tput cnorm
-      return 256;
+      # Break Loop
+      break
     fi
 
-    echo $curr_line > log
-
-    if [[ $curr_line -eq 3 ]]
+    # Range Check Cursor Position
+    if [[ ${sel_line} -eq $# ]]
     then
-      curr_line=0
-    elif [[ $curr_line -lt 0 ]]
+      sel_line=0
+    elif [[ ${sel_line} -lt 0 ]]
     then
-      curr_line=$(($# - 1))
+      sel_line=$(($# - 1))
     fi
 
-    command printf "$ESC[3A"
+    # Clear Previous N Lines
+    command printf "${ESC}[$#A"
   done
 
-  return $curr_line
+  # Hide Cursor
+  set_cursor_state ${SHOW}
+
+  # Return Selected Line
+  command echo -e  "${sel_line}"
 }
 
-function norm_input() {
-  tput cnorm
-}
+opt=$(display_menu "~/Documents/Lectures" "~/dev/leetcode" "~/dev/lightwave")
 
-command trap norm_input EXIT &> /dev/null
-
-display_menu "~/Documents/Lectures" "~/dev/leetcode" "~/dev/lightwave"
-
-command echo -e "Selected option: ${?}"
+command echo -e "\nSelected option ${opt}"
