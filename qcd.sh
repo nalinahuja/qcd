@@ -2,6 +2,9 @@
 
 #Developed by Nalin Ahuja, nalinahuja22
 
+#TODO, awk error recovery when link file gets corrupted
+#TODO, manual selection via arrows
+
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Return Values
