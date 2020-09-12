@@ -8,12 +8,9 @@ ESC=$(command printf "\033")
 UP=1
 DOWN=2
 ENTER=3
-EXIT=0
 
 HIDE=1
 SHOW=2
-
-ERR=-1
 
 function set_cursor_state() {
   if [[ ${1} -eq ${HIDE} ]]
