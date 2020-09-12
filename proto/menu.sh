@@ -100,9 +100,9 @@ function display_menu() {
   set_cursor_state ${SHOW}
 
   # Return Selected Line
-  command echo -e  "${sel_line}"
+  return ${sel_line}
 }
 
-opt=$(display_menu "~/Documents/Lectures" "~/dev/leetcode" "~/dev/lightwave")
+display_menu "~/Documents/Lectures" "~/dev/leetcode" "~/dev/lightwave"
 
-command echo -e "\nSelected option ${opt}"
+command echo -e "\nSelected option ${?}"
