@@ -2,9 +2,6 @@
 
 #Developed by Nalin Ahuja, nalinahuja22
 
-#TODO, awk error recovery when link file gets corrupted
-#TODO, manual selection via arrows
-
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Return Values
@@ -187,6 +184,24 @@ function _remove_symbolic_link() {
 }
 
 # End Link Management Functions--------------------------------------------------------------------------------------------------------------------------------------
+
+function _verify_files() {
+  # Check For Store File
+  if [[ ! -f ${QCD_STORE} ]]
+  then
+    # Create Store File
+    command touch ${QCD_STORE}
+  fi
+
+  # Check For Link File
+  if [[ ! -f ${QCD_LINKS} ]]
+  then
+    # Create Link File
+    _update_links
+  fi
+}
+
+# End File Management Functions--------------------------------------------------------------------------------------------------------------------------------------
 
 function _parse_option_flags() {
   # Store Argument Flag
@@ -477,14 +492,10 @@ function _parse_standalone_flags() {
 # End Argument Parser Functions--------------------------------------------------------------------------------------------------------------------------------------
 
 function qcd() {
-  # Check For Store File
-  if [[ ! -f ${QCD_STORE} ]]
-  then
-    # Create Store File
-    command touch ${QCD_STORE}
-  fi
+  # Verify File Integrity
+  _verify_files
 
-  # End Validation---------------------------------------------------------------------------------------------------------------------------------------------------
+  # End File Validation----------------------------------------------------------------------------------------------------------------------------------------------
 
   # Parse Arguments For Option Flags
   _parse_option_flags ${@}
@@ -538,7 +549,7 @@ function qcd() {
     fi
   fi
 
-  # End Input Directory Formatting-----------------------------------------------------------------------------------------------------------------------------------
+  # End Input Formatting---------------------------------------------------------------------------------------------------------------------------------------------
 
   # Determine If Directory Is Linked
   if [[ -d "${dir_arg}" ]]
@@ -775,6 +786,9 @@ function qcd() {
 # End QCD Function---------------------------------------------------------------------------------------------------------------------------------------------------
 
 function _qcd_comp() {
+  # Verify File Integrity
+  _verify_files
+
   # Initialize Completion List
   local comp_list=()
 
