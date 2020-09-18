@@ -33,11 +33,12 @@ To manually update QCD to a newer release, simply follow the same installation p
 </p>
 
 ## Usage
+
+#### Input Format
 <p align="justify">
 Just like the builtin command <code>cd</code>, simply indicate a valid path relative to the current directory and QCD will navigate to it. Where QCD differs from <code>cd</code> is that you can indicate a keyword or subsequence related to a directory you have previously visited and QCD will attempt to resolve the directory's absolute path and navigate to it.
 </p>
 
-#### Input Format
 <p align="justify">
 When indicating a keyword to QCD, it can be the complete linked directory and QCD will attempt a case sensitive search using that input. When indicating a prefix or subsequence to QCD, it must start with the first character of the linked directory you wish to navigate to and QCD will attempt a case insensitive search using that input.
 </p>
