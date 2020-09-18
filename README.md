@@ -111,5 +111,3 @@ QCD offers a set of standard flags including the help, version, and update flags
 # Help Flag         # Version Flag         # Update Flag
 qcd [-h, --help]    qcd [-v, --version]    qcd [-u, --update]  
 ```
-
-qcd [N]..                   Change to Nth parent directory
