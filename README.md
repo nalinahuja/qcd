@@ -50,6 +50,8 @@ QCD ships with a custom completion engine that can be activated by hitting the t
 If multiple paths are resolved from same symbolic link, the user will have to manually choose from a numbered list of unique paths by inputting the number displayed next to the path they wish to navigate to. This selection phase can be exited by passing a blank input or a single character <code>q</code> to the program. There are several redundancies built into the program to entirely avoid or simplify the manual selection process in order to streamline the use of QCD.
 </p>
 
+## Flags
+
 <p align="justify">
 QCD offers many different flags to the user to better allow them to manage and use QCD.
 
