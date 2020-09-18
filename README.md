@@ -15,12 +15,12 @@ QCD does not require any dependencies to operate as a command line utility and u
 
 ## Installation
 
-#### Downloading
+#### Downloading QCD
 <p align="justify">
 Please navigate to the <a href="https://github.com/nalinahuja22/qcd/releases">release</a> tab of this repository and download the latest version of this project. You can perform this download within a browser environment or using a command line utility like <code>wget</code> or <code>curl</code>. Alternatively, you can clone this <a href="https://github.com/nalinahuja22/qcd">repository</a> but it is recommended that you download the most recent release since the git repository is comparatively larger.
 </p>
 
-#### Intallation
+#### Installing QCD
 <p align="justify">
 Then, navigate to the location where the QCD repository contents have been downloaded onto your machine and run the <a href="https://github.com/nalinahuja22/qcd/blob/master/install_qcd">install_qcd</a> script. This executable will install QCD in the directory <code>~/.qcd</code> and add the QCD command to your terminal profile. When the installation finishes, please source your terminal profile and restart your terminal to fully configure the installation.<br><br>If you would like to do a manual installation of QCD, all you need to do is move the repository contents you downloaded, besides the <a href="https://github.com/nalinahuja22/qcd/blob/master/install_qcd">install_qcd</a> file, into a folder at <code>~/.qcd</code> which you will have to create yourself. Then source your terminal profile after adding the following command to your terminal profile and restart your terminal.
 
@@ -28,6 +28,7 @@ Then, navigate to the location where the QCD repository contents have been downl
 source ~/.qcd/qcd.sh
 ```
 
+#### Updating QCD
 To manually update QCD to a newer release, simply follow the same installation process or use the update flag as described in the usage section. Don't worry, your store file will not be modified during an update.
 </p>
 
