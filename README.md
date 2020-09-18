@@ -40,7 +40,7 @@ Just like the builtin command <code>cd</code>, simply indicate a valid path rela
 
 #### Input Format
 <p align="justify">
-When indicating a keyword to QCD, it can be the full form of a linked directory and QCD will attempt a case sensitive search using that input. When indicating a prefix or subsequence to QCD, they must start with the first character of the linked directory you wish to navigate to and QCD will attempt a case insensitive search using that input.
+When indicating a keyword to QCD, it can be the complete linked directory and QCD will attempt a case sensitive search using that input. When indicating a prefix or subsequence to QCD, they must start with the first character of the linked directory you wish to navigate to and QCD will attempt a case insensitive search using that input. QCD also recognizes and interprets standard file system sequences like <code>.</code> and <code>..</code>, just like <code>cd</code>. These usages can be viewed whenever by using the help flag.
 </p>
 
 ```bash
@@ -50,12 +50,17 @@ qcd node-modules     qcd node            qcd nm
 
 #### Completion Engine
 <p align="justify">
-QCD ships with a custom completion engine that can be activated by hitting the tab key twice. This engine is able to complete directories of the current working directory as well as linked directories QCD has recorded. It is also able to complete subdirectories of the current working directory, valid symbolic links, and prefix or subsequenced symbolic links.
+QCD ships with a custom completion engine that can be activated by hitting the tab key twice. This engine is able to complete directories of the current working directory as well as directories not in the current working directory that QCD has automatically recorded and linked. It is also able to complete subdirectories of the current working directory, complete linked directories, and prefix or subsequenced linked directories.
 </p>
+
+```bash
+# PWD Example                    # Link Example                 # Subsequence Example
+qcd ./node-modules/<tab><tab>    qcd node-modules/<tab><tab>    qcd nm/<tab><tab>
+```
 
 #### Manual Input
 <p align="justify">
-If multiple paths are resolved from same symbolic link, the user will have to manually choose from a numbered list of unique paths by inputting the number displayed next to the path they wish to navigate to. This selection phase can be exited by passing a blank input or a single character <code>q</code> to the program. There are several redundancies built into the program to entirely avoid or simplify the manual selection process in order to streamline the use of QCD.
+If multiple paths are resolved from same symbolic link, the user will have to manually choose from a numbered list of unique paths by inputting the number displayed next to the path they wish to navigate to. This selection phase can be cleanly exited by passing a blank input or a single character <code>q</code> to the program. There are several redundancies built into the program to entirely avoid or simplify the manual selection process in order to streamline the use of QCD.
 </p>
 
 ## Flags
@@ -63,7 +68,7 @@ If multiple paths are resolved from same symbolic link, the user will have to ma
 <p align="justify">
 QCD offers many different flags to the user to better allow them to manage and use QCD.
 
-
+####
 
 The user has the ability to manually create and manage the symbolic links stored by QCD. The <code>-r</code> flag can be used to command QCD to remember the current working directory so that you can navigate to it later. The <code>-m</code> flag can be used to create a directory at the indicated, valid path for which QCD will automatically create a linkage. The <code>-f</code> flag can be used to command QCD to forget matching symbolic links or paths. By indicating <code>-f</code> after a valid link, QCD will forget all instances of the specified link from the store file and it will not show up as a completion suggestion unless you visit a directory with that name. The user can also opt to only indicate <code>-f</code>, which means QCD will forget the link related to the current working directory from the store file. Directory linkages stored by QCD can be listed by using the <code>-l</code> flag and the user can opt to indicate a prefix of a link or a regex string to filter the output. Lastly, the user can choose to clean their store file of defunct symbolic links that point to nonexistent or modified directories with the use of the <code>-c</code> flag. Keep in mind that it's not necessary to manually clean the store file since QCD automatically cleans the store file when a new shell session is started. A full list of different usages and options supported by QCD can be seen below or in your terminal using the <code>-h</code> flag.
 </p>
