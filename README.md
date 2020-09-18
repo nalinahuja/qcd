@@ -41,6 +41,18 @@ Just like the builtin command <code>cd</code>, simply indicate a valid path rela
 #### Input Format
 <p align="justify">
 When indicating a keyword to QCD, it can be the full form of a linked directory and QCD will attempt a case sensitive search using that input. When indicating a prefix or subsequence to QCD, they must start with the first character of the linked directory you wish to navigate to and QCD will attempt a case insensitive search using that input.
+
+```
+# Keyword Example
+qcd node-modules
+
+# Prefix Example
+qcd node
+
+# Subsequence Example
+qcd nm
+```
+
 </p>
 
 #### Completion Engine
