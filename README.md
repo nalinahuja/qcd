@@ -36,7 +36,7 @@ To manually update QCD to a newer release, simply follow the same installation p
 
 #### Input Format
 <p align="justify">
-Just like the builtin command <code>cd</code>, simply indicate a valid path relative to the current directory and QCD will navigate to it. Where QCD differs from <code>cd</code> is that you can indicate a keyword or subsequence related to a directory you have previously visited and QCD will attempt to resolve the directory's absolute path and navigate to it.
+Just like the builtin command <code>cd</code>, simply indicate a valid path relative to the current working directory and QCD will navigate to it. Where QCD differs from <code>cd</code> is that you can indicate a keyword, prefix, or subsequence related to a directory you have previously visited and QCD will attempt to resolve the directory's absolute path and navigate to it.
 </p>
 
 <p align="justify">
