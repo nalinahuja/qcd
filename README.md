@@ -44,8 +44,8 @@ When indicating a keyword to QCD, it can be the full form of a linked directory 
 </p>
 
 ```
-                        # Keyword Example    # Prefix Example    # Subsequence Example
-                        qcd node-modules     qcd node            qcd nm
+# Keyword Example    # Prefix Example    # Subsequence Example
+qcd node-modules     qcd node            qcd nm
 ```
 
 #### Completion Engine
