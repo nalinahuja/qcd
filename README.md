@@ -38,14 +38,17 @@ To manually update QCD to a newer release, simply follow the same installation p
 Just like the builtin command <code>cd</code>, simply indicate a valid path relative to the current directory and QCD will navigate to it. Where QCD differs from <code>cd</code> is that you can indicate a keyword or subsequence related to a directory you have previously visited and QCD will attempt to resolve the directory's absolute path and navigate to it.
 </p>
 
+#### Input Format
 <p align="justify">
 When indicating a keyword to QCD, it can be the full form of a linked directory and QCD will attempt a case sensitive search using that input. When indicating a prefix or subsequence to QCD, they must start with the first character of the linked directory you wish to navigate to and QCD will attempt a case insensitive search using that input.
 </p>
 
+#### Completion Engine
 <p align="justify">
 QCD ships with a custom completion engine that can be activated by hitting the tab key twice. This engine is able to complete directories of the current working directory as well as linked directories QCD has recorded. It is also able to complete subdirectories of the current working directory, valid symbolic links, and prefix or subsequenced symbolic links.
 </p>
 
+#### Manual Input
 <p align="justify">
 If multiple paths are resolved from same symbolic link, the user will have to manually choose from a numbered list of unique paths by inputting the number displayed next to the path they wish to navigate to. This selection phase can be exited by passing a blank input or a single character <code>q</code> to the program. There are several redundancies built into the program to entirely avoid or simplify the manual selection process in order to streamline the use of QCD.
 </p>
