@@ -60,7 +60,7 @@ If multiple paths are resolved from same symbolic link, the user will have to ma
 
 ## Flags
 <p align="justify">
-QCD offers many different flags to the user to better allow them to manage and use QCD. The flags that are important to the interaction between the user and QCD are described below.
+QCD offers many different flags that are important to simplifying interaction between the user and QCD.
 </p>
 
 #### Clean
