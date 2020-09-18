@@ -67,6 +67,7 @@ QCD offers many different flags that are important to simplifying interaction be
 <p align="justify">
 The remember flag adds a symbolic link to QCDs lookup file that corresponds to the present working directory.
 </p>
+
 ```bash
 qcd [-r, --remember]
 ```
@@ -75,6 +76,7 @@ qcd [-r, --remember]
 <p align="justify">
 The forget flag removes a symbolic link from QCDs lookup file that corresponds to the present working directory. The user can opt to include a complete linkage ahead of the list flag to remove all matching instances of that linkage.
 </p>
+
 ```bash
 qcd [link] [-f, --forget]
 ```
@@ -83,6 +85,7 @@ qcd [link] [-f, --forget]
 <p align="justify">
 The mkdir flag creates a directory at a specified, valid path and switches to that directory. QCD internally adds a symbolic linkage to its lookup file that corresponds to the path of the new directory.
 </p>
+
 ```bash
 qcd [path] [-m, --mkdir]
 ```
@@ -91,6 +94,7 @@ qcd [path] [-m, --mkdir]
 <p align="justify">
 The clean flag removes symbolic linkages from QCDs lookup file that correspond to directories that may have been renamed or deleted by the user. QCD automatically cleans the lookup file when a new shell session is started, so it is not necessary to frequently clean the lookup file manually.
 </p>
+
 ```bash
 qcd [-c, --clean]
 ```
@@ -99,6 +103,7 @@ qcd [-c, --clean]
 <p align="justify">
 The list flag outputs the current contents of the lookup table in sorted order. The user can include an optional regex string ahead of the list flag to filter the output.
 </p>
+
 ```bash
 qcd [regex] [-l, --list]
 ```
@@ -107,7 +112,10 @@ qcd [regex] [-l, --list]
 <p align="justify">
 QCD offers a set of standard flags including the help, version, and update flags.
 </p>
+
 ```bash
 # Help Flag         # Version Flag         # Update Flag
 qcd [-h, --help]    qcd [-v, --version]    qcd [-u, --update]  
 ```
+
+qcd [N]..                   Change to Nth parent directory
