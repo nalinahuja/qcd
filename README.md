@@ -39,7 +39,11 @@ Just like the builtin command <code>cd</code>, simply indicate a valid path rela
 
 #### Input Format
 <p align="justify">
-When indicating a keyword to QCD, it can be the complete linked directory and QCD will attempt a case sensitive search using that input. When indicating a prefix or subsequence to QCD, they must start with the first character of the linked directory you wish to navigate to and QCD will attempt a case insensitive search using that input. QCD is also capable of parsing an input of form <code>N..</code> and QCD will navigate to the Nth parent directory relative to the current working directory.
+When indicating a keyword to QCD, it can be the complete linked directory and QCD will attempt a case sensitive search using that input. When indicating a prefix or subsequence to QCD, it must start with the first character of the linked directory you wish to navigate to and QCD will attempt a case insensitive search using that input.
+</p>
+
+<p align="justify">
+QCD is capable of recognizing special input formats and sequences. QCD can parse an input in the form <code>[N]..</code> and will navigate to the Nth parent directory relative to the current working directory. QCD can also interpret file system sequences like <code>.</code> and <code>..</code> during link and subdirectory completion and file system navigation. These usages can be viewed anytime by using the help flag.
 </p>
 
 ```bash
