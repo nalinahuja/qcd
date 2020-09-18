@@ -1,23 +1,19 @@
 ## QCD
-
 <p align="justify">
 QCD is a bash utility that extends upon the exisiting capabilities of the builtin command <code>cd</code>. It allows the user to quickly change from one directory to another by specifying a valid path, directory keyword, directory prefix, or character subsequence to the program as a command line argument. QCD works completely locally and utilizes common builtin commands to achieve this functionality making it extremely portable across systems that support bash. QCD operates out of the directory <code>~/.qcd</code> and learns which directories you visit by storing symbolic links and their corresponding absolute paths in a file called <code>store</code>. This allows QCD to quickly resolve the absolute path given a recognizable input and switch to that directory.
 </p>
 
 ## Compatibility
-
 <p align="justify">
 QCD is compatible with macOS and popular Linux distributions in bash environments between v3.2 and v5.0.
 </p>
 
 ## Dependencies
-
 <p align="justify">
 QCD does not require any dependencies to operate as a command line utility and uses common builtins during execution. The only dependency it requires is the <code>curl</code> command which is used internally by QCD to download updates. Please make sure that this command is installed on your machine if you want to use the  self update functionality of QCD.<br><br>While not exactly a dependency, please update your bash environment to the latest version to get the best experience possible with QCD.
 </p>
 
 ## Installation
-
 <p align="justify">
 Please navigate to the <a href="https://github.com/nalinahuja22/qcd/releases">release</a> tab of this repository and download the latest version of this project. You can perform this download within a browser environment or using a command line utility like <code>wget</code> or <code>curl</code>. Alternatively, you can clone this <a href="https://github.com/nalinahuja22/qcd">repository</a> but it is recommended that you download the most recent release since the git repository is comparatively larger.
 </p>
@@ -33,7 +29,6 @@ To manually update QCD to a newer release, simply follow the same installation p
 </p>
 
 ## Usage
-
 <p align="justify">
 Just like the builtin command <code>cd</code>, simply indicate a valid path relative to the current directory and QCD will navigate to it. Where QCD differs from <code>cd</code> is that you can indicate a keyword or subsequence related to a directory you have previously visited and QCD will attempt to resolve the directory's absolute path and navigate to it.
 </p>
@@ -64,13 +59,64 @@ If multiple paths are resolved from same symbolic link, the user will have to ma
 </p>
 
 ## Flags
-
 <p align="justify">
-QCD offers many different flags to the user to better allow them to manage and use QCD.
+QCD offers many different flags to the user to better allow them to manage and use QCD. The flags that are important to the interaction between the user and QCD are described below.
+</p>
 
-####
+#### Clean
+<p align="justify">
+The clean flag removes symbolic linkages from QCDs lookup file that correspond to directories that may have been renamed or deleted by the user. QCD automatically cleans the lookup file when a new shell session is started, so it is not necessary to frequently clean the lookup file manually.
+</p>
 
-The user has the ability to manually create and manage the symbolic links stored by QCD. The <code>-r</code> flag can be used to command QCD to remember the current working directory so that you can navigate to it later. The <code>-m</code> flag can be used to create a directory at the indicated, valid path for which QCD will automatically create a linkage. The <code>-f</code> flag can be used to command QCD to forget matching symbolic links or paths. By indicating <code>-f</code> after a valid link, QCD will forget all instances of the specified link from the store file and it will not show up as a completion suggestion unless you visit a directory with that name. The user can also opt to only indicate <code>-f</code>, which means QCD will forget the link related to the current working directory from the store file. Directory linkages stored by QCD can be listed by using the <code>-l</code> flag and the user can opt to indicate a prefix of a link or a regex string to filter the output. Lastly, the user can choose to clean their store file of defunct symbolic links that point to nonexistent or modified directories with the use of the <code>-c</code> flag. Keep in mind that it's not necessary to manually clean the store file since QCD automatically cleans the store file when a new shell session is started. A full list of different usages and options supported by QCD can be seen below or in your terminal using the <code>-h</code> flag.
+```bash
+qcd [-c, --clean]
+```
+
+#### List
+<p align="justify">
+The list flag outputs the current contents of the lookup table in sorted order. The user can include an optional regex string ahead of the list flag to filter the output.
+</p>
+
+```bash
+qcd [regex] [-l, --list]
+```
+
+#### Remember Directory
+<p align="justify">
+The remember flag adds a symbolic link to QCDs lookup file that corresponds to the present working directory.
+</p>
+
+```bash
+qcd [-r, --remember]
+```
+
+#### Forget Directory
+<p align="justify">
+The forget flag removes a symbolic link from QCDs lookup file that corresponds to the present working directory. The user can opt to include a complete linkage ahead of the list flag to remove all matching instances of that linkage.
+</p>
+
+```bash
+qcd [link] [-f, --forget]
+```
+
+#### Make Directory
+<p align="justify">
+The mkdir flag creates a directory at a specified, valid path and switches to that directory. QCD internally adds a symbolic linkage to its lookup file that corresponds to the path of the new directory.
+</p>
+
+```bash
+qcd [path] [-m, --mkdir]
+```
+
+#### Other
+<p align="justify">
+QCD offers a set of standard flags that are found in many binaries. These include the help, version, and update flags.
+
+```bash
+# Help Flag         # Version Flag         # Update Flag
+qcd [-h, --help]    qcd [-v, --version]    qcd [-u, --update]  
+```
+
 </p>
 
 ```
