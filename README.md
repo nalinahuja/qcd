@@ -35,12 +35,12 @@ Just like the builtin command <code>cd</code>, simply indicate a valid path rela
 
 #### Input Format
 <p align="justify">
-When indicating a keyword to QCD, it can be the complete linked directory and QCD will attempt a case sensitive search using that input. When indicating a prefix or subsequence to QCD, they must start with the first character of the linked directory you wish to navigate to and QCD will attempt a case insensitive search using that input. QCD also recognizes and interprets standard file system sequences like <code>.</code> and <code>..</code>, just like <code>cd</code>. These usages can be viewed whenever by using the help flag.
+When indicating a keyword to QCD, it can be the complete linked directory and QCD will attempt a case sensitive search using that input. When indicating a prefix or subsequence to QCD, they must start with the first character of the linked directory you wish to navigate to and QCD will attempt a case insensitive search using that input. QCD is also capable of parsing an input of form <code>[N]..</code> and QCD will navigate to the Nth parent directory relative to the current working directory.
 </p>
 
 ```bash
-# Keyword Example    # Prefix Example    # Subsequence Example
-qcd node-modules     qcd node            qcd nm
+# Keyword Example    # Prefix Example    # Subsequence Example    # Nth Directory Example
+qcd node-modules     qcd node            qcd nm                   qcd 2..
 ```
 
 #### Completion Engine
@@ -117,5 +117,3 @@ QCD offers a set of standard flags including the help, version, and update flags
 # Help Flag         # Version Flag         # Update Flag
 qcd [-h, --help]    qcd [-v, --version]    qcd [-u, --update]  
 ```
-
-qcd [N]..                   Change to Nth parent directory
