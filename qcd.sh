@@ -109,11 +109,6 @@ function _escape_regex() {
 
 # End String Functions-----------------------------------------------------------------------------------------------------------------------------------------------
 
-function _cleanup() {
-  # Remove Link And Temp Files
-  command rm ${QCD_LINKS} ${QCD_TEMP} 2> /dev/null
-}
-
 function _update_links() {
   # Store Symbolic Links In Link File
   command awk -F ':' '{print $1}' ${QCD_STORE} > ${QCD_LINKS}
@@ -133,6 +128,29 @@ function _update_store() {
     command rm ${QCD_TEMP} 2> /dev/null
   fi
 }
+
+function _verify_files() {
+  # Check For Store File
+  if [[ ! -f ${QCD_STORE} ]]
+  then
+    # Create Store File
+    command touch ${QCD_STORE}
+  fi
+
+  # Check For Link File
+  if [[ ! -f ${QCD_LINKS} ]]
+  then
+    # Create Link File
+    _update_links
+  fi
+}
+
+function _cleanup_files() {
+  # Remove Link And Temp Files
+  command rm ${QCD_LINKS} ${QCD_TEMP} 2> /dev/null
+}
+
+# End File Management Functions--------------------------------------------------------------------------------------------------------------------------------------
 
 function _add_directory() {
   # Store Current Directory
@@ -184,24 +202,6 @@ function _remove_symbolic_link() {
 }
 
 # End Link Management Functions--------------------------------------------------------------------------------------------------------------------------------------
-
-function _verify_files() {
-  # Check For Store File
-  if [[ ! -f ${QCD_STORE} ]]
-  then
-    # Create Store File
-    command touch ${QCD_STORE}
-  fi
-
-  # Check For Link File
-  if [[ ! -f ${QCD_LINKS} ]]
-  then
-    # Create Link File
-    _update_links
-  fi
-}
-
-# End File Management Functions--------------------------------------------------------------------------------------------------------------------------------------
 
 function _parse_option_flags() {
   # Store Argument Flag
@@ -987,7 +987,7 @@ function _qcd_init() {
     (_update_links &)
 
     # Cleanup Files On Exit
-    command trap _cleanup EXIT &> /dev/null
+    command trap _cleanup_files EXIT &> /dev/null
 
     # Set Environment To Show Visible Files
     command bind 'set match-hidden-files off' &> /dev/null
