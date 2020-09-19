@@ -323,7 +323,7 @@ function _parse_option_flags() {
       sphrase=${sphrase//\?/\.}
 
       # Filter Linkages By Search Phrase
-      linkages=$(command echo -e "${linkages}"| command egrep -s -x "${sphrase%/}.*:.*" 2> /dev/null)
+      linkages=$(command echo -e "${linkages}"| command egrep -s -x "${sphrase%/}:.*" 2> /dev/null)
     fi
 
     # Error Check Linkages
