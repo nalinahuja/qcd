@@ -4,15 +4,15 @@
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
-# Boolean Values
-TRUE=1
-FALSE=0
-
 # Return Values
 OK=0
 ERR=1
 CONT=2
 NFD=127
+
+# Boolean Values
+TRUE=1
+FALSE=0
 
 # Embedded Values
 NSET=0
@@ -21,17 +21,17 @@ TOUT=10
 
 # End Defined Numerical Constants------------------------------------------------------------------------------------------------------------------------------------
 
-# Standalone Flags
-HELP="-h"
-UPDATE="-u"
-VERSION="-v"
-
 # Option Flags
 LIST="-l"
 CLEAN="-c"
 FORGET="-f"
 REMEMBER="-r"
 MKDIRENT="-m"
+
+# Standalone Flags
+HELP="-h"
+UPDATE="-u"
+VERSION="-v"
 
 # Embedded Strings
 ESTR=""
