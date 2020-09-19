@@ -4,15 +4,22 @@
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
+# Boolean Values
+TRUE=1
+FALSE=0
+
 # Return Values
 OK=0
 ERR=1
 CONT=2
 NFD=127
+NSEL=255
 
-# Boolean Values
-TRUE=1
-FALSE=0
+# Arrow Actions
+UP=0
+DOWN=1
+NACT=2
+EXIT=3
 
 # Embedded Values
 NSET=0
@@ -21,6 +28,11 @@ TOUT=10
 
 # End Defined Numerical Constants------------------------------------------------------------------------------------------------------------------------------------
 
+# Standalone Flags
+HELP="-h"
+UPDATE="-u"
+VERSION="-v"
+
 # Option Flags
 LIST="-l"
 CLEAN="-c"
@@ -28,19 +40,18 @@ FORGET="-f"
 REMEMBER="-r"
 MKDIRENT="-m"
 
-# Standalone Flags
-HELP="-h"
-UPDATE="-u"
-VERSION="-v"
-
 # Embedded Strings
 ESTR=""
 YES="y"
-ESC="\\"
+QUIT="q"
+BSLH="\\"
 
 # Directory Patterns
 CWD="."
 HWD="../"
+
+# Arrow Escape String
+AESC=$(command printf "\033")
 
 # Text Formatting Strings
 B=$(command tput bold)
@@ -491,6 +502,124 @@ function _parse_standalone_flags() {
 
 # End Argument Parser Functions--------------------------------------------------------------------------------------------------------------------------------------
 
+function _show_cursor() {
+  if [[ ${1} -eq ${FALSE} ]]
+  then
+    command tput civis 2> /dev/null
+  elif [[ ${1} -eq ${TRUE} ]]
+  then
+    command tput cnorm 2> /dev/null
+  fi
+}
+
+# End Cursor Management Function-------------------------------------------------------------------------------------------------------------------------------------
+
+function _read_input() {
+  # Initialize Input String
+  local uinput=$ESTR
+
+  # Parse Input
+  while [[ 1 ]]
+  do
+    # Read Character From STDIN
+    command read -s -n1 c 2> /dev/null
+
+    # Append Character To Input String
+    uinput="${uinput}${c}"
+
+    # Check Break Conditions
+    if [[ -z ${uinput} || ${uinput} == ${QUIT} || ${#uinput} -eq 3 ]]
+    then
+      break
+    fi
+  done
+
+  # Return Action
+  if [[ -z ${uinput} ]]; then command echo -e "$EXIT"; fi
+  if [[ ${uinput} == "${QUIT}" ]]; then command echo -e "$NACT"; fi
+  if [[ ${uinput} == "${AESC}[A" ]]; then command echo -e "$UP"; fi
+  if [[ ${uinput} == "${AESC}[B" ]]; then command echo -e "$DOWN"; fi
+}
+
+function _display_menu() {
+  # Initialize Selected Line
+  local sli=0
+
+  # Hide Cursor
+  _show_cursor ${FALSE}
+
+  # Show Cursor On Exit
+  command trap _show_cursor ${TRUE} EXIT &> /dev/null
+
+  # Begin Selection Loop
+  while [[ 1 ]]
+  do
+    # Intiailize Option Index
+    local oi=0
+
+    # Iterate Over Options
+    for opt in "${@}"
+    do
+      # Format Option
+      opt=$(_format_dir "${opt}")
+
+      # Print Conditionally Formatted Option
+      if [[ ${oi} -eq ${sli} ]]
+      then
+        command printf "${W} ${opt} ${N}\n"
+      else
+        command printf " ${opt} \n"
+      fi
+
+      # Increment Option Index
+      oi=$((${oi} + 1))
+    done
+
+    # Read User Input
+    local action=$(_read_input)
+
+    # Update Cursor Position
+    if [[ ${action} -eq ${UP} ]]
+    then
+      # Decrement Selected Line
+      sli=$((${sli} - 1))
+    elif [[ ${action} -eq ${DOWN} ]]
+    then
+      # Increment Selected Line
+      sli=$((${sli} + 1))
+    else
+      # Reset Selected Line
+      if [[ ${action} -eq ${NACT} ]]
+      then
+        sli=$NSEL
+      fi
+
+      # Break Loop
+      break
+    fi
+
+    # Error Check Selected Line
+    if [[ ${sli} -eq $# ]]
+    then
+      sli=0
+    elif [[ ${sli} -lt 0 ]]
+    then
+      sli=$(($# - 1))
+    fi
+
+    # Clear Previous Output
+    command printf "${AESC}[$#A"
+  done
+
+  # Show Cursor
+  _show_cursor ${TRUE}
+
+  # Return Selected Line
+  return ${sli}
+}
+
+# End Manual Selection Functions-------------------------------------------------------------------------------------------------------------------------------------
+
 function qcd() {
   # Verify File Integrity
   _verify_files
@@ -597,7 +726,7 @@ function qcd() {
       if [[ "${dir_arg}" == \.* ]]
       then
         # Override Parameters
-        i=2; wlink="${ESC}${CWD}"
+        i=2; wlink="${BSLH}${CWD}"
       fi
 
       # Wildcard Symbolic Link
@@ -682,52 +811,27 @@ function qcd() {
         command echo -en "\rqcd: Generating option list..."
 
         # Generate Prompt
-        command echo -e "\rqcd: Multiple paths linked to ${B}${dir_arg%/}${N}" > ${QCD_TEMP}
+        command echo -e "\rqcd: Multiple paths linked to ${B}${dir_arg%/}${N}"
 
-        # Generate Path Options
-        local cnt=1
-        for path in ${fpaths[@]}
-        do
-          # Format Path
-          path=$(_format_dir "${path}")
-
-          # Output Path As Option
-          command printf "(${cnt}) ${path%/}\n" >> ${QCD_TEMP}
-
-          # Increment Counter
-          cnt=$((${cnt} + 1))
-        done
-
-        # Display Prompt
-        command cat ${QCD_TEMP}
+        # Display Selection Menu
+        _display_menu ${fpaths[@]}
 
         # End Option View--------------------------------------------------------------------------------------------------------------------------------------------
 
-        # Read User Input
-        command read -p "Endpoint: " ept
+        # Capture Function Return
+        local ept=${?}
 
         # Error Check Input Format
-        if [[ -z ${ept} || ! ${ept} =~ ^[0-9]+$ ]]
+        if [[ ${ept} -eq 255 ]]
         then
           # Terminate Program
           return ${ERR}
         fi
 
-        # Error Check Input Range
-        if [[ ${ept} -lt 1 ]]
-        then
-          # Set To Minimum Selection
-          ept=1
-        elif [[ ${ept} -gt ${pathc} ]]
-        then
-          # Set To Maximum Selection
-          ept=${pathc}
-        fi
-
         # End Option Verification And Correction---------------------------------------------------------------------------------------------------------------------
 
         # Set To Manually Selected Endpoint
-        pathv="${fpaths[$((${ept} - 1))]}"
+        pathv="${fpaths[${ept}]}"
       else
         # Set To Automatically Selected Endpoint
         pathv=${mpath}
@@ -826,7 +930,7 @@ function _qcd_comp() {
         if [[ "${link_arg}" == \.* ]]
         then
           # Override Parameters
-          i=1; wlink_arg="${ESC}${CWD}"
+          i=1; wlink_arg="${BSLH}${CWD}"
         fi
 
         # Wildcard Symbolic Link
