@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Developed by Nalin Ahuja, nalinahuja22
+#Developed by Nalin Ahuja, nalinahuja22
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -21,10 +21,10 @@ QCD_READ=./README.md
 # End Defined Constants----------------------------------------------------------------------------------------------------------------------------------------------
 
 # Initialize Update Boolean
-upgrade=$TRUE
+upgrade=${TRUE}
 
 # Get Installation Version
-version=$(command cat $QCD_HELP | command head -n1 | command awk '{print $4}')
+version=$(command cat ${QCD_HELP} | command head -n1 | command awk '{print $4}')
 
 # End Global Variables-----------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -32,10 +32,10 @@ version=$(command cat $QCD_HELP | command head -n1 | command awk '{print $4}')
 command read -p "Please confirm installation of QCD (${version}) [y/n]: " confirm
 
 # Determine Action
-if [[ "${confirm//Y/$YES}" == $YES ]]
+if [[ "${confirm//Y/${YES}}" == ${YES} ]]
 then
   # Add Command To Bash Profile
-  if [[ ! -e $QCD_FOLD ]]
+  if [[ ! -e ${QCD_FOLD} ]]
   then
     if [[ -f ~/.bashrc ]]
     then
@@ -57,21 +57,21 @@ then
     command echo -e "→ Installed QCD command to terminal configuration"
 
     # Set Upgrade Indicator
-    upgrade=$FALSE
+    upgrade=${FALSE}
   fi
 
   # Install QCD Program Files
-  command mkdir $QCD_FOLD 2> /dev/null
-  command mv $QCD_PROG $QCD_FOLD 2> /dev/null
-  command mv $QCD_HELP $QCD_FOLD 2> /dev/null
-  command mv $QCD_LICE $QCD_FOLD 2> /dev/null
-  command mv $QCD_READ $QCD_FOLD 2> /dev/null
+  command mkdir ${QCD_FOLD} 2> /dev/null
+  command mv ${QCD_PROG} ${QCD_FOLD} 2> /dev/null
+  command mv ${QCD_HELP} ${QCD_FOLD} 2> /dev/null
+  command mv ${QCD_LICE} ${QCD_FOLD} 2> /dev/null
+  command mv ${QCD_READ} ${QCD_FOLD} 2> /dev/null
 
   # Update Bash Environment
-  command source $QCD_FOLD/qcd.sh 2> /dev/null
+  command source ${QCD_FOLD}/qcd.sh 2> /dev/null
 
   # Determine Appropriate Message
-  if [[ ${upgrade} -eq $TRUE ]]
+  if [[ ${upgrade} -eq ${TRUE} ]]
   then
     command echo -e "→ Upgraded QCD to ${version}"
   else
