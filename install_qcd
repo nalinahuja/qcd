@@ -24,11 +24,7 @@ BASHPR=~/.bash_profile
 
 # End Defined Constants----------------------------------------------------------------------------------------------------------------------------------------------
 
-# Initialize Gloabl Booleans
-status=${FALSE} is_update=${TRUE}
-
-# Get Install Version
-version=$(command cat ${QCD_HELP} | command head -n1 | command awk '{print $4}')
+status=${FALSE} is_update=${TRUE} version=$(command cat ${QCD_HELP} | command head -n1 | command awk '{print $4}')
 
 # End Global Variables-----------------------------------------------------------------------------------------------------------------------------------------------
 
