@@ -68,8 +68,6 @@ function _get_pwd() {
   command echo -e "$(command pwd)/"
 }
 
-# End Get Functions--------------------------------------------------------------------------------------------------------------------------------------------------
-
 function _format_dir() {
   # Check For Environment Variable
   if [[ ! -z ${HOME} ]]
@@ -108,7 +106,7 @@ function _escape_regex() {
   command echo -e "${fstr}"
 }
 
-# End String Functions-----------------------------------------------------------------------------------------------------------------------------------------------
+# End Utility Functions----------------------------------------------------------------------------------------------------------------------------------------------
 
 function _update_links() {
   # Store Symbolic Links In Link File
