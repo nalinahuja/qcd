@@ -3,7 +3,6 @@
 # Developed by Nalin Ahuja, nalinahuja22
 
 # TODO, selectable menu
-# TODO, fix list regex
 # TODO, QCD history
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
