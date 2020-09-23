@@ -110,7 +110,7 @@ qcd [-c, --clean]
 
 #### List
 <p align="justify">
-The list flag outputs the current contents of the lookup table in sorted order. The user can include an optional regex string ahead of the list flag to filter the output.
+The list flag outputs the current contents of the lookup file in sorted order. The user can include an optional regex string ahead of the list flag to filter the output.
 </p>
 
 ```bash

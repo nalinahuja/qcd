@@ -2,7 +2,22 @@
 
 # Developed by Nalin Ahuja, nalinahuja22
 
+# TODO, selectable menu
+# TODO, fix list regex
+# TODO, QCD history
+
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Default Values
+NSET=0
+
+# Boolean Values
+TRUE=1
+FALSE=0
+
+# Embedded Values
+MINP=4
+TOUT=10
 
 # Return Values
 OK=0
@@ -10,16 +25,10 @@ ERR=1
 CONT=2
 NFD=127
 
-# Boolean Values
-TRUE=1
-FALSE=0
-
-# Embedded Values
-NSET=0
-MINP=4
-TOUT=10
-
 # End Defined Numerical Constants------------------------------------------------------------------------------------------------------------------------------------
+
+# Default Values
+ESTR=""
 
 # Option Flags
 LIST="-l"
@@ -34,7 +43,6 @@ UPDATE="-u"
 VERSION="-v"
 
 # Embedded Strings
-ESTR=""
 YES="y"
 QUIT="q"
 BSLH="\\"
@@ -66,6 +74,11 @@ QCD_RELEASES="https://api.github.com/repos/nalinahuja22/qcd/releases/latest"
 function _get_pwd() {
   # Return Present Working Directory
   command echo -e "$(command pwd)/"
+}
+
+function _split_path() {
+  # Return Absolute Path To Linkage
+  command echo -e "${@#*:}"
 }
 
 function _format_dir() {
@@ -322,7 +335,7 @@ function _parse_option_flags() {
       sphrase=${sphrase//\?/\.}
 
       # Filter Linkages By Search Phrase
-      linkages=$(command echo -e "${linkages}"| command egrep -s -x "${sphrase%/}:.*" 2> /dev/null)
+      linkages=$(command echo -e "${linkages}"| command egrep -s -x "${sphrase%/}.*:.*" 2> /dev/null)
     fi
 
     # Error Check Linkages
@@ -494,15 +507,15 @@ function qcd() {
   # Verify File Integrity
   _verify_files
 
-  # End File Validation----------------------------------------------------------------------------------------------------------------------------------------------
+  # End Resource Validation------------------------------------------------------------------------------------------------------------------------------------------
 
   # Parse Arguments For Option Flags
   _parse_option_flags ${@}
 
-  # Store Operation Status
+  # Store Function Status
   local status=${?}
 
-  # Check Function Return
+  # Check Function Status
   if [[ ${status} -ne ${CONT} ]]
   then
     return ${status}
@@ -511,10 +524,10 @@ function qcd() {
   # Parse Arguments For Standalone Flags
   _parse_standalone_flags ${@}
 
-  # Store Operation Status
+  # Store Function Status
   local status=${?}
 
-  # Check Function Return
+  # Check Function Status
   if [[ ${status} -ne ${CONT} ]]
   then
     return ${status}
@@ -612,14 +625,14 @@ function qcd() {
       # Set IFS
       local IFS=$'\n'
 
-      # Get Sequence Matched Symbolic Linkages From Store File
-      pathv=($(command printf "%s\n" $(command egrep -i -s -x "${wlink}:.*" ${QCD_STORE} 2> /dev/null | command awk -F ':' '{print $2}')))
+      # Get Sequence Matched Symbolic Paths From Store File
+      pathv=($(command printf "%s\n" $(command egrep -i -s -x "${wlink}:.*" ${QCD_STORE} 2> /dev/null)))
     else
       # Set IFS
       local IFS=$'\n'
 
-      # Get Link Matched Symbolic Linkages From Store File
-      pathv=($(command printf "%s\n" $(command egrep -s -x "${dlink}:.*" ${QCD_STORE} 2> /dev/null | command awk -F ':' '{print $2}')))
+      # Get Link Matched Symbolic Paths From Store File
+      pathv=($(command printf "%s\n" $(command egrep -s -x "${dlink}:.*" ${QCD_STORE} 2> /dev/null)))
     fi
 
     # Initialize Path Count
@@ -642,6 +655,9 @@ function qcd() {
       # Iterate Over Matched Paths
       for path in ${pathv[@]}
       do
+        # Substring Path From Delimiter
+        path=$(_split_path "${path}")
+
         # Form Complete Path
         path=$(_escape_dir "${path}${sdir}")
 
@@ -731,6 +747,9 @@ function qcd() {
         # Set To Automatically Selected Endpoint
         pathv=${mpath}
       fi
+    else
+      # Substring Path From Delimiter
+      pathv=$(_split_path "${pathv}")
     fi
 
     # End Path Resolution--------------------------------------------------------------------------------------------------------------------------------------------
