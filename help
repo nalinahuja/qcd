@@ -11,11 +11,11 @@
   qcd [-v, --version]         Show current version
   qcd [-u, --update]          Update to latest version
 
-  qcd [-c, --clean]           Clean store file
+  qcd [-r, --add]             Add present directory
+  qcd [-f, --remove]          Remove present directory
   qcd [-l, --list]            List directory linkages
-  qcd [-r, --remember]        Remember present directory
-  qcd [-f, --forget]          Forget only present directory
-  qcd [link] [-f, --forget]   Forget matching symbolic links
+  qcd [-c, --clean]           Clean lookup resource file
+  qcd [link] [-f, --remove]   Remove matching symbolic links
   qcd [regex] [-l, --list]    List matching directory linkages
   qcd [path] [-m, --mkdir]    Create and switch to new directory
 

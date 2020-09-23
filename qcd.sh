@@ -4,6 +4,9 @@
 
 # TODO, selectable menu
 # TODO, QCD history
+# TODO, flag change (README, help)
+# TODO, speed improvements
+# TODO, clean codebase
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -32,9 +35,11 @@ ESTR=""
 # Option Flags
 LIST="-l"
 CLEAN="-c"
-FORGET="-f"
-REMEMBER="-r"
+APPEND="-a"
+REMOVE="-r"
 MKDIRENT="-m"
+STEP_BWD="-b"
+STEP_FWD="-f"
 
 # Standalone Flags
 HELP="-h"
@@ -219,14 +224,14 @@ function _parse_option_flags() {
   local flag="${@:$#}"
 
   # Check For Option Flags
-  if [[ "${flag/--remember/${REMEMBER}}" == "${REMEMBER}" ]]
+  if [[ "${flag/--add/${APPEND}}" == "${APPEND}" ]]
   then
     # Add Current Directory
     (_add_directory &)
 
     # Terminate Program
     return ${OK}
-  elif [[ "${flag/--forget/${FORGET}}" == "${FORGET}" ]]
+  elif [[ "${flag/--remove/${REMOVE}}" == "${REMOVE}" ]]
   then
     # Determine Removal Type
     if [[ $# -eq 1 ]]
