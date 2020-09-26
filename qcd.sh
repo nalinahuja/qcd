@@ -6,7 +6,9 @@
 # TODO, QCD history
 # TODO, flag change (README, help)
 # TODO, speed improvements
-# TODO, clean codebase
+# TODO, refactor codebase
+# TODO, add flag custom path
+# TODO, completion engine cleanup and optimization
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -124,6 +126,22 @@ function _escape_regex() {
 }
 
 # End Utility Functions----------------------------------------------------------------------------------------------------------------------------------------------
+
+HIST_PTR=0
+
+function _add_dir() {
+
+}
+
+function _shift_ptr() {
+
+}
+
+function _reset_ptr() {
+
+}
+
+# End History Functions----------------------------------------------------------------------------------------------------------------------------------------------
 
 function _update_links() {
   # Store Symbolic Links In Link File
@@ -815,7 +833,7 @@ function _qcd_comp() {
   local comp_list=()
 
   # Store Command Line Argument
-  local curr_arg=${COMP_WORDS[1]}
+  local curr_arg=${COMP_WORDS[COMP_CWORD]}
 
   # Determine Completion Type
   if [[ "${curr_arg}" == */* ]]
