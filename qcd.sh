@@ -3,7 +3,6 @@
 # Developed by Nalin Ahuja, nalinahuja22
 
 # TODO, selectable menu
-# TODO, QCD history
 # TODO, flag change (README, help)
 # TODO, speed improvements
 # TODO, refactor codebase
@@ -37,11 +36,9 @@ ESTR=""
 # Option Flags
 LIST="-l"
 CLEAN="-c"
-APPEND="-a"
-REMOVE="-r"
+FORGET="-f"
+REMEMBER="-r"
 MKDIRENT="-m"
-STEP_BWD="-b"
-STEP_FWD="-f"
 
 # Standalone Flags
 HELP="-h"
@@ -126,22 +123,6 @@ function _escape_regex() {
 }
 
 # End Utility Functions----------------------------------------------------------------------------------------------------------------------------------------------
-
-HIST_PTR=0
-
-function _add_dir() {
-
-}
-
-function _shift_ptr() {
-
-}
-
-function _reset_ptr() {
-
-}
-
-# End History Functions----------------------------------------------------------------------------------------------------------------------------------------------
 
 function _update_links() {
   # Store Symbolic Links In Link File
@@ -242,14 +223,14 @@ function _parse_option_flags() {
   local flag="${@:$#}"
 
   # Check For Option Flags
-  if [[ "${flag/--add/${APPEND}}" == "${APPEND}" ]]
+  if [[ "${flag/--remember/${REMEMBER}}" == "${REMEMBER}" ]]
   then
     # Add Current Directory
     (_add_directory &)
 
     # Terminate Program
     return ${OK}
-  elif [[ "${flag/--remove/${REMOVE}}" == "${REMOVE}" ]]
+  elif [[ "${flag/--forget/${FORGET}}" == "${FORGET}" ]]
   then
     # Determine Removal Type
     if [[ $# -eq 1 ]]

@@ -72,22 +72,22 @@ If multiple paths are resolved from same symbolic link, the user will have to ma
 QCD offers many different flags that are important to simplifying interaction between the user and QCD.
 </p>
 
-#### Add Directory
+#### Remember Directory
 <p align="justify">
-The flag adds a symbolic link to QCDs lookup file that corresponds to the present working directory.
+The remember flag adds a symbolic link to QCDs lookup file that corresponds to the present working directory.
 </p>
 
 ```bash
-qcd [-a, --add]
+qcd [-r, --remember]
 ```
 
-#### Remove Directory
+#### Forget Directory
 <p align="justify">
-The flag removes a symbolic link from QCDs lookup file that corresponds to the present working directory. The user can opt to include a complete linkage ahead of the list flag to remove all matching instances of that linkage.
+The forget flag removes a symbolic link from QCDs lookup file that corresponds to the present working directory. The user can opt to include a complete linkage ahead of the list flag to remove all matching instances of that linkage.
 </p>
 
 ```bash
-qcd [link] [-r, --remove]
+qcd [link] [-f, --forget]
 ```
 
 #### Make Directory
