@@ -3,7 +3,6 @@
 # Developed by Nalin Ahuja, nalinahuja22
 
 # TODO, selectable menu
-# TODO, flag change (README, help)
 # TODO, speed improvements
 # TODO, refactor codebase
 # TODO, add flag custom path
