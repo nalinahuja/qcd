@@ -5,7 +5,7 @@
 # TODO, selectable menu
 # TODO, speed improvements
 # TODO, refactor codebase
-# TODO, add flag custom path
+# TODO, remember flag custom path
 # TODO, completion engine cleanup and optimization
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
