@@ -8,6 +8,7 @@
 # TODO, remember flag custom path
 # TODO, completion engine cleanup and optimization
 # TODO, update routine using wget (README)
+# TODO, add declare keyword instead of NSET and ESTR
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
