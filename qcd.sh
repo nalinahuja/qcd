@@ -11,7 +11,7 @@
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
-CLEAN UP THIS SHIT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# TODO: CLEAN UP THIS SHIT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 # Default Values
 NSET=0
@@ -32,7 +32,7 @@ NFD=127
 
 # End Defined Numerical Constants------------------------------------------------------------------------------------------------------------------------------------
 
-CLEAN UP THIS SHIT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# TODO: CLEAN UP THIS SHIT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 # Default Values
 ESTR=""
@@ -216,11 +216,11 @@ function _remove_symbolic_link() {
 
 # End Link Management Functions--------------------------------------------------------------------------------------------------------------------------------------
 
-ADD SELECTION INTERFACE CODE HERE!!!!!!!!!!!!!!!!!!!!!!!
+# TODO: ADD SELECTION INTERFACE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 # End Selection Interface Functions----------------------------------------------------------------------------------------------------------------------------------
 
-CLEAN UP THIS SHIT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# TODO: CLEAN UP THIS SHIT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 function _parse_option_flags() {
   # Store Argument Flag
@@ -509,6 +509,8 @@ function _parse_standalone_flags() {
 }
 
 # End Argument Parser Functions--------------------------------------------------------------------------------------------------------------------------------------
+
+# TODO: CLEAN UP THIS SHIT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 function qcd() {
   # Verify File Integrity
@@ -810,6 +812,8 @@ function qcd() {
 
 # End QCD Function---------------------------------------------------------------------------------------------------------------------------------------------------
 
+# TODO: CLEAN UP THIS SHIT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 function _qcd_comp() {
   # Verify File Integrity
   _verify_files
@@ -1001,25 +1005,24 @@ function _qcd_comp() {
 
 # End QCD Completion Function----------------------------------------------------------------------------------------------------------------------------------------
 
+# TODO: CLEAN UP THIS SHIT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 function _qcd_init() {
-  # Initialize QCD
+  # Check For Store File
   if [[ -f ${QCD_STORE} ]]
   then
-    # Clean Store File
-    (qcd --clean &)
-
-    # Populate Link File
-    (_update_links &)
-
-    # Cleanup Files On Exit
-    command trap _cleanup_files EXIT &> /dev/null
-
-    # Set Environment To Show Visible Files
-    command bind 'set match-hidden-files off' &> /dev/null
-
-    # Initialize Completion Engine
-    command complete -o nospace -o filenames -A directory -F _qcd_comp qcd
+    # Prepare Resource Files
+    (qcd --clean & _update_links &)
   fi
+
+  # Cleanup Files On Exit
+  command trap _cleanup_files EXIT &> /dev/null
+
+  # Set Environment To Show Visible Files
+  command bind 'set match-hidden-files off' &> /dev/null
+
+  # Initialize Completion Engine
+  command complete -o nospace -o filenames -A directory -F _qcd_comp qcd
 }
 
 # Initialize QCD
