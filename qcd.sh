@@ -216,6 +216,12 @@ function _remove_symbolic_link() {
 
 # End Link Management Functions--------------------------------------------------------------------------------------------------------------------------------------
 
+ADD SELECTION INTERFACE CODE HERE!!!!!!!!!!!!!!!!!!!!!!!
+
+# End Selection Interface Functions----------------------------------------------------------------------------------------------------------------------------------
+
+CLEAN UP THIS SHIT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 function _parse_option_flags() {
   # Store Argument Flag
   local flag="${@:$#}"
