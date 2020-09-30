@@ -11,7 +11,7 @@
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
-CLEAN UP THIS SHIT
+CLEAN UP THIS SHIT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 # Default Values
 NSET=0
@@ -32,7 +32,7 @@ NFD=127
 
 # End Defined Numerical Constants------------------------------------------------------------------------------------------------------------------------------------
 
-CLEAN UP THIS SHIT
+CLEAN UP THIS SHIT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 # Default Values
 ESTR=""
@@ -172,16 +172,16 @@ function _cleanup_files() {
 # End File Management Functions--------------------------------------------------------------------------------------------------------------------------------------
 
 function _add_directory() {
-  # Store Current Directory
+  # Store Current Directory Path
   local pwd=$(_get_pwd)
 
-  # Cache Directory If Unique
+  # Store Directory If Unique
   if [[ ! "${pwd%/}" == "${HOME%/}" && -z $(command egrep -s -x ".*:${pwd}" ${QCD_STORE} 2> /dev/null) ]]
   then
-    # Get Basename Of Current Directory
+    # Store Basename Of Current Directory Path
     local ept=$(command basename "${pwd}")
 
-    # Append Directory Data To Store File
+    # Append Data To Store File
     command printf "${ept}:${pwd}\n" >> ${QCD_STORE}
 
     # Sort Store File In Place
@@ -199,11 +199,8 @@ function _remove_directory() {
   # Remove Directory From Store File
   command egrep -s -v -x ".*:${fdir}" ${QCD_STORE} > ${QCD_TEMP} 2> /dev/null
 
-  # Store Operation Status
-  local status=${?}
-
   # Update Store File
-  _update_store ${status}
+  _update_store ${?}
 }
 
 function _remove_symbolic_link() {
@@ -213,11 +210,8 @@ function _remove_symbolic_link() {
   # Remove Link From Store File
   command egrep -s -v -x "${flink}:.*" ${QCD_STORE} > ${QCD_TEMP} 2> /dev/null
 
-  # Store Operation Status
-  local status=${?}
-
   # Update Store File
-  _update_store ${status}
+  _update_store ${?}
 }
 
 # End Link Management Functions--------------------------------------------------------------------------------------------------------------------------------------
