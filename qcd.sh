@@ -7,8 +7,11 @@
 # TODO, refactor codebase
 # TODO, remember flag custom path
 # TODO, completion engine cleanup and optimization
+# TODO, update routine using wget (README)
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
+
+CLEAN UP THIS SHIT
 
 # Default Values
 NSET=0
@@ -28,6 +31,8 @@ CONT=2
 NFD=127
 
 # End Defined Numerical Constants------------------------------------------------------------------------------------------------------------------------------------
+
+CLEAN UP THIS SHIT
 
 # Default Values
 ESTR=""
@@ -66,7 +71,7 @@ QCD_HELP=$QCD_FOLD/help
 QCD_TEMP=$QCD_FOLD/temp
 QCD_LINKS=$QCD_FOLD/links
 QCD_STORE=$QCD_FOLD/store
-QCD_UPDATE=$QCD_FOLD/update.zip
+QCD_UPDATE=$QCD_FOLD/update
 
 # Release URL
 QCD_RELEASES="https://api.github.com/repos/nalinahuja22/qcd/releases/latest"
@@ -79,7 +84,7 @@ function _get_pwd() {
 }
 
 function _split_path() {
-  # Return Absolute Path To Linkage
+  # Return Absolute Path Of Linkage
   command echo -e "${@#*:}"
 }
 
