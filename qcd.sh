@@ -2,17 +2,12 @@
 
 # Developed by Nalin Ahuja, nalinahuja22
 
-# TODO, selectable menu (update README)
+# TODO, selectable menu, INTEGRATE TO MAIN FUNCTION (update README)
 # TODO, refactor codebase
 # TODO, add declare/local keyword instead of NSET and ESTR
 # TODO, speed improvements in completion engine, and main script
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
-
-# TODO: Cleanup
-
-# Default Values (REMOVE)
-NSET=0
 
 # Return Values
 OK=0
@@ -24,16 +19,18 @@ NFD=127
 TRUE=1
 FALSE=0
 
+# Keycode Values
+UP=0
+DN=1
+EXIT=2
+NSEL=-1
+
 # Embedded Values
+NSET=0
 MINPAD=4
 TIMEOUT=10
 
 # End Defined Numerical Constants------------------------------------------------------------------------------------------------------------------------------------
-
-# TODO: Cleanup
-
-# Default Values (REMOVE)
-ESTR=""
 
 # Path Strings
 CWD="."
@@ -52,8 +49,13 @@ UPDATE="-u"
 VERSION="-v"
 
 # Embedded Strings
+ESTR=""
 YES="y"
+QUIT="q"
 BSLH="\\"
+
+# Arrow Key Prefix String
+AESC=$(command printf "\033")
 
 # Text Formatting Strings
 B=$(command tput bold)
@@ -74,6 +76,11 @@ QCD_UPDATE=$QCD_FOLD/update
 QCD_RELEASES="https://api.github.com/repos/nalinahuja22/qcd/releases/latest"
 
 # End Defined Program Constants--------------------------------------------------------------------------------------------------------------------------------------
+
+# Selection Exit Flag
+EXIT_FLAG=${FALSE}
+
+# End Global Program Variables---------------------------------------------------------------------------------------------------------------------------------------
 
 function _get_pwd() {
   # Return Present Working Directory
@@ -227,7 +234,122 @@ function _remove_symbolic_link() {
 
 # End Link Management Functions--------------------------------------------------------------------------------------------------------------------------------------
 
-# TODO: Add functions
+function _show_cursor() {
+  # Set Cursor To Visible
+  command tput cnorm 2> /dev/null
+}
+
+function _hide_cursor() {
+  # Set Cursor To Hidden
+  command tput civis 2> /dev/null
+}
+
+function _exit_cleanly() {
+  # Set Exit Flag To True
+  EXIT_FLAG=${TRUE}
+
+  # Show Cursor
+  _show_cursor
+}
+
+# End Environment Management Functions-------------------------------------------------------------------------------------------------------------------------------
+
+function _read_input() {
+  # Initialize Key String
+  local key=${ESTR}
+
+  # Read Input Stream
+  while [[ 1 ]]
+  do
+    # Read Character From STDIN
+    command read -s -n1 c 2> /dev/null
+
+    # Append Character To Key String
+    key="${key}${c}"
+
+    # Check Break Conditions
+    if [[ -z ${key} || ${key} == ${QUIT} || ${#key} -eq 3 ]]
+    then
+      break
+    fi
+  done
+
+  # Return Action
+  if [[ ${key} == "${QUIT}" ]]; then command echo -e "$EXIT"; fi
+  if [[ ${key} == "${AESC}[A" ]]; then command echo -e "$UP"; fi
+  if [[ ${key} == "${AESC}[B" ]]; then command echo -e "$DN"; fi
+}
+
+function _display_menu() {
+  # Prepare Environment
+  _hide_cursor && command trap _exit_cleanly SIGINT &> /dev/null
+
+  # Initialize Selected Line
+  local sel_line=${NSET}
+
+  # Begin Selection Loop
+  while [[ 1 ]]
+  do
+    # Intiailize Option Index
+    local oi=0
+
+    # Iterate Over Options
+    for opt in "${@}"
+    do
+      # Format Option
+      opt=$(_format_dir "${opt}")
+
+      # Print Conditionally Formatted Option
+      if [[ ${oi} -eq ${sel_line} ]]
+      then
+        command printf "${W} ${opt} ${N}\n"
+      else
+        command printf " ${opt} \n"
+      fi
+
+      # Increment Option Index
+      oi=$((${oi} + 1))
+    done
+
+    # Read User Input
+    local key=$(_read_input)
+
+    # Update Cursor Position
+    if [[ ${key} -eq ${UP} ]]
+    then
+      # Decrement Selected Line
+      sel_line=$((${sel_line} - 1))
+    elif [[ ${key} -eq ${DOWN} ]]
+    then
+      # Increment Selected Line
+      sel_line=$((${sel_line} + 1))
+    else
+      # Reset Selected Line
+      if [[ ${key} -eq ${EXIT} ]]
+      then
+        sel_line=${NSEL}
+      fi
+
+      # Break Loop
+      break
+    fi
+
+    # Error Check Selected Line
+    if [[ ${sel_line} -eq $# ]]
+    then
+      sel_line=0
+    elif [[ ${sel_line} -lt 0 ]]
+    then
+      sel_line=$(($# - 1))
+    fi
+
+    # Clear Previous Output
+    command printf "${AESC}[$#A"
+  done
+
+  # Restore Environment
+  _show_cursor && return ${sel_line}
+}
 
 # End Selection Interface Functions----------------------------------------------------------------------------------------------------------------------------------
 
