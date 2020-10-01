@@ -2,9 +2,9 @@
 
 # Developed by Nalin Ahuja, nalinahuja22
 
-# TODO, refactor codebase
-# TODO, selectable menu, INTEGRATE TO MAIN FUNCTION
+# TODO, selectable menu, integrate into main function
 # TODO, speed improvements in completion engine, and main script
+# TODO, refactor codebase
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
