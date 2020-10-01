@@ -4,7 +4,6 @@
 
 # TODO, selectable menu
 # TODO, refactor codebase
-# TODO, remember flag custom path (README, help)
 # TODO, add declare keyword instead of NSET and ESTR
 # TODO, speed improvements in completion engine, and main script
 
