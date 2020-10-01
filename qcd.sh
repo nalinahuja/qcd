@@ -251,10 +251,10 @@ function _parse_option_flags() {
       (_add_directory &)
     else
       # Store Path Argument
-      local npath="${@:1:$(($# - 1))}"
+      local lpath="${@:1:$(($# - 1))}"
 
       # Remove Symbolic Link
-      (_add_directory "${npath}" &)
+      (_add_directory "${lpath}" &)
     fi
 
     # Terminate Program
