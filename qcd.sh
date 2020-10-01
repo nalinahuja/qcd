@@ -2,7 +2,7 @@
 
 # Developed by Nalin Ahuja, nalinahuja22
 
-# TODO, selectable menu, integrate into main function, character acceptor in subroutine
+# TODO, selectable menu, integrate into main function, character acceptor in subroutine, delete menu on exit
 # TODO, speed improvements in completion engine, and main script
 # TODO, refactor codebase
 
@@ -327,7 +327,7 @@ function _display_menu() {
       EXIT_FLAG=${FALSE}
 
       # Clear Previous Output
-      command printf "${AESC}[$#A"
+      command tput cuu $#
 
       # Restore Environment
       _show_cursor && return ${NSEL}
@@ -364,11 +364,11 @@ function _display_menu() {
     fi
 
     # Clear Previous Output
-    command printf "${AESC}[$#A"
+    command tput cuu $#
   done
 
   # Clear Previous Output
-  command printf "${AESC}[$#A"
+  command tput cuu $#
 
   # Restore Environment
   _show_cursor && return ${sel_line}
