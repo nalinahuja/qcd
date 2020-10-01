@@ -13,6 +13,7 @@ OK=0
 ERR=1
 CONT=2
 NFD=127
+NSEL=255
 
 # Boolean Values
 TRUE=1
@@ -21,8 +22,8 @@ FALSE=0
 # Keycode Values
 UP=0
 DN=1
-EXIT=2
-NSEL=-1
+EXIT=3
+ENTR=4
 
 # Embedded Values
 NSET=0
@@ -270,18 +271,16 @@ function _read_input() {
     fi
   done
 
-  # Return Action
-  if [[ ${key} == "${QUIT}" ]]; then command echo -e "$EXIT"; fi
-  if [[ ${key} == "${AESC}[A" ]]; then command echo -e "$UP"; fi
-  if [[ ${key} == "${AESC}[B" ]]; then command echo -e "$DN"; fi
+  # Return Keycode
+  if [[ -z ${key} ]]; then command echo -e "${ENTR}"; fi
+  if [[ ${key} == "${QUIT}" ]]; then command echo -e "${EXIT}"; fi
+  if [[ ${key} == "${AESC}[A" ]]; then command echo -e "${UP}"; fi
+  if [[ ${key} == "${AESC}[B" ]]; then command echo -e "${DN}"; fi
 }
 
 function _display_menu() {
   # Prepare Environment
   _hide_cursor && command trap _exit_process SIGINT &> /dev/null
-
-  # Initialize Exit Flag
-  EXIT_FLAG=${FALSE}
 
   # Initialize Selected Line
   local sel_line=${NSET}
@@ -316,6 +315,12 @@ function _display_menu() {
     # Check Exit Flag
     if [[ ${EXIT_FLAG} == ${TRUE} ]]
     then
+      # Reset Exit Flag
+      EXIT_FLAG=${FALSE}
+
+      # Clear Previous Output
+      command printf "${AESC}[$#A"
+
       # Restore Environment
       _show_cursor && return ${NSEL}
     fi
@@ -325,11 +330,12 @@ function _display_menu() {
     then
       # Decrement Selected Line
       sel_line=$((${sel_line} - 1))
-    elif [[ ${key} -eq ${DOWN} ]]
+    elif [[ ${key} -eq ${DN} ]]
     then
       # Increment Selected Line
       sel_line=$((${sel_line} + 1))
-    else
+    elif [[ ${key} -eq ${ENTR} || ${key} -eq ${EXIT} ]]
+    then
       # Reset Selected Line
       if [[ ${key} -eq ${EXIT} ]]
       then
@@ -352,6 +358,9 @@ function _display_menu() {
     # Clear Previous Output
     command printf "${AESC}[$#A"
   done
+
+  # Clear Previous Output
+  command printf "${AESC}[$#A"
 
   # Restore Environment
   _show_cursor && return ${sel_line}
@@ -854,52 +863,22 @@ function qcd() {
         command echo -en "\rqcd: Generating option list..."
 
         # Generate Prompt
-        command echo -e "\rqcd: Multiple paths linked to ${B}${dir_arg%/}${N}" > ${QCD_TEMP}
+        command echo -e "\rqcd: Multiple paths linked to ${B}${dir_arg%/}${N}"
 
-        # Generate Path Options
-        local cnt=1
-        for path in ${fpaths[@]}
-        do
-          # Format Path
-          path=$(_format_dir "${path}")
+        # Generate Menu
+        _display_menu ${fpaths[@]}
 
-          # Output Path As Option
-          command printf "(${cnt}) ${path%/}\n" >> ${QCD_TEMP}
+        # Store Function Status
+        local ept=${?}
 
-          # Increment Counter
-          cnt=$((${cnt} + 1))
-        done
-
-        # Display Prompt
-        command cat ${QCD_TEMP}
-
-        # End Option View--------------------------------------------------------------------------------------------------------------------------------------------
-
-        # Read User Input
-        command read -p "Endpoint: " ept
-
-        # Error Check Input Format
-        if [[ -z ${ept} || ! ${ept} =~ ^[0-9]+$ ]]
+        # Check Function Status
+        if [[ ${ept} -eq ${NSEL} ]]
         then
-          # Terminate Program
-          return ${ERR}
+          return ${OK}
         fi
-
-        # Error Check Input Range
-        if [[ ${ept} -lt 1 ]]
-        then
-          # Set To Minimum Selection
-          ept=1
-        elif [[ ${ept} -gt ${pathc} ]]
-        then
-          # Set To Maximum Selection
-          ept=${pathc}
-        fi
-
-        # End Option Verification And Correction---------------------------------------------------------------------------------------------------------------------
 
         # Set To Manually Selected Endpoint
-        pathv="${fpaths[$((${ept} - 1))]}"
+        pathv="${fpaths[${ept}]}"
       else
         # Set To Automatically Selected Endpoint
         pathv=${mpath}
