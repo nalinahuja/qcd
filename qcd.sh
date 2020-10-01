@@ -5,9 +5,8 @@
 # TODO, selectable menu
 # TODO, speed improvements
 # TODO, refactor codebase
-# TODO, remember flag custom path
+# TODO, remember flag custom path (README)
 # TODO, completion engine cleanup and optimization
-# TODO, update routine using wget (README)
 # TODO, add declare keyword instead of NSET and ESTR
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -231,7 +230,7 @@ function _remove_symbolic_link() {
 
 # End Link Management Functions--------------------------------------------------------------------------------------------------------------------------------------
 
-# TODO: ADD SELECTION INTERFACE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# TODO: Add functions
 
 # End Selection Interface Functions----------------------------------------------------------------------------------------------------------------------------------
 
@@ -534,7 +533,7 @@ function _parse_standalone_flags() {
 
 # End Argument Parser Functions--------------------------------------------------------------------------------------------------------------------------------------
 
-# TODO: CLEAN UP THIS SHIT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# TODO: Cleanup this
 
 function qcd() {
   # Verify File Integrity
@@ -836,7 +835,7 @@ function qcd() {
 
 # End QCD Function---------------------------------------------------------------------------------------------------------------------------------------------------
 
-# TODO: CLEAN UP THIS SHIT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# TODO: Cleanup
 
 function _qcd_comp() {
   # Verify File Integrity
