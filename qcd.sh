@@ -2,7 +2,7 @@
 
 # Developed by Nalin Ahuja, nalinahuja22
 
-# TODO, selectable menu
+# TODO, selectable menu (update README)
 # TODO, refactor codebase
 # TODO, add declare/local keyword instead of NSET and ESTR
 # TODO, speed improvements in completion engine, and main script
@@ -530,7 +530,7 @@ function _parse_standalone_flags() {
 
 # End Argument Parser Functions--------------------------------------------------------------------------------------------------------------------------------------
 
-# TODO: Cleanup this
+# TODO: Cleanup
 
 function qcd() {
   # Verify File Integrity

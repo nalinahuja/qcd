@@ -44,7 +44,7 @@ When indicating a keyword to QCD, it can be the complete linked directory and QC
 </p>
 
 <p align="justify">
-QCD is capable of recognizing special input formats and sequences. QCD can parse an input in the form <code>[N]..</code> and will navigate to the Nth parent directory relative to the current working directory. QCD can also interpret file system sequences like <code>.</code> and <code>..</code> during link and subdirectory completion and file system navigation. These usages can be viewed anytime by using the help flag.
+QCD is capable of recognizing special input formats and sequences. QCD can interpret file system sequences like <code>.</code> and <code>..</code> during linkage and subdirectory completion and file system navigation. QCD can also parse an input in the form <code>[N]..</code> and that will tell QCD to jump to the Nth parent directory relative to the current working directory. These usages can be viewed anytime by using the help flag.
 </p>
 
 ```bash
