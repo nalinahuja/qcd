@@ -253,7 +253,7 @@ function _parse_option_flags() {
       # Store Path Argument
       local lpath="${@:1:$(($# - 1))}"
 
-      # Remove Symbolic Link
+      # Add Indicated Path
       (_add_directory "${lpath}" &)
     fi
 
