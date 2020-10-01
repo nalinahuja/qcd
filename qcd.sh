@@ -2,7 +2,7 @@
 
 # Developed by Nalin Ahuja, nalinahuja22
 
-# TODO, selectable menu, integrate into main function
+# TODO, selectable menu, integrate into main function, character acceptor in subroutine
 # TODO, speed improvements in completion engine, and main script
 # TODO, refactor codebase
 
@@ -261,8 +261,8 @@ function _read_input() {
     # Read Character From STDIN
     command read -s -n1 c 2> /dev/null
 
-    # Verify Character Input
-    if [[ ${c} =~ [a-z] ]]
+    # Verify Character Input (TODO)
+    if [[ ${c} =~ [] ]]
     then
       # Continue Loop
       continue
