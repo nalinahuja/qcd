@@ -208,7 +208,7 @@ function _remove_directory() {
   if [[ $# -gt 0 ]]
   then
     # Store Indicated Directory Path
-    rdir=$(_escape_regex "${@}")
+    rdir=$(command realpath "${@}")
   fi
 
   # Remove Directory From Store File
@@ -220,7 +220,7 @@ function _remove_directory() {
 
 function _remove_symbolic_link() {
   # Store Argument Link
-  local rlink=$(_escape_regex "${@%/}")
+  local rlink=$(command realpath "${@}")
 
   # Remove Link From Store File
   command egrep -s -v -x "${rlink}:.*" ${QCD_STORE} > ${QCD_TEMP} 2> /dev/null
@@ -234,8 +234,6 @@ function _remove_symbolic_link() {
 # TODO: ADD SELECTION INTERFACE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 # End Selection Interface Functions----------------------------------------------------------------------------------------------------------------------------------
-
-# TODO: CLEAN UP THIS SHIT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 function _parse_option_flags() {
   # Store Argument Flag
@@ -310,13 +308,13 @@ function _parse_option_flags() {
       # Terminate Program
       return ${ERR}
     else
-      # Get Path
+      # Store Path Argument
       local path="${@:1:$(($# - 1))}"
 
-      # Get Trailing Path
+      # Store Trailing Path
       local trail_path=$(command basename "${path}")
 
-      # Get Prefix Path
+      # Store Prefix Path
       local prefix_path="${path:0:$((${#path} - ${#trail_path}))}"
 
       # Verify Path Components
@@ -335,13 +333,13 @@ function _parse_option_flags() {
         # Terminate Program
         return ${ERR}
       fi
+
+      # Create Directory At Location
+      command mkdir "${path}"
+
+      # QCD Into New Directory
+      qcd "${path}"
     fi
-
-    # Create Directory At Location
-    command mkdir "${path}"
-
-    # QCD Into New Directory
-    qcd "${path}"
 
     # Terminate Program
     return ${OK}
