@@ -173,13 +173,13 @@ function _cleanup_files() {
 # End File Management Functions--------------------------------------------------------------------------------------------------------------------------------------
 
 function _add_directory() {
-  # Store Current Directory Path
+  # Store Current Path
   local abs_path=$(_get_pwd)
 
-  # Check For Override Path
+  # Check For Argument Path
   if [[ $# -gt 0 ]]
   then
-    # Store Indicated Directory Path
+    # Store Argument Path
     abs_path=$(command realpath "${@}")
   fi
 
@@ -201,11 +201,18 @@ function _add_directory() {
 }
 
 function _remove_directory() {
-  # Store Argument Directory
-  local fdir=$(_escape_regex "${@}")
+  # Store Current Path
+  local rdir=$(_get_pwd)
+
+  # Check For Override Path
+  if [[ $# -gt 0 ]]
+  then
+    # Store Indicated Directory Path
+    rdir=$(_escape_regex "${@}")
+  fi
 
   # Remove Directory From Store File
-  command egrep -s -v -x ".*:${fdir}" ${QCD_STORE} > ${QCD_TEMP} 2> /dev/null
+  command egrep -s -v -x ".*:${rdir}" ${QCD_STORE} > ${QCD_TEMP} 2> /dev/null
 
   # Update Store File
   _update_store ${?}
@@ -213,10 +220,10 @@ function _remove_directory() {
 
 function _remove_symbolic_link() {
   # Store Argument Link
-  local flink=$(_escape_regex "${@%/}")
+  local rlink=$(_escape_regex "${@%/}")
 
   # Remove Link From Store File
-  command egrep -s -v -x "${flink}:.*" ${QCD_STORE} > ${QCD_TEMP} 2> /dev/null
+  command egrep -s -v -x "${rlink}:.*" ${QCD_STORE} > ${QCD_TEMP} 2> /dev/null
 
   # Update Store File
   _update_store ${?}
@@ -237,8 +244,18 @@ function _parse_option_flags() {
   # Check For Option Flags
   if [[ "${flag/--remember/${REMEMBER}}" == "${REMEMBER}" ]]
   then
-    # Add Current Directory
-    (_add_directory &)
+    # Determine Removal Type
+    if [[ $# -eq 1 ]]
+    then
+      # Add Current Directory
+      (_add_directory &)
+    else
+      # Store Path Argument
+      local npath="${@:1:$(($# - 1))}"
+
+      # Remove Symbolic Link
+      (_add_directory "${npath}" &)
+    fi
 
     # Terminate Program
     return ${OK}
@@ -247,11 +264,8 @@ function _parse_option_flags() {
     # Determine Removal Type
     if [[ $# -eq 1 ]]
     then
-      # Store Current Directory
-      local pwd=$(_get_pwd)
-
       # Remove Current Directory
-      (_remove_directory "${pwd}" &)
+      (_remove_directory &)
     else
       # Store Link Argument
       local ldir="${@:1:$(($# - 1))}"
