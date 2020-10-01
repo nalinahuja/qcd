@@ -174,16 +174,23 @@ function _cleanup_files() {
 
 function _add_directory() {
   # Store Current Directory Path
-  local pwd=$(_get_pwd)
+  local abs_path=$(_get_pwd)
+
+  # Check For Override Path
+  if [[ $# -gt 0 ]]
+  then
+    # Store Indicated Directory Path
+    abs_path=$(command realpath "${@}")
+  fi
 
   # Store Directory If Unique
-  if [[ ! "${pwd%/}" == "${HOME%/}" && -z $(command egrep -s -x ".*:${pwd}" ${QCD_STORE} 2> /dev/null) ]]
+  if [[ ! "${abs_path%/}" == "${HOME%/}" && -z $(command egrep -s -x ".*:${abs_path}" ${QCD_STORE} 2> /dev/null) ]]
   then
-    # Store Basename Of Current Directory Path
-    local ept=$(command basename "${pwd}")
+    # Store Basename Of Path
+    local ept=$(command basename "${abs_path}")
 
     # Append Data To Store File
-    command printf "${ept}:${pwd}\n" >> ${QCD_STORE}
+    command printf "${ept}:${abs_path}\n" >> ${QCD_STORE}
 
     # Sort Store File In Place
     command sort -o ${QCD_STORE} -n -t ':' -k2 ${QCD_STORE}
