@@ -74,16 +74,16 @@ QCD offers many different flags that are important to simplifying interaction be
 
 #### Remember Directory
 <p align="justify">
-The remember flag adds a symbolic link to QCDs lookup file that corresponds to the present working directory.
+The remember flag adds a symbolic link to QCDs lookup file that corresponds to the present working directory. The user can opt to include a valid path ahead of the remember flag to add a specific path to the lookup file.
 </p>
 
 ```bash
-qcd [-r, --remember]
+qcd [path] [-r, --remember]
 ```
 
 #### Forget Directory
 <p align="justify">
-The forget flag removes a symbolic link from QCDs lookup file that corresponds to the present working directory. The user can opt to include a complete linkage ahead of the list flag to remove all matching instances of that linkage.
+The forget flag removes a symbolic link from QCDs lookup file that corresponds to the present working directory. The user can opt to include a complete linkage ahead of the forget flag to remove all matching instances of that linkage.
 </p>
 
 ```bash
