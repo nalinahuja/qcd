@@ -11,8 +11,14 @@
 
 # TODO: Cleanup
 
-# Default Values
+# Default Values (REMOVE)
 NSET=0
+
+# Return Values
+OK=0
+ERR=1
+CONT=2
+NFD=127
 
 # Boolean Values
 TRUE=1
@@ -22,18 +28,16 @@ FALSE=0
 MINPAD=4
 TIMEOUT=10
 
-# Return Values
-OK=0
-ERR=1
-CONT=2
-NFD=127
-
 # End Defined Numerical Constants------------------------------------------------------------------------------------------------------------------------------------
 
 # TODO: Cleanup
 
-# Default Values
+# Default Values (REMOVE)
 ESTR=""
+
+# Path Strings
+CWD="."
+HWD="../"
 
 # Option Flags
 LIST="-l"
@@ -49,12 +53,7 @@ VERSION="-v"
 
 # Embedded Strings
 YES="y"
-QUIT="q"
 BSLH="\\"
-
-# Directory Patterns
-CWD="."
-HWD="../"
 
 # Text Formatting Strings
 B=$(command tput bold)
