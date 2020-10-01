@@ -2,9 +2,8 @@
 
 # Developed by Nalin Ahuja, nalinahuja22
 
-# TODO, selectable menu, INTEGRATE TO MAIN FUNCTION (update README)
 # TODO, refactor codebase
-# TODO, add declare/local keyword instead of NSET and ESTR
+# TODO, selectable menu, INTEGRATE TO MAIN FUNCTION (update README)
 # TODO, speed improvements in completion engine, and main script
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
