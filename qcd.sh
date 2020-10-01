@@ -1028,8 +1028,6 @@ function _qcd_comp() {
 
 # End QCD Completion Function----------------------------------------------------------------------------------------------------------------------------------------
 
-# TODO: CLEAN UP THIS SHIT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
 function _qcd_init() {
   # Check For Store File
   if [[ -f ${QCD_STORE} ]]
