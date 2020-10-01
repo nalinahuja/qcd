@@ -244,12 +244,9 @@ function _hide_cursor() {
   command tput civis 2> /dev/null
 }
 
-function _exit_cleanly() {
+function _exit_process() {
   # Set Exit Flag To True
   EXIT_FLAG=${TRUE}
-
-  # Show Cursor
-  _show_cursor
 }
 
 # End Environment Management Functions-------------------------------------------------------------------------------------------------------------------------------
@@ -282,7 +279,10 @@ function _read_input() {
 
 function _display_menu() {
   # Prepare Environment
-  _hide_cursor && command trap _exit_cleanly SIGINT &> /dev/null
+  _hide_cursor && command trap _exit_process SIGINT &> /dev/null
+
+  # Initialize Exit Flag
+  EXIT_FLAG=${FALSE}
 
   # Initialize Selected Line
   local sel_line=${NSET}
@@ -313,6 +313,13 @@ function _display_menu() {
 
     # Read User Input
     local key=$(_read_input)
+
+    # Check Exit Flag
+    if [[ ${EXIT_FLAG} == ${TRUE} ]]
+    then
+      # Restore Environment
+      _show_cursor && return ${NSEL}
+    fi
 
     # Update Cursor Position
     if [[ ${key} -eq ${UP} ]]
