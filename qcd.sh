@@ -1034,7 +1034,7 @@ function _qcd_init() {
   # Check For Store File
   if [[ -f ${QCD_STORE} ]]
   then
-    # Clean And Update Resource Files
+    # Prepare Resource Files
     (qcd --clean && _update_links &)
   fi
 
