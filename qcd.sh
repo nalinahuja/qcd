@@ -9,7 +9,6 @@
 # TODO, completion engine cleanup and optimization
 # TODO, update routine using wget (README)
 # TODO, add declare keyword instead of NSET and ESTR
-# TODO, network interface functions
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -24,7 +23,7 @@ FALSE=0
 
 # Embedded Values
 MINP=4
-TOUT=10
+TIMEOUT=10
 
 # Return Values
 OK=0
@@ -451,7 +450,7 @@ function _parse_standalone_flags() {
       # Verify Curl Dependency
       command curl &> /dev/null
 
-      # Check Return Value
+      # Check Operation Status
       if [[ ${?} -eq ${NFD} ]]
       then
         # Display Prompt
@@ -465,7 +464,7 @@ function _parse_standalone_flags() {
       command echo -en "→ Downloading update "
 
       # Determine Release URL
-      release_url=$(command curl --connect-timeout ${TOUT} -s -L ${QCD_RELEASES} | command egrep -s -o "https.*zipball.*" 2> /dev/null)
+      local release_url=$(command curl --connect-timeout ${TIMEOUT} -s -L ${QCD_RELEASES} | command egrep -s -o "https.*zipball.*" 2> /dev/null)
 
       # Error Check Release URL
       if [[ ${?} -ne ${OK} || -z ${release_url} ]]
@@ -478,7 +477,7 @@ function _parse_standalone_flags() {
       fi
 
       # Download Release Contents
-      command curl --connect-timeout ${TOUT} -s -L "${release_url/\",/}" > ${QCD_UPDATE}
+      command curl --connect-timeout ${TIMEOUT} -s -L "${release_url/\",/}" > ${QCD_UPDATE}
 
       # Error Check Release Contents
       if [[ ${?} -ne ${OK} || ! -f ${QCD_UPDATE} ]]
@@ -506,15 +505,19 @@ function _parse_standalone_flags() {
         return ${ERR}
       fi
 
+      # Define Installation Files
+      local QCD_PROGRAM=${QCD_FOLD}/qcd.sh
+      local QCD_INSTALLER=${QCD_FOLD}/install_qcd
+
       # Cleanup Installation
       command rm ${QCD_UPDATE} 2> /dev/null
-      command rm ${QCD_FOLD}/install_qcd 2> /dev/null
+      command rm ${QCD_INSTALLER} 2> /dev/null
 
       # Update Bash Environment
-      command source ${QCD_FOLD}/qcd.sh 2> /dev/null
+      command source ${QCD_PROGRAM} 2> /dev/null
 
       # Get Release Version
-      release_version=$(command cat ${QCD_HELP} | command head -n1 | command awk '{print $4}')
+      local release_version=$(command cat ${QCD_HELP} | command head -n1 | command awk '{print $4}')
 
       # Display Prompt
       command echo -e "\r→ Update complete    \n\nUpdated to ${release_version}"
