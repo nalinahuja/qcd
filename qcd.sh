@@ -4,7 +4,7 @@
 
 # TODO, selectable menu
 # TODO, refactor codebase
-# TODO, add declare keyword instead of NSET and ESTR
+# TODO, add declare/local keyword instead of NSET and ESTR
 # TODO, speed improvements in completion engine, and main script
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
