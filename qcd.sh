@@ -3,11 +3,10 @@
 # Developed by Nalin Ahuja, nalinahuja22
 
 # TODO, selectable menu
-# TODO, speed improvements
 # TODO, refactor codebase
-# TODO, remember flag custom path (README)
-# TODO, completion engine cleanup and optimization
+# TODO, remember flag custom path (README, help)
 # TODO, add declare keyword instead of NSET and ESTR
+# TODO, speed improvements in completion engine, and main script
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
