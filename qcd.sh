@@ -428,14 +428,14 @@ function _parse_standalone_flags() {
   # Check For Standalone Flags
   if [[ "${flag/--help/${HELP}}" == "${HELP}" ]]
   then
-    # Print Help
+    # Print Help File
     command cat ${QCD_HELP}
 
     # Terminate Program
     return ${OK}
   elif [[ "${flag/--version/${VERSION}}" == "${VERSION}" ]]
   then
-    # Print Version
+    # Print Installed Version
     command cat ${QCD_HELP} | command head -n1
 
     # Terminate Program
