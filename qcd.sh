@@ -261,12 +261,20 @@ function _read_input() {
     # Read Character From STDIN
     command read -s -n1 c 2> /dev/null
 
+    # Verify Character Input
+    if [[ ${c} =~ [a-z] ]]
+    then
+      # Continue Loop
+      continue
+    fi
+
     # Append Character To Key String
     key="${key}${c}"
 
     # Check Break Conditions
     if [[ -z ${key} || ${key} == ${QUIT} || ${#key} -eq 3 ]]
     then
+      # Break Loop
       break
     fi
   done
