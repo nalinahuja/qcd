@@ -9,6 +9,7 @@
 # TODO, completion engine cleanup and optimization
 # TODO, update routine using wget (README)
 # TODO, add declare keyword instead of NSET and ESTR
+# TODO, network interface functions
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -1033,11 +1034,11 @@ function _qcd_init() {
   # Check For Store File
   if [[ -f ${QCD_STORE} ]]
   then
-    # Prepare Resource Files
-    (qcd --clean & _update_links &)
+    # Clean And Update Resource Files
+    (qcd --clean && _update_links &)
   fi
 
-  # Cleanup Files On Exit
+  # Cleanup Resource Files On Exit
   command trap _cleanup_files EXIT &> /dev/null
 
   # Set Environment To Show Visible Files
