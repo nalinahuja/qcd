@@ -309,16 +309,16 @@ function _parse_option_flags() {
       return ${ERR}
     else
       # Store Path Argument
-      local path="${@:1:$(($# - 1))}"
+      local real_path=$(command realpath "${@:1:$(($# - 1))}")
 
       # Store Trailing Path
-      local trail_path=$(command basename "${path}")
+      local trail_path=$(command basename "${real_path}")
 
       # Store Prefix Path
-      local prefix_path="${path:0:$((${#path} - ${#trail_path}))}"
+      local prefix_path="${path:0:$((${#real_path} - ${#trail_path}))}"
 
       # Verify Path Components
-      if [[ -d "${path%/}" ]]
+      if [[ -d "${real_path%/}" ]]
       then
         # Display Prompt
         command echo -e "qcd: Directory already exists"
@@ -335,10 +335,10 @@ function _parse_option_flags() {
       fi
 
       # Create Directory At Location
-      command mkdir "${path}"
+      command mkdir "${real_path}"
 
       # QCD Into New Directory
-      qcd "${path}"
+      qcd "${real_path}"
     fi
 
     # Terminate Program
