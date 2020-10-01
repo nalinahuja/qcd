@@ -22,7 +22,7 @@ TRUE=1
 FALSE=0
 
 # Embedded Values
-MINP=4
+MINPAD=4
 TIMEOUT=10
 
 # Return Values
@@ -348,7 +348,7 @@ function _parse_option_flags() {
     # Display Prompt
     command echo -en "\rqcd: Generating link map..."
 
-    # Store Linkages From Store File
+    # Load Linkages From Store File
     local linkages=$(qcd --clean && command cat ${QCD_STORE})
 
     # Determine List Type
@@ -362,7 +362,7 @@ function _parse_option_flags() {
       sphrase=${sphrase//\?/\.}
 
       # Filter Linkages By Search Phrase
-      linkages=$(command echo -e "${linkages}"| command egrep -s -x "${sphrase%/}.*:.*" 2> /dev/null)
+      linkages=$(command echo -e "${linkages}" | command egrep -s -x "${sphrase%/}.*:.*" 2> /dev/null)
     fi
 
     # Error Check Linkages
@@ -382,9 +382,9 @@ function _parse_option_flags() {
     local max_link=$(command echo -e "${linkages}" | command awk -F ':' '{print $1}' | command awk '{print length}' | command sort -n | command tail -n1)
 
     # Error Check Link Length
-    if [[ ${max_link} -lt ${MINP} ]]
+    if [[ ${max_link} -lt ${MINPAD} ]]
     then
-      max_link=${MINP}
+      max_link=${MINPAD}
     fi
 
     # Format Header
@@ -396,7 +396,7 @@ function _parse_option_flags() {
     # Iterate Over Linkages
     for linkage in ${linkages}
     do
-      # Store Linkage Components
+      # Form Linkage Components
       local link=$(command echo -e "${linkage}" | command awk -F ':' '{print $1}')
       local path=$(command echo -e "${linkage}" | command awk -F ':' '{print $2}')
 
