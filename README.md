@@ -64,7 +64,7 @@ qcd ./node-modules/<tab><tab>    qcd node-modules/<tab><tab>    qcd nm/<tab><tab
 
 #### Manual Input
 <p align="justify">
-If multiple paths are resolved from same symbolic link, the user will have to manually choose the path they wish to navigate to from an arrow key selectable menu. This selection phase can be cleanly exited from by passing a single character <code>q</code> or SIGINT to the program. There are several redundancies built into the program to entirely avoid or simplify the manual selection process in order to streamline the use of QCD.
+If multiple paths are resolved from same symbolic link, the user will have to manually choose the path they wish to navigate to from an arrow key selectable menu. This selection phase can be cleanly exited by pressing the <code>q</code> key or sending a SIGINT to the program. There are several redundancies built into the program to entirely avoid or simplify the manual selection process in order to streamline the use of QCD.
 </p>
 
 ## Flags
