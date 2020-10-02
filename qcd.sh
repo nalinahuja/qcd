@@ -332,7 +332,7 @@ function _display_menu() {
     for opt in "${@}"
     do
       # Format Option
-      opt=$(_format_dir "${opt}")
+      opt=$(_format_dir "${opt%/}")
 
       # Print Conditionally Formatted Option
       if [[ ${oi} -eq ${sel_line} ]]
