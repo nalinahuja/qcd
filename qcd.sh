@@ -2,9 +2,6 @@
 
 # Developed by Nalin Ahuja, nalinahuja22
 
-# TODO, speed improvements in completion engine, and main script
-# TODO, refactor codebase
-
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Return Values
@@ -976,17 +973,19 @@ function qcd() {
 
 # End QCD Function---------------------------------------------------------------------------------------------------------------------------------------------------
 
-# TODO: Cleanup
-
 function _qcd_comp() {
   # Verify File Integrity
   _verify_files
+
+  # End Resource Validation------------------------------------------------------------------------------------------------------------------------------------------
 
   # Initialize Completion List
   local comp_list=()
 
   # Store Command Line Argument
   local curr_arg=${COMP_WORDS[COMP_CWORD]}
+
+  # End Global Function Variable Initialization----------------------------------------------------------------------------------------------------------------------
 
   # Determine Completion Type
   if [[ "${curr_arg}" == */* ]]
