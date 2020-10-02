@@ -2,8 +2,6 @@
 
 # Developed by Nalin Ahuja, nalinahuja22
 
-# TODO, Manual Selection Bug Fixes
-
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Return Values
