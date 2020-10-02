@@ -84,6 +84,11 @@ function _get_pwd() {
   command echo -e "$(command pwd)/"
 }
 
+function _get_path() {
+  # Return Real Path
+  command echo -e "$(command realpath "${@}")/"
+}
+
 function _split_path() {
   # Return Absolute Path Of Linkage
   command echo -e "${@#*:}"
@@ -180,7 +185,7 @@ function _add_directory() {
   if [[ $# -gt 0 ]]
   then
     # Store Argument Path
-    abs_path=$(command realpath "${@}")
+    abs_path=$(_get_path $@)
 
     # Check Path Validity
     if [[ ! -d ${abs_path} ]]
