@@ -2,7 +2,7 @@
 
 # Developed by Nalin Ahuja, nalinahuja22
 
-# TODO, selectable menu, integrate into main function, character acceptor in subroutine, delete menu on exit
+# TODO, selectable menu, integrate into main function, delete menu on exit
 # TODO, speed improvements in completion engine, and main script
 # TODO, refactor codebase
 
@@ -255,24 +255,20 @@ function _read_input() {
   # Initialize Key String
   local key=${ESTR}
 
+  # Initialize Input String
+  local c=${ESTR}
+
   # Read Input Stream
   while [[ 1 ]]
   do
     # Read Character From STDIN
     command read -s -n1 c 2> /dev/null
 
-    # Verify Character Input (TODO)
-    if [[ ${c} =~ [] ]]
-    then
-      # Continue Loop
-      continue
-    fi
-
     # Append Character To Key String
     key="${key}${c}"
 
     # Check Break Conditions
-    if [[ -z ${key} || ${key} == ${QUIT} || ${#key} -eq 3 ]]
+    if [[ -z ${c} || ${c} == ${QUIT} || ${#key} -eq 3 ]]
     then
       # Break Loop
       break
@@ -280,8 +276,8 @@ function _read_input() {
   done
 
   # Return Keycode
-  if [[ -z ${key} ]]; then command echo -e "${ENTR}"; fi
-  if [[ ${key} == "${QUIT}" ]]; then command echo -e "${EXIT}"; fi
+  if [[ -z ${c} ]]; then command echo -e "${ENTR}"; fi
+  if [[ ${c} == "${QUIT}" ]]; then command echo -e "${EXIT}"; fi
   if [[ ${key} == "${AESC}[A" ]]; then command echo -e "${UP}"; fi
   if [[ ${key} == "${AESC}[B" ]]; then command echo -e "${DN}"; fi
 }
@@ -326,8 +322,8 @@ function _display_menu() {
       # Reset Exit Flag
       EXIT_FLAG=${FALSE}
 
-      # Clear Previous Output
-      command tput cuu $#
+      # # Clear Previous Output
+      # command tput cuu $#
 
       # Restore Environment
       _show_cursor && return ${NSEL}
@@ -367,8 +363,8 @@ function _display_menu() {
     command tput cuu $#
   done
 
-  # Clear Previous Output
-  command tput cuu $#
+  # # Clear Previous Output
+  # command tput cuu $#
 
   # Restore Environment
   _show_cursor && return ${sel_line}
