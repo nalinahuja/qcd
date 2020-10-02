@@ -719,7 +719,7 @@ function qcd() {
   # Check Function Status
   if [[ ${fstat} -ne ${CONT} ]]
   then
-    # Return To Terminal
+    # Terminate Program
     return ${fstat}
   fi
 
@@ -732,7 +732,7 @@ function qcd() {
   # Check Function Status
   if [[ ${fstat} -ne ${CONT} ]]
   then
-    # Return To Terminal
+    # Terminate Program
     return ${fstat}
   fi
 
