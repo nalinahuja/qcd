@@ -2,7 +2,6 @@
 
 # Developed by Nalin Ahuja, nalinahuja22
 
-# TODO, Redundant Flag Ordering
 # TODO, Manual Selection Bug Fixes
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
