@@ -476,13 +476,13 @@ function _parse_option_flags() {
       return ${ERR}
     else
       # Store Path Argument
-      local real_path=$(command realpath "${@:1:$(($# - 1))}")
+      local real_path="${@:1:$(($# - 1))}"
 
       # Store Trailing Path
       local trail_path=$(command basename "${real_path}")
 
       # Store Prefix Path
-      local prefix_path="${path:0:$((${#real_path} - ${#trail_path}))}"
+      local prefix_path="${real_path:0:$((${#real_path} - ${#trail_path}))}"
 
       # Verify Path Components
       if [[ -d "${real_path%/}" ]]
