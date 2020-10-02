@@ -18,7 +18,7 @@
 
   qcd [path] [-r, --remember]   Remember directory path
   qcd [link] [-f, --forget]     Forget matching symbolic links
+  qcd [path] [-m, --mkdir]      Create and switch to directory
   qcd [regex] [-l, --list]      List matching directory linkages
-  qcd [path] [-m, --mkdir]      Create and switch to new directory
 
 Developed by Nalin Ahuja, nalinahuja22
