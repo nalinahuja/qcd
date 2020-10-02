@@ -220,7 +220,7 @@ function _remove_directory() {
   if [[ $# -gt 0 ]]
   then
     # Store Indicated Directory Path
-    rdir=$(command realpath "${@}")
+    rdir=$(_escape_regex "${@}")
   fi
 
   # Remove Directory From Store File
@@ -235,7 +235,9 @@ function _remove_directory() {
 
 function _remove_symbolic_link() {
   # Store Argument Link
-  local rlink=$(command realpath "${@}")
+  local rlink=$(_escape_regex "${@}")
+
+  command cp ~/dev/qcd/qcd.sh ~/.qcd && source ~/.bash_profile
 
   # Remove Link From Store File
   command egrep -s -v -x "${rlink}:.*" ${QCD_STORE} > ${QCD_TEMP} 2> /dev/null
