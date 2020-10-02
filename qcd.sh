@@ -235,9 +235,7 @@ function _remove_directory() {
 
 function _remove_symbolic_link() {
   # Store Argument Link
-  local rlink=$(_escape_regex "${@}")
-
-  command cp ~/dev/qcd/qcd.sh ~/.qcd && source ~/.bash_profile
+  local rlink=$(_escape_regex "${@%/}")
 
   # Remove Link From Store File
   command egrep -s -v -x "${rlink}:.*" ${QCD_STORE} > ${QCD_TEMP} 2> /dev/null
@@ -716,24 +714,26 @@ function qcd() {
   _parse_option_flags ${@}
 
   # Store Function Status
-  local status=${?}
+  local fstat=${?}
 
   # Check Function Status
-  if [[ ${status} -ne ${CONT} ]]
+  if [[ ${fstat} -ne ${CONT} ]]
   then
-    return ${status}
+    # Return To Caller
+    return ${fstat}
   fi
 
   # Parse Arguments For Standalone Flags
   _parse_standalone_flags ${@}
 
   # Store Function Status
-  local status=${?}
+  local fstat=${?}
 
   # Check Function Status
-  if [[ ${status} -ne ${CONT} ]]
+  if [[ ${fstat} -ne ${CONT} ]]
   then
-    return ${status}
+    # Return To Caller
+    return ${fstat}
   fi
 
   # End Argument Parsing---------------------------------------------------------------------------------------------------------------------------------------------
