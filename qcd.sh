@@ -2,7 +2,6 @@
 
 # Developed by Nalin Ahuja, nalinahuja22
 
-# TODO, selectable menu, integrate into main function, delete menu on exit
 # TODO, speed improvements in completion engine, and main script
 # TODO, refactor codebase
 
