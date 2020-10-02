@@ -2,8 +2,6 @@
 
 # Developed by Nalin Ahuja, nalinahuja22
 
-# TODO, manual selection sorting by prefix matching
-
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Return Values
