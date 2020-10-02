@@ -2,9 +2,6 @@
 
 # Developed by Nalin Ahuja, nalinahuja22
 
-# TODO, fix key string input errors on multi keypress
-# TODO, make clear menu function faster
-
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Return Values
@@ -398,7 +395,7 @@ function _display_menu() {
     fi
 
     # Clear Previous Output
-    command tput cuu $#
+    _clear_menu $(($# - 1))
   done
 
   # Restore Environment
