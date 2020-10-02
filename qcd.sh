@@ -3,6 +3,7 @@
 # Developed by Nalin Ahuja, nalinahuja22
 
 # TODO, fix key string input errors on multi keypress
+# TODO, make clear menu function faster
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -303,7 +304,7 @@ function _read_input() {
 
 function _clear_menu() {
   # Iterate Over Options
-  for ((i=${1} + 1; i >= 0; i--))
+  for ((i=0; i <= ${1} + 1; i--))
   do
     # Go To Beginning Of Line
     command tput cub ${COLNUM}
