@@ -251,21 +251,6 @@ function _exit_process() {
 
 # End Environment Management Functions-------------------------------------------------------------------------------------------------------------------------------
 
-function _clear_menu() {
-  # Iterate Over Options
-  for ((i=$1; i >= 0; i--))
-  do
-    # Go To Beginning Of Line
-    command tput cub ${COLNUM}
-
-    # Clear Line
-    command tput el
-
-    # Go Up One Line
-    command tput cuu 1
-  done
-}
-
 function _read_input() {
   # Initialize Key String
   local key=${ESTR}
@@ -295,6 +280,21 @@ function _read_input() {
   if [[ ${c} == "${QUIT}" ]]; then command echo -e "${EXIT}"; fi
   if [[ ${key} == "${AESC}[A" ]]; then command echo -e "${UP}"; fi
   if [[ ${key} == "${AESC}[B" ]]; then command echo -e "${DN}"; fi
+}
+
+function _clear_menu() {
+  # Iterate Over Options
+  for ((i=$1; i >= 0; i--))
+  do
+    # Go To Beginning Of Line
+    command tput cub ${COLNUM}
+
+    # Clear Line
+    command tput el
+
+    # Go Up One Line
+    command tput cuu 1
+  done
 }
 
 function _display_menu() {
@@ -686,10 +686,8 @@ function _parse_standalone_flags() {
 
 # End Argument Parser Functions--------------------------------------------------------------------------------------------------------------------------------------
 
-# TODO: Cleanup
-
 function qcd() {
-  # Verify File Integrity
+  # Verify Resource Files
   _verify_files
 
   # End Resource Validation------------------------------------------------------------------------------------------------------------------------------------------
