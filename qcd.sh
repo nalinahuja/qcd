@@ -185,10 +185,10 @@ function _add_directory() {
   if [[ $# -gt 0 ]]
   then
     # Store Argument Path
-    abs_path=$(_get_path $@)
+    abs_path=$(_get_path "$@")
 
     # Check Path Validity
-    if [[ ! -d ${abs_path} ]]
+    if [[ ! -d "${abs_path}" ]]
     then
       return ${ERR}
     fi
