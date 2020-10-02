@@ -304,20 +304,20 @@ function _read_input() {
 
 function _clear_menu() {
   # Iterate Over Options
-  for ((i=0; i <= ${1} + 1; i--))
+  for ((i=0; i <= ${1} + 1; i++))
   do
     # Go To Beginning Of Line
-    command tput cub ${COLNUM}
+    command printf "${AESC}[${COLNUM}D"
 
     # Clear Line
-    command tput el
+    command printf "${AESC}[K"
 
     # Go Up One Line
-    command tput cuu 1
+    command printf "${AESC}[1A"
   done
 
   # Go Down One Line
-  command tput cud 1
+  command printf "${AESC}[1B"
 }
 
 function _display_menu() {
