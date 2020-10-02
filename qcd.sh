@@ -184,6 +184,12 @@ function _add_directory() {
   then
     # Store Argument Path
     abs_path=$(command realpath "${@}")
+
+    # Check Path Validity
+    if [[ ! -d ${abs_path} ]]
+    then
+      return ${ERR}
+    fi
   fi
 
   # Store Directory If Unique
@@ -201,6 +207,9 @@ function _add_directory() {
     # Update Link File
     _update_links
   fi
+
+  # Return To Caller
+  return ${OK}
 }
 
 function _remove_directory() {
@@ -219,6 +228,9 @@ function _remove_directory() {
 
   # Update Store File
   _update_store ${?}
+
+  # Return To Caller
+  return ${OK}
 }
 
 function _remove_symbolic_link() {
@@ -230,6 +242,9 @@ function _remove_symbolic_link() {
 
   # Update Store File
   _update_store ${?}
+
+  # Return To Caller
+  return ${OK}
 }
 
 # End Link Management Functions--------------------------------------------------------------------------------------------------------------------------------------
