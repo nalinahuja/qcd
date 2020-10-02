@@ -2,6 +2,8 @@
 
 # Developed by Nalin Ahuja, nalinahuja22
 
+# TODO, fix key string input errors on multi keypress
+
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Return Values
