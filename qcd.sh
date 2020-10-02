@@ -28,6 +28,7 @@ ENTR=4
 # Embedded Values
 NSET=0
 MINPAD=4
+COLNUM=256
 TIMEOUT=10
 
 # End Defined Numerical Constants------------------------------------------------------------------------------------------------------------------------------------
@@ -251,6 +252,21 @@ function _exit_process() {
 
 # End Environment Management Functions-------------------------------------------------------------------------------------------------------------------------------
 
+function _clear_menu() {
+  # Iterate Over Options
+  for ((i=$1; i >= 0; i--))
+  do
+    # Go To Beginning Of Line
+    command tput cub ${COLNUM}
+
+    # Clear Line
+    command tput el
+
+    # Go Up One Line
+    command tput cuu 1
+  done
+}
+
 function _read_input() {
   # Initialize Key String
   local key=${ESTR}
@@ -319,14 +335,14 @@ function _display_menu() {
     # Check Exit Flag
     if [[ ${EXIT_FLAG} == ${TRUE} ]]
     then
+      # Restore Environment
+      _clear_menu $# && _show_cursor
+
       # Reset Exit Flag
       EXIT_FLAG=${FALSE}
 
-      # # Clear Previous Output
-      # command tput cuu $#
-
-      # Restore Environment
-      _show_cursor && return ${NSEL}
+      # Return Selection
+      return ${NSEL}
     fi
 
     # Update Cursor Position
@@ -363,11 +379,11 @@ function _display_menu() {
     command tput cuu $#
   done
 
-  # # Clear Previous Output
-  # command tput cuu $#
-
   # Restore Environment
-  _show_cursor && return ${sel_line}
+  _clear_menu $# && _show_cursor
+
+  # Return Selection
+  return ${sel_line}
 }
 
 # End Selection Interface Functions----------------------------------------------------------------------------------------------------------------------------------
