@@ -253,7 +253,7 @@ function _remove_symbolic_link() {
 
 function _show_cursor() {
   # Enable Keyboard Output
-  command stty echo
+  command stty echo 2> /dev/null
 
   # Set Cursor To Visible
   command tput cnorm 2> /dev/null
@@ -264,7 +264,7 @@ function _hide_cursor() {
   command tput civis 2> /dev/null
 
   # Disable Keyboard Output
-  command stty -echo
+  command stty -echo 2> /dev/null
 }
 
 function _exit_process() {
