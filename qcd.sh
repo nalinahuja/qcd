@@ -324,7 +324,7 @@ function _clear_menu() {
 }
 
 function _display_menu() {
-  # Prepare Environment
+  # Prepare Terminal Environment
   _hide_cursor && command trap _exit_process SIGINT &> /dev/null
 
   # Initialize Selected Line
@@ -336,6 +336,9 @@ function _display_menu() {
     # Intiailize Option Index
     local oi=0
 
+    # Clear Temp File
+    command echo -en > ${QCD_TEMP}
+
     # Iterate Over Options
     for opt in "${@}"
     do
@@ -345,14 +348,17 @@ function _display_menu() {
       # Print Conditionally Formatted Option
       if [[ ${oi} -eq ${sel_line} ]]
       then
-        command printf "${W} ${opt} ${N}\n"
+        command printf "${W} ${opt} ${N}\n" >> ${QCD_TEMP}
       else
-        command printf " ${opt} \n"
+        command printf " ${opt} \n" >> ${QCD_TEMP}
       fi
 
       # Increment Option Index
       oi=$((${oi} + 1))
     done
+
+    # Output Menu
+    command cat ${QCD_TEMP}
 
     # Read User Input
     local key=$(_read_input)
@@ -400,11 +406,11 @@ function _display_menu() {
       sel_line=$(($# - 1))
     fi
 
-    # Clear Previous Output
+    # Clear Previous Menu
     _clear_menu $(($# - 1))
   done
 
-  # Restore Environment
+  # Restore Terminal Environment
   _clear_menu $# && _show_cursor
 
   # Return Selection
@@ -746,7 +752,7 @@ function qcd() {
 
   # End Argument Parsing---------------------------------------------------------------------------------------------------------------------------------------------
 
-  # Store Command Line Arguments
+  # Store Directory Argument
   local dir_arg="$@"
 
   # Check For Empty Input
@@ -895,20 +901,10 @@ function qcd() {
       # End Path Filtering-------------------------------------------------------------------------------------------------------------------------------------------
 
       # List Matching Paths
-      if [[ -z ${mpath} ]]
+      if [[ -z ${mpath} && ! -z ${fpaths} ]]
       then
-        # Error Check Path Results
-        if [[ -z ${fpaths} ]]
-        then
-          # Terminate Program
-          return ${OK}
-        fi
-
-        # Display Prompt
-        command echo -en "\rqcd: Generating option list..."
-
         # Generate Prompt
-        command echo -e "\rqcd: Multiple paths linked to ${B}${dir_arg%/}${N}"
+        command echo -e "qcd: Multiple paths linked to ${B}${dir_arg%/}${N}"
 
         # Generate Menu
         _display_menu ${fpaths[@]}
