@@ -324,7 +324,7 @@ function _clear_menu() {
 }
 
 function _display_menu() {
-  # Prepare Environment
+  # Prepare Terminal Environment
   _hide_cursor && command trap _exit_process SIGINT &> /dev/null
 
   # Initialize Selected Line
@@ -404,7 +404,7 @@ function _display_menu() {
     _clear_menu $(($# - 1))
   done
 
-  # Restore Environment
+  # Restore Terminal Environment
   _clear_menu $# && _show_cursor
 
   # Return Selection
