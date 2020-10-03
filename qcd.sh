@@ -2,8 +2,6 @@
 
 # Developed by Nalin Ahuja, nalinahuja22
 
-# TODO, manual selection sorting by prefix matching
-
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Return Values
@@ -897,15 +895,8 @@ function qcd() {
       # End Path Filtering-------------------------------------------------------------------------------------------------------------------------------------------
 
       # List Matching Paths
-      if [[ -z ${mpath} ]]
+      if [[ -z ${mpath} && ! -z ${fpaths} ]]
       then
-        # Error Check Path Results
-        if [[ -z ${fpaths} ]]
-        then
-          # Terminate Program
-          return ${OK}
-        fi
-
         # Display Prompt
         command echo -en "\rqcd: Generating option list..."
 
