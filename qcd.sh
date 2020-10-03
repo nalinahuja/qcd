@@ -336,7 +336,8 @@ function _display_menu() {
     # Intiailize Option Index
     local oi=0
 
-    echo -en > ${QCD_TEMP}
+    # Clear Temp File
+    command echo -en > ${QCD_TEMP}
 
     # Iterate Over Options
     for opt in "${@}"
@@ -356,6 +357,7 @@ function _display_menu() {
       oi=$((${oi} + 1))
     done
 
+    # Output Menu
     command cat ${QCD_TEMP}
 
     # Read User Input
@@ -404,7 +406,7 @@ function _display_menu() {
       sel_line=$(($# - 1))
     fi
 
-    # Clear Previous Output
+    # Clear Previous Menu
     _clear_menu $(($# - 1))
   done
 
