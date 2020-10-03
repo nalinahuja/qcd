@@ -336,6 +336,8 @@ function _display_menu() {
     # Intiailize Option Index
     local oi=0
 
+    echo -en > ${QCD_TEMP}
+
     # Iterate Over Options
     for opt in "${@}"
     do
@@ -345,14 +347,16 @@ function _display_menu() {
       # Print Conditionally Formatted Option
       if [[ ${oi} -eq ${sel_line} ]]
       then
-        command printf "${W} ${opt} ${N}\n"
+        command printf "${W} ${opt} ${N}\n" >> ${QCD_TEMP}
       else
-        command printf " ${opt} \n"
+        command printf " ${opt} \n" >> ${QCD_TEMP}
       fi
 
       # Increment Option Index
       oi=$((${oi} + 1))
     done
+
+    command cat ${QCD_TEMP}
 
     # Read User Input
     local key=$(_read_input)
@@ -810,14 +814,11 @@ function qcd() {
     # Define Linkage Parameters
     local pathv=${NSET}
 
-    # Define Wildcard Linkage
-    local wlink=${ESTR}
-
     # Check For Indirect Link Matching
     if [[ -z $(command egrep -s -x "^${dlink}$" ${QCD_LINKS} 2> /dev/null) ]]
     then
       # Initialize Parameters
-      local i=0
+      local i=0 wlink=${ESTR}
 
       # Check For Hidden Directory Prefix
       if [[ "${dir_arg}" == \.* ]]
@@ -900,40 +901,8 @@ function qcd() {
       # List Matching Paths
       if [[ -z ${mpath} && ! -z ${fpaths} ]]
       then
-        # Display Prompt
-        command echo -en "\rqcd: Generating option list..."
-
-        if [[ ! -z ${wlink} ]]
-        then
-          # Format Wildcarded Linkage
-          wlink=${wlink//./}
-
-          # Initialize Result Lists
-          local fpmatches=() fpmisses=()
-
-          # Iterate Over Filtered Paths
-          for fpath in ${fpaths[@]}
-          do
-            # Store Path Endpoint
-            local flink=$(command basename "${fpath}")
-
-            # Compare Path To Wildcarded String
-            if [[ ${flink} == ${wlink} ]]
-            then
-              # Append To Matches List
-              fpmatches+=("${fpath}")
-            else
-              # Append To Misses List
-              fpmisses+=("${fpath}")
-            fi
-          done
-
-          # Update Filtered Paths
-          fpaths=("${fpmatches[@]}" "${fpmisses[@]}")
-        fi
-
         # Generate Prompt
-        command echo -e "\rqcd: Multiple paths linked to ${B}${dir_arg%/}${N}"
+        command echo -e "qcd: Multiple paths linked to ${B}${dir_arg%/}${N}"
 
         # Generate Menu
         _display_menu ${fpaths[@]}
