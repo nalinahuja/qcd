@@ -746,7 +746,7 @@ function qcd() {
 
   # End Argument Parsing---------------------------------------------------------------------------------------------------------------------------------------------
 
-  # Store Command Line Arguments
+  # Store Directory Argument
   local dir_arg="$@"
 
   # Check For Empty Input
@@ -810,11 +810,14 @@ function qcd() {
     # Define Linkage Parameters
     local pathv=${NSET}
 
+    # Define Wildcard Linkage
+    local wlink=${ESTR}
+
     # Check For Indirect Link Matching
     if [[ -z $(command egrep -s -x "^${dlink}$" ${QCD_LINKS} 2> /dev/null) ]]
     then
       # Initialize Parameters
-      local i=0 wlink=${ESTR}
+      local i=0
 
       # Check For Hidden Directory Prefix
       if [[ "${dir_arg}" == \.* ]]
@@ -899,6 +902,35 @@ function qcd() {
       then
         # Display Prompt
         command echo -en "\rqcd: Generating option list..."
+
+        if [[ ! -z ${wlink} ]]
+        then
+          # Format Wildcarded Linkage
+          wlink=${wlink//./}
+
+          # Initialize Result Lists
+          local fpmatches=() fpmisses=()
+
+          # Iterate Over Filtered Paths
+          for fpath in ${fpaths[@]}
+          do
+            # Store Path Endpoint
+            local flink=$(command basename "${fpath}")
+
+            # Compare Path To Wildcarded String
+            if [[ ${flink} == ${wlink} ]]
+            then
+              # Append To Matches List
+              fpmatches+=("${fpath}")
+            else
+              # Append To Misses List
+              fpmisses+=("${fpath}")
+            fi
+          done
+
+          # Update Filtered Paths
+          fpaths=("${fpmatches[@]}" "${fpmisses[@]}")
+        fi
 
         # Generate Prompt
         command echo -e "\rqcd: Multiple paths linked to ${B}${dir_arg%/}${N}"
