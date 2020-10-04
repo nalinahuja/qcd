@@ -2,8 +2,6 @@
 
 # Developed by Nalin Ahuja, nalinahuja22
 
-# TODO, rank sorted selection list
-
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Return Values
@@ -906,7 +904,31 @@ function qcd() {
       if [[ -z ${mpath} && ! -z ${fpaths} ]]
       then
         # Display Prompt
-        command echo -e "qcd: Multiple paths linked to ${B}${dir_arg%/}${N}"
+        command echo -en "\rqcd: Generating option list..."
+
+        # Check For Link Wildcarding
+        if [[ ! -z ${wlink} ]]
+        then
+          # Initialize Array Representation
+          local flist=${ESTR}
+
+          # Iterate Over Filtered Paths
+          for fpath in ${fpaths[@]}
+          do
+            # Form String Representation
+            flist="${flist}${fpath}\n"
+          done
+
+          # Reset Filtered Paths
+          fpaths=()
+
+          # Rank Paths By Proximity Match
+          fpaths+=($(command echo -e "${flist}" | command egrep -s -x ".*/${wlink}/$"))
+          fpaths+=($(command echo -e "${flist}" | command egrep -s -x -v ".*/${wlink}/$"))
+        fi
+
+        # Display Prompt
+        command echo -e "\rqcd: Multiple paths linked to ${B}${dir_arg%/}${N}"
 
         # Generate Menu
         _display_menu ${fpaths[@]}
