@@ -906,26 +906,26 @@ function qcd() {
         # Display Prompt
         command echo -en "\rqcd: Generating option list..."
 
-        # # Check For Linkage Wildcarding
-        # if [[ ! -z ${wlink} ]]
-        # then
-        #   # Initialize String Representation
-        #   local flist=${ESTR}
-        #
-        #   # Iterate Over Filtered Paths
-        #   for fpath in ${fpaths[@]}
-        #   do
-        #     # Form String Representation
-        #     flist="${flist}${fpath}\n"
-        #   done
-        #
-        #   # Reset Filtered Paths List
-        #   fpaths=()
-        #
-        #   # Rank Paths By Proximity Match
-        #   fpaths+=($(command echo -e "${flist}" | command egrep -s -x ".*/${wlink}/$"))
-        #   fpaths+=($(command echo -e "${flist}" | command egrep -s -x -v ".*/${wlink}/$"))
-        # fi
+        # Check For Linkage Wildcarding
+        if [[ ! -z ${wlink} ]]
+        then
+          # Initialize String Representation
+          local flist=${ESTR}
+
+          # Iterate Over Filtered Paths
+          for fpath in ${fpaths[@]}
+          do
+            # Form String Representation
+            flist="${flist}${fpath}\n"
+          done
+
+          # Reset Filtered Paths List
+          fpaths=()
+
+          # Rank Paths By Proximity Match
+          fpaths+=($(command echo -e "${flist}" | command egrep -s -x ".*/${wlink}/$"))
+          fpaths+=($(command echo -e "${flist}" | command egrep -s -x -v ".*/${wlink}/$"))
+        fi
 
         # Display Prompt
         command echo -e "\rqcd: Multiple paths linked to ${B}${dir_arg%/}${N}"
