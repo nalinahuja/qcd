@@ -291,7 +291,7 @@ function _read_input() {
     key="${key}${c}"
 
     # Check Break Conditions
-    if [[ -z ${c} || ${c} == ${QUIT} || ${#key} -eq 3 ]]
+    if [[ -z ${c} || "${c}" == "${QUIT}" || ${#key} -eq 3 ]]
     then
       # Break Loop
       break
@@ -300,9 +300,9 @@ function _read_input() {
 
   # Return Keycode
   if [[ -z ${c} ]]; then command echo -e "${ENTR}"; fi
-  if [[ ${c} == "${QUIT}" ]]; then command echo -e "${EXIT}"; fi
-  if [[ ${key} == "${AESC}[A" ]]; then command echo -e "${UP}"; fi
-  if [[ ${key} == "${AESC}[B" ]]; then command echo -e "${DN}"; fi
+  if [[ "${c}" == "${QUIT}" ]]; then command echo -e "${EXIT}"; fi
+  if [[ "${key}" == "${AESC}[A" || "${key}" == "w" ]]; then command echo -e "${UP}"; fi
+  if [[ "${key}" == "${AESC}[B" || "${key}" == "s" ]]; then command echo -e "${DN}"; fi
 }
 
 function _clear_menu() {
@@ -364,7 +364,7 @@ function _display_menu() {
     local key=$(_read_input)
 
     # Check Exit Flag
-    if [[ ${EXIT_FLAG} == ${TRUE} ]]
+    if [[ ${EXIT_FLAG} -eq ${TRUE} ]]
     then
       # Restore Environment
       _clear_menu $# && _show_cursor
@@ -424,7 +424,7 @@ function _parse_option_flags() {
   local flag="${@:$#}"
 
   # Check For Option Flags
-  if [[ "${flag/--remember/${REMEMBER}}" == "${REMEMBER}" ]]
+  if [[ ${flag/--remember/${REMEMBER}} == ${REMEMBER} ]]
   then
     # Determine Removal Type
     if [[ $# -eq 1 ]]
@@ -441,7 +441,7 @@ function _parse_option_flags() {
 
     # Terminate Program
     return ${OK}
-  elif [[ "${flag/--forget/${FORGET}}" == "${FORGET}" ]]
+  elif [[ ${flag/--forget/${FORGET}} == ${FORGET} ]]
   then
     # Determine Removal Type
     if [[ $# -eq 1 ]]
@@ -458,7 +458,7 @@ function _parse_option_flags() {
 
     # Terminate Program
     return ${OK}
-  elif [[ "${flag/--clean/${CLEAN}}" == "${CLEAN}" ]]
+  elif [[ ${flag/--clean/${CLEAN}} == ${CLEAN} ]]
   then
     # Store Paths From Store File
     local paths=$(command awk -F ':' '{print $2}' ${QCD_STORE})
@@ -481,7 +481,7 @@ function _parse_option_flags() {
 
     # Terminate Program
     return ${OK}
-  elif [[ "${flag/--mkdir/${MKDIRENT}}" == "${MKDIRENT}" ]]
+  elif [[ ${flag/--mkdir/${MKDIRENT}} == ${MKDIRENT} ]]
   then
     # Verify Argument Count
     if [[ $# -lt 2 ]]
@@ -527,7 +527,7 @@ function _parse_option_flags() {
 
     # Terminate Program
     return ${OK}
-  elif [[ "${flag/--list/${LIST}}" == "${LIST}" ]]
+  elif [[ ${flag/--list/${LIST}} == ${LIST} ]]
   then
     # Display Prompt
     command echo -en "\rqcd: Generating link map..."
@@ -607,27 +607,27 @@ function _parse_standalone_flags() {
   local flag="${@:$#}"
 
   # Check For Standalone Flags
-  if [[ "${flag/--help/${HELP}}" == "${HELP}" ]]
+  if [[ ${flag/--help/${HELP}} == ${HELP} ]]
   then
     # Print Help File
     command cat ${QCD_HELP}
 
     # Terminate Program
     return ${OK}
-  elif [[ "${flag/--version/${VERSION}}" == "${VERSION}" ]]
+  elif [[ ${flag/--version/${VERSION}} == ${VERSION} ]]
   then
     # Print Installed Version
     command cat ${QCD_HELP} | command head -n1
 
     # Terminate Program
     return ${OK}
-  elif [[ "${flag/--update/${UPDATE}}" == "${UPDATE}" ]]
+  elif [[ ${flag/--update/${UPDATE}} == ${UPDATE} ]]
   then
     # Prompt User For Confirmation
     command read -p "qcd: Confirm update [y/n]: " confirm
 
     # Determine Action
-    if [[ "${confirm//Y/${YES}}" == "${YES}" ]]
+    if [[ ${confirm//Y/${YES}} == ${YES} ]]
     then
       # Verify Curl Dependency
       command curl &> /dev/null
@@ -1092,7 +1092,7 @@ function _qcd_comp() {
         local IFS=$'\n'
 
         # Add Linked Subdirectories Of Similar Visibility
-        if [[ ! "${trail_arg:0:1}" == "${CWD}" ]]
+        if [[ ! ${trail_arg:0:1} == ${CWD} ]]
         then
           # Add Compressed Visible Linked Subdirectories
           sub_dirs+=($(command printf "%s\n" $(command ls -F "${res_dir}" 2> /dev/null | command egrep -s -x ".*/" 2> /dev/null)))
@@ -1158,7 +1158,7 @@ function _qcd_comp() {
         then
           # Exlude Current Directory
           curr_rem=$TRUE
-        elif [[ "${curr_arg:0:1}" == "${CWD}" && "${link_dir:0:1}" == "${CWD}" || ! "${curr_arg:0:1}" == "${CWD}" && ! "${link_dir:0:1}" == "${CWD}" ]]
+        elif [[ ${curr_arg:0:1} == ${CWD} && ${link_dir:0:1} == ${CWD} || ! ${curr_arg:0:1} == ${CWD} && ! ${link_dir:0:1} == ${CWD} ]]
         then
           # Add Symbolic Links Of Similar Visibility
           comp_list+=("${link_dir}")
