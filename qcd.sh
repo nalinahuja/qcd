@@ -291,7 +291,7 @@ function _read_input() {
     key="${key}${c}"
 
     # Check Break Conditions
-    if [[ -z ${c} || "${c}" == "${QUIT}" || ${#key} -eq 3 ]]
+    if [[ -z ${c} || ${c} == ${QUIT} || ${#key} -eq 3 ]]
     then
       # Break Loop
       break
@@ -300,9 +300,9 @@ function _read_input() {
 
   # Return Keycode
   if [[ -z ${c} ]]; then command echo -e "${ENTR}"; fi
-  if [[ "${c}" == "${QUIT}" ]]; then command echo -e "${EXIT}"; fi
-  if [[ "${key}" == "${AESC}[A" || "${key}" == "w" ]]; then command echo -e "${UP}"; fi
-  if [[ "${key}" == "${AESC}[B" || "${key}" == "s" ]]; then command echo -e "${DN}"; fi
+  if [[ ${c} == ${QUIT} ]]; then command echo -e "${EXIT}"; fi
+  if [[ ${key} == "${AESC}[A" || ${key} == "w" ]]; then command echo -e "${UP}"; fi
+  if [[ ${key} == "${AESC}[B" || ${key} == "s" ]]; then command echo -e "${DN}"; fi
 }
 
 function _clear_menu() {
