@@ -301,8 +301,8 @@ function _read_input() {
   # Return Keycode
   if [[ -z ${c} ]]; then command echo -e "${ENTR}"; fi
   if [[ ${c} == ${QUIT} ]]; then command echo -e "${EXIT}"; fi
-  if [[ ${key} == "${AESC}[A" || ${key} == "w" ]]; then command echo -e "${UP}"; fi
-  if [[ ${key} == "${AESC}[B" || ${key} == "s" ]]; then command echo -e "${DN}"; fi
+  if [[ ${key} == "${AESC}[A" ]]; then command echo -e "${UP}"; fi
+  if [[ ${key} == "${AESC}[B" ]]; then command echo -e "${DN}"; fi
 }
 
 function _clear_menu() {
