@@ -904,12 +904,7 @@ function qcd() {
       if [[ -z ${mpath} && ! -z ${fpaths} ]]
       then
         # Display Prompt
-        command echo -en "\rqcd: Generating option list..."
-
-        # TODO, proximity ranking alg here
-
-        # Display Prompt
-        command echo -e "\rqcd: Multiple paths linked to ${B}${dir_arg%/}${N}"
+        command echo -e "qcd: Multiple paths linked to ${B}${dir_arg%/}${N}"
 
         # Generate Menu
         _display_menu ${fpaths[@]}
