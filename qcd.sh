@@ -3,6 +3,10 @@
 # Developed by Nalin Ahuja, nalinahuja22
 
 # TODO, multi link forget support (no file overwrite error)
+# TODO, multi path remember support (no file overwrite error)
+# TODO, redefined update routine
+# TODO, subdir nagivation error
+# TODO, create track flag
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -65,11 +69,11 @@ W=$(command printf "${KESC}[30m${KESC}[47m")
 
 # Program Files
 QCD_FOLD=~/.qcd
-QCD_HELP=$QCD_FOLD/help
-QCD_TEMP=$QCD_FOLD/temp
-QCD_LINKS=$QCD_FOLD/links
-QCD_STORE=$QCD_FOLD/store
-QCD_UPDATE=$QCD_FOLD/update
+QCD_HELP=${QCD_FOLD}/help
+QCD_TEMP=${QCD_FOLD}/temp
+QCD_LINKS=${QCD_FOLD}/links
+QCD_STORE=${QCD_FOLD}/store
+QCD_UPDATE=${QCD_FOLD}/update
 
 # Release URL
 QCD_RELEASES="https://api.github.com/repos/nalinahuja22/qcd/releases/latest"
@@ -434,6 +438,8 @@ function _parse_option_flags() {
       # Add Current Directory
       (_add_directory &)
     else
+      # TODO, multi path remember
+
       # Store Path Argument
       local lpath="${@:1:$(($# - 1))}"
 
@@ -451,6 +457,8 @@ function _parse_option_flags() {
       # Remove Current Directory
       (_remove_directory &)
     else
+      # TODO, multi path forget
+
       # Store Link Argument
       local ldir="${@:1:$(($# - 1))}"
 
@@ -462,19 +470,19 @@ function _parse_option_flags() {
     return ${OK}
   elif [[ ${flag/--clean/${CLEAN}} == ${CLEAN} ]]
   then
-    # Store Paths From Store File
-    local paths=$(command awk -F ':' '{print $2}' ${QCD_STORE})
+    # Store Linked Paths From Store File
+    local lpaths=$(command awk -F ':' '{print $2}' ${QCD_STORE})
 
     # Set IFS
     local IFS=$'\n'
 
-    # Iterate Over Paths
-    for path in ${paths}
+    # Iterate Over Linked Paths
+    for lpath in ${lpaths}
     do
       # Remove Invalid Paths
-      if [[ ! -d "${path}" ]]
+      if [[ ! -d "${lpath}" ]]
       then
-        _remove_directory "${path}"
+        _remove_directory "${lpath}"
       fi
     done
 
@@ -674,7 +682,7 @@ function _parse_standalone_flags() {
       fi
 
       # Display Prompt
-      command echo -en "\r→ Installing updates "
+      command echo -en "\r→ Installing updates  "
 
       # Extract And Install Program Files
       command unzip -o -j ${QCD_UPDATE} -d ${QCD_FOLD} &> /dev/null
@@ -689,16 +697,28 @@ function _parse_standalone_flags() {
         return ${ERR}
       fi
 
+      # Display Prompt
+      command echo -en "\r→ Configuring updates "
+
+      # Update Bash Environment
+      command source ${QCD_PROGRAM} 2> /dev/null
+
+      # Error Check Installation
+      if [[ ${?} -ne ${OK} ]]
+      then
+        # Display Prompt
+        command echo -e "\r→ Failed to configure update"
+
+        # Terminate Program
+        return ${ERR}
+      fi
+
       # Define Installation Files
       local QCD_PROGRAM=${QCD_FOLD}/qcd.sh
       local QCD_INSTALLER=${QCD_FOLD}/install_qcd
 
       # Cleanup Installation
-      command rm ${QCD_UPDATE} 2> /dev/null
-      command rm ${QCD_INSTALLER} 2> /dev/null
-
-      # Update Bash Environment
-      command source ${QCD_PROGRAM} 2> /dev/null
+      command rm ${QCD_UPDATE} ${QCD_INSTALLER} 2> /dev/null
 
       # Get Release Version
       local release_version=$(command cat ${QCD_HELP} | command head -n1 | command awk '{print $4}')
@@ -897,6 +917,7 @@ function qcd() {
       # Check For Single Path
       if [[ ${pathc} -eq 1 ]]
       then
+        # Set Matched Path
         mpath="${fpaths[@]}"
       fi
 
