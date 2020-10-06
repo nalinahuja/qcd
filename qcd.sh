@@ -5,8 +5,9 @@
 # TODO, multi link forget support (no file overwrite error)
 # TODO, multi path remember support (no file overwrite error)
 # TODO, redefined update routine
-# TODO, subdir nagivation error
 # TODO, create track flag
+# TODO, full test suite
+# TODO, refactor code
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -74,6 +75,7 @@ QCD_TEMP=${QCD_FOLD}/temp
 QCD_LINKS=${QCD_FOLD}/links
 QCD_STORE=${QCD_FOLD}/store
 QCD_UPDATE=${QCD_FOLD}/update
+QCD_PROGRAM=${QCD_FOLD}/qcd.sh
 
 # Release URL
 QCD_RELEASES="https://api.github.com/repos/nalinahuja22/qcd/releases/latest"
@@ -707,14 +709,13 @@ function _parse_standalone_flags() {
       if [[ ${?} -ne ${OK} ]]
       then
         # Display Prompt
-        command echo -e "\r→ Failed to configure update"
+        command echo -e "\r→ Failed to configure update "
 
         # Terminate Program
         return ${ERR}
       fi
 
-      # Define Installation Files
-      local QCD_PROGRAM=${QCD_FOLD}/qcd.sh
+      # Define Installer Executable
       local QCD_INSTALLER=${QCD_FOLD}/install_qcd
 
       # Cleanup Installation
