@@ -8,6 +8,8 @@
 # TODO, create track flag
 # TODO, full test suite
 # TODO, refactor code
+# TODO, speed up completion engine
+# TODO, remove corrupted paths
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
