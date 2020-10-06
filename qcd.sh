@@ -2,6 +2,8 @@
 
 # Developed by Nalin Ahuja, nalinahuja22
 
+# TODO, multi link forget support
+
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Return Values
@@ -51,13 +53,13 @@ YES="y"
 QUIT="q"
 BSLH="\\"
 
-# Arrow Key Prefix String
-AESC=$(command printf "\033")
+# Key Escape String
+KESC=$(command printf "\033")
 
 # Text Formatting Strings
-B=$(command tput bold)
-N=$(command tput sgr0)
-W=$(command tput setaf 0)$(command tput setab 7)
+B=$(command printf "${KESC}[1m")
+N=$(command printf "${KESC}(B${KESC}[m")
+W=$(command printf "${KESC}[30m${KESC}[47m")
 
 # End Defined String Constants---------------------------------------------------------------------------------------------------------------------------------------
 
@@ -301,8 +303,8 @@ function _read_input() {
   # Return Keycode
   if [[ -z ${c} ]]; then command echo -e "${ENTR}"; fi
   if [[ ${c} == ${QUIT} ]]; then command echo -e "${EXIT}"; fi
-  if [[ ${key} == "${AESC}[A" ]]; then command echo -e "${UP}"; fi
-  if [[ ${key} == "${AESC}[B" ]]; then command echo -e "${DN}"; fi
+  if [[ ${key} == "${KESC}[A" ]]; then command echo -e "${UP}"; fi
+  if [[ ${key} == "${KESC}[B" ]]; then command echo -e "${DN}"; fi
 }
 
 function _clear_menu() {
@@ -310,17 +312,17 @@ function _clear_menu() {
   for ((i=0; i <= ${1} + 1; i++))
   do
     # Go To Beginning Of Line
-    command printf "${AESC}[${COLNUM}D"
+    command printf "${KESC}[${COLNUM}D"
 
     # Clear Line
-    command printf "${AESC}[K"
+    command printf "${KESC}[K"
 
     # Go Up One Line
-    command printf "${AESC}[1A"
+    command printf "${KESC}[1A"
   done
 
   # Go Down One Line
-  command printf "${AESC}[1B"
+  command printf "${KESC}[1B"
 }
 
 function _display_menu() {
