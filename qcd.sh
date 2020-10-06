@@ -2,14 +2,13 @@
 
 # Developed by Nalin Ahuja, nalinahuja22
 
-# TODO, multi link forget support (no file overwrite error)
-# TODO, multi path remember support (no file overwrite error)
-# TODO, redefined update routine
-# TODO, create track flag
+# TODO, multi link forget support (no file overwrite error, README, help)
+# TODO, multi path remember support (no file overwrite error, README, help)
+# TODO, redefined version update routine
+# TODO, create track flag (README, help)
 # TODO, full test suite
 # TODO, refactor code
 # TODO, speed up completion engine
-# TODO, remove corrupted paths
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -45,6 +44,7 @@ HWD="../"
 # Option Flags
 LIST="-l"
 CLEAN="-c"
+TRACK="-t"
 FORGET="-f"
 REMEMBER="-r"
 MKDIRENT="-m"
@@ -76,6 +76,7 @@ QCD_HELP=${QCD_FOLD}/help
 QCD_TEMP=${QCD_FOLD}/temp
 QCD_LINKS=${QCD_FOLD}/links
 QCD_STORE=${QCD_FOLD}/store
+QCD_TRACK=${QCD_FOLD}/.track
 QCD_UPDATE=${QCD_FOLD}/update
 QCD_PROGRAM=${QCD_FOLD}/qcd.sh
 
@@ -169,7 +170,7 @@ function _verify_files() {
   if [[ ! -f ${QCD_STORE} ]]
   then
     # Create Store File
-    command touch ${QCD_STORE}
+    command touch ${QCD_STORE} 2> /dev/null
   fi
 
   # Check For Link File
