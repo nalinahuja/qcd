@@ -9,7 +9,6 @@
 # TODO, full test suite
 # TODO, refactor code
 # TODO, speed up completion engine
-# TODO, implement hard links
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
