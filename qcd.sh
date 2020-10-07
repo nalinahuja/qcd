@@ -9,6 +9,7 @@
 # TODO, full test suite
 # TODO, refactor code
 # TODO, speed up completion engine
+# TODO, update README with sid suggestions
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
