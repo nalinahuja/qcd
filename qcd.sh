@@ -5,7 +5,7 @@
 # TODO, multi link forget support (no file overwrite error, README, help)
 # TODO, multi path remember support (no file overwrite error, README, help)
 # TODO, redefined version update routine
-# TODO, create track flag (README, help)
+# TODO, create directory track toggle flag (README, help)
 # TODO, full test suite
 # TODO, refactor code
 # TODO, speed up completion engine
