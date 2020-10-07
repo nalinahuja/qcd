@@ -10,6 +10,7 @@
 # TODO, refactor code
 # TODO, speed up completion engine
 # TODO, update README with sid suggestions
+# TODO, ZSH Port
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
