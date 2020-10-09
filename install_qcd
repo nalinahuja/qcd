@@ -11,65 +11,60 @@ FALSE=0
 # Embedded Strings
 YES="y"
 
-# Install Files
+# Program Path
 QCD_FOLD=~/.qcd
+
+# Program Files
 QCD_HELP=./help
 QCD_PROG=./qcd.sh
 QCD_LICE=./LICENSE
 QCD_READ=./README.md
 
-# Bash Config Locations
+# Bash Profiles
 BASHRC=~/.bashrc
 BASHPR=~/.bash_profile
 
 # End Defined Constants----------------------------------------------------------------------------------------------------------------------------------------------
 
-status=${FALSE} is_update=${TRUE} version=$(command cat ${QCD_HELP} | command head -n1 | command awk '{print $4}')
+install_status=${FALSE} is_update=${TRUE} version=$(command cat ${QCD_HELP} | command head -n1 | command awk '{print $4}')
 
 # End Global Variables-----------------------------------------------------------------------------------------------------------------------------------------------
 
 # Prompt User For Installation Confirmation
-command read -p "Please confirm installation of QCD (${version}) [y/n]: " confirm
+command read -p "qcd: Please confirm installation of QCD (${version}) [y/n]: " confirmation
 
 # Determine Action
-if [[ "${confirm//Y/${YES}}" == ${YES} ]]
+if [[ ${confirmation//Y/${YES}} == ${YES} ]]
 then
   # Add Command To Bash Profile
   if [[ ! -e ${QCD_FOLD} ]]
   then
-    # Find
+    # Find ~/.bashrc
     if [[ -f ${BASHRC} ]]
     then
       # Add Command To ~/.bashrc
-      command echo -e "\n# qcd Function (qcd [PATH|LINK] [OPTIONS])\n\nsource ~/.qcd/qcd.sh\n" >> ${BASHRC}
-
-      # Set Status Boolean
-      status=${TRUE}
+      command printf "\n# QCD Utility Source\ncommand source ~/.qcd/qcd.sh\n\n" >> ${BASHRC} && install_status=${TRUE}
     fi
 
+    # Find ~/.bash_profile
     if [[ -f ${BASHPR} ]]
     then
-      # Add Command To .bash_profile
-      command echo -e "\n# qcd Function (qcd [PATH|LINK] [OPTIONS])\n\nsource ~/.qcd/qcd.sh\n" >> ${BASHPR}
-
-      # Set Status Boolean
-      status=${TRUE}
+      # Add Command To ~/.bash_profile
+      command printf "\n# QCD Utility Source\ncommand source ~/.qcd/qcd.sh\n\n" >> ${BASHPR} && install_status=${TRUE}
     fi
 
-    if [[ ${status} -eq ${FALSE} ]]
+    # Check Command Installation Status
+    if [[ ${install_status} -eq ${FALSE} ]]
     then
-      # Display Error
-      command echo -e "ERROR: Failed to install command to terminal profile. Installation aborted!"
+      # Display Error Prompt
+      command printf "→ No bash configurations found, aborting QCD installation\n"
 
       # Exit Installation
       command exit 1
     fi
 
-    # Confirm Command Installation
-    command echo -e "→ Installed QCD command to terminal configuration"
-
-    # Set Update Boolean
-    is_update=${FALSE}
+    # Display Success Prompt
+    command printf "→ Installed QCD command to terminal configuration\n" && is_update=${FALSE}
   fi
 
   # Install QCD Program Files
@@ -79,19 +74,21 @@ then
   command mv ${QCD_LICE} ${QCD_FOLD} 2> /dev/null
   command mv ${QCD_READ} ${QCD_FOLD} 2> /dev/null
 
-  # Determine Appropriate Message
+  # Determine Appropriate Prompt
   if [[ ${is_update} -eq ${TRUE} ]]
   then
-    command echo -e "→ Upgraded QCD to ${version}"
+    # Display Upgrade Prompt
+    command printf "→ Upgraded QCD to ${version}\n"
   else
-    command echo -e "→ Installed QCD ${version} into ~/.qcd"
+    # Display Installation Prompt
+    command printf "→ Installed QCD ${version}\n"
   fi
 
-  # Finish Installation
-  command echo -e "\nPlease restart your terminal"
+  # Display Success Prompt
+  command printf "\nPlease restart your terminal\n"
 else
-  # Abort Installation
-  command echo -e "→ QCD installation aborted"
+  # Display Abort Prompt
+  command printf "→ QCD installation aborted\n"
 fi
 
 # End QCD Installation-----------------------------------------------------------------------------------------------------------------------------------------------

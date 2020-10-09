@@ -8,6 +8,8 @@
 # TODO, speed up completion engine
 # TODO, update README with sid suggestions
 # TODO, ignore current directory with -i flag (README, help)
+# TODO, cleanup installation code
+# TODO, convert echos to printfs
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
