@@ -7,7 +7,7 @@
 # TODO, update README with sid suggestions
 # TODO, speed up completion engine
 # TODO, refactor code
-# TODO, convert for loops
+# TODO, convert for i loops to for in loops
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -846,7 +846,7 @@ function qcd() {
     local pathv=${NSET}
 
     # Check For Indirect Link Matching
-    if [[ -z $(command egrep -s -x "^${dlink}$" ${QCD_LINKS} 2> /dev/null) ]]
+    if [[ -z $(command egrep -s -x "${dlink}" ${QCD_LINKS} 2> /dev/null) ]]
     then
       # Initialize Parameters
       local i=0 wlink=${ESTR}
@@ -1046,7 +1046,7 @@ function _qcd_comp() {
       local link_paths=${NSET}
 
       # Check For Indirect Link Matching
-      if [[ -z $(command egrep -s -x "^${link_arg}$" ${QCD_LINKS} 2> /dev/null) ]]
+      if [[ -z $(command egrep -s -x "${link_arg}" ${QCD_LINKS} 2> /dev/null) ]]
       then
         # Initialize Parameters
         local i=0 wlink_arg=${ESTR}
