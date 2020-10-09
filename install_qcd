@@ -26,12 +26,12 @@ BASHPR=~/.bash_profile
 
 # End Defined Constants----------------------------------------------------------------------------------------------------------------------------------------------
 
-install_status=${FALSE} is_update=${TRUE} version=$(command cat ${QCD_HELP} | command head -n1 | command awk '{print $4}')
+is_update=${TRUE} install_status=${FALSE} install_version=$(command cat ${QCD_HELP} | command head -n1 | command awk '{print $4}')
 
 # End Global Variables-----------------------------------------------------------------------------------------------------------------------------------------------
 
 # Prompt User For Installation Confirmation
-command read -p "qcd: Please confirm installation of QCD (${version}) [y/n]: " confirmation
+command read -p "qcd: Please confirm installation of QCD (${install_version}) [y/n]: " confirmation
 
 # Determine Action
 if [[ ${confirmation//Y/${YES}} == ${YES} ]]
@@ -78,10 +78,10 @@ then
   if [[ ${is_update} -eq ${TRUE} ]]
   then
     # Display Upgrade Prompt
-    command printf "→ Upgraded QCD to ${version}\n"
+    command printf "→ Upgraded QCD to ${install_version}\n"
   else
     # Display Installation Prompt
-    command printf "→ Installed QCD ${version}\n"
+    command printf "→ Installed QCD ${install_version}\n"
   fi
 
   # Display Success Prompt
