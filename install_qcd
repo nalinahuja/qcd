@@ -43,28 +43,28 @@ then
     if [[ -f ${BASHRC} ]]
     then
       # Add Command To ~/.bashrc
-      command printf "\n# QCD Utility Source\ncommand source ~/.qcd/qcd.sh\n\n" >> ${BASHRC} && install_status=${TRUE}
+      command echo -e "\n# QCD Utility Source\ncommand source ~/.qcd/qcd.sh\n" >> ${BASHRC} && install_status=${TRUE}
     fi
 
     # Find ~/.bash_profile
     if [[ -f ${BASHPR} ]]
     then
       # Add Command To ~/.bash_profile
-      command printf "\n# QCD Utility Source\ncommand source ~/.qcd/qcd.sh\n\n" >> ${BASHPR} && install_status=${TRUE}
+      command echo -e "\n# QCD Utility Source\ncommand source ~/.qcd/qcd.sh\n" >> ${BASHPR} && install_status=${TRUE}
     fi
 
     # Check Command Installation Status
     if [[ ${install_status} -eq ${FALSE} ]]
     then
       # Display Error Prompt
-      command printf "→ No bash configurations found, aborting QCD installation\n"
+      command echo -e "→ No bash configurations found, aborting QCD installation"
 
       # Exit Installation
       command exit 1
     fi
 
     # Display Success Prompt
-    command printf "→ Installed QCD command to terminal configuration\n" && is_update=${FALSE}
+    command echo -e "→ Installed QCD command to terminal configuration" && is_update=${FALSE}
   fi
 
   # Install QCD Program Files
@@ -78,17 +78,17 @@ then
   if [[ ${is_update} -eq ${TRUE} ]]
   then
     # Display Upgrade Prompt
-    command printf "→ Upgraded QCD to ${install_version}\n"
+    command echo -e "→ Upgraded QCD to ${install_version}"
   else
     # Display Installation Prompt
-    command printf "→ Installed QCD ${install_version}\n"
+    command echo -e "→ Installed QCD ${install_version}"
   fi
 
   # Display Success Prompt
-  command printf "\nPlease restart your terminal\n"
+  command echo -e "\nPlease restart your terminal"
 else
   # Display Abort Prompt
-  command printf "→ QCD installation aborted\n"
+  command echo -e "→ QCD installation aborted"
 fi
 
 # End QCD Installation-------------------------------------------------------------------------------------------------------------------------------------------------

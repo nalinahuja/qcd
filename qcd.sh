@@ -1,14 +1,13 @@
 # Developed by Nalin Ahuja, nalinahuja22
 
 # TODO, multi link forget support (no file overwrite error, README, help)
-# TODO, multi path remember support (no file overwrite error, README, help)
-# TODO, redefined version update routine
-# TODO, create directory track toggle flag (README, help)
-# TODO, refactor code
-# TODO, speed up completion engine
-# TODO, update README with sid suggestions
+# TODO, directory track toggle flag (README, help)
 # TODO, ignore current directory with -i flag (README, help)
-# TODO, convert echos to printfs
+
+# TODO, update README with sid suggestions
+# TODO, speed up completion engine
+# TODO, refactor code
+# TODO, convert for loops
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -26,8 +25,8 @@ FALSE=0
 # Keycode Values
 UP=0
 DN=1
-EXIT=3
-ENTR=4
+EXT=3
+ENT=4
 
 # Embedded Values
 NSET=0
@@ -316,8 +315,8 @@ function _read_input() {
   done
 
   # Return Keycode
-  if [[ -z ${c} ]]; then command echo -e "${ENTR}"; fi
-  if [[ ${c} == ${QUIT} ]]; then command echo -e "${EXIT}"; fi
+  if [[ -z ${c} ]]; then command echo -e "${ENT}"; fi
+  if [[ ${c} == ${QUIT} ]]; then command echo -e "${EXT}"; fi
   if [[ ${key} == "${KESC}[A" ]]; then command echo -e "${UP}"; fi
   if [[ ${key} == "${KESC}[B" ]]; then command echo -e "${DN}"; fi
 }
@@ -402,10 +401,10 @@ function _display_menu() {
     then
       # Increment Selected Line
       sel_line=$((${sel_line} + 1))
-    elif [[ ${key} -eq ${ENTR} || ${key} -eq ${EXIT} ]]
+    elif [[ ${key} -eq ${ENT} || ${key} -eq ${EXT} ]]
     then
       # Reset Selected Line
-      if [[ ${key} -eq ${EXIT} ]]
+      if [[ ${key} -eq ${EXT} ]]
       then
         sel_line=${NSEL}
       fi
@@ -449,8 +448,6 @@ function _parse_option_flags() {
       # Add Current Directory
       (_add_directory &)
     else
-      # TODO, multi path remember
-
       # Store Path Argument
       local lpath="${@:1:$(($# - 1))}"
 
@@ -724,7 +721,7 @@ function _parse_standalone_flags() {
         return ${ERR}
       fi
 
-      # Define Installer Executable
+      # Define Installer Executable Path
       local QCD_INSTALLER=${QCD_FOLD}/install_qcd
 
       # Cleanup Installation
