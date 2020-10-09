@@ -1,16 +1,13 @@
-#!/usr/bin/env bash
-
 # Developed by Nalin Ahuja, nalinahuja22
 
 # TODO, multi link forget support (no file overwrite error, README, help)
 # TODO, multi path remember support (no file overwrite error, README, help)
 # TODO, redefined version update routine
 # TODO, create directory track toggle flag (README, help)
-# TODO, full test suite
 # TODO, refactor code
 # TODO, speed up completion engine
 # TODO, update README with sid suggestions
-# TODO, ZSH completion engine
+# TODO, ignore current directory with -i flag (README, help)
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -47,6 +44,7 @@ HWD="../"
 LIST="-l"
 CLEAN="-c"
 TRACK="-t"
+IGNORE="-i"
 FORGET="-f"
 REMEMBER="-r"
 MKDIRENT="-m"
@@ -72,15 +70,19 @@ W=$(command printf "${KESC}[30m${KESC}[47m")
 
 # End Defined String Constants---------------------------------------------------------------------------------------------------------------------------------------
 
-# Program Files
+# Program Path
 QCD_FOLD=~/.qcd
+
+# Program Files
+QCD_PROGRAM=${QCD_FOLD}/qcd.sh
+QCD_UPDATE=${QCD_FOLD}/update
 QCD_HELP=${QCD_FOLD}/help
 QCD_TEMP=${QCD_FOLD}/temp
-QCD_LINKS=${QCD_FOLD}/links
+
+# Resource Files
 QCD_STORE=${QCD_FOLD}/store
+QCD_LINKS=${QCD_FOLD}/links
 QCD_TRACK=${QCD_FOLD}/.track
-QCD_UPDATE=${QCD_FOLD}/update
-QCD_PROGRAM=${QCD_FOLD}/qcd.sh
 
 # Release URL
 QCD_RELEASES="https://api.github.com/repos/nalinahuja22/qcd/releases/latest"
@@ -203,6 +205,7 @@ function _add_directory() {
     # Check Path Validity
     if [[ ! -d "${abs_path}" ]]
     then
+      # Return To Caller
       return ${ERR}
     fi
   fi
