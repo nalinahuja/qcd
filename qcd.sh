@@ -3,11 +3,13 @@
 # TODO, multi link forget support (no file overwrite error, README, help)
 # TODO, directory track toggle flag (README, help)
 # TODO, ignore current directory with -i flag (README, help)
+# TODO, complete flags
 
 # TODO, update README with sid suggestions
 # TODO, speed up completion engine
 # TODO, refactor code
 # TODO, convert for i loops to for in loops
+# TODO, remove link file (experiment)
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -846,7 +848,7 @@ function qcd() {
     local pathv=${NSET}
 
     # Check For Indirect Link Matching
-    if [[ -z $(command egrep -s -x "${dlink}" ${QCD_LINKS} 2> /dev/null) ]]
+    if [[ -z $(command egrep -s -x "${dlink}:.*" ${QCD_STORE} 2> /dev/null) ]]
     then
       # Initialize Parameters
       local i=0 wlink=${ESTR}
