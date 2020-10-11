@@ -7,6 +7,7 @@
 
 # TODO, update README with sid suggestions
 # TODO, speed up completion engine
+# TODO, speed up qcd routine
 # TODO, refactor code
 # TODO, convert for i loops to for in loops
 # TODO, remove link file (experiment)
