@@ -12,6 +12,7 @@
 # TODO, convert for i loops to for in loops
 # TODO, remove link file (experiment)
 # TODO, installer script path prompt
+# TODO, convert printfs to echos
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
