@@ -13,6 +13,7 @@
 # TODO, remove link file (experiment)
 # TODO, installer script path prompt
 # TODO, convert printfs to echos
+# TODO, path sorting in manual selection
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
