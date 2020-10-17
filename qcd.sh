@@ -370,13 +370,6 @@ function _cleanup_files() {
 # End File Management Functions--------------------------------------------------------------------------------------------------------------------------------------
 
 function _add_directory() {
-  # Check For Tracking File
-  if [[ ! -f ${QCD_TRACK} ]]
-  then
-    # Return To Caller
-    return ${OK}
-  fi
-
   # Store Current Path
   local adir=$(_get_pwd)
 
@@ -449,7 +442,7 @@ function _remove_symbolic_link() {
   return ${OK}
 }
 
-# End Link Management Functions--------------------------------------------------------------------------------------------------------------------------------------
+# End Linkage Management Functions-----------------------------------------------------------------------------------------------------------------------------------
 
 function _parse_option_flags() {
   # Store Argument Flag
@@ -464,15 +457,11 @@ function _parse_option_flags() {
       # Add Current Directory
       (_add_directory &)
     else
-      # Store Directory Arguments
-      local dirs="${@:1:$(($# - 1))}"
+      # Store Directory Argument
+      local dir="${@:1:$(($# - 1))}"
 
-      # Iterate Over Directories
-      for dir in ${dirs}
-      do
-        # Add Directory As Linkage
-        (_add_directory "${dir}")
-      done
+      # Add Directory As Linkage
+      (_add_directory "${dir}" &)
     fi
 
     # Terminate Program
@@ -485,15 +474,11 @@ function _parse_option_flags() {
       # Remove Current Directory
       (_remove_directory &)
     else
-      # Store Link Arguments
-      local links="${@:1:$(($# - 1))}"
+      # Store Link Argument
+      local link="${@:1:$(($# - 1))}"
 
-      # Iterate Over Linkages
-      for link in ${links}
-      do
-        # Remove Symbolic Link
-        (_remove_symbolic_link "${link}")
-      done
+      # Remove Symbolic Linkages
+      (_remove_symbolic_link "${link}" &)
     fi
 
     # Terminate Program
@@ -882,8 +867,12 @@ function qcd() {
     # Change To Valid Directory
     command cd "${dir_arg}"
 
-    # Add Current Directory
-    (_add_directory &)
+    # Check For Tracking File
+    if [[ -f ${QCD_TRACK} ]]
+    then
+      # Add Current Directory
+      (_add_directory &)
+    fi
 
     # Terminate Program
     return ${OK}
@@ -1063,8 +1052,12 @@ function qcd() {
         # Switch To Subdirectory
         command cd "${sdir}"
 
-        # Add Current Directory
-        (_add_directory &)
+        # Check For Tracking File
+        if [[ -f ${QCD_TRACK} ]]
+        then
+          # Add Current Directory
+          (_add_directory &)
+        fi
       fi
 
       # Terminate Program
