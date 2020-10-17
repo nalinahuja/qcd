@@ -1,7 +1,5 @@
 # Developed by Nalin Ahuja, nalinahuja22
 
-# TODO, multi link forget support (no file overwrite error, README, help)
-# TODO, multi path remember support (no file overwrite error, README, help)
 # TODO, directory track toggle flag (README, help)
 # TODO, ignore current directory with -i flag (README, help)
 # TODO, complete flags
@@ -12,7 +10,6 @@
 # TODO, refactor code
 # TODO, convert for i loops to for in loops
 # TODO, remove link file (experiment)
-# TODO, installer script custom path prompt
 # TODO, convert printfs to echos where possible
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -462,13 +459,15 @@ function _parse_option_flags() {
       # Add Current Directory
       (_add_directory &)
     else
-      # TODO, multi path remember
+      # Store Directory Arguments
+      local dirs="${@:1:$(($# - 1))}"
 
-      # Store Path Argument
-      local lpath="${@:1:$(($# - 1))}"
-
-      # Add Indicated Path
-      (_add_directory "${lpath}" &)
+      # Iterate Over Directories
+      for dir in ${dirs}
+      do
+        # Add Directory As Linkage
+        (_add_directory "${dir}")
+      done
     fi
 
     # Terminate Program
@@ -481,20 +480,22 @@ function _parse_option_flags() {
       # Remove Current Directory
       (_remove_directory &)
     else
-      # TODO, multi link forget
+      # Store Link Arguments
+      local links="${@:1:$(($# - 1))}"
 
-      # Store Link Argument
-      local ldir="${@:1:$(($# - 1))}"
-
-      # Remove Symbolic Link
-      (_remove_symbolic_link "${ldir}" &)
+      # Iterate Over Linkages
+      for link in ${links}
+      do
+        # Remove Symbolic Link
+        (_remove_symbolic_link "${link}")
+      done
     fi
 
     # Terminate Program
     return ${OK}
   elif [[ ${flag/--clean/${CLEAN}} == ${CLEAN} ]]
   then
-    # Store Linked Paths From Store File
+    # Get Linked Paths From Store File
     local lpaths=$(command awk -F ':' '{print $2}' ${QCD_STORE})
 
     # Set IFS
@@ -503,9 +504,10 @@ function _parse_option_flags() {
     # Iterate Over Linked Paths
     for lpath in ${lpaths}
     do
-      # Remove Invalid Paths
+      # Check Path Validity
       if [[ ! -d "${lpath}" ]]
       then
+        # Remove Invalid Paths
         _remove_directory "${lpath}"
       fi
     done
