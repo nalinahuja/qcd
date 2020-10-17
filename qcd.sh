@@ -604,6 +604,7 @@ function _parse_option_flags() {
     # Error Check Link Length
     if [[ ${max_link} -lt ${MINPAD} ]]
     then
+      # Set Padding To Minimum
       max_link=${MINPAD}
     fi
 
