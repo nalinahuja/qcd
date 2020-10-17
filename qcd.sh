@@ -1,6 +1,7 @@
 # Developed by Nalin Ahuja, nalinahuja22
 
 # TODO, multi link forget support (no file overwrite error, README, help)
+# TODO, multi path remember support (no file overwrite error, README, help)
 # TODO, directory track toggle flag (README, help)
 # TODO, ignore current directory with -i flag (README, help)
 # TODO, complete flags
@@ -11,9 +12,8 @@
 # TODO, refactor code
 # TODO, convert for i loops to for in loops
 # TODO, remove link file (experiment)
-# TODO, installer script path prompt
-# TODO, convert echos to printfs
-# TODO, path sorting in manual selection
+# TODO, installer script custom path prompt
+# TODO, convert printfs to echos where possible
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -115,28 +115,28 @@ function _split_path() {
   command echo -e "${@#*:}"
 }
 
-function _format_dir() {
+function _format_path() {
   # Check For Environment Variable
   if [[ ! -z ${HOME} ]]
   then
-    # Return Compressed Path
-    command echo -e ${@/$HOME/\~}
+    # Return Formatted Path
+    command echo -e ${@/${HOME}/\~}
   else
     # Return Original Path
     command echo -e ${@}
   fi
 }
 
-function _escape_dir() {
-  # Store Argument Directory
-  local fdir="${@}"
+function _escape_path() {
+  # Store Argument Path
+  local fpath="${@}"
 
   # Escape Space Characters
-  fdir="${fdir//\\ / }"
-  fdir="${fdir//\\/}"
+  fpath="${fpath//\\ / }"
+  fpath="${fpath//\\/}"
 
-  # Return Escaped Directory
-  command echo -e "${fdir}"
+  # Return Escaped Path
+  command echo -e "${fpath}"
 }
 
 function _escape_regex() {
@@ -200,16 +200,16 @@ function _cleanup_files() {
 
 function _add_directory() {
   # Store Current Path
-  local abs_path=$(_get_pwd)
+  local adir=$(_get_pwd)
 
   # Check For Argument Path
   if [[ $# -gt 0 ]]
   then
     # Store Argument Path
-    abs_path=$(_get_path "$@")
+    adir=$(_get_path "${@}")
 
     # Check Path Validity
-    if [[ ! -d "${abs_path}" ]]
+    if [[ ! -d "${adir}" ]]
     then
       # Return To Caller
       return ${ERR}
@@ -217,13 +217,13 @@ function _add_directory() {
   fi
 
   # Store Directory If Unique
-  if [[ ! "${abs_path%/}" == "${HOME%/}" && -z $(command egrep -s -x ".*:${abs_path}" ${QCD_STORE} 2> /dev/null) ]]
+  if [[ ! "${adir%/}" == "${HOME%/}" && -z $(command egrep -s -x ".*:${adir}" ${QCD_STORE} 2> /dev/null) ]]
   then
     # Store Basename Of Path
-    local ept=$(command basename "${abs_path}")
+    local ept=$(command basename "${adir}")
 
     # Append Data To Store File
-    command echo -e "${ept}:${abs_path}" >> ${QCD_STORE}
+    command echo -e "${ept}:${adir}" >> ${QCD_STORE}
 
     # Sort Store File In Place
     command sort -o ${QCD_STORE} -n -t ':' -k2 ${QCD_STORE}
@@ -282,11 +282,11 @@ function _show_cursor() {
 }
 
 function _hide_cursor() {
-  # Set Cursor To Hidden
-  command tput civis 2> /dev/null
-
   # Disable Keyboard Output
   command stty -echo 2> /dev/null
+
+  # Set Cursor To Hidden
+  command tput civis 2> /dev/null
 }
 
 function _exit_process() {
@@ -309,27 +309,36 @@ function _read_input() {
     # Read Character From STDIN
     command read -s -n1 c 2> /dev/null
 
+    # Check Break Conditions
+    if [[ -z ${c} || ${c} == ${QUIT} ]]
+    then
+      # Return Exit Key Action
+      if [[ -z ${c} ]]; then command echo -e "${ENT}"; fi
+      if [[ ${c} == ${QUIT} ]]; then command echo -e "${EXT}"; fi
+
+      # Break Loop
+      break
+    fi
+
     # Append Character To Key String
     key="${key}${c}"
 
     # Check Break Conditions
-    if [[ -z ${c} || ${c} == ${QUIT} || ${#key} -eq 3 ]]
+    if [[ ${#key} -eq 3 ]]
     then
+      # Return Arrow Key Action
+      if [[ ${key} == "${KESC}[A" ]]; then command echo -e "${UP}"; fi
+      if [[ ${key} == "${KESC}[B" ]]; then command echo -e "${DN}"; fi
+
       # Break Loop
       break
     fi
   done
-
-  # Return Keycode
-  if [[ -z ${c} ]]; then command echo -e "${ENT}"; fi
-  if [[ ${c} == ${QUIT} ]]; then command echo -e "${EXT}"; fi
-  if [[ ${key} == "${KESC}[A" ]]; then command echo -e "${UP}"; fi
-  if [[ ${key} == "${KESC}[B" ]]; then command echo -e "${DN}"; fi
 }
 
 function _clear_menu() {
-  # Iterate Over Options
-  for ((i=0; i <= ${1} + 1; i++))
+  # Clear Menu Option Entries
+  for ((oi=0; oi <= ${1} + 1; oi++))
   do
     # Go To Beginning Of Line
     command printf "${KESC}[${COLNUM}D"
@@ -347,7 +356,7 @@ function _clear_menu() {
 
 function _display_menu() {
   # Prepare Terminal Environment
-  _hide_cursor && command trap _exit_process SIGINT &> /dev/null
+  _hide_cursor
 
   # Initialize Selected Line
   local sel_line=${NSET}
@@ -355,8 +364,8 @@ function _display_menu() {
   # Begin Selection Loop
   while [[ 1 ]]
   do
-    # Intiailize Option Index
-    local oi=0
+    # Initialize Option Index
+    local oi=${NSET}
 
     # Clear Temp File
     command echo -en > ${QCD_TEMP}
@@ -365,7 +374,7 @@ function _display_menu() {
     for opt in "${@}"
     do
       # Format Option
-      opt=$(_format_dir "${opt%/}")
+      opt=$(_format_path "${opt%/}")
 
       # Print Conditionally Formatted Option
       if [[ ${oi} -eq ${sel_line} ]]
@@ -388,14 +397,14 @@ function _display_menu() {
     # Check Exit Flag
     if [[ ${EXIT_FLAG} -eq ${TRUE} ]]
     then
-      # Restore Environment
-      _clear_menu $# && _show_cursor
-
-      # Reset Exit Flag
+      # Restore Exit Flag
       EXIT_FLAG=${FALSE}
 
-      # Return Selection
-      return ${NSEL}
+      # Set Selected Line
+      sel_line=${NSEL}
+
+      # Break Loop
+      break
     fi
 
     # Update Cursor Position
@@ -410,21 +419,20 @@ function _display_menu() {
     elif [[ ${key} -eq ${ENT} || ${key} -eq ${EXT} ]]
     then
       # Reset Selected Line
-      if [[ ${key} -eq ${EXT} ]]
-      then
-        sel_line=${NSEL}
-      fi
+      if [[ ${key} -eq ${EXT} ]]; then sel_line=${NSEL}; fi
 
       # Break Loop
       break
     fi
 
-    # Error Check Selected Line
+    # Check For Option Loopback
     if [[ ${sel_line} -eq $# ]]
     then
+      # Jump To Beginning
       sel_line=0
     elif [[ ${sel_line} -lt 0 ]]
     then
+      # Jump To End
       sel_line=$(($# - 1))
     fi
 
@@ -435,7 +443,7 @@ function _display_menu() {
   # Restore Terminal Environment
   _clear_menu $# && _show_cursor
 
-  # Return Selection
+  # Return Selected Line
   return ${sel_line}
 }
 
@@ -454,6 +462,8 @@ function _parse_option_flags() {
       # Add Current Directory
       (_add_directory &)
     else
+      # TODO, multi path remember
+
       # Store Path Argument
       local lpath="${@:1:$(($# - 1))}"
 
@@ -471,7 +481,7 @@ function _parse_option_flags() {
       # Remove Current Directory
       (_remove_directory &)
     else
-      # TODO, multi path forget
+      # TODO, multi link forget
 
       # Store Link Argument
       local ldir="${@:1:$(($# - 1))}"
@@ -596,7 +606,7 @@ function _parse_option_flags() {
     fi
 
     # Format Header
-    command echo -e "\r${W} %-${max_link}s  %-$((${cols} - ${max_link} - 3))s${N}" "Link" "Directory" > ${QCD_TEMP}
+    command printf "\r${W} %-${max_link}s  %-$((${cols} - ${max_link} - 3))s${N}\n" "Link" "Directory" > ${QCD_TEMP}
 
     # Set IFS
     local IFS=$'\n'
@@ -609,7 +619,7 @@ function _parse_option_flags() {
       local path=$(command echo -e "${linkage}" | command awk -F ':' '{print $2}')
 
       # Format Linkage
-      command echo -e " %-${max_link}s  %s" "${link}" "$(_format_dir "${path%/}")" >> ${QCD_TEMP}
+      command printf " %-${max_link}s  %s" "${link}" "$(_format_path "${path%/}")\n" >> ${QCD_TEMP}
     done
 
     # Unset IFS
@@ -809,7 +819,7 @@ function qcd() {
       dir_arg="${back_dir// /${HWD}}"
     else
       # Format Escaped Characters
-      dir_arg=$(_escape_dir "${dir_arg}")
+      dir_arg=$(_escape_path "${dir_arg}")
     fi
   fi
 
@@ -911,7 +921,7 @@ function qcd() {
         path=$(_split_path "${path}")
 
         # Form Complete Path
-        path=$(_escape_dir "${path}${sdir}")
+        path=$(_escape_path "${path}${sdir}")
 
         # Validate Path
         if [[ -d "${path}" && ! "${path%/}" == "${pwd%/}" ]]
@@ -985,7 +995,7 @@ function qcd() {
       fi
 
       # Display Error
-      command echo -e "qcd: $(_format_dir "${pathv%/}"): Directory does not exist"
+      command echo -e "qcd: $(_format_path "${pathv%/}"): Directory does not exist"
 
       # Remove Current Directory
       (_remove_directory "${pathv}" &)
@@ -1099,7 +1109,7 @@ function _qcd_comp() {
       for link_path in ${link_paths[@]}
       do
         # Form Resolved Directory
-        local res_dir=$(_escape_dir "${link_path}${subs_arg}")
+        local res_dir=$(_escape_path "${link_path}${subs_arg}")
 
         # Add Resolved Directory
         if [[ -d "${res_dir}" ]]
@@ -1110,7 +1120,7 @@ function _qcd_comp() {
       done
     else
       # Resolve Local Directories
-      res_dirs=$(_escape_dir "${curr_arg}")
+      res_dirs=$(_escape_path "${curr_arg}")
     fi
 
     # End Path Resolution--------------------------------------------------------------------------------------------------------------------------------------------
@@ -1150,7 +1160,7 @@ function _qcd_comp() {
       for sub_dir in ${sub_dirs[@]}
       do
         # Generate Linked Subdirectory
-        link_sub=$(_escape_dir "${link_arg}${subs_arg}${sub_dir%/}")
+        link_sub=$(_escape_path "${link_arg}${subs_arg}${sub_dir%/}")
 
         # Determine Subdirectory Existence
         if [[ ! -d "${link_sub}" ]]
@@ -1219,8 +1229,11 @@ function _qcd_init() {
     (qcd --clean && _update_links &)
   fi
 
-  # Cleanup Resource Files On Exit
+  # Cleanup Resource Files On EXIT
   command trap _cleanup_files EXIT &> /dev/null
+
+  # Set Exit Global To True On SIGINT
+  command trap _exit_process SIGINT &> /dev/null
 
   # Set Environment To Show Visible Files
   command bind 'set match-hidden-files off' &> /dev/null
