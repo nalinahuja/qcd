@@ -12,7 +12,7 @@
 # TODO, convert for i loops to for in loops
 # TODO, remove link file (experiment)
 # TODO, installer script path prompt
-# TODO, convert printfs to echos
+# TODO, convert echos to printfs
 # TODO, path sorting in manual selection
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -223,7 +223,7 @@ function _add_directory() {
     local ept=$(command basename "${abs_path}")
 
     # Append Data To Store File
-    command printf "${ept}:${abs_path}\n" >> ${QCD_STORE}
+    command echo -e "${ept}:${abs_path}" >> ${QCD_STORE}
 
     # Sort Store File In Place
     command sort -o ${QCD_STORE} -n -t ':' -k2 ${QCD_STORE}
@@ -370,9 +370,9 @@ function _display_menu() {
       # Print Conditionally Formatted Option
       if [[ ${oi} -eq ${sel_line} ]]
       then
-        command printf "${W} ${opt} ${N}\n" >> ${QCD_TEMP}
+        command echo -e "${W} ${opt} ${N}" >> ${QCD_TEMP}
       else
-        command printf " ${opt} \n" >> ${QCD_TEMP}
+        command echo -e " ${opt} " >> ${QCD_TEMP}
       fi
 
       # Increment Option Index
@@ -596,7 +596,7 @@ function _parse_option_flags() {
     fi
 
     # Format Header
-    command printf "\r${W} %-${max_link}s  %-$((${cols} - ${max_link} - 3))s${N}\n" "Link" "Directory" > ${QCD_TEMP}
+    command echo -e "\r${W} %-${max_link}s  %-$((${cols} - ${max_link} - 3))s${N}" "Link" "Directory" > ${QCD_TEMP}
 
     # Set IFS
     local IFS=$'\n'
@@ -609,7 +609,7 @@ function _parse_option_flags() {
       local path=$(command echo -e "${linkage}" | command awk -F ':' '{print $2}')
 
       # Format Linkage
-      command printf " %-${max_link}s  %s\n" "${link}" "$(_format_dir "${path%/}")" >> ${QCD_TEMP}
+      command echo -e " %-${max_link}s  %s" "${link}" "$(_format_dir "${path%/}")" >> ${QCD_TEMP}
     done
 
     # Unset IFS
@@ -803,7 +803,7 @@ function qcd() {
       local back_height=${dir_arg:0:$((${#dir_arg} - 2))}
 
       # Generate Expanded Back Directory
-      local back_dir=$(command printf "%${back_height}s")
+      local back_dir=$(command echo -e "%${back_height}s")
 
       # Override Command Line Arguments
       dir_arg="${back_dir// /${HWD}}"
