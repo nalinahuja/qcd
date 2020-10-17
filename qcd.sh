@@ -8,7 +8,6 @@
 # TODO, speed up completion engine
 # TODO, speed up qcd routine
 # TODO, refactor code
-# TODO, convert for i loops to for in loops
 # TODO, remove link file (experiment)
 # TODO, convert printfs to echos where possible
 
@@ -372,6 +371,13 @@ function _cleanup_files() {
 # End File Management Functions--------------------------------------------------------------------------------------------------------------------------------------
 
 function _add_directory() {
+  # Check For Tracking File
+  if [[ ! -f ${QCD_TRACK} ]]
+  then
+    # Return To Caller
+    return ${OK}
+  fi
+
   # Store Current Path
   local adir=$(_get_pwd)
 
@@ -658,6 +664,23 @@ function _parse_standalone_flags() {
 
     # Terminate Program
     return ${OK}
+  elif [[ ${flag/--toggle-tracking/${TRACK}} == ${TRACK} ]]
+  then
+    # Check For Tracking File
+    if [[ -f ${QCD_TRACK} ]]
+    then
+      # Display Prompt
+      command echo -e "qcd: Directory tracking disabled"
+
+      # Remove Tracking File
+      command rm ${QCD_TRACK} 2> /dev/null
+    else
+      # Display Prompt
+      command echo -e "qcd: Directory tracking enabled"
+
+      # Create Tracking File
+      command touch ${QCD_TRACK} 2> /dev/null
+    fi
   elif [[ ${flag/--update/${UPDATE}} == ${UPDATE} ]]
   then
     # Prompt User For Confirmation
