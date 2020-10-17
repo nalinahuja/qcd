@@ -155,124 +155,6 @@ function _escape_regex() {
 
 # End Utility Functions----------------------------------------------------------------------------------------------------------------------------------------------
 
-function _update_links() {
-  # Store Symbolic Links In Link File
-  command awk -F ':' '{print $1}' ${QCD_STORE} > ${QCD_LINKS}
-}
-
-function _update_store() {
-  # Check Exit Status
-  if [[ ${1} -eq ${OK} ]]
-  then
-    # Update Store File
-    command mv ${QCD_TEMP} ${QCD_STORE} 2> /dev/null
-
-    # Update Link File
-    _update_links
-  else
-    # Remove Temp File
-    command rm ${QCD_TEMP} 2> /dev/null
-  fi
-}
-
-function _verify_files() {
-  # Check For Store File
-  if [[ ! -f ${QCD_STORE} ]]
-  then
-    # Create Store File
-    command touch ${QCD_STORE} 2> /dev/null
-  fi
-
-  # Check For Link File
-  if [[ ! -f ${QCD_LINKS} ]]
-  then
-    # Create Link File
-    _update_links
-  fi
-}
-
-function _cleanup_files() {
-  # Remove Link And Temp Files
-  command rm ${QCD_LINKS} ${QCD_TEMP} 2> /dev/null
-}
-
-# End File Management Functions--------------------------------------------------------------------------------------------------------------------------------------
-
-function _add_directory() {
-  # Store Current Path
-  local adir=$(_get_pwd)
-
-  # Check For Argument Path
-  if [[ $# -gt 0 ]]
-  then
-    # Store Argument Path
-    adir=$(_get_path "${@}")
-
-    # Check Path Validity
-    if [[ ! -d "${adir}" ]]
-    then
-      # Return To Caller
-      return ${ERR}
-    fi
-  fi
-
-  # Store Directory If Unique
-  if [[ ! "${adir%/}" == "${HOME%/}" && -z $(command egrep -s -x ".*:${adir}" ${QCD_STORE} 2> /dev/null) ]]
-  then
-    # Store Basename Of Path
-    local ept=$(command basename "${adir}")
-
-    # Append Data To Store File
-    command echo -e "${ept}:${adir}" >> ${QCD_STORE}
-
-    # Sort Store File In Place
-    command sort -o ${QCD_STORE} -n -t ':' -k2 ${QCD_STORE}
-
-    # Update Link File
-    _update_links
-  fi
-
-  # Return To Caller
-  return ${OK}
-}
-
-function _remove_directory() {
-  # Store Current Path
-  local rdir=$(_get_pwd)
-
-  # Check For Override Path
-  if [[ $# -gt 0 ]]
-  then
-    # Store Indicated Directory Path
-    rdir=$(_escape_regex "${@}")
-  fi
-
-  # Remove Directory From Store File
-  command egrep -s -v -x ".*:${rdir}" ${QCD_STORE} > ${QCD_TEMP} 2> /dev/null
-
-  # Update Store File
-  _update_store ${?}
-
-  # Return To Caller
-  return ${OK}
-}
-
-function _remove_symbolic_link() {
-  # Store Argument Link
-  local rlink=$(_escape_regex "${@%/}")
-
-  # Remove Link From Store File
-  command egrep -s -v -x "${rlink}:.*" ${QCD_STORE} > ${QCD_TEMP} 2> /dev/null
-
-  # Update Store File
-  _update_store ${?}
-
-  # Return To Caller
-  return ${OK}
-}
-
-# End Link Management Functions--------------------------------------------------------------------------------------------------------------------------------------
-
 function _show_cursor() {
   # Enable Keyboard Output
   command stty echo 2> /dev/null
@@ -294,7 +176,7 @@ function _exit_process() {
   EXIT_FLAG=${TRUE}
 }
 
-# End Environment Management Functions-------------------------------------------------------------------------------------------------------------------------------
+# End Environment Functions------------------------------------------------------------------------------------------------------------------------------------------
 
 function _read_input() {
   # Initialize Key String
@@ -447,7 +329,125 @@ function _display_menu() {
   return ${sel_line}
 }
 
-# End Selection Interface Functions----------------------------------------------------------------------------------------------------------------------------------
+# End Menu Selection Functions--------------------------------------------------------------------------------------------------------------------------------------------
+
+function _update_links() {
+  # Store Symbolic Links In Link File
+  command awk -F ':' '{print $1}' ${QCD_STORE} > ${QCD_LINKS}
+}
+
+function _update_store() {
+  # Check Exit Status
+  if [[ ${1} -eq ${OK} ]]
+  then
+    # Update Store File
+    command mv ${QCD_TEMP} ${QCD_STORE} 2> /dev/null
+
+    # Update Link File
+    _update_links
+  else
+    # Remove Temp File
+    command rm ${QCD_TEMP} 2> /dev/null
+  fi
+}
+
+function _verify_files() {
+  # Check For Store File
+  if [[ ! -f ${QCD_STORE} ]]
+  then
+    # Create Store File
+    command touch ${QCD_STORE} 2> /dev/null
+  fi
+
+  # Check For Link File
+  if [[ ! -f ${QCD_LINKS} ]]
+  then
+    # Create Link File
+    _update_links
+  fi
+}
+
+function _cleanup_files() {
+  # Remove Link And Temp Files
+  command rm ${QCD_LINKS} ${QCD_TEMP} 2> /dev/null
+}
+
+# End File Management Functions--------------------------------------------------------------------------------------------------------------------------------------
+
+function _add_directory() {
+  # Store Current Path
+  local adir=$(_get_pwd)
+
+  # Check For Argument Path
+  if [[ $# -gt 0 ]]
+  then
+    # Store Argument Path
+    adir=$(_get_path "${@}")
+
+    # Check Path Validity
+    if [[ ! -d "${adir}" ]]
+    then
+      # Return To Caller
+      return ${ERR}
+    fi
+  fi
+
+  # Store Directory If Unique
+  if [[ ! "${adir%/}" == "${HOME%/}" && -z $(command egrep -s -x ".*:${adir}" ${QCD_STORE} 2> /dev/null) ]]
+  then
+    # Store Basename Of Path
+    local ept=$(command basename "${adir}")
+
+    # Append Data To Store File
+    command echo -e "${ept}:${adir}" >> ${QCD_STORE}
+
+    # Sort Store File In Place
+    command sort -o ${QCD_STORE} -n -t ':' -k2 ${QCD_STORE}
+
+    # Update Link File
+    _update_links
+  fi
+
+  # Return To Caller
+  return ${OK}
+}
+
+function _remove_directory() {
+  # Store Current Path
+  local rdir=$(_get_pwd)
+
+  # Check For Override Path
+  if [[ $# -gt 0 ]]
+  then
+    # Store Indicated Directory Path
+    rdir=$(_escape_regex "${@}")
+  fi
+
+  # Remove Directory From Store File
+  command egrep -s -v -x ".*:${rdir}" ${QCD_STORE} > ${QCD_TEMP} 2> /dev/null
+
+  # Update Store File
+  _update_store ${?}
+
+  # Return To Caller
+  return ${OK}
+}
+
+function _remove_symbolic_link() {
+  # Store Argument Link
+  local rlink=$(_escape_regex "${@%/}")
+
+  # Remove Link From Store File
+  command egrep -s -v -x "${rlink}:.*" ${QCD_STORE} > ${QCD_TEMP} 2> /dev/null
+
+  # Update Store File
+  _update_store ${?}
+
+  # Return To Caller
+  return ${OK}
+}
+
+# End Link Management Functions--------------------------------------------------------------------------------------------------------------------------------------
 
 function _parse_option_flags() {
   # Store Argument Flag
