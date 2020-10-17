@@ -1,6 +1,5 @@
 # Developed by Nalin Ahuja, nalinahuja22
 
-# TODO, directory track toggle flag (README, help)
 # TODO, ignore current directory with -i flag (README, help)
 # TODO, complete flags
 
@@ -214,7 +213,7 @@ function _read_input() {
   done
 }
 
-function _clear_menu() {
+function _clear_input() {
   # Clear Menu Option Entries
   for ((oi=0; oi <= ${1} + 1; oi++))
   do
@@ -315,11 +314,11 @@ function _display_menu() {
     fi
 
     # Clear Previous Menu
-    _clear_menu $(($# - 1))
+    _clear_input $(($# - 1))
   done
 
   # Restore Terminal Environment
-  _clear_menu $# && _show_cursor
+  _clear_input $# && _show_cursor
 
   # Return Selected Line
   return ${sel_line}
@@ -628,7 +627,7 @@ function _parse_option_flags() {
       local path=$(command echo -e "${linkage}" | command awk -F ':' '{print $2}')
 
       # Format Linkage
-      command printf " %-${max_link}s  %s" "${link}" "$(_format_path "${path%/}")\n" >> ${QCD_TEMP}
+      command printf " %-${max_link}s  %s\n" "${link}" "$(_format_path "${path%/}")" >> ${QCD_TEMP}
     done
 
     # Unset IFS
@@ -670,17 +669,43 @@ function _parse_standalone_flags() {
     if [[ -f ${QCD_TRACK} ]]
     then
       # Display Prompt
-      command echo -e "qcd: Directory tracking disabled"
+      command echo -e "qcd: Directory tracking ${B}enabled${N}"
 
-      # Remove Tracking File
-      command rm ${QCD_TRACK} 2> /dev/null
+      # Prompt User For Confirmation
+      command read -p "→ Disable tracking [y/n]: " confirm
     else
       # Display Prompt
-      command echo -e "qcd: Directory tracking enabled"
+      command echo -e "qcd: Directory tracking ${B}disabled${N}"
 
-      # Create Tracking File
-      command touch ${QCD_TRACK} 2> /dev/null
+      # Prompt User For Confirmation
+      command read -p "→ Enable tracking [y/n]: " confirm
     fi
+
+    # Clear Input Prompt
+    _clear_input 1
+
+    # Determine Action
+    if [[ ${confirm//Y/${YES}} == ${YES} ]]
+    then
+      # Check For Tracking File
+      if [[ ! -f ${QCD_TRACK} ]]
+      then
+        # Create Tracking File
+        command touch ${QCD_TRACK}
+
+        # Display Prompt
+        command echo -e "qcd: Directory tracking ${B}enabled${N}"
+      else
+        # Remove Tracking File
+        command rm ${QCD_TRACK}
+
+        # Display Prompt
+        command echo -e "qcd: Directory tracking ${B}disabled${N}"
+      fi
+    fi
+
+    # Terminate Program
+    return ${OK}
   elif [[ ${flag/--update/${UPDATE}} == ${UPDATE} ]]
   then
     # Prompt User For Confirmation
