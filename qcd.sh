@@ -10,6 +10,7 @@
 # TODO, refactor code
 # TODO, remove link file (experiment)
 # TODO, convert printfs to echos where possible
+# TODO, manual selection selection sorting
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
