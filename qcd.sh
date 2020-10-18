@@ -1,5 +1,6 @@
 # Developed by Nalin Ahuja, nalinahuja22
 
+# TODO, ignore current directory with -t flag (README, help)
 # TODO, ignore current directory with -i flag (README, help)
 # TODO, complete flags
 
@@ -834,7 +835,7 @@ function qcd() {
   # End Argument Parsing---------------------------------------------------------------------------------------------------------------------------------------------
 
   # Store Directory Argument
-  local dir_arg="$@"
+  local dir_arg="${@}"
 
   # Check For Empty Input
   if [[ -z ${dir_arg} ]]
@@ -862,7 +863,7 @@ function qcd() {
   # End Input Formatting---------------------------------------------------------------------------------------------------------------------------------------------
 
   # Determine If Directory Is Linked
-  if [[ -d "${dir_arg}" ]]
+  if [[ "${@:$#}" != ${IGNORE} && -d "${dir_arg}" ]]
   then
     # Change To Valid Directory
     command cd "${dir_arg}"
