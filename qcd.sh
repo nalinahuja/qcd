@@ -109,11 +109,8 @@ function _get_name() {
   # Store Argument Directory
   local dir="${@%/}${FLSH}"
 
-  # Get Prefix String
-  local pfx="${dir%/*/}"
-
-  # Get Suffix String
-  local sfx="${dir:$((${#pfx} + 1))}"
+  # Get Argument Directory Components
+  local pfx="${dir%/*/}" sfx="${dir:$((${#pfx} + 1))}"
 
   # Determine Return
   if [[ -z ${sfx} ]]
