@@ -117,7 +117,7 @@ function _get_rname() {
   # Store Argument Directory
   local dir="${@%/}${FLSH}"
 
-  # Get Argument Directory Components
+  # Get Prefix String
   local pfx="${dir#*/*}"
 
   # Determine Return
@@ -138,8 +138,11 @@ function _get_dname() {
   # Store Argument Directory
   local dir="${@%/}${FLSH}"
 
-  # Get Argument Directory Components
-  local pfx="${dir%/*/}" sfx="${dir:$((${#pfx} + 1))}"
+  # Get Prefix String
+  local pfx="${dir%/*/}"
+
+  # Get Suffix String
+  local sfx="${dir:$((${#pfx} + 1))}"
 
   # Determine Return
   if [[ -z ${sfx} ]]
@@ -1288,7 +1291,7 @@ function _qcd_comp() {
     local sym_links=$(command awk -F ':' '{print $1 "\n"}' ${QCD_STORE})
 
     # Get Current Directory Name
-    local pwd=$(_get_name "$(_get_pwd)")
+    local pwd=$(_get_dname $(_get_pwd))
 
     # Initialize Ignore Boolean
     local ignore_pwd=${FALSE}
