@@ -10,6 +10,7 @@
 # TODO, refactor code
 # TODO, remove link file (experiment)
 # TODO, convert printfs to echos where possible
+# TODO, change -eq to == for aesthetic
 # TODO, manual selection selection sorting
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -28,8 +29,8 @@ FALSE=0
 # Keycode Values
 UP=0
 DN=1
-EXT=3
-ENT=4
+EXT=2
+ENT=3
 
 # Embedded Values
 NSET=0
@@ -249,7 +250,7 @@ function _read_input() {
     input="${input}${c}"
 
     # Check Break Conditions
-    if [[ ${#input} -eq 3 ]]
+    if [[ ${#input} == 3 ]]
     then
       # Return Arrow Key Action
       if [[ ${input} == "${KESC}[A" ]]
@@ -287,8 +288,8 @@ function _display_menu() {
   # Prepare Terminal Environment
   _hide_output
 
-  # Initialize Selected Line
-  local sel_line=${NSET}
+  # Initialize Selected Option
+  local sel_opt=${NSET}
 
   # Begin Selection Loop
   while [[ 1 ]]
@@ -305,11 +306,13 @@ function _display_menu() {
       # Format Option
       opt=$(_format_path "${opt%/}")
 
-      # Print Conditionally Formatted Option
-      if [[ ${oi} -eq ${sel_line} ]]
+      # Conditionally Format Option
+      if [[ ${oi} == ${sel_opt} ]]
       then
+        # Print Option As Seleted
         command echo -e "${W} ${opt} ${N}" >> ${QCD_TEMP}
       else
+        # Print Option As Unselected
         command echo -e " ${opt} " >> ${QCD_TEMP}
       fi
 
@@ -317,63 +320,66 @@ function _display_menu() {
       oi=$((${oi} + 1))
     done
 
-    # Output Menu
+    # Output Selection
     command cat ${QCD_TEMP}
 
     # Read User Input
     local key=$(_read_input)
 
     # Check Exit Flag
-    if [[ ${EXIT_FLAG} -eq ${TRUE} ]]
+    if [[ ${EXIT_FLAG} == ${TRUE} ]]
     then
       # Restore Exit Flag
       EXIT_FLAG=${FALSE}
 
       # Set Selected Line
-      sel_line=${NSEL}
+      sel_opt=${NSEL}
 
       # Break Loop
       break
     fi
 
     # Update Cursor Position
-    if [[ ${key} -eq ${UP} ]]
+    if [[ ${key} == ${UP} ]]
     then
       # Decrement Selected Line
-      sel_line=$((${sel_line} - 1))
-    elif [[ ${key} -eq ${DN} ]]
+      sel_opt=$((${sel_opt} - 1))
+    elif [[ ${key} == ${DN} ]]
     then
       # Increment Selected Line
-      sel_line=$((${sel_line} + 1))
-    elif [[ ${key} -eq ${ENT} || ${key} -eq ${EXT} ]]
+      sel_opt=$((${sel_opt} + 1))
+    elif [[ ${key} == ${ENT} || ${key} == ${EXT} ]]
     then
       # Reset Selected Line
-      if [[ ${key} -eq ${EXT} ]]; then sel_line=${NSEL}; fi
+      if [[ ${key} == ${EXT} ]]; then sel_opt=${NSEL}; fi
 
       # Break Loop
       break
     fi
 
     # Check For Option Loopback
-    if [[ ${sel_line} -eq $# ]]
+    if [[ ${sel_opt} -eq $# ]]
     then
-      # Jump To Beginning
-      sel_line=0
-    elif [[ ${sel_line} -lt 0 ]]
+      # Jump To Top
+      sel_opt=0
+    elif [[ ${sel_opt} -lt 0 ]]
     then
-      # Jump To End
-      sel_line=$(($# - 1))
+      # Jump To Bottom
+      sel_opt=$(($# - 1))
     fi
 
-    # Clear Previous Menu
+    # Clear Previous Selection
     _clear_input $#
   done
 
-  # Restore Terminal Environment
-  _clear_input $(($# + 1)) && _show_cursor
+  # Clear All Outputs
+  _clear_input $(($# + 1))
 
-  # Return Selected Line
-  return ${sel_line}
+  # Restore Terminal Environment
+  _show_cursor
+
+  # Return Selected Option
+  return ${sel_opt}
 }
 
 # End Menu Selection Functions---------------------------------------------------------------------------------------------------------------------------------------
