@@ -428,13 +428,13 @@ function _cleanup_files() {
 # End File Management Functions--------------------------------------------------------------------------------------------------------------------------------------
 
 function _add_directory() {
-  # Store Current Path
+  # Store Current Directory
   local adir=$(_get_pwd)
 
-  # Check For Argument Path
+  # Check For Argument Directory
   if [[ $# -gt 0 ]]
   then
-    # Store Argument Path
+    # Store Argument Directory
     adir=$(_get_path "${@}")
 
     # Check Path Validity
@@ -449,7 +449,7 @@ function _add_directory() {
   if [[ ! "${adir%/}" == "${HOME%/}" && -z $(command egrep -s -x ".*:${adir}" ${QCD_STORE} 2> /dev/null) ]]
   then
     # Store Basename Of Path
-    local ept=$(command basename "${adir}")
+    local ept=$(_get_dname "${adir}")
 
     # Append Data To Store File
     command echo -e "${ept}:${adir}" >> ${QCD_STORE}
@@ -466,13 +466,13 @@ function _add_directory() {
 }
 
 function _remove_directory() {
-  # Store Current Path
+  # Store Current Directory
   local rdir=$(_get_pwd)
 
-  # Check For Override Path
+  # Check For Argument Directory
   if [[ $# -gt 0 ]]
   then
-    # Store Indicated Directory Path
+    # Store Argument Directory
     rdir=$(_escape_regex "${@}")
   fi
 
