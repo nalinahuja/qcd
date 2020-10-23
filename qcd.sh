@@ -2,7 +2,6 @@
 
 # TODO, ignore current directory with -t flag (README, help)
 # TODO, ignore current directory with -i flag (README, help)
-# TODO, complete flags
 
 # TODO, update README with sid suggestions
 # TODO, speed up completion engine
@@ -331,11 +330,11 @@ function _display_menu() {
     fi
 
     # Clear Previous Menu
-    _clear_input $(($# - 1))
+    _clear_input $#
   done
 
   # Restore Terminal Environment
-  _clear_input $# && _show_cursor
+  _clear_input $(($# + 1)) && _show_cursor
 
   # Return Selected Line
   return ${sel_line}
@@ -1099,14 +1098,28 @@ function _qcd_comp() {
   # Initialize Completion List
   local comp_list=()
 
-  # Store Command Line Argument
+  # Store Current Argument
   local curr_arg=${COMP_WORDS[COMP_CWORD]}
 
-  # End Global Function Variable Initialization----------------------------------------------------------------------------------------------------------------------
+  # End Completion Resource Initialization---------------------------------------------------------------------------------------------------------------------------
 
   # Determine Completion Type
   if [[ "${curr_arg}" == */* ]]
   then
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
     # Obtain Symbolic Link
     local link_arg=$(command echo -e "${curr_arg}" | command cut -d '/' -f1)
 
