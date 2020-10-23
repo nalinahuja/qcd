@@ -247,7 +247,7 @@ function _clear_input() {
   command printf "${KESC}[1B"
 }
 
-function _display_menu() {
+function _render_menu() {
   # Prepare Terminal Environment
   _hide_output
 
@@ -345,7 +345,7 @@ function _display_menu() {
   return ${sel_opt}
 }
 
-# End Menu Selection Functions---------------------------------------------------------------------------------------------------------------------------------------
+# End User Selection Functions---------------------------------------------------------------------------------------------------------------------------------------
 
 function _update_links() {
   # Store Symbolic Links In Link File
@@ -1017,7 +1017,7 @@ function qcd() {
         command echo -e "qcd: Multiple paths linked to ${B}${dir_arg%/}${N}"
 
         # Generate Menu
-        _display_menu ${fpaths[@]}
+        _render_menu ${fpaths[@]}
 
         # Store Function Status
         local ept=${?}
