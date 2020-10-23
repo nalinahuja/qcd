@@ -16,17 +16,14 @@ declare NSET=0 MINPAD=4 COLNUM=256 TIMEOUT=10
 
 # End Defined Numerical Constants------------------------------------------------------------------------------------------------------------------------------------
 
-# Path Strings
-declare CWD="." HWD="../"
+# Standalone Flags
+declare HELP="-h" UPDATE="-u" VERSION="-v"
 
 # Option Flags
 declare LIST="-l" CLEAN="-c" TRACK="-t" IGNORE="-i" FORGET="-f" REMEMBER="-r" MKDIRENT="-m"
 
-# Standalone Flags
-declare HELP="-h" UPDATE="-u" VERSION="-v"
-
 # Embedded Strings
-declare ESTR="" YES="y" QUIT="q" FLSH="/" BSLH="\\"
+declare CWD="." HWD="../" ESTR="" YES="y" QUIT="q" FLSH="/" BSLH="\\"
 
 # Key Escape String
 declare KESC=$(command printf "\033")
