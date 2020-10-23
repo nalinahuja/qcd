@@ -5,29 +5,36 @@ function program() {
 }
 
 function param() {
-  first=${@#*/}
-  echo $first
+  local args="${@%/}/"
+  pfx=${args#*/*}
+
+  if [[ -z $pfx ]]
+  then
+    echo -e "${args%/}"
+  else
+    echo -e ${args:0:$((${#args} - ${#pfx} - 1))}
+  fi
 }
 
 ctl=0 my=0
 
-test=asdf/
+test="asdf/"
 ctl=$(program "$test")
 my=$(param "$test")
 printf "${test} -> ${ctl} == ${my}\n"
 
-test=asdf/qwer
+test="asdf/qwer"
 ctl=$(program "$test")
 my=$(param "$test")
 printf "${test} -> ${ctl} == ${my}\n"
 
-test=asdf/qwer/1234/
-ctl=$(program "$test")
-my=$(param "$test")
+test="asdf/qwer/1234/"
+ctl=$(time program "$test")
+my=$(time param "$test")
 printf "${test} -> ${ctl} == ${my}\n"
 
 
-test=asdf
+test="asdf"
 ctl=$(program "$test")
 my=$(param "$test")
 printf "${test} -> ${ctl} == ${my}\n"

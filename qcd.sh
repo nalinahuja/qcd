@@ -105,7 +105,28 @@ function _get_pwd() {
   command echo -e "${pwd}${FLSH}"
 }
 
-function _get_name() {
+function _get_rname() {
+  # Store Argument Directory
+  local dir="${@%/}${FLSH}"
+
+  # Get Argument Directory Components
+  local pfx="${dir#*/*}"
+
+  # Determine Return
+  if [[ -z ${pfx} ]]
+  then
+    # Return Full Argument Directory
+    command echo -e "${dir%/}"
+  else
+    # Determine Substring Bounds
+    local si=0 ei=$((${#dir} - ${#pfx} - 1))
+
+    # Return Argument Directory Substring
+    command echo -e "${dir:${si}:${ei}}"
+  fi
+}
+
+function _get_dname() {
   # Store Argument Directory
   local dir="${@%/}${FLSH}"
 
