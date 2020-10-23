@@ -176,16 +176,16 @@ function _escape_regex() {
 
 # End Utility Functions----------------------------------------------------------------------------------------------------------------------------------------------
 
-function _show_cursor() {
-  # Enable Keyboard Output
+function _show_output() {
+  # Enable Terminal Output
   command stty echo 2> /dev/null
 
   # Set Cursor To Visible
   command tput cnorm 2> /dev/null
 }
 
-function _hide_cursor() {
-  # Disable Keyboard Output
+function _hide_output() {
+  # Disable Terminal Output
   command stty -echo 2> /dev/null
 
   # Set Cursor To Hidden
