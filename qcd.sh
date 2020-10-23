@@ -39,26 +39,26 @@ declare W=$(command printf "${KESC}[30m${KESC}[47m")
 # End Defined String Constants---------------------------------------------------------------------------------------------------------------------------------------
 
 # Program Path
-QCD_FOLD=~/.qcd
+declare QCD_FOLD=~/.qcd
 
 # Program Files
-QCD_PROGRAM=${QCD_FOLD}/qcd.sh
-QCD_UPDATE=${QCD_FOLD}/update
-QCD_HELP=${QCD_FOLD}/help
-QCD_TEMP=${QCD_FOLD}/temp
+declare QCD_PROGRAM=${QCD_FOLD}/qcd.sh
+declare QCD_UPDATE=${QCD_FOLD}/update
+declare QCD_HELP=${QCD_FOLD}/help
+declare QCD_TEMP=${QCD_FOLD}/temp
 
 # Resource Files
-QCD_STORE=${QCD_FOLD}/store
-QCD_LINKS=${QCD_FOLD}/links
-QCD_TRACK=${QCD_FOLD}/.track
+declare QCD_STORE=${QCD_FOLD}/store
+declare QCD_LINKS=${QCD_FOLD}/links
+declare QCD_TRACK=${QCD_FOLD}/.track
 
 # Release URL
-QCD_RELEASES="https://api.github.com/repos/nalinahuja22/qcd/releases/latest"
+declare QCD_RELEASES="https://api.github.com/repos/nalinahuja22/qcd/releases/latest"
 
 # End Defined Program Constants--------------------------------------------------------------------------------------------------------------------------------------
 
 # Selection Exit Flag
-EXIT_FLAG=${FALSE}
+declare EXIT_FLAG=${FALSE}
 
 # End Global Program Variables---------------------------------------------------------------------------------------------------------------------------------------
 
