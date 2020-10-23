@@ -12,7 +12,7 @@ declare UP=0 DN=1 EXT=2 ENT=3
 declare OK=0 ERR=1 CONT=2 NFD=127 NSEL=255
 
 # Embedded Values
-declare NSET=0 MINPAD=4 COLNUM=256 TIMEOUT=10
+declare NSET=0 MINPAD=4 TIMEOUT=10 COLNUM=256
 
 # End Defined Numerical Constants------------------------------------------------------------------------------------------------------------------------------------
 
