@@ -339,7 +339,7 @@ function _display_menu() {
   _clear_input $(($# + 1))
 
   # Restore Terminal Environment
-  _show_cursor
+  _show_output
 
   # Return Selected Option
   return ${sel_opt}
