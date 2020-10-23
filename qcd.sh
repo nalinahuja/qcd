@@ -16,15 +16,6 @@ declare NSET=0 MINPAD=4 TIMEOUT=10 COLNUM=256
 
 # End Defined Numerical Constants------------------------------------------------------------------------------------------------------------------------------------
 
-# Standalone Flags
-declare HELP="-h" UPDATE="-u" VERSION="-v"
-
-# Option Flags
-declare LIST="-l" CLEAN="-c" TRACK="-t" IGNORE="-i" FORGET="-f" REMEMBER="-r" MKDIRENT="-m"
-
-# Embedded Strings
-declare CWD="." HWD="../" ESTR="" YES="y" QUIT="q" FLSH="/" BSLH="\\"
-
 # Key Escape String
 declare KESC=$(command printf "\033")
 
@@ -32,6 +23,12 @@ declare KESC=$(command printf "\033")
 declare B=$(command printf "${KESC}[1m")
 declare N=$(command printf "${KESC}(B${KESC}[m")
 declare W=$(command printf "${KESC}[30m${KESC}[47m")
+
+# Embedded Strings
+declare CWD="." HWD="../" ESTR="" YES="y" QUIT="q" FLSH="/" BSLH="\\"
+
+# Program Flags
+declare HELP="-h" LIST="-l" CLEAN="-c" TRACK="-t" IGNORE="-i" UPDATE="-u" FORGET="-f" REMEMBER="-r" MKDIRENT="-m" VERSION="-v"
 
 # End Defined String Constants---------------------------------------------------------------------------------------------------------------------------------------
 
