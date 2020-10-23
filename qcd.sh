@@ -66,12 +66,12 @@ W=$(command printf "${KESC}[30m${KESC}[47m")
 QCD_FOLD=~/.qcd
 
 # Program Files
-QCD_PROG=${QCD_FOLD}/qcd.sh
+QCD_PROGRAM=${QCD_FOLD}/qcd.sh
 QCD_UPDATE=${QCD_FOLD}/update
-
-# Resource Files
 QCD_HELP=${QCD_FOLD}/help
 QCD_TEMP=${QCD_FOLD}/temp
+
+# Resource Files
 QCD_STORE=${QCD_FOLD}/store
 QCD_LINKS=${QCD_FOLD}/links
 QCD_TRACK=${QCD_FOLD}/.track
