@@ -2,63 +2,39 @@
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
-# Return Values
-OK=0
-ERR=1
-CONT=2
-NFD=127
-NSEL=255
-
 # Boolean Values
-TRUE=1
-FALSE=0
+declare TRUE=1 FALSE=0
 
 # Keycode Values
-UP=0
-DN=1
-EXT=2
-ENT=3
+declare UP=0 DN=1 EXT=2 ENT=3
+
+# Function Return Values
+declare OK=0 ERR=1 CONT=2 NFD=127 NSEL=255
 
 # Embedded Values
-NSET=0
-MINPAD=4
-COLNUM=256
-TIMEOUT=10
+declare NSET=0 MINPAD=4 COLNUM=256 TIMEOUT=10
 
 # End Defined Numerical Constants------------------------------------------------------------------------------------------------------------------------------------
 
 # Path Strings
-CWD="."
-HWD="../"
+declare CWD="." HWD="../"
 
 # Option Flags
-LIST="-l"
-CLEAN="-c"
-TRACK="-t"
-IGNORE="-i"
-FORGET="-f"
-REMEMBER="-r"
-MKDIRENT="-m"
+declare LIST="-l" CLEAN="-c" TRACK="-t" IGNORE="-i" FORGET="-f" REMEMBER="-r" MKDIRENT="-m"
 
 # Standalone Flags
-HELP="-h"
-UPDATE="-u"
-VERSION="-v"
+declare HELP="-h" UPDATE="-u" VERSION="-v"
 
 # Embedded Strings
-ESTR=""
-YES="y"
-QUIT="q"
-FLSH="/"
-BSLH="\\"
+declare ESTR="" YES="y" QUIT="q" FLSH="/" BSLH="\\"
 
 # Key Escape String
-KESC=$(command printf "\033")
+declare KESC=$(command printf "\033")
 
 # Text Formatting Strings
-B=$(command printf "${KESC}[1m")
-N=$(command printf "${KESC}(B${KESC}[m")
-W=$(command printf "${KESC}[30m${KESC}[47m")
+declare B=$(command printf "${KESC}[1m")
+declare N=$(command printf "${KESC}(B${KESC}[m")
+declare W=$(command printf "${KESC}[30m${KESC}[47m")
 
 # End Defined String Constants---------------------------------------------------------------------------------------------------------------------------------------
 
