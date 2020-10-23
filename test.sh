@@ -5,16 +5,37 @@ function program() {
 }
 
 function param() {
-  local args="${@%/}/"
-  pfx=${args#*/*}
+  # local args="${@%/}/"
+  # local pfx="${args#*/*}"
+  #
+  # if [[ -z $pfx ]]
+  # then
+  #   echo -e "${args%/}"
+  # else
+  #   echo -e ${args:0:$((${#args} - ${#pfx} - 1))}
+  # fi
 
-  if [[ -z $pfx ]]
+  # Store Argument Directory
+  local dir="${@%/}/"
+
+  # Get Argument Directory Components
+  local pfx="${dir#*/*}"
+
+  # Determine Return
+  if [[ -z ${pfx} ]]
   then
-    echo -e "${args%/}"
+    # Return Full Argument Directory
+    command echo -e "${dir%/}"
   else
-    echo -e ${args:0:$((${#args} - ${#pfx} - 1))}
+    # Determine Substring Bounds
+    local si=0 ei=""
+
+    # Return Argument Directory Substring
+    command echo -e "${dir:0:$((${#dir} - ${#pfx} - 1))}"
   fi
 }
+
+
 
 ctl=0 my=0
 
@@ -29,8 +50,8 @@ my=$(param "$test")
 printf "${test} -> ${ctl} == ${my}\n"
 
 test="asdf/qwer/1234/"
-ctl=$(time program "$test")
-my=$(time param "$test")
+ctl=$(program "$test")
+my=$(param "$test")
 printf "${test} -> ${ctl} == ${my}\n"
 
 

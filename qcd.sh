@@ -105,6 +105,14 @@ function _get_pwd() {
   command echo -e "${pwd}${FLSH}"
 }
 
+function _get_path() {
+  # Store Argument Directory
+  local dir=$(command realpath "${@}")
+
+  # Return Absolute Path
+  command echo -e "${dir}${FLSH}"
+}
+
 function _get_rname() {
   # Store Argument Directory
   local dir="${@%/}${FLSH}"
@@ -142,14 +150,6 @@ function _get_dname() {
     # Return Suffix String
     command echo -e "${sfx%/}"
   fi
-}
-
-function _get_path() {
-  # Store Argument Directory
-  local dir=$(command realpath "${@}")
-
-  # Return Absolute Path
-  command echo -e "${dir}${FLSH}"
 }
 
 function _split_path() {
