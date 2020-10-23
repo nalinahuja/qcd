@@ -98,13 +98,16 @@ EXIT_FLAG=${FALSE}
 # End Global Program Variables---------------------------------------------------------------------------------------------------------------------------------------
 
 function _get_pwd() {
-  # Return Present Working Directory
-  command echo -e "$(command pwd)/"
+  # Store Current Directory
+  local pwd=$(command pwd)
+
+  # Return Current Directory
+  command echo -e "${pwd}${FLSH}"
 }
 
 function _get_name() {
   # Store Argument Directory
-  local dir="${@}"
+  local dir="${@%/}${FLSH}"
 
   # Get Prefix String
   local pfx="${dir%/*/}"
@@ -112,8 +115,15 @@ function _get_name() {
   # Get Suffix String
   local sfx="${dir:$((${#pfx} + 1))}"
 
-  # Return Directory Name
-  command echo -e "${sfx%/}"
+  # Determine Return
+  if [[ -z ${sfx} ]]
+  then
+    # Return Prefix String
+    command echo -e "${pfx%/}"
+  else
+    # Return Suffix String
+    command echo -e "${sfx%/}"
+  fi
 }
 
 function _get_path() {
@@ -1106,7 +1116,7 @@ function _qcd_comp() {
   # Determine Completion Type
   if [[ "${curr_arg}" == */* ]]
   then
-    
+
 
 
 
