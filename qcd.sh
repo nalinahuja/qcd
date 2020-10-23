@@ -19,16 +19,14 @@ declare NSET=0 MINPAD=4 TIMEOUT=10 COLNUM=256
 # Key Escape String
 declare KESC=$(command printf "\033")
 
-# Text Formatting Strings
-declare B=$(command printf "${KESC}[1m")
-declare N=$(command printf "${KESC}(B${KESC}[m")
-declare W=$(command printf "${KESC}[30m${KESC}[47m")
-
 # Embedded Strings
 declare CWD="." HWD="../" ESTR="" YES="y" QUIT="q" FLSH="/" BSLH="\\"
 
 # Program Flags
 declare HELP="-h" LIST="-l" CLEAN="-c" TRACK="-t" IGNORE="-i" UPDATE="-u" FORGET="-f" REMEMBER="-r" MKDIRENT="-m" VERSION="-v"
+
+# Text Formatting Strings
+declare B=$(command printf "${KESC}[1m") N=$(command printf "${KESC}(B${KESC}[m") W=$(command printf "${KESC}[30m${KESC}[47m")
 
 # End Defined String Constants---------------------------------------------------------------------------------------------------------------------------------------
 
