@@ -2,6 +2,7 @@
 
 # TODO, ignore current directory with -t flag (README, help)
 # TODO, ignore current directory with -i flag (README, help)
+# TODO, complete flags
 
 # TODO, update README with sid suggestions
 # TODO, speed up completion engine
@@ -284,7 +285,7 @@ function _clear_input() {
 
 function _display_menu() {
   # Prepare Terminal Environment
-  _hide_cursor
+  _hide_output
 
   # Initialize Selected Line
   local sel_line=${NSET}
