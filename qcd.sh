@@ -695,12 +695,18 @@ function _parse_standalone_flags() {
     return ${OK}
   elif [[ ${flag/--update/${UPDATE}} == ${UPDATE} ]]
   then
+    # Display Prompt
+    command echo -e "qcd: Currently running $(command cat ${QCD_HELP} | command head -n1 | command awk '{print $4}')"
+
     # Prompt User For Confirmation
-    command read -p "qcd: Confirm update [y/n]: " confirm
+    command read -p "→ Confirm update [y/n]: " confirm
 
     # Determine Action
     if [[ ${confirm//Y/${YES}} == ${YES} ]]
     then
+      # Clear 1 Line Above
+      _clear_input 0
+
       # Verify Curl Dependency
       command curl &> /dev/null
 
@@ -781,14 +787,11 @@ function _parse_standalone_flags() {
       # Cleanup Installation
       command rm ${QCD_UPDATE} ${QCD_INSTALLER} 2> /dev/null
 
-      # Get Release Version
-      local release_version=$(command cat ${QCD_HELP} | command head -n1 | command awk '{print $4}')
-
       # Display Prompt
-      command echo -e "\r→ Update complete    \n\nUpdated to ${release_version}"
+      command echo -e "\r→ Update complete    \n\nUpdated to $(command cat ${QCD_HELP} | command head -n1 | command awk '{print $4}')"
     else
-      # Display Prompt
-      command echo -e "→ Update aborted"
+      # Clear 2 Lines Above
+      _clear_input 1
     fi
 
     # Terminate Program
