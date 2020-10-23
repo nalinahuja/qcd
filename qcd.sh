@@ -248,14 +248,14 @@ function _read_input() {
     input="${input}${c}"
 
     # Check Break Conditions
-    if [[ ${#key} -eq 3 ]]
+    if [[ ${#input} -eq 3 ]]
     then
       # Return Arrow Key Action
-      if [[ ${key} == "${KESC}[A" ]]
+      if [[ ${input} == "${KESC}[A" ]]
       then
         # Return Up Arrow Action
         command echo -e "${UP}" && break
-      elif [[ ${key} == "${KESC}[B" ]]
+      elif [[ ${input} == "${KESC}[B" ]]
       then
         # Return Down Arrow Action
         command echo -e "${DN}" && break
