@@ -1,0 +1,12 @@
+# TODO, ignore current directory with -t flag (README, help)
+# TODO, ignore current directory with -i flag (README, help)
+# TODO, complete flags
+
+# TODO, update README with sid suggestions
+# TODO, speed up completion engine
+# TODO, speed up qcd routine
+# TODO, refactor code
+# TODO, remove link file (experiment)
+# TODO, convert printfs to echos where possible
+# TODO, change -eq to == for aesthetic
+# TODO, manual selection selection sorting
