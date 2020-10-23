@@ -124,12 +124,15 @@ function _get_name() {
 }
 
 function _get_path() {
-  # Return Real Path
-  command echo -e "$(command realpath "${@}")/"
+  # Store Argument Directory
+  local dir=$(command realpath "${@}")
+
+  # Return Absolute Path
+  command echo -e "${dir}${FLSH}"
 }
 
 function _split_path() {
-  # Return Absolute Path Of Linkage
+  # Return Absolute Path Of Symbolic Link
   command echo -e "${@#*:}"
 }
 
