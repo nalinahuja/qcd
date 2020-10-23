@@ -224,41 +224,42 @@ function _exit_process() {
 # End Environment Functions------------------------------------------------------------------------------------------------------------------------------------------
 
 function _read_input() {
-  # Initialize Key String
-  local key=${ESTR}
-
-  # Initialize Input String
-  local c=${ESTR}
+  # Initialize String Buffers
+  local input=${ESTR} c=${ESTR}
 
   # Read Input Stream
   while [[ 1 ]]
   do
-    # Read Character From STDIN
+    # Read One Character From STDIN
     command read -s -n1 c 2> /dev/null
 
     # Check Break Conditions
-    if [[ -z ${c} || ${c} == ${QUIT} ]]
+    if [[ -z ${c} ]]
     then
-      # Return Exit Key Action
-      if [[ -z ${c} ]]; then command echo -e "${ENT}"; fi
-      if [[ ${c} == ${QUIT} ]]; then command echo -e "${EXT}"; fi
-
-      # Break Loop
-      break
+      # Return Enter Action
+      command echo -e "${ENT}" && break
+    elif [[ ${c} == ${QUIT} ]]
+    then
+      # Return Quit Action
+      command echo -e "${EXT}" && break
     fi
 
-    # Append Character To Key String
-    key="${key}${c}"
+    # Append Character To Input Buffer
+    input="${input}${c}"
 
     # Check Break Conditions
     if [[ ${#key} -eq 3 ]]
     then
       # Return Arrow Key Action
-      if [[ ${key} == "${KESC}[A" ]]; then command echo -e "${UP}"; fi
-      if [[ ${key} == "${KESC}[B" ]]; then command echo -e "${DN}"; fi
-
-      # Break Loop
-      break
+      if [[ ${key} == "${KESC}[A" ]]
+      then
+        # Return Up Arrow Action
+        command echo -e "${UP}" && break
+      elif [[ ${key} == "${KESC}[B" ]]
+      then
+        # Return Down Arrow Action
+        command echo -e "${DN}" && break
+      fi
     fi
   done
 }
