@@ -61,6 +61,7 @@ VERSION="-v"
 ESTR=""
 YES="y"
 QUIT="q"
+FLSH="/"
 BSLH="\\"
 
 # Key Escape String
@@ -102,6 +103,20 @@ function _get_pwd() {
   command echo -e "$(command pwd)/"
 }
 
+function _get_name() {
+  # Store Argument Directory
+  local dir="${@}"
+
+  # Get Prefix String
+  local pfx="${dir%/*/}"
+
+  # Get Suffix String
+  local sfx="${dir:$((${#pfx} + 1))}"
+
+  # Return Directory Name
+  command echo -e "${sfx%/}"
+}
+
 function _get_path() {
   # Return Real Path
   command echo -e "$(command realpath "${@}")/"
@@ -126,28 +141,28 @@ function _format_path() {
 
 function _escape_path() {
   # Store Argument Path
-  local fpath="${@}"
+  local path="${@}"
 
   # Escape Space Characters
-  fpath="${fpath//\\ / }"
-  fpath="${fpath//\\/}"
+  path="${path//\\ / }"
+  path="${path//\\/}"
 
   # Return Escaped Path
-  command echo -e "${fpath}"
+  command echo -e "${path}"
 }
 
 function _escape_regex() {
   # Store Argument String
-  local fstr="${@}"
+  local str="${@}"
 
   # Escape Regex Characters
-  fstr="${fstr//\*/\\*}"
-  fstr="${fstr//\?/\\?}"
-  fstr="${fstr//\./\\.}"
-  fstr="${fstr//\$/\\$}"
+  str="${str//\*/\\*}"
+  str="${str//\?/\\?}"
+  str="${str//\./\\.}"
+  str="${str//\$/\\$}"
 
   # Return Escaped String
-  command echo -e "${fstr}"
+  command echo -e "${str}"
 }
 
 # End Utility Functions----------------------------------------------------------------------------------------------------------------------------------------------
@@ -216,8 +231,8 @@ function _read_input() {
 }
 
 function _clear_input() {
-  # Clear Menu Option Entries
-  for ((oi=0; oi <= ${1} + 1; oi++))
+  # Clear Line Entries
+  for ((li=0; li <= ${1}; li++))
   do
     # Go To Beginning Of Line
     command printf "${KESC}[${COLNUM}D"
@@ -326,7 +341,7 @@ function _display_menu() {
   return ${sel_line}
 }
 
-# End Menu Selection Functions--------------------------------------------------------------------------------------------------------------------------------------------
+# End Menu Selection Functions---------------------------------------------------------------------------------------------------------------------------------------
 
 function _update_links() {
   # Store Symbolic Links In Link File
@@ -1076,7 +1091,7 @@ function qcd() {
 # End QCD Function---------------------------------------------------------------------------------------------------------------------------------------------------
 
 function _qcd_comp() {
-  # Verify File Integrity
+  # Verify Resource Files
   _verify_files
 
   # End Resource Validation------------------------------------------------------------------------------------------------------------------------------------------
@@ -1222,20 +1237,17 @@ function _qcd_comp() {
         comp_list+=("${link_sub}")
       done
 
-      # Set Completion List
-      COMPREPLY=($(command compgen -W "$(command printf "%s\n" "${comp_list[@]}")" "${curr_arg}" 2> /dev/null))
-
-      # End Option Generation----------------------------------------------------------------------------------------------------------------------------------------
+      # End Option Retrieval-----------------------------------------------------------------------------------------------------------------------------------------
     fi
   else
-    # Get Symbolic Links From Link File
-    local link_dirs=$(command awk '{print $0 "/\n"}' ${QCD_LINKS})
+    # Get Symbolic Links From Store File
+    local sym_links=$(command awk -F ':' '{print $1 "\n"}' ${QCD_STORE})
 
-    # Store Current Directory
-    local pwd=$(command basename "$(_get_pwd)")
+    # Get Current Directory Name
+    local pwd=$(_get_name "$(_get_pwd)")
 
     # Initialize Ignore Boolean
-    local curr_rem=${FALSE}
+    local ignore_pwd=${FALSE}
 
     # End Linkage Acquisition----------------------------------------------------------------------------------------------------------------------------------------
 
@@ -1243,29 +1255,34 @@ function _qcd_comp() {
     local IFS=$'\n'
 
     # Iterate Over Symbolic Links
-    for link_dir in ${link_dirs}
+    for sym_link in ${sym_links}
     do
-      # Add Symbolic Links Outside Of Current Directory
-      if [[ ! -d "${link_dir}" ]]
+      # Determine Symbolic Link Locality
+      if [[ ! -d "${sym_link}" ]]
       then
-        # Ignore Linkages
-        if [[ ${curr_rem} -eq ${FALSE} && "${link_dir%/}" == "${pwd%/}" ]]
+        # Determine Action
+        if [[ ${ignore_pwd} == ${FALSE} && "${sym_link}" == "${pwd}" ]]
         then
           # Exlude Current Directory
-          curr_rem=$TRUE
-        elif [[ ${curr_arg:0:1} == ${CWD} && ${link_dir:0:1} == ${CWD} || ! ${curr_arg:0:1} == ${CWD} && ! ${link_dir:0:1} == ${CWD} ]]
+          ignore_pwd=${TRUE}
+        elif [[ ${curr_arg:0:1} == ${CWD} && ${sym_link:0:1} == ${CWD} || ! ${curr_arg:0:1} == ${CWD} && ! ${sym_link:0:1} == ${CWD} ]]
         then
           # Add Symbolic Links Of Similar Visibility
-          comp_list+=("${link_dir}")
+          comp_list+=("${sym_link}${FLSH}")
         fi
       fi
     done
 
-    # Set Completion List
-    COMPREPLY=($(command compgen -W "$(command printf "%s\n" "${comp_list[@]}")" "${curr_arg}" 2> /dev/null))
-
-    # End Option Generation------------------------------------------------------------------------------------------------------------------------------------------
+    # End Option Retrieval-------------------------------------------------------------------------------------------------------------------------------------------
   fi
+
+  # Set IFS
+  local IFS=$'\n'
+
+  # Set Completion List
+  COMPREPLY=($(command compgen -W "$(command printf "%s\n" "${comp_list[@]}")" "${curr_arg}" 2> /dev/null))
+
+  # End Option Generation--------------------------------------------------------------------------------------------------------------------------------------------
 }
 
 # End QCD Completion Function----------------------------------------------------------------------------------------------------------------------------------------
