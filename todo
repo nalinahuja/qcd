@@ -1,11 +1,8 @@
-ignore automatic directory tracking with -t flag (README, help)
+directory tracking toggle with -t flag (README, help)
 ignore current directory with -i flag (README, help)
-
-update README with sid suggestions
 speed up completion engine
 speed up qcd routine
-refactor code
-remove link file (experiment)
-convert printfs to echos where possible
-change -eq to == for aesthetic
 manual selection sorting
+remove link file
+refactor code (convert printfs to echos where possible, change -eq to == for aesthetic)
+update README with sid suggestions
