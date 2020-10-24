@@ -809,7 +809,7 @@ function qcd() {
   # End Argument Parsing---------------------------------------------------------------------------------------------------------------------------------------------
 
   # Initialize Argument Components
-  local dir_arg=${ESTR} opt_arg=${ESTR}
+  local dir_arg=${ESTR}
 
   # Check Argument Validity
   if [[ -z ${@} ]]
@@ -817,17 +817,8 @@ function qcd() {
     # Set To Home Directory
     dir_arg=~
   else
-    if [[ ${#@} == 1 ]]
-    then
-      # Initialize Directory Argument
-      dir_arg="${@}"
-    else
-      # Initialize Directory Argument
-      dir_arg="${@:1:$((${#@} - 1))}"
-
-      # Initialize Option Argument
-      opt_arg="${@:${#@}}"
-    fi
+    # Initialize Directory Argument
+    dir_arg="${@}"
 
     # Check For Back Directory Pattern
     if [[ "${dir_arg}" =~ ^[0-9]+\.\.$ ]]
@@ -852,7 +843,7 @@ function qcd() {
   # End Input Formatting---------------------------------------------------------------------------------------------------------------------------------------------
 
   # Determine If Directory Is Linked
-  if [[ ${opt_arg} != ${IGNORE} && -d "${dir_arg}" ]]
+  if [[ -d "${dir_arg}" ]]
   then
     # Change To Valid Directory
     command cd "${dir_arg}"

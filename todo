@@ -1,6 +1,5 @@
 mkdir flag add that shit back
 directory tracking toggle with -t flag (README, help)
-ignore current directory with -i flag (README, help)
 speed up completion engine
 speed up qcd routine
 manual selection sorting
