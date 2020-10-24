@@ -12,7 +12,7 @@ declare UP=0 DN=1 EXT=2 ENT=3
 declare OK=0 ERR=1 CONT=2 NFD=127 NSEL=255
 
 # Embedded Values
-declare NSET=0 MINPAD=4 TIMEOUT=10 COLNUM=256
+declare NSET=0 MINPAD=4 COLNUM=256 TIMEOUT=10
 
 # End Defined Numerical Constants------------------------------------------------------------------------------------------------------------------------------------
 
@@ -20,10 +20,10 @@ declare NSET=0 MINPAD=4 TIMEOUT=10 COLNUM=256
 declare KESC=$(command printf "\033")
 
 # Embedded Strings
-declare CWD="." HWD="../" ESTR="" YES="y" QUIT="q" FLSH="/" BSLH="\\"
+declare CWD="." HWD="../" YES="y" QUIT="q" ESTR="" FLSH="/" BSLH="\\"
 
 # Program Flags
-declare HELP="-h" LIST="-l" CLEAN="-c" TRACK="-t" IGNORE="-i" UPDATE="-u" FORGET="-f" REMEMBER="-r" MKDIRENT="-m" VERSION="-v"
+declare HELP="-h" LIST="-l" CLEAN="-c" TRACK="-t" IGNORE="-i" UPDATE="-u" VERSION="-v" FORGET="-f" REMEMBER="-r" MKDIRENT="-m"
 
 # Text Formatting Strings
 declare B=$(command printf "${KESC}[1m") N=$(command printf "${KESC}(B${KESC}[m") W=$(command printf "${KESC}[30m${KESC}[47m")
