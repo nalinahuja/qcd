@@ -24,7 +24,7 @@ Please navigate to the <a href="https://github.com/nalinahuja22/qcd/releases">re
 command wget https://github.com/nalinahuja22/qcd/archive/v1.16.zip
 
 # Using Curl
-command curl -s -L https://github.com/nalinahuja22/qcd/archive/v1.16.zip > v1.16.zip
+command curl -sL https://github.com/nalinahuja22/qcd/archive/v1.16.zip > v1.16.zip
 ```
 
 Alternatively, you can clone this <a href="https://github.com/nalinahuja22/qcd">repository</a> but it is recommended that you download the most recent release since the git repository is comparatively larger.

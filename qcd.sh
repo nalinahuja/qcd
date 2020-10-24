@@ -728,7 +728,7 @@ function _parse_standalone_flags() {
       command echo -en "→ Downloading update "
 
       # Determine Release URL
-      local release_url=$(command curl --connect-timeout ${TIMEOUT} -s -L ${QCD_RELEASES} 2> /dev/null | command egrep -s -o "https.*zipball.*" 2> /dev/null)
+      local release_url=$(command curl --connect-timeout ${TIMEOUT} -sL ${QCD_RELEASES} 2> /dev/null | command egrep -s -o "https.*zipball.*" 2> /dev/null)
 
       # Error Check Release URL
       if [[ ${?} != ${OK} || -z ${release_url} ]]
@@ -741,7 +741,7 @@ function _parse_standalone_flags() {
       fi
 
       # Download Release Contents
-      command curl --connect-timeout ${TIMEOUT} -s -L "${release_url/\",/}" > ${QCD_UPDATE}
+      command curl --connect-timeout ${TIMEOUT} -sL "${release_url/\",/}" > ${QCD_UPDATE}
 
       # Error Check Release Contents
       if [[ ${?} != ${OK} || ! -f ${QCD_UPDATE} ]]
