@@ -42,8 +42,12 @@
 # my=$(param "$test")
 # printf "${test} -> ${ctl} == ${my}\n"
 #
-#
 # test="asdf"
+# ctl=$(program "$test")
+# my=$(param "$test")
+# printf "${test} -> ${ctl} == ${my}\n"
+#
+# test="bruh moment/asdf/qwer"
 # ctl=$(program "$test")
 # my=$(param "$test")
 # printf "${test} -> ${ctl} == ${my}\n"
