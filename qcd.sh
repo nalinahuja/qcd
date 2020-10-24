@@ -784,26 +784,26 @@ function qcd() {
   _parse_option_flags ${@}
 
   # Store Function Status
-  local fstat=${?}
+  local fstatus=${?}
 
   # Check Function Status
-  if [[ ${fstat} -ne ${CONT} ]]
+  if [[ ${fstatus} -ne ${CONT} ]]
   then
     # Terminate Program
-    return ${fstat}
+    return ${fstatus}
   fi
 
   # Parse Arguments For Standalone Flags
   _parse_standalone_flags ${@}
 
   # Store Function Status
-  local fstat=${?}
+  local fstatus=${?}
 
   # Check Function Status
-  if [[ ${fstat} -ne ${CONT} ]]
+  if [[ ${fstatus} -ne ${CONT} ]]
   then
     # Terminate Program
-    return ${fstat}
+    return ${fstatus}
   fi
 
   # End Argument Parsing---------------------------------------------------------------------------------------------------------------------------------------------
