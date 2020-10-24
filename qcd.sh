@@ -1202,7 +1202,7 @@ function _qcd_comp() {
     local sym_links=$(command awk -F ':' '{print $1 "\n"}' ${QCD_STORE})
 
     # Get Current Directory Name
-    local pwd=$(_get_dname $(_get_pwd))
+    local pwd=$(_get_dname "$(_get_pwd)")
 
     # Initialize Ignore Boolean
     local ignore_pwd=${FALSE}
