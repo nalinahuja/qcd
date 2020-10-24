@@ -926,7 +926,7 @@ function qcd() {
     # Check Result Count
     if [[ ${pathc} -gt 1 ]]
     then
-      # Define Matched Path
+      # Initialize Matched Path
       local mpath=${ESTR}
 
       # Store Current Directory
@@ -935,14 +935,14 @@ function qcd() {
       # Initialize Filtered Paths
       local fpaths=()
 
-      # Iterate Over Matched Paths
+      # Iterate Over Path Values
       for path in ${pathv[@]}
       do
         # Substring Path From Delimiter
         path=$(_split_path "${path}")
 
         # Form Complete Path
-        path=$(_escape_path "${path}${sdir}")
+        path=$(_escape_path "${path}${sub_dir}")
 
         # Validate Path
         if [[ -d "${path}" && ! "${path%/}" == "${pwd%/}" ]]
@@ -959,7 +959,7 @@ function qcd() {
       pathc=${#fpaths[@]}
 
       # Check For Single Path
-      if [[ ${pathc} -eq 1 ]]
+      if [[ ${pathc} == 1 ]]
       then
         # Set Matched Path
         mpath="${fpaths[@]}"
@@ -973,15 +973,16 @@ function qcd() {
         # Display Prompt
         command echo -e "qcd: Multiple paths linked to ${B}${dir_arg%/}${N}"
 
-        # Generate Menu
+        # Render Selection Menu
         _render_menu ${fpaths[@]}
 
         # Store Function Status
         local ept=${?}
 
         # Check Function Status
-        if [[ ${ept} -eq ${NSEL} ]]
+        if [[ ${ept} == ${NSEL} ]]
         then
+          # Terminate Program
           return ${OK}
         fi
 
@@ -989,7 +990,7 @@ function qcd() {
         pathv="${fpaths[${ept}]}"
       else
         # Set To Automatically Selected Endpoint
-        pathv=${mpath}
+        pathv="${mpath}"
       fi
     else
       # Substring Path From Delimiter
@@ -1009,7 +1010,7 @@ function qcd() {
     elif [[ ! -d "${pathv}" ]]
     then
       # Check Result Count
-      if [[ ${pathc} -gt 1 ]]
+      if [[ ${pathc} != 1 ]]
       then
         # Print Separator
         command echo
@@ -1028,10 +1029,10 @@ function qcd() {
       command cd "${pathv}"
 
       # Validate Subdirectory
-      if [[ ! -z ${sdir} && -d "${sdir}" ]]
+      if [[ ! -z ${sub_dir} && -d "${sub_dir}" ]]
       then
         # Switch To Subdirectory
-        command cd "${sdir}"
+        command cd "${sub_dir}"
 
         # Check For Tracking File
         if [[ -f ${QCD_TRACK} ]]
