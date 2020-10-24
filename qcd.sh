@@ -1059,7 +1059,7 @@ function _qcd_comp() {
 
     # Determine Subdirectory Locality
     local si=$((${#sym_link} + 1))
-    local ei=$((${#curr_arg} - ${#trail_path} - ${si}))
+    local ei=$((${#curr_arg} - ${#trail_comp} - ${si}))
 
     # Store Subdirectory Path Component
     local sub_comp=${curr_arg:${si}:${ei}}
@@ -1177,7 +1177,10 @@ function _qcd_comp() {
       for sub_dir in ${sub_dirs[@]}
       do
         # Generate Linked Subdirectory
-        local link_sub=$(_escape_path "${sym_link}${sub_comp}${sub_dir%/}")
+        local link_sub=$(_escape_path "${sym_link}${sub_comp}${sub_dir}")
+
+        # Format Linked Subdirectory
+        link_sub="${link_sub%/}"
 
         # Determine Subdirectory Existence
         if [[ ! -d "${link_sub}" ]]
