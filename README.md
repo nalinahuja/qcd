@@ -22,7 +22,7 @@ Please navigate to the <a href="https://github.com/nalinahuja22/qcd/releases">re
 
 #### Installing QCD
 <p align="justify">
-Navigate to the location where QCD has been downloaded onto your machine and run the <a href="https://github.com/nalinahuja22/qcd/blob/master/install_qcd">install_qcd</a> script. This executable will install QCD in the directory <code>~/.qcd</code> and add the QCD command to your terminal profile. When the installation finishes, please source your terminal profile and restart your terminal to fully configure the installation.<br><br>If you would like to do a manual installation of QCD, all you need to do is move the repository contents you downloaded, besides the <a href="https://github.com/nalinahuja22/qcd/blob/master/install_qcd">install_qcd</a> file, into the directory <code>~/.qcd</code> which you will have to create yourself. Then source your terminal profile after adding the following command to your terminal profile and restart your terminal.
+Navigate to the location where QCD has been downloaded onto your machine and run the <a href="https://github.com/nalinahuja22/qcd/blob/master/install_qcd">install_qcd</a> script. This executable will install QCD into the directory <code>~/.qcd</code> and add the QCD command to your terminal profile. When the installation finishes, please source your terminal profile and restart your terminal to fully configure the installation.<br><br>If you would like to do a manual installation of QCD, all you need to do is move the program files you downloaded, besides the <a href="https://github.com/nalinahuja22/qcd/blob/master/install_qcd">install_qcd</a> file, into the directory <code>~/.qcd</code> which you will have to create yourself. Then source your terminal profile after adding the following command to it and restart your terminal.
 
 ```bash
 source ~/.qcd/qcd.sh
@@ -38,6 +38,11 @@ To manually update QCD to a newer release, simply follow the same installation p
 <p align="justify">
 Just like the builtin command <code>cd</code>, simply indicate a valid path relative to the current working directory and QCD will navigate to it. Where QCD differs from <code>cd</code> is that you can indicate a keyword, prefix, or subsequence related to a directory you have previously visited and QCD will attempt to resolve the directory's absolute path and navigate to it.
 </p>
+
+```bash
+# Standard Input    # Flexible Inputs
+qcd <path>          qcd <keyword, prefix, subsequence>
+```
 
 <p align="justify">
 When indicating a keyword to QCD, it can be the complete linked directory and QCD will attempt a case sensitive search using that input. When indicating a prefix or subsequence to QCD, it must start with the first character of the linked directory you wish to navigate to and QCD will attempt a case insensitive search using that input.
