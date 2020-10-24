@@ -44,7 +44,7 @@ When indicating a keyword to QCD, it can be the complete linked directory and QC
 </p>
 
 <p align="justify">
-QCD is capable of recognizing special input formats and sequences. QCD can interpret file system sequences like <code>.</code> and <code>..</code> during linkage and subdirectory completion and file system navigation. QCD can also parse an input in the form <code>[N]..</code> and that will tell QCD to jump to the Nth parent directory relative to the current working directory. These usages can be viewed anytime by using the help flag.<br><br>Assume for the following examples that a directory <code>node-modules</code> exists at an arbitrary location and has been added to QCDs lookup file.
+QCD is capable of recognizing special input formats and sequences. QCD can interpret file system sequences like <code>.</code> and <code>..</code> during linkage and subdirectory completion and file system navigation. QCD can also parse an input in the form <code>[N]..</code> and that will tell QCD to jump to the Nth parent directory relative to the current working directory. These usages can be viewed anytime by using the help flag. Assume for the following examples that a directory <code>node-modules</code> exists at an arbitrary location and has been added to QCDs lookup file.
 </p>
 
 ```bash
@@ -54,7 +54,7 @@ qcd node-modules     qcd node            qcd nm                   qcd 4..
 
 #### Completion Engine
 <p align="justify">
-QCD ships with a custom completion engine that can be activated by hitting the tab key twice. This engine is able to complete directories of the current working directory as well as directories not in the current working directory that QCD has automatically recorded and linked. It is also able to complete subdirectories of the current working directory, complete linked directories, and prefix or subsequenced linked directories.<br><br>Assume for the following examples that a directory <code>node-modules</code> exists at an arbitrary location and has been added to QCDs lookup file.
+QCD ships with a custom completion engine that can be activated by hitting the tab key twice. This engine is able to complete directories of the current working directory as well as directories not in the current working directory that QCD has automatically recorded and linked. It is also able to complete subdirectories of the current working directory, complete linked directories, and prefix or subsequenced linked directories. Assume for the following examples that a directory <code>node-modules</code> exists at an arbitrary location and has been added to QCDs lookup file.
 </p>
 
 ```bash
