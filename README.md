@@ -99,6 +99,15 @@ The clean flag removes symbolic linkages from QCDs lookup file that correspond t
 qcd [-c, --clean]
 ```
 
+#### Make Directory
+<p align="justify">
+The mkdir flag creates a directory at a specified, valid path and switches to that directory. QCD internally adds a symbolic linkage to its lookup file that corresponds to the path of the new directory.
+</p>
+
+```bash
+qcd [path] [-m, --mkdir]
+```
+
 #### List
 <p align="justify">
 The list flag outputs the current contents of the lookup file in sorted order. The user can include an optional regex string ahead of the list flag to filter the output.

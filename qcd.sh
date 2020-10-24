@@ -500,7 +500,7 @@ function _parse_option_flags() {
       local si=0 ei=$((${#dir_path} - ${#trail_path}))
 
       # Store Prefix Path Component
-      local pfx_path="${real_path:${si}:${ei}}"
+      local pfx_path="${dir_path:${si}:${ei}}"
 
       # Verify Path Components
       if [[ -d "${dir_path%/}" ]]
