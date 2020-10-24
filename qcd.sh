@@ -1066,11 +1066,14 @@ function _qcd_comp() {
 
     # End Input Parsing----------------------------------------------------------------------------------------------------------------------------------------------
 
+    # Initialize Resolved Directories
+    local res_dirs=()
+
     # Resolve Linked Directories
     if [[ ! -d "${curr_arg}" ]]
     then
       # Initialize Linkage Parameters
-      local pathv=${NSET}
+      local link_dirs=${NSET}
 
       # Check For Indirect Link Matching
       if [[ -z $(command egrep -s -x "${sym_link}:.*" ${QCD_STORE} 2> /dev/null)  ]]
@@ -1099,13 +1102,13 @@ function _qcd_comp() {
         local IFS=$'\n'
 
         # Get Sequence Matched Symbolic Linkages From Store File
-        pathv=($(command printf "%s\n" $(command egrep -s -i -x "${wld_link}:.*" ${QCD_STORE} 2> /dev/null)))
+        link_dirs=($(command printf "%s\n" $(command egrep -s -i -x "${wld_link}:.*" ${QCD_STORE} 2> /dev/null)))
       else
         # Set IFS
         local IFS=$'\n'
 
         # Get Link Matched Symbolic Linkages From Store File
-        pathv=($(command printf "%s\n" $(command egrep -s -x "${sym_link}:.*" ${QCD_STORE} 2> /dev/null)))
+        link_dirs=($(command printf "%s\n" $(command egrep -s -x "${sym_link}:.*" ${QCD_STORE} 2> /dev/null)))
       fi
 
       # End Linkage Acquisition--------------------------------------------------------------------------------------------------------------------------------------
@@ -1113,20 +1116,20 @@ function _qcd_comp() {
       # Set IFS
       local IFS=$'\n'
 
-      # Initialize Resolved Directories
-      local res_dirs=()
-
       # Iterate Over Linked Paths
-      for link_path in ${pathv[@]}
+      for link_path in ${link_dirs[@]}
       do
-        # Form Resolved Directory
-        local res_dir=$(_escape_path "${link_path}${subs_arg}")
+        # Substring Path From Delimiter
+        link_path=$(_split_path "${link_path}")
+
+        # Form Complete Path
+        link_path=$(_escape_path "${link_path}${subs_arg}")
 
         # Add Resolved Directory
-        if [[ -d "${res_dir}" ]]
+        if [[ -d "${link_path}" ]]
         then
           # Add Resolved Directory To List
-          res_dirs+=($(command printf "%s\n" "${res_dir}"))
+          res_dirs+=($(command printf "%s\n" "${link_path}"))
         fi
       done
     else
