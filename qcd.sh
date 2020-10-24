@@ -812,17 +812,27 @@ function qcd() {
 
   # End Argument Parsing---------------------------------------------------------------------------------------------------------------------------------------------
 
-  # Store Directory Argument
-  local dir_arg="${@}"
+  # Initialize Argument Components
+  local dir_arg=${ESTR} opt_arg=${ESTR}
 
-  # if [[ $# ]]
-
-  # Check For Empty Input
-  if [[ -z ${dir_arg} ]]
+  # Check Argument Validity
+  if [[ -z ${@} ]]
   then
     # Set To Home Directory
     dir_arg=~
   else
+    if [[ ${#@} == 1 ]]
+    then
+      # Initialize Directory Argument
+      dir_arg="${@}"
+    else
+      # Initialize Directory Argument
+      dir_arg="${@:1:$((${#@} - 1))}"
+
+      # Initialize Option Argument
+      opt_arg="${@:${#@}}"
+    fi
+
     # Check For Back Directory Pattern
     if [[ "${dir_arg}" =~ ^[0-9]+\.\.$ ]]
     then
@@ -830,10 +840,13 @@ function qcd() {
       local back_height=${dir_arg:0:$((${#dir_arg} - 2))}
 
       # Generate Expanded Back Directory
-      local back_dir=$(command echo -e "%${back_height}s")
+      local back_dir=$(command printf "%${back_height}s")
 
-      # Override Command Line Arguments
+      # Override Directory Arguments
       dir_arg="${back_dir// /${HWD}}"
+
+      # Override Option Argument
+      opt_arg=${ESTR}
     else
       # Format Escaped Characters
       dir_arg=$(_escape_path "${dir_arg}")
