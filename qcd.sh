@@ -20,7 +20,7 @@ declare NSET=0 MINPAD=4 TIMEOUT=10 COLNUM=256
 declare CWD="." HWD="../" YES="y" QUIT="q" ESTR="" FLSH="/" BSLH="\\" KESC=$(command printf "\033")
 
 # Program Flags
-declare HELP="-h" LIST="-l" CLEAN="-c" TRACK="-t" IGNORE="-i" UPDATE="-u" VERSION="-v" FORGET="-f" REMEMBER="-r" MKDIRENT="-m"
+declare HELP="-h" LIST="-l" CLEAN="-c" TRACK="-t" IGNORE="-i" UPDATE="-u" VERSION="-v" FORGET="-f" REMEMBER="-r"
 
 # Text Formatting Strings
 declare B=$(command printf "${KESC}[1m") N=$(command printf "${KESC}(B${KESC}[m") W=$(command printf "${KESC}[30m${KESC}[47m")
@@ -493,36 +493,12 @@ function _parse_option_flags() {
 
     # Terminate Program
     return ${OK}
-  elif [[ ${flag/--clean/${CLEAN}} == ${CLEAN} ]]
-  then
-    # Get Linked Paths From Store File
-    local lpaths=$(command awk -F ':' '{print $2}' ${QCD_STORE})
-
-    # Set IFS
-    local IFS=$'\n'
-
-    # Iterate Over Linked Paths
-    for lpath in ${lpaths}
-    do
-      # Check Path Validity
-      if [[ ! -d "${lpath}" ]]
-      then
-        # Remove Invalid Path
-        _remove_directory "${lpath}"
-      fi
-    done
-
-    # Unset IFS
-    unset IFS
-
-    # Terminate Program
-    return ${OK}
   elif [[ ${flag/--list/${LIST}} == ${LIST} ]]
   then
     # Display Prompt
     command echo -en "\rqcd: Generating link map..."
 
-    # Load Linkages From Store File
+    # Get Linkages From Store File
     local linkages=$(qcd --clean && command cat ${QCD_STORE})
 
     # Determine List Type
@@ -609,6 +585,30 @@ function _parse_standalone_flags() {
   then
     # Print Installed Version
     command cat ${QCD_HELP} | command head -n1
+
+    # Terminate Program
+    return ${OK}
+  elif [[ ${flag/--clean/${CLEAN}} == ${CLEAN} ]]
+  then
+    # Get Linked Paths From Store File
+    local lpaths=$(command awk -F ':' '{print $2}' ${QCD_STORE})
+
+    # Set IFS
+    local IFS=$'\n'
+
+    # Iterate Over Linked Paths
+    for lpath in ${lpaths}
+    do
+      # Check Path Validity
+      if [[ ! -d "${lpath}" ]]
+      then
+        # Remove Invalid Path
+        _remove_directory "${lpath}"
+      fi
+    done
+
+    # Unset IFS
+    unset IFS
 
     # Terminate Program
     return ${OK}

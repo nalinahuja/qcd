@@ -90,15 +90,6 @@ The forget flag removes a symbolic link from QCDs lookup file that corresponds t
 qcd [link] [-f, --forget]
 ```
 
-#### Make Directory
-<p align="justify">
-The mkdir flag creates a directory at a specified, valid path and switches to that directory. QCD internally adds a symbolic linkage to its lookup file that corresponds to the path of the new directory.
-</p>
-
-```bash
-qcd [path] [-m, --mkdir]
-```
-
 #### Clean
 <p align="justify">
 The clean flag removes symbolic linkages from QCDs lookup file that correspond to directories that may have been renamed or deleted by the user. QCD automatically cleans the lookup file when a new shell session is started, so it is not necessary to frequently clean the lookup file manually.
