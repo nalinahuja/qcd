@@ -17,7 +17,17 @@ QCD does not require any dependencies to operate as a command line utility and u
 
 #### Downloading QCD
 <p align="justify">
-Please navigate to the <a href="https://github.com/nalinahuja22/qcd/releases">release</a> tab of this repository and download the latest version of QCD. You can perform this download within a browser environment or using a command line utility like <code>wget</code> or <code>curl</code>. Alternatively, you can clone this <a href="https://github.com/nalinahuja22/qcd">repository</a> but it is recommended that you download the most recent release since the git repository is comparatively larger.
+Please navigate to the <a href="https://github.com/nalinahuja22/qcd/releases">release</a> tab of this repository and download the latest version of QCD. You can perform this download within a browser environment or using a command line utility like <code>wget</code> or <code>curl</code> as shown below.
+
+```bash
+# Using Wget
+command wget https://github.com/nalinahuja22/qcd/archive/v1.16.zip
+
+# Using Curl
+command curl -s -L https://github.com/nalinahuja22/qcd/archive/v1.16.zip > v1.16.zip
+```
+
+Alternatively, you can clone this <a href="https://github.com/nalinahuja22/qcd">repository</a> but it is recommended that you download the most recent release since the git repository is comparatively larger.
 </p>
 
 #### Installing QCD
