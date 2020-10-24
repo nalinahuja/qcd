@@ -337,20 +337,12 @@ function _render_menu() {
 
 # End User Selection Functions---------------------------------------------------------------------------------------------------------------------------------------
 
-function _update_links() {
-  # Store Symbolic Links In Link File
-  command awk -F ':' '{print $1}' ${QCD_STORE} > ${QCD_LINKS}
-}
-
 function _update_store() {
   # Check Exit Status
   if [[ ${1} == ${OK} ]]
   then
     # Update Store File
     command mv ${QCD_TEMP} ${QCD_STORE} 2> /dev/null
-
-    # Update Link File
-    _update_links
   else
     # Remove Temp File
     command rm ${QCD_TEMP} 2> /dev/null
@@ -363,13 +355,6 @@ function _verify_files() {
   then
     # Create Store File
     command touch ${QCD_STORE} 2> /dev/null
-  fi
-
-  # Check For Link File
-  if [[ ! -f ${QCD_LINKS} ]]
-  then
-    # Create Link File
-    _update_links
   fi
 }
 
@@ -409,9 +394,6 @@ function _add_directory() {
 
     # Sort Store File In Place
     command sort -o ${QCD_STORE} -n -t ':' -k2 ${QCD_STORE}
-
-    # Update Link File
-    _update_links
   fi
 
   # Return To Caller
@@ -1102,7 +1084,7 @@ function _qcd_comp() {
       local link_paths=${NSET}
 
       # Check For Indirect Link Matching
-      if [[ -z $(command egrep -s -x "${link_arg}" ${QCD_LINKS} 2> /dev/null) ]]
+      if [[ -z $(command egrep -s -x "${sym_link}:.*" ${QCD_STORE} 2> /dev/null)  ]]
       then
         # Initialize Parameters
         local i=0 wlink_arg=${ESTR}
@@ -1268,7 +1250,7 @@ function _qcd_init() {
   if [[ -f ${QCD_STORE} ]]
   then
     # Prepare Resource Files
-    (qcd --clean && _update_links &)
+    (qcd --clean &)
   fi
 
   # Cleanup Resource Files On EXIT
