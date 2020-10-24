@@ -858,24 +858,24 @@ function qcd() {
     # Terminate Program
     return ${OK}
   else
-    # Define Directory Components
-    local dlink=${ESTR} sdir=${ESTR}
+    # Initialize Directory Components
+    local sym_link=${ESTR} sub_dir=${ESTR}
 
-    # Define Default Suffix Length
-    local suf_len=${#dir_arg}
+    # Initialize Suffix Length
+    local sfx_len=${#dir_arg}
 
-    # Store Linked Subdirectory
+    # Determine Linked Subdirectory
     if [[ "${dir_arg}" == */* ]]
     then
       # Store Subdirectory Suffix
-      sdir=${dir_arg#*/}
+      sub_dir=${dir_arg#*/}
 
       # Store Suffix Length
-      suf_len=$((${#dir_arg} - ${#sdir} - 1))
+      sfx_len=$((${#dir_arg} - ${#sub_dir} - 1))
     fi
 
     # Escape Regex Characters
-    dlink=$(_escape_regex "${dir_arg:0:${suf_len}}")
+    sym_link=$(_escape_regex "${dir_arg:0:${suf_len}}")
 
     # End Input Directory Parsing------------------------------------------------------------------------------------------------------------------------------------
 
@@ -883,39 +883,39 @@ function qcd() {
     local pathv=${NSET}
 
     # Check For Indirect Link Matching
-    if [[ -z $(command egrep -s -x "${dlink}:.*" ${QCD_STORE} 2> /dev/null) ]]
+    if [[ -z $(command egrep -s -x "${sym_link}:.*" ${QCD_STORE} 2> /dev/null) ]]
     then
       # Initialize Parameters
-      local i=0 wlink=${ESTR}
+      local i=0 wld_link=${ESTR}
 
       # Check For Hidden Directory Prefix
       if [[ "${dir_arg}" == \.* ]]
       then
         # Override Parameters
-        i=2; wlink="${BSLH}${CWD}"
+        i=2; wld_link="${BSLH}${CWD}"
       fi
 
       # Wildcard Symbolic Link
-      for ((; i < ${#dlink}; i++))
+      for ((; i < ${#sym_link}; i++))
       do
         # Get Character At Index
-        local c=${dlink:${i}:1}
+        local c=${sym_link:${i}:1}
 
         # Append Wildcard
-        wlink="${wlink}${c}.*"
+        wld_link="${wld_link}${c}.*"
       done
 
       # Set IFS
       local IFS=$'\n'
 
       # Get Sequence Matched Symbolic Paths From Store File
-      pathv=($(command printf "%s\n" $(command egrep -i -s -x "${wlink}:.*" ${QCD_STORE} 2> /dev/null)))
+      pathv=($(command printf "%s\n" $(command egrep -i -s -x "${wld_link}:.*" ${QCD_STORE} 2> /dev/null)))
     else
       # Set IFS
       local IFS=$'\n'
 
       # Get Link Matched Symbolic Paths From Store File
-      pathv=($(command printf "%s\n" $(command egrep -s -x "${dlink}:.*" ${QCD_STORE} 2> /dev/null)))
+      pathv=($(command printf "%s\n" $(command egrep -s -x "${sym_link}:.*" ${QCD_STORE} 2> /dev/null)))
     fi
 
     # Initialize Path Count
