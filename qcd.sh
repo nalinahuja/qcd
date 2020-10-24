@@ -651,7 +651,7 @@ function _parse_standalone_flags() {
 
     # Terminate Program
     return ${OK}
-  elif [[ ${flag/--toggle-tracking/${TRACK}} == ${TRACK} ]]
+  elif [[ ${flag/--track-dirs/${TRACK}} == ${TRACK} ]]
   then
     # Check For Tracking File
     if [[ -f ${QCD_TRACK} ]]
