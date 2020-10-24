@@ -311,11 +311,11 @@ function _generate_menu() {
     fi
 
     # Check For Option Loopback
-    if [[ ${sel_opt} -gt ${#@} ]]
+    if [[ ${sel_opt} == ${#@} ]]
     then
       # Jump To Top
       sel_opt=0
-    elif [[ ${sel_opt} -lt 0 ]]
+    elif [[ ${sel_opt} == -1 ]]
     then
       # Jump To Bottom
       sel_opt=$((${#@} - 1))
