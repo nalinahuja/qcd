@@ -133,7 +133,7 @@ qcd [regex] [-l, --list]
 
 #### Other
 <p align="justify">
-QCD supports a set of standard flags including the help, version, and update flags.
+QCD supports a set of standard flags such as the help, version, and update flags.
 </p>
 
 ```bash
