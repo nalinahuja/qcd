@@ -1066,14 +1066,14 @@ function _qcd_comp() {
 
     # End Input Parsing----------------------------------------------------------------------------------------------------------------------------------------------
 
-    # Initialize Linked Paths
-    local link_paths=()
+    # Initialize Resolved Directories
+    local res_dirs=()
 
     # Resolve Linked Directories
     if [[ ! -d "${curr_arg}" ]]
     then
-      # Initialize Linkage Parameters
-      local link_dirs=${NSET}
+      # Initialize Linked Paths
+      local link_paths=${NSET}
 
       # Check For Indirect Link Matching
       if [[ -z $(command egrep -s -x "${sym_link}:.*" ${QCD_STORE} 2> /dev/null)  ]]
@@ -1113,9 +1113,6 @@ function _qcd_comp() {
 
       # End Linkage Acquisition--------------------------------------------------------------------------------------------------------------------------------------
 
-      # Initialize Resolved Directories
-      local res_dirs=()
-
       # Set IFS
       local IFS=$'\n'
 
@@ -1145,16 +1142,16 @@ function _qcd_comp() {
     # Error Check Resolved Directory
     if [[ ! -z ${res_dirs} ]]
     then
+      # Set IFS
+      local IFS=$'\n'
+
       # Initialize Subdirectories
       local sub_dirs=()
 
       # Iterate Over Resolved Directories
       for res_dir in ${res_dirs[@]}
       do
-        # Set IFS
-        local IFS=$'\n'
-
-        # Add Linked Subdirectories Of Similar Visibility
+        # Add Subdirectories Of Similar Visibility
         if [[ ! ${trail_comp:0:1} == ${CWD} ]]
         then
           # Add Compressed Visible Linked Subdirectories
@@ -1173,23 +1170,20 @@ function _qcd_comp() {
       # Format Symbolic Link
       sym_link="${sym_link}${FLSH}"
 
-      # Add Linked Subdirectories
+      # Iterate Over Subdirectories
       for sub_dir in ${sub_dirs[@]}
       do
         # Generate Linked Subdirectory
-        local link_sub=$(_escape_path "${sym_link}${sub_comp}${sub_dir}")
+        local link_sub=$(_escape_path "${sym_link}${sub_comp}${sub_dir%/}")
 
-        # Format Linked Subdirectory
-        link_sub="${link_sub%/}"
-
-        # Determine Subdirectory Existence
+        # Determine Linked Subdirectory Locality
         if [[ ! -d "${link_sub}" ]]
         then
           # Append Completion Slash
           link_sub="${link_sub}${FLSH}"
         fi
 
-        # Append To Linked Subdirectory
+        # Add Linked Subdirectories
         comp_list+=("${link_sub}")
       done
 
