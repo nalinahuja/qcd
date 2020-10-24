@@ -1052,72 +1052,69 @@ function _qcd_comp() {
   if [[ "${curr_arg}" == */* ]]
   then
     # Store Symbolic Link
-    local sym_link=$(_get_rname "${curr_arg}")
+    local link_arg=$(_get_rname "${curr_arg}")
 
-    # Store Trailing Path Component
-    local trail_comp="${curr_arg##*/}"
+    # Obtain Trailing Subdirectory Path
+    local trail_arg="${curr_arg##*/}"
 
     # Determine Subdirectory Locality
     local si=$((${#sym_link} + 1))
     local ei=$((${#curr_arg} - ${#trail_path} - ${si}))
 
     # Store Subdirectory Path Component
-    local sub_comp=${curr_arg:${si}:${ei}}
+    local subs_arg=${curr_arg:${si}:${ei}}
 
     # End Input Parsing----------------------------------------------------------------------------------------------------------------------------------------------
 
     # Initialize Linked Paths
-    local link_paths=()
+    local link_paths=${NSET}
 
     # Resolve Linked Directories
     if [[ ! -d "${curr_arg}" ]]
     then
-      # Initialize Linkage Parameters
-      local link_dirs=${NSET}
-
       # Check For Indirect Link Matching
-      if [[ -z $(command egrep -s -x "${sym_link}:.*" ${QCD_STORE} 2> /dev/null)  ]]
+      if [[ -z $(command egrep -s -x "${link_arg}:.*" ${QCD_STORE} 2> /dev/null) ]]
       then
         # Initialize Parameters
-        local i=0 wld_link=${ESTR}
+        local i=0 wlink_arg=${ESTR}
 
         # Check For Hidden Directory Prefix
-        if [[ "${sym_link}" == \.* ]]
+        if [[ "${link_arg}" == \.* ]]
         then
           # Override Parameters
-          i=1; wld_link="${BSLH}${CWD}"
+          i=1; wlink_arg="${BSLH}${CWD}"
         fi
 
         # Wildcard Symbolic Link
-        for ((;i < ${#sym_link}; i++))
+        for ((;i < ${#link_arg}; i++))
         do
           # Get Character At Index
-          local c=${sym_link:${i}:1}
+          local c=${link_arg:${i}:1}
 
           # Append Wildcard
-          wld_link="${wld_link}${c}.*"
+          wlink_arg="${wlink_arg}${c}.*"
         done
 
         # Set IFS
         local IFS=$'\n'
 
         # Get Sequence Matched Symbolic Linkages From Store File
-        link_paths=($(command printf "%s\n" $(command egrep -s -i -x "${wld_link}:.*" ${QCD_STORE} 2> /dev/null)))
+        link_paths=($(command printf "%s\n" $(command egrep -s -i -x "${wlink_arg}:.*" ${QCD_STORE} 2> /dev/null | command awk -F ':' '{print $2}')))
       else
         # Set IFS
         local IFS=$'\n'
 
         # Get Link Matched Symbolic Linkages From Store File
-        link_paths=($(command printf "%s\n" $(command egrep -s -x "${sym_link}:.*" ${QCD_STORE} 2> /dev/null)))
+        link_paths=($(command printf "%s\n" $(command egrep -s -x "${link_arg}:.*" ${QCD_STORE} 2> /dev/null | command awk -F ':' '{print $2}')))
       fi
 
       # End Linkage Acquisition--------------------------------------------------------------------------------------------------------------------------------------
 
-      # Initialize Resolved Directories
-      local res_dirs=()
-
       # Set IFS
       local IFS=$'\n'
+
+      # Initialize Resolved Directories
+      local res_dirs=()
 
       # Iterate Over Linked Paths
       for link_path in ${link_paths[@]}
@@ -1126,10 +1123,10 @@ function _qcd_comp() {
         link_path=$(_split_path "${link_path}")
 
         # Form Complete Path
-        link_path=$(_escape_path "${link_path}${sub_comp}")
+        link_path=$(_escape_dir "${link_path}${subs_arg}")
 
         # Add Resolved Directory
-        if [[ -d "${link_path}" ]]
+        if [[ -d "${res_dir}" ]]
         then
           # Add Resolved Directory To List
           res_dirs+=($(command printf "%s\n" "${link_path}"))
@@ -1137,7 +1134,7 @@ function _qcd_comp() {
       done
     else
       # Resolve Local Directories
-      res_dirs=$(_escape_path "${curr_arg}")
+      res_dirs=$(_escape_dir "${curr_arg}")
     fi
 
     # End Path Resolution--------------------------------------------------------------------------------------------------------------------------------------------
@@ -1145,17 +1142,17 @@ function _qcd_comp() {
     # Error Check Resolved Directory
     if [[ ! -z ${res_dirs} ]]
     then
+      # Set IFS
+      local IFS=$'\n'
+
       # Initialize Subdirectories
       local sub_dirs=()
 
       # Iterate Over Resolved Directories
       for res_dir in ${res_dirs[@]}
       do
-        # Set IFS
-        local IFS=$'\n'
-
         # Add Linked Subdirectories Of Similar Visibility
-        if [[ ! ${trail_path:0:1} == ${CWD} ]]
+        if [[ ! ${trail_arg:0:1} == ${CWD} ]]
         then
           # Add Compressed Visible Linked Subdirectories
           sub_dirs+=($(command printf "%s\n" $(command ls -F "${res_dir}" 2> /dev/null | command egrep -s -x ".*/" 2> /dev/null)))
@@ -1171,19 +1168,19 @@ function _qcd_comp() {
       local IFS=$'\n'
 
       # Format Symbolic Link
-      sym_link="${sym_link}/"
+      link_arg="${link_arg}${FLSH}"
 
       # Add Linked Subdirectories
       for sub_dir in ${sub_dirs[@]}
       do
         # Generate Linked Subdirectory
-        link_sub=$(_escape_path "${sym_link}${sub_dir%/}")
+        local link_sub=$(_escape_dir "${link_arg}${subs_arg}${sub_dir%/}")
 
         # Determine Subdirectory Existence
         if [[ ! -d "${link_sub}" ]]
         then
           # Append Completion Slash
-          link_sub="${link_sub}/"
+          link_sub="${link_sub}${FLSH}"
         fi
 
         # Append To Linked Subdirectory
