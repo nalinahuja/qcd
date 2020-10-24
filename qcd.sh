@@ -209,12 +209,15 @@ function _read_input() {
       if [[ ${input} == "${KESC}[A" ]]
       then
         # Return Up Arrow Action
-        command echo -e "${UP}" && break
+        command echo -e "${UP}"
       elif [[ ${input} == "${KESC}[B" ]]
       then
         # Return Down Arrow Action
-        command echo -e "${DN}" && break
+        command echo -e "${DN}"
       fi
+
+      # Break Loop
+      break
     fi
   done
 }
