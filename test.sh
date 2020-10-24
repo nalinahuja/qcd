@@ -138,7 +138,7 @@
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-curr_arg="asdf"
+curr_arg="asdf/asdf/qwer/1234"
 
 # Obtain Symbolic Link
 link_arg=$(command echo -e "${curr_arg}" | command cut -d '/' -f1)
@@ -150,7 +150,33 @@ trail_arg=$(command echo -e "${curr_arg}" | command awk -F '/' '{print $NF}')
 subs_len=$(command echo -e "${curr_arg}" | command awk -F '/' '{print length($0)-length($NF)}')
 subs_arg=${curr_arg:$((${#link_arg} + 1)):$((${subs_len} - ${#link_arg} - 1))}
 
-echo
-echo link $link_arg
-echo trail $trail_arg
-echo sub $subs_arg
+command echo -e "link: $link_arg | sub: $subs_arg | trail: $trail_arg"
+
+declare link_arg subs_arg trail_arg
+
+# Store Argument Directory
+declare dir="${curr_arg%/}/"
+
+# Get Prefix String
+declare pfx="${dir#*/*}"
+
+# Determine Return
+if [[ -z ${pfx} ]]
+then
+  # Return Full Argument Directory
+  link_arg=$(command echo -e "${dir%/}")
+else
+  # Determine Substring Bounds
+  declare si=0 ei=$((${#dir} - ${#pfx} - 1))
+
+  # Return Argument Directory Substring
+  link_arg=$(command echo -e "${dir:${si}:${ei}}")
+fi
+
+# Store Argument Directory
+trail_arg="${curr_arg##*/}"
+
+si=$((${#link_arg} + 1))
+ei=$((${#curr_arg} - ${#trail_arg} - $si))
+
+command echo -e "link: $link_arg | sub: ${curr_arg:$si:$ei} | trail: $trail_arg"

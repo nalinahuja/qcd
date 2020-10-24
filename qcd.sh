@@ -1051,35 +1051,18 @@ function _qcd_comp() {
   # Determine Completion Type
   if [[ "${curr_arg}" == */* ]]
   then
-    # Obtain Symbolic Link
-    local sym_link=$(_get_rname "${curr_arg}")
+    # Store Symbolic Link
+    local link_arg=$(_get_rname "${curr_arg}")
 
+    # Store Trailing Path
+    local trail_arg="${curr_arg##*/}"
 
+    # Determine Subdirectory Locality
+    local si=$((${#link_arg} + 1))
+    local ei=$((${#curr_arg} - ${#trail_arg} - ${si}))
 
-
-
-
-
-
-
-
-
-
-
-    # Obtain Symbolic Link
-    local link_arg=$(command echo -e "${curr_arg}" | command cut -d '/' -f1)
-
-    # Obtain Trailing Subdirectory Path
-    local trail_arg=$(command echo -e "${curr_arg}" | command awk -F '/' '{print $NF}')
-
-    # Obtain Leading Subdirectory Path
-    local subs_len=$(command echo -e "${curr_arg}" | command awk -F '/' '{print length($0)-length($NF)}')
-    local subs_arg=${curr_arg:$((${#link_arg} + 1)):$((${subs_len} - ${#link_arg} - 1))}
-
-    echo
-    echo link $link_arg
-    echo trail $trail_arg
-    echo sub $subs_arg
+    # Store Subdirectory Path
+    local subs_arg=${curr_arg:${si}:${ei}}
 
     # End Input Parsing----------------------------------------------------------------------------------------------------------------------------------------------
 
