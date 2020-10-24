@@ -498,25 +498,29 @@ function _parse_option_flags() {
     # Display Prompt
     command echo -en "\rqcd: Generating link map..."
 
-    # Get Linkages From Store File
-    local linkages=$(qcd --clean && command cat ${QCD_STORE})
+    # Initialize Symbolic Links
+    local sym_links=${NSET}
 
-    # Determine List Type
-    if [[ $# -gt 1 ]]
+    # Conditionally Fetch Symbolic Links
+    if [[ $# == 1 ]]
     then
-      # Initialize Search Phrase
-      local sphrase="${@:1:$(($# - 1))}"
+      # Get All Symbolic Links From Store File
+      sym_links=$(qcd --clean && command cat ${QCD_STORE})
+    else
+      # Store Regex Argument
+      local regex="${@:1:$(($# - 1))}"
 
       # Expand Regex Characters
-      sphrase=${sphrase//\*/\.\*}
-      sphrase=${sphrase//\?/\.}
+      regex="${regex//\*/\.\*}"
+      regex="${regex//\?/\.}"
+      regex="${regex%/}"
 
-      # Filter Linkages By Search Phrase
-      linkages=$(command echo -e "${linkages}" | command egrep -s -x "${sphrase%/}.*:.*" 2> /dev/null)
+      # Get All Symbolic Links From Store File By Regex
+      sym_links=$(qcd --clean && command egrep -s -x "${regex}.*:.*" ${QCD_STORE} 2> /dev/null)
     fi
 
-    # Error Check Linkages
-    if [[ -z ${linkages} ]]
+    # Error Check Symbolic Links
+    if [[ -z ${sym_links} ]]
     then
       # Display Prompt
       command echo -e "\rqcd: No linkages found      "
@@ -526,33 +530,33 @@ function _parse_option_flags() {
     fi
 
     # Store Terminal Column Count
-    local cols=$(command tput cols)
+    local tcols=$(command tput cols)
 
-    # Determine Max Link Length
-    local max_link=$(command echo -e "${linkages}" | command awk -F ':' '{print $1}' | command awk '{print length}' | command sort -n | command tail -n1)
+    # Determine Column Padding
+    local pcols=$(command echo -e "${sym_links}" | command awk -F ':' '{print $1}' | command awk '{print length}' | command sort -n | command tail -n1)
 
-    # Error Check Link Length
-    if [[ ${max_link} -lt ${MINPAD} ]]
+    # Error Check Column Padding
+    if [[ ${pcols} -lt ${MINPAD} ]]
     then
       # Set Padding To Minimum
-      max_link=${MINPAD}
+      pcols=${MINPAD}
     fi
 
     # Format Header
-    command printf "\r${W} %-${max_link}s  %-$((${cols} - ${max_link} - 3))s${N}\n" "Link" "Directory" > ${QCD_TEMP}
+    command printf "\r${W} %-${pcols}s  %-$((${tcols} - ${pcols} - 3))s${N}\n" "Link" "Directory" > ${QCD_TEMP}
 
     # Set IFS
     local IFS=$'\n'
 
     # Iterate Over Linkages
-    for linkage in ${linkages}
+    for sym_link in ${sym_links}
     do
       # Form Linkage Components
-      local link=$(command echo -e "${linkage}" | command awk -F ':' '{print $1}')
-      local path=$(command echo -e "${linkage}" | command awk -F ':' '{print $2}')
+      local path=$(_split_path "${sym_link}")
+      local link=$(_get_dname "${path}")
 
       # Format Linkage
-      command printf " %-${max_link}s  %s\n" "${link}" "$(_format_path "${path%/}")" >> ${QCD_TEMP}
+      command printf " %-${pcols}s  %s\n" "${link}" "$(_format_path "${path%/}")" >> ${QCD_TEMP}
     done
 
     # Unset IFS
