@@ -461,7 +461,7 @@ function _parse_option_flags() {
   # Check For Option Flags
   if [[ ${flag/--remember/${REMEMBER}} == ${REMEMBER} ]]
   then
-    # Determine Removal Type
+    # Determine Remember Type
     if [[ $# -eq 1 ]]
     then
       # Add Current Directory
@@ -478,7 +478,7 @@ function _parse_option_flags() {
     return ${OK}
   elif [[ ${flag/--forget/${FORGET}} == ${FORGET} ]]
   then
-    # Determine Removal Type
+    # Determine Forget Type
     if [[ $# -eq 1 ]]
     then
       # Remove Current Directory
@@ -507,59 +507,13 @@ function _parse_option_flags() {
       # Check Path Validity
       if [[ ! -d "${lpath}" ]]
       then
-        # Remove Invalid Paths
+        # Remove Invalid Path
         _remove_directory "${lpath}"
       fi
     done
 
     # Unset IFS
     unset IFS
-
-    # Terminate Program
-    return ${OK}
-  elif [[ ${flag/--mkdir/${MKDIRENT}} == ${MKDIRENT} ]]
-  then
-    # Verify Argument Count
-    if [[ $# -lt 2 ]]
-    then
-      # Display Prompt
-      command echo -e "qcd: Insufficient arguments"
-
-      # Terminate Program
-      return ${ERR}
-    else
-      # Store Path Argument
-      local real_path="${@:1:$(($# - 1))}"
-
-      # Store Trailing Path
-      local trail_path=$(command basename "${real_path}")
-
-      # Store Prefix Path
-      local prefix_path="${real_path:0:$((${#real_path} - ${#trail_path}))}"
-
-      # Verify Path Components
-      if [[ -d "${real_path%/}" ]]
-      then
-        # Display Prompt
-        command echo -e "qcd: Directory already exists"
-
-        # Terminate Program
-        return ${ERR}
-      elif [[ ! -z ${prefix_path} && ! -d "${prefix_path%/}" ]]
-      then
-        # Display Prompt
-        command echo -e "qcd: Invalid path to new directory"
-
-        # Terminate Program
-        return ${ERR}
-      fi
-
-      # Create Directory At Location
-      command mkdir "${real_path}"
-
-      # QCD Into New Directory
-      qcd "${real_path}"
-    fi
 
     # Terminate Program
     return ${OK}
