@@ -20,7 +20,7 @@ declare NSET=0 MINPAD=4 TIMEOUT=10 COLNUM=256
 declare CWD="." HWD="../" YES="y" QUIT="q" ESTR="" FLSH="/" BSLH="\\" KESC=$(command printf "\033")
 
 # Program Flags
-declare HELP="-h" LIST="-l" CLEAN="-c" TRACK="-t" IGNORE="-i" UPDATE="-u" VERSION="-v" FORGET="-f" REMEMBER="-r"
+declare HELP="-h" LIST="-l" CLEAN="-c" TRACK="-t" UPDATE="-u" VERSION="-v" FORGET="-f" REMEMBER="-r"
 
 # Text Formatting Strings
 declare B=$(command printf "${KESC}[1m") N=$(command printf "${KESC}(B${KESC}[m") W=$(command printf "${KESC}[30m${KESC}[47m")
