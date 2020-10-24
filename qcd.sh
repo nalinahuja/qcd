@@ -20,7 +20,7 @@ declare NSET=0 MINPAD=4 TIMEOUT=10 COLNUM=256
 declare CWD="." HWD="../" YES="y" QUIT="q" ESTR="" FLSH="/" BSLH="\\" KESC=$(command printf "\033")
 
 # Program Flags
-declare HELP="-h" LIST="-l" CLEAN="-c" TRACK="-t" UPDATE="-u" VERSION="-v" FORGET="-f" REMEMBER="-r"
+declare HELP="-h" LIST="-l" CLEAN="-c" TRACK="-t" UPDATE="-u" VERSION="-v" FORGET="-f" REMEMBER="-r" MKDIRENT="-m"
 
 # Text Formatting Strings
 declare B=$(command printf "${KESC}[1m") N=$(command printf "${KESC}(B${KESC}[m") W=$(command printf "${KESC}[30m${KESC}[47m")
@@ -475,6 +475,55 @@ function _parse_option_flags() {
 
       # Remove Symbolic Linkages
       (_remove_symbolic_link "${link}" &)
+    fi
+
+    # Terminate Program
+    return ${OK}
+  elif [[ ${flag/--mkdir/${MKDIRENT}} == ${MKDIRENT} ]]
+  then
+    # Verify Argument Count
+    if [[ ${#@} != 2 ]]
+    then
+      # Display Prompt
+      command echo -e "qcd: Insufficient arguments"
+
+      # Terminate Program
+      return ${ERR}
+    else
+      # Store Directory Path Component
+      local dir_path="${@:1:$((${#@} - 1))}"
+
+      # Store Trailing Path Component
+      local trail_path=$(_get_dname "${dir_path}")
+
+      # Determine Substring Bounds
+      local si=0 ei=$((${#dir_path} - ${#trail_path}))
+
+      # Store Prefix Path Component
+      local pfx_path="${real_path:${si}:${ei}}"
+
+      # Verify Path Components
+      if [[ -d "${dir_path%/}" ]]
+      then
+        # Display Prompt
+        command echo -e "qcd: Directory already exists"
+
+        # Terminate Program
+        return ${ERR}
+      elif [[ ! -z ${pfx_path} && ! -d "${pfx_path%/}" ]]
+      then
+        # Display Prompt
+        command echo -e "qcd: Invalid path to new directory"
+
+        # Terminate Program
+        return ${ERR}
+      fi
+
+      # Create Directory At Location
+      command mkdir "${dir_path}"
+
+      # QCD Into New Directory
+      qcd "${dir_path}"
     fi
 
     # Terminate Program
