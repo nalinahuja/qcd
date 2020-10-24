@@ -12,15 +12,12 @@ declare UP=0 DN=1 EXT=2 ENT=3
 declare OK=0 ERR=1 CONT=2 NFD=127 NSEL=255
 
 # Embedded Values
-declare NSET=0 MINPAD=4 TIMEOUT=10 COLNUM=256 
+declare NSET=0 MINPAD=4 TIMEOUT=10 COLNUM=256
 
 # End Defined Numerical Constants------------------------------------------------------------------------------------------------------------------------------------
 
-# Key Escape String
-declare KESC=$(command printf "\033")
-
 # Embedded Strings
-declare CWD="." HWD="../" YES="y" QUIT="q" ESTR="" FLSH="/" BSLH="\\"
+declare CWD="." HWD="../" YES="y" QUIT="q" ESTR="" FLSH="/" BSLH="\\" KESC=$(command printf "\033")
 
 # Program Flags
 declare HELP="-h" LIST="-l" CLEAN="-c" TRACK="-t" IGNORE="-i" UPDATE="-u" VERSION="-v" FORGET="-f" REMEMBER="-r" MKDIRENT="-m"
