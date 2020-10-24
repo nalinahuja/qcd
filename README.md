@@ -104,7 +104,7 @@ The mkdir flag creates a directory at a specified, valid path and switches to th
 qcd [path] [-m, --mkdir]
 ```
 
-### Track Directories
+#### Track Directories
 <p align="justify">
 The track directories flag allows the user to change the directory tracking behavior of QCD. By default, QCD will add new directories as they are visited to its lookup file. This flag gives the user the ability to disable that feature and resort to manually track directories with the remember and forget flags.
 </p>
