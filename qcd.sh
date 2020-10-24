@@ -31,8 +31,7 @@ declare B=$(command printf "${KESC}[1m") N=$(command printf "${KESC}(B${KESC}[m
 declare QCD_FOLD=~/.qcd
 
 # Program Files
-declare QCD_PROGRAM=${QCD_FOLD}/qcd.sh
-declare QCD_UPDATE=${QCD_FOLD}/update
+declare QCD_PROG=${QCD_FOLD}/qcd.sh
 declare QCD_HELP=${QCD_FOLD}/help
 declare QCD_TEMP=${QCD_FOLD}/temp
 
@@ -41,7 +40,9 @@ declare QCD_STORE=${QCD_FOLD}/store
 declare QCD_LINKS=${QCD_FOLD}/links
 declare QCD_TRACK=${QCD_FOLD}/.track
 
-# Release URL
+# Release Resources
+declare QCD_UPDATE=${QCD_FOLD}/update
+declare QCD_INSTALL=${QCD_FOLD}/install_qcd
 declare QCD_RELEASES="https://api.github.com/repos/nalinahuja22/qcd/releases/latest"
 
 # End Defined Program Constants--------------------------------------------------------------------------------------------------------------------------------------
@@ -218,7 +219,7 @@ function _read_input() {
   done
 }
 
-function _clear_input() {
+function _clear_output() {
   # Clear Line Entries
   for ((li=0; li <= ${1}; li++))
   do
@@ -321,11 +322,11 @@ function _render_menu() {
     fi
 
     # Clear Previous Selection
-    _clear_input $#
+    _clear_output $#
   done
 
   # Clear All Outputs
-  _clear_input $(($# + 1))
+  _clear_output $(($# + 1))
 
   # Restore Terminal Environment
   _show_output
@@ -634,8 +635,8 @@ function _parse_standalone_flags() {
       command read -p "→ Enable tracking [y/n]: " confirm
     fi
 
-    # Clear Input Prompt
-    _clear_input 1
+    # Clear Previous Outputs
+    _clear_output 2
 
     # Determine Action
     if [[ ${confirm//Y/${YES}} == ${YES} ]]
@@ -661,8 +662,11 @@ function _parse_standalone_flags() {
     return ${OK}
   elif [[ ${flag/--update/${UPDATE}} == ${UPDATE} ]]
   then
+    # Store Current Version
+    local curr_ver=$(command cat ${QCD_HELP} | command head -n1 | command awk '{print $4}')
+
     # Display Prompt
-    command echo -e "qcd: Currently running $(command cat ${QCD_HELP} | command head -n1 | command awk '{print $4}')"
+    command echo -e "qcd: Currently running ${curr_ver}"
 
     # Prompt User For Confirmation
     command read -p "→ Confirm update [y/n]: " confirm
@@ -670,8 +674,8 @@ function _parse_standalone_flags() {
     # Determine Action
     if [[ ${confirm//Y/${YES}} == ${YES} ]]
     then
-      # Clear 1 Line Above
-      _clear_input 0
+      # Clear Confirmation Prompt
+      _clear_output 1
 
       # Verify Curl Dependency
       command curl &> /dev/null
@@ -690,7 +694,7 @@ function _parse_standalone_flags() {
       command echo -en "→ Downloading update "
 
       # Determine Release URL
-      local release_url=$(command curl --connect-timeout ${TIMEOUT} -s -L ${QCD_RELEASES} | command egrep -s -o "https.*zipball.*" 2> /dev/null)
+      local release_url=$(command curl --connect-timeout ${TIMEOUT} -s -L ${QCD_RELEASES} 2> /dev/null | command egrep -s -o "https.*zipball.*" 2> /dev/null)
 
       # Error Check Release URL
       if [[ ${?} -ne ${OK} || -z ${release_url} ]]
@@ -747,17 +751,17 @@ function _parse_standalone_flags() {
         return ${ERR}
       fi
 
-      # Define Installer Executable Path
-      local QCD_INSTALLER=${QCD_FOLD}/install_qcd
-
       # Cleanup Installation
-      command rm ${QCD_UPDATE} ${QCD_INSTALLER} 2> /dev/null
+      command rm ${QCD_UPDATE} ${QCD_INSTALL} 2> /dev/null
+
+      # Store New Version
+      local new_ver=$(command cat ${QCD_HELP} | command head -n1 | command awk '{print $4}')
 
       # Display Prompt
-      command echo -e "\r→ Update complete    \n\nUpdated to $(command cat ${QCD_HELP} | command head -n1 | command awk '{print $4}')"
+      command echo -e "\r→ Update complete    \n\nUpdated to ${new_ver}"
     else
-      # Clear 2 Lines Above
-      _clear_input 1
+      # Clear All Outputs
+      _clear_output 2
     fi
 
     # Terminate Program

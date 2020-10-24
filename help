@@ -8,10 +8,10 @@
 
 [1mOptions:(B[m
   qcd [-h, --help]              Show this help
+  qcd [-c, --clean]             Clean store file
   qcd [-v, --version]           Show current version
   qcd [-u, --update]            Update to latest version
 
-  qcd [-c, --clean]             Clean store file
   qcd [-r, --remember]          Remember present directory
   qcd [-f, --forget]            Forget present directory
   qcd [-l, --list]              List directory linkages
