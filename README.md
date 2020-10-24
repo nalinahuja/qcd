@@ -40,12 +40,12 @@ Just like the builtin command <code>cd</code>, simply indicate a valid path rela
 </p>
 
 ```bash
-# Standard Input    # Flexible Inputs
+# Standard Input    # Special Inputs
 qcd <path>          qcd <keyword, prefix, subsequence>
 ```
 
 <p align="justify">
-When indicating a keyword to QCD, it can be the complete linked directory and QCD will attempt a case sensitive search using that input. When indicating a prefix or subsequence to QCD, it must start with the first character of the linked directory you wish to navigate to and QCD will attempt a case insensitive search using that input.
+When indicating a keyword to QCD, it can be the complete linked directory, which means QCD has stored it in its lookup file, and QCD will attempt a case sensitive search using that input. When indicating a prefix or subsequence to QCD, it must start with the first character of the linked directory you wish to navigate to and QCD will attempt a case insensitive search using that input.
 </p>
 
 <p align="justify">
@@ -53,8 +53,8 @@ QCD is capable of recognizing special input formats and sequences. QCD can inter
 </p>
 
 ```bash
-# Keyword Example    # Prefix Example    # Subsequence Example    # Nth Directory Example
-qcd node-modules     qcd node            qcd nm                   qcd 4..
+# Path Example           # Keyword Example    # Prefix Example    # Subsequence Example    # Nth Directory Example
+qcd ./../node-modules    qcd node-modules     qcd node            qcd nm                   qcd 4..
 ```
 
 #### Completion Engine
@@ -104,7 +104,7 @@ The clean flag removes symbolic linkages from QCDs lookup file that correspond t
 qcd [-c, --clean]
 ```
 
-#### Make Directory
+#### Make
 <p align="justify">
 The mkdir flag creates a directory at a specified, valid path and switches to that directory. QCD internally adds a symbolic linkage to its lookup file that corresponds to the path of the new directory.
 </p>
