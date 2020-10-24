@@ -635,12 +635,13 @@ function _parse_standalone_flags() {
       command read -p "→ Enable tracking [y/n]: " confirm
     fi
 
-    # Clear Previous Outputs
-    _clear_output 2
 
     # Determine Action
     if [[ ${confirm//Y/${YES}} == ${YES} ]]
     then
+      # Clear All Outputs
+      _clear_output 2
+
       # Check For Tracking File
       if [[ ! -f ${QCD_TRACK} ]]
       then
@@ -656,6 +657,9 @@ function _parse_standalone_flags() {
         # Display Prompt
         command echo -e "qcd: Directory tracking ${B}disabled${N}"
       fi
+    else
+      # Clear Prompt
+      _clear_output 1
     fi
 
     # Terminate Program
