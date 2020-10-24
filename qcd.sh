@@ -1054,20 +1054,20 @@ function _qcd_comp() {
     # Store Symbolic Link
     local sym_link=$(_get_rname "${curr_arg}")
 
-    # Store Trailing Path
-    local trail_path="${curr_arg##*/}"
+    # Store Trailing Path Component
+    local trail_comp="${curr_arg##*/}"
 
     # Determine Subdirectory Locality
     local si=$((${#sym_link} + 1))
     local ei=$((${#curr_arg} - ${#trail_path} - ${si}))
 
-    # Store Subdirectory Path
-    local sub_dir=${curr_arg:${si}:${ei}}
+    # Store Subdirectory Path Component
+    local sub_comp=${curr_arg:${si}:${ei}}
 
     # End Input Parsing----------------------------------------------------------------------------------------------------------------------------------------------
 
-    # Initialize Resolved Directories
-    local res_dirs=()
+    # Initialize Linked Paths
+    local link_paths=()
 
     # Resolve Linked Directories
     if [[ ! -d "${curr_arg}" ]]
@@ -1089,10 +1089,10 @@ function _qcd_comp() {
         fi
 
         # Wildcard Symbolic Link
-        for ((;i < ${#wld_link}; i++))
+        for ((;i < ${#sym_link}; i++))
         do
           # Get Character At Index
-          local c=${wld_link:${i}:1}
+          local c=${sym_link:${i}:1}
 
           # Append Wildcard
           wld_link="${wld_link}${c}.*"
@@ -1102,28 +1102,31 @@ function _qcd_comp() {
         local IFS=$'\n'
 
         # Get Sequence Matched Symbolic Linkages From Store File
-        link_dirs=($(command printf "%s\n" $(command egrep -s -i -x "${wld_link}:.*" ${QCD_STORE} 2> /dev/null)))
+        link_paths=($(command printf "%s\n" $(command egrep -s -i -x "${wld_link}:.*" ${QCD_STORE} 2> /dev/null)))
       else
         # Set IFS
         local IFS=$'\n'
 
         # Get Link Matched Symbolic Linkages From Store File
-        link_dirs=($(command printf "%s\n" $(command egrep -s -x "${sym_link}:.*" ${QCD_STORE} 2> /dev/null)))
+        link_paths=($(command printf "%s\n" $(command egrep -s -x "${sym_link}:.*" ${QCD_STORE} 2> /dev/null)))
       fi
 
       # End Linkage Acquisition--------------------------------------------------------------------------------------------------------------------------------------
+
+      # Initialize Resolved Directories
+      local res_dirs=()
 
       # Set IFS
       local IFS=$'\n'
 
       # Iterate Over Linked Paths
-      for link_path in ${link_dirs[@]}
+      for link_path in ${link_paths[@]}
       do
         # Substring Path From Delimiter
         link_path=$(_split_path "${link_path}")
 
         # Form Complete Path
-        link_path=$(_escape_path "${link_path}${sub_dir}")
+        link_path=$(_escape_path "${link_path}${sub_comp}")
 
         # Add Resolved Directory
         if [[ -d "${link_path}" ]]
