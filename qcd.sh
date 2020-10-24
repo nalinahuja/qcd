@@ -663,7 +663,7 @@ function _parse_standalone_flags() {
       command curl &> /dev/null
 
       # Check Operation Status
-      if [[ ${?} -eq ${NFD} ]]
+      if [[ ${?} == ${NFD} ]]
       then
         # Display Prompt
         command echo -e "→ Curl dependency not installed"
@@ -992,7 +992,7 @@ function qcd() {
     elif [[ ! -d "${pathv}" ]]
     then
       # Check Result Count
-      if [[ ${pathc} -gt 1 ]]
+      if [[ ${pathc} != 1 ]]
       then
         # Print Separator
         command echo

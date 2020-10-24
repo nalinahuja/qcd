@@ -1,5 +1,4 @@
 mkdir flag add that shit back
 directory tracking toggle with -t flag (README, help)
 speed up completion engine
-refactor code (convert printfs to echos where possible, change -eq to == for aesthetic)
 update README with sid suggestions
