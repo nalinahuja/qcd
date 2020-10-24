@@ -1010,7 +1010,7 @@ function qcd() {
     elif [[ ! -d "${pathv}" ]]
     then
       # Check Result Count
-      if [[ ${pathc} != 1 ]]
+      if [[ ${pathc} -gt 1 ]]
       then
         # Print Separator
         command echo
