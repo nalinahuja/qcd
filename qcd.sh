@@ -237,7 +237,7 @@ function _clear_output() {
   command printf "${KESC}[1B"
 }
 
-function _render_menu() {
+function _generate_menu() {
   # Prepare Terminal Environment
   _hide_output
 
@@ -311,11 +311,11 @@ function _render_menu() {
     fi
 
     # Check For Option Loopback
-    if [[ ${sel_opt} == ${#@} ]]
+    if [[ ${sel_opt} -gt ${#@} ]]
     then
       # Jump To Top
       sel_opt=0
-    elif [[ ${sel_opt} == -1 ]]
+    elif [[ ${sel_opt} -lt 0 ]]
     then
       # Jump To Bottom
       sel_opt=$((${#@} - 1))
@@ -955,8 +955,8 @@ function qcd() {
         # Display Prompt
         command echo -e "qcd: Multiple paths linked to ${B}${dir_arg%/}${N}"
 
-        # Render Selection Menu
-        _render_menu ${fpaths[@]}
+        # Generate Selection Menu
+        _generate_menu ${fpaths[@]}
 
         # Store Function Status
         local ept=${?}
