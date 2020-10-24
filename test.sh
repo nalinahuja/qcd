@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+echo ${#@}
+
 # function program() {
 #   command echo -e "${@}" | command cut -d '/' -f1
 # }

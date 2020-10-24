@@ -311,22 +311,22 @@ function _render_menu() {
     fi
 
     # Check For Option Loopback
-    if [[ ${sel_opt} -eq $# ]]
+    if [[ ${sel_opt} == ${#@} ]]
     then
       # Jump To Top
       sel_opt=0
-    elif [[ ${sel_opt} -lt 0 ]]
+    elif [[ ${sel_opt} == -1 ]]
     then
       # Jump To Bottom
-      sel_opt=$(($# - 1))
+      sel_opt=$((${#@} - 1))
     fi
 
     # Clear Previous Selection
-    _clear_output $#
+    _clear_output ${#@}
   done
 
   # Clear All Outputs
-  _clear_output $(($# + 1))
+  _clear_output $((${#@} + 1))
 
   # Restore Terminal Environment
   _show_output
@@ -344,7 +344,7 @@ function _update_links() {
 
 function _update_store() {
   # Check Exit Status
-  if [[ ${1} -eq ${OK} ]]
+  if [[ ${1} == ${OK} ]]
   then
     # Update Store File
     command mv ${QCD_TEMP} ${QCD_STORE} 2> /dev/null
@@ -385,7 +385,7 @@ function _add_directory() {
   local adir=$(_get_pwd)
 
   # Check For Argument Path
-  if [[ $# -gt 0 ]]
+  if [[ ${#@} != 0 ]]
   then
     # Store Argument Path
     adir=$(_get_path "${@}")
@@ -423,7 +423,7 @@ function _remove_directory() {
   local rdir=$(_get_pwd)
 
   # Check For Argument Path
-  if [[ $# -gt 0 ]]
+  if [[ ${#@} != 0 ]]
   then
     # Store Argument Path
     rdir=$(_escape_regex "${@}")
@@ -457,19 +457,19 @@ function _remove_symbolic_link() {
 
 function _parse_option_flags() {
   # Store Argument Flag
-  local flag="${@:$#}"
+  local flag="${@:${#@}}"
 
   # Check For Option Flags
   if [[ ${flag/--remember/${REMEMBER}} == ${REMEMBER} ]]
   then
     # Determine Remember Type
-    if [[ $# -eq 1 ]]
+    if [[ ${#@} == 1 ]]
     then
       # Add Current Directory
       (_add_directory &)
     else
       # Store Directory Argument
-      local dir="${@:1:$(($# - 1))}"
+      local dir="${@:1:$((${#@} - 1))}"
 
       # Add Directory As Linkage
       (_add_directory "${dir}" &)
@@ -480,13 +480,13 @@ function _parse_option_flags() {
   elif [[ ${flag/--forget/${FORGET}} == ${FORGET} ]]
   then
     # Determine Forget Type
-    if [[ $# -eq 1 ]]
+    if [[ ${#@} == 1 ]]
     then
       # Remove Current Directory
       (_remove_directory &)
     else
       # Store Link Argument
-      local link="${@:1:$(($# - 1))}"
+      local link="${@:1:$((${#@} - 1))}"
 
       # Remove Symbolic Linkages
       (_remove_symbolic_link "${link}" &)
@@ -503,13 +503,13 @@ function _parse_option_flags() {
     local sym_links=${NSET}
 
     # Conditionally Fetch Symbolic Links
-    if [[ $# == 1 ]]
+    if [[ ${#@} == 1 ]]
     then
       # Get All Symbolic Links From Store File
       sym_links=$(qcd --clean && command cat ${QCD_STORE})
     else
       # Store Regex Argument
-      local regex="${@:1:$(($# - 1))}"
+      local regex="${@:1:$((${#@} - 1))}"
 
       # Expand Regex Characters
       regex="${regex//\*/\.\*}"
@@ -576,7 +576,7 @@ function _parse_option_flags() {
 
 function _parse_standalone_flags() {
   # Store Argument Flag
-  local flag="${@:$#}"
+  local flag="${@:${#@}}"
 
   # Check For Standalone Flags
   if [[ ${flag/--help/${HELP}} == ${HELP} ]]
@@ -815,6 +815,8 @@ function qcd() {
   # Store Directory Argument
   local dir_arg="${@}"
 
+  # if [[ $# ]]
+
   # Check For Empty Input
   if [[ -z ${dir_arg} ]]
   then
@@ -841,7 +843,7 @@ function qcd() {
   # End Input Formatting---------------------------------------------------------------------------------------------------------------------------------------------
 
   # Determine If Directory Is Linked
-  if [[ "${@:$#}" != ${IGNORE} && -d "${dir_arg}" ]]
+  if [[ "${@:${#@}}" != ${IGNORE} && -d "${dir_arg}" ]]
   then
     # Change To Valid Directory
     command cd "${dir_arg}"
