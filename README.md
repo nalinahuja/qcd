@@ -63,8 +63,8 @@ QCD is capable of recognizing special input formats and sequences. QCD can inter
 </p>
 
 ```bash
-# Path Example           # Keyword Example    # Prefix Example    # Subsequence Example    # Nth Directory Example
-qcd ./../node-modules    qcd node-modules     qcd node            qcd nm                   qcd 4..
+# Path Example        # Keyword Example    # Prefix Example    # Subsequence Example    # Nth Directory Example
+qcd ./node-modules    qcd node-modules     qcd node            qcd nm                   qcd 4..
 ```
 
 #### Completion Engine
