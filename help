@@ -11,6 +11,7 @@
   qcd [-c, --clean]             Clean store file
   qcd [-v, --version]           Show current version
   qcd [-u, --update]            Update to latest version
+  qcd [-t, --track-dirs]        Set directory tracking behavior
 
   qcd [-r, --remember]          Remember present directory
   qcd [-f, --forget]            Forget present directory
