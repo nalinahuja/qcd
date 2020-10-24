@@ -1058,8 +1058,8 @@ function _qcd_comp() {
     local trail_path="${curr_arg##*/}"
 
     # Determine Subdirectory Locality
-    local si=$((${#link_arg} + 1))
-    local ei=$((${#curr_arg} - ${#trail_arg} - ${si}))
+    local si=$((${#sym_link} + 1))
+    local ei=$((${#curr_arg} - ${#trail_path} - ${si}))
 
     # Store Subdirectory Path
     local sub_dir=${curr_arg:${si}:${ei}}
@@ -1082,7 +1082,7 @@ function _qcd_comp() {
         local i=0 wld_link=${ESTR}
 
         # Check For Hidden Directory Prefix
-        if [[ "${link_arg}" == \.* ]]
+        if [[ "${sym_link}" == \.* ]]
         then
           # Override Parameters
           i=1; wld_link="${BSLH}${CWD}"
@@ -1123,7 +1123,7 @@ function _qcd_comp() {
         link_path=$(_split_path "${link_path}")
 
         # Form Complete Path
-        link_path=$(_escape_path "${link_path}${subs_arg}")
+        link_path=$(_escape_path "${link_path}${sub_dir}")
 
         # Add Resolved Directory
         if [[ -d "${link_path}" ]]
@@ -1152,7 +1152,7 @@ function _qcd_comp() {
         local IFS=$'\n'
 
         # Add Linked Subdirectories Of Similar Visibility
-        if [[ ! ${trail_arg:0:1} == ${CWD} ]]
+        if [[ ! ${trail_path:0:1} == ${CWD} ]]
         then
           # Add Compressed Visible Linked Subdirectories
           sub_dirs+=($(command printf "%s\n" $(command ls -F "${res_dir}" 2> /dev/null | command egrep -s -x ".*/" 2> /dev/null)))
@@ -1168,13 +1168,13 @@ function _qcd_comp() {
       local IFS=$'\n'
 
       # Format Symbolic Link
-      link_arg="${link_arg}/"
+      sym_link="${sym_link}/"
 
       # Add Linked Subdirectories
       for sub_dir in ${sub_dirs[@]}
       do
         # Generate Linked Subdirectory
-        link_sub=$(_escape_path "${link_arg}${subs_arg}${sub_dir%/}")
+        link_sub=$(_escape_path "${sym_link}${sub_dir%/}")
 
         # Determine Subdirectory Existence
         if [[ ! -d "${link_sub}" ]]
