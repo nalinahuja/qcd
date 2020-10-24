@@ -679,7 +679,7 @@ function _parse_standalone_flags() {
       local release_url=$(command curl --connect-timeout ${TIMEOUT} -s -L ${QCD_RELEASES} 2> /dev/null | command egrep -s -o "https.*zipball.*" 2> /dev/null)
 
       # Error Check Release URL
-      if [[ ${?} -ne ${OK} || -z ${release_url} ]]
+      if [[ ${?} != ${OK} || -z ${release_url} ]]
       then
         # Display Prompt
         command echo -e "\r→ Failed to resolve download link for update"
@@ -692,7 +692,7 @@ function _parse_standalone_flags() {
       command curl --connect-timeout ${TIMEOUT} -s -L "${release_url/\",/}" > ${QCD_UPDATE}
 
       # Error Check Release Contents
-      if [[ ${?} -ne ${OK} || ! -f ${QCD_UPDATE} ]]
+      if [[ ${?} != ${OK} || ! -f ${QCD_UPDATE} ]]
       then
         # Display Prompt
         command echo -e "\r→ Failed to download update"
@@ -708,7 +708,7 @@ function _parse_standalone_flags() {
       command unzip -o -j ${QCD_UPDATE} -d ${QCD_FOLD} &> /dev/null
 
       # Error Check Installation
-      if [[ ${?} -ne ${OK} ]]
+      if [[ ${?} != ${OK} ]]
       then
         # Display Prompt
         command echo -e "\r→ Failed to install update"
@@ -724,7 +724,7 @@ function _parse_standalone_flags() {
       command source ${QCD_PROG} 2> /dev/null
 
       # Error Check Installation
-      if [[ ${?} -ne ${OK} ]]
+      if [[ ${?} != ${OK} ]]
       then
         # Display Prompt
         command echo -e "\r→ Failed to configure update "
@@ -769,7 +769,7 @@ function qcd() {
   local fstatus=${?}
 
   # Check Function Status
-  if [[ ${fstatus} -ne ${CONT} ]]
+  if [[ ${fstatus} != ${CONT} ]]
   then
     # Terminate Program
     return ${fstatus}
@@ -782,7 +782,7 @@ function qcd() {
   local fstatus=${?}
 
   # Check Function Status
-  if [[ ${fstatus} -ne ${CONT} ]]
+  if [[ ${fstatus} != ${CONT} ]]
   then
     # Terminate Program
     return ${fstatus}
@@ -857,7 +857,7 @@ function qcd() {
     fi
 
     # Escape Regex Characters
-    sym_link=$(_escape_regex "${dir_arg:0:${suf_len}}")
+    sym_link=$(_escape_regex "${dir_arg:0:${sfx_len}}")
 
     # End Input Directory Parsing------------------------------------------------------------------------------------------------------------------------------------
 
@@ -1051,7 +1051,8 @@ function _qcd_comp() {
   # Determine Completion Type
   if [[ "${curr_arg}" == */* ]]
   then
-
+    # Obtain Symbolic Link
+    local sym_link=$(_get_rname "${curr_arg}")
 
 
 
@@ -1074,6 +1075,11 @@ function _qcd_comp() {
     # Obtain Leading Subdirectory Path
     local subs_len=$(command echo -e "${curr_arg}" | command awk -F '/' '{print length($0)-length($NF)}')
     local subs_arg=${curr_arg:$((${#link_arg} + 1)):$((${subs_len} - ${#link_arg} - 1))}
+
+    echo
+    echo link $link_arg
+    echo trail $trail_arg
+    echo sub $subs_arg
 
     # End Input Parsing----------------------------------------------------------------------------------------------------------------------------------------------
 

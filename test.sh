@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-echo ${#@}
-
 # function program() {
 #   command echo -e "${@}" | command cut -d '/' -f1
 # }
@@ -137,3 +135,22 @@ echo ${#@}
 # my=$(param "$test")
 #
 # printf "${test} -> ${ctl} == ${my}\n"
+
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+curr_arg="asdf"
+
+# Obtain Symbolic Link
+link_arg=$(command echo -e "${curr_arg}" | command cut -d '/' -f1)
+
+# Obtain Trailing Subdirectory Path
+trail_arg=$(command echo -e "${curr_arg}" | command awk -F '/' '{print $NF}')
+
+# Obtain Leading Subdirectory Path
+subs_len=$(command echo -e "${curr_arg}" | command awk -F '/' '{print length($0)-length($NF)}')
+subs_arg=${curr_arg:$((${#link_arg} + 1)):$((${subs_len} - ${#link_arg} - 1))}
+
+echo
+echo link $link_arg
+echo trail $trail_arg
+echo sub $subs_arg
