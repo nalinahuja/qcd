@@ -861,7 +861,7 @@ function qcd() {
 
     # End Input Directory Parsing------------------------------------------------------------------------------------------------------------------------------------
 
-    # Define Linkage Parameters
+    # Initialize Linkage Parameters
     local pathv=${NSET}
 
     # Check For Indirect Link Matching
@@ -1052,60 +1052,60 @@ function _qcd_comp() {
   if [[ "${curr_arg}" == */* ]]
   then
     # Store Symbolic Link
-    local link_arg=$(_get_rname "${curr_arg}")
+    local sym_link=$(_get_rname "${curr_arg}")
 
     # Store Trailing Path
-    local trail_arg="${curr_arg##*/}"
+    local trail_path="${curr_arg##*/}"
 
     # Determine Subdirectory Locality
     local si=$((${#link_arg} + 1))
     local ei=$((${#curr_arg} - ${#trail_arg} - ${si}))
 
     # Store Subdirectory Path
-    local subs_arg=${curr_arg:${si}:${ei}}
+    local sub_dir=${curr_arg:${si}:${ei}}
 
     # End Input Parsing----------------------------------------------------------------------------------------------------------------------------------------------
 
     # Resolve Linked Directories
     if [[ ! -d "${curr_arg}" ]]
     then
-      # Initialize Link Paths
-      local link_paths=${NSET}
+      # Initialize Linkage Parameters
+      local pathv=${NSET}
 
       # Check For Indirect Link Matching
       if [[ -z $(command egrep -s -x "${sym_link}:.*" ${QCD_STORE} 2> /dev/null)  ]]
       then
         # Initialize Parameters
-        local i=0 wlink_arg=${ESTR}
+        local i=0 wld_link=${ESTR}
 
         # Check For Hidden Directory Prefix
         if [[ "${link_arg}" == \.* ]]
         then
           # Override Parameters
-          i=1; wlink_arg="${BSLH}${CWD}"
+          i=1; wld_link="${BSLH}${CWD}"
         fi
 
         # Wildcard Symbolic Link
-        for ((;i < ${#link_arg}; i++))
+        for ((;i < ${#wld_link}; i++))
         do
           # Get Character At Index
-          local c=${link_arg:${i}:1}
+          local c=${wld_link:${i}:1}
 
           # Append Wildcard
-          wlink_arg="${wlink_arg}${c}.*"
+          wld_link="${wld_link}${c}.*"
         done
 
         # Set IFS
         local IFS=$'\n'
 
         # Get Sequence Matched Symbolic Linkages From Store File
-        link_paths=($(command printf "%s\n" $(command egrep -s -i -x "${wlink_arg}:.*" ${QCD_STORE} 2> /dev/null | command awk -F ':' '{print $2}')))
+        pathv=($(command printf "%s\n" $(command egrep -s -i -x "${wld_link}:.*" ${QCD_STORE} 2> /dev/null)))
       else
         # Set IFS
         local IFS=$'\n'
 
         # Get Link Matched Symbolic Linkages From Store File
-        link_paths=($(command printf "%s\n" $(command egrep -s -x "${link_arg}:.*" ${QCD_STORE} 2> /dev/null | command awk -F ':' '{print $2}')))
+        pathv=($(command printf "%s\n" $(command egrep -s -x "${sym_link}:.*" ${QCD_STORE} 2> /dev/null)))
       fi
 
       # End Linkage Acquisition--------------------------------------------------------------------------------------------------------------------------------------
@@ -1117,7 +1117,7 @@ function _qcd_comp() {
       local res_dirs=()
 
       # Iterate Over Linked Paths
-      for link_path in ${link_paths[@]}
+      for link_path in ${pathv[@]}
       do
         # Form Resolved Directory
         local res_dir=$(_escape_path "${link_path}${subs_arg}")
