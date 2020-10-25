@@ -16,7 +16,7 @@ declare QCD_FOLD=~/.qcd
 # Program Files
 declare QCD_HELP=./help
 declare QCD_PROG=./qcd.sh
-declare CD_LICE=./LICENSE
+declare QCD_LICE=./LICENSE
 declare QCD_READ=./README.md
 
 # Bash Profiles
