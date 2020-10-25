@@ -5,39 +5,38 @@
 # End Header-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Boolean Values
-TRUE=1
-FALSE=0
+declare TRUE=1 FALSE=0
 
 # Embedded Strings
-YES="y"
+declare YES="y"
 
 # Program Path
-QCD_FOLD=~/.qcd
+declare QCD_FOLD=~/.qcd
 
 # Program Files
-QCD_HELP=./help
-QCD_PROG=./qcd.sh
-QCD_LICE=./LICENSE
-QCD_READ=./README.md
+declare QCD_HELP=./help
+declare QCD_PROG=./qcd.sh
+declare CD_LICE=./LICENSE
+declare QCD_READ=./README.md
 
 # Bash Profiles
-BASHRC=~/.bashrc
-BASHPR=~/.bash_profile
+declare BASHRC=~/.bashrc
+declare BASHPR=~/.bash_profile
 
 # End Defined Constants------------------------------------------------------------------------------------------------------------------------------------------------
 
-is_update=${TRUE} install_status=${FALSE} install_version=$(command cat ${QCD_HELP} | command head -n1 | command awk '{print $4}')
+declare is_update=${TRUE} install_status=${FALSE} install_version=$(command cat ${QCD_HELP} | command head -n1 | command awk '{print $4}')
 
 # End Global Variables-------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Prompt User For Installation Confirmation
-command read -p "qcd: Please confirm installation of QCD (${install_version}) [y/n]: " confirmation
+command read -p "qcd: Please confirm installation of QCD (${install_version}) [y/n]: " confirm
 
 # Determine Action
-if [[ ${confirmation//Y/${YES}} == ${YES} ]]
+if [[ ${confirm//Y/${YES}} == ${YES} ]]
 then
   # Add Command To Bash Profile
-  if [[ ! -e ${QCD_FOLD} ]]
+  if [[ ! -d ${QCD_FOLD} ]]
   then
     # Find ~/.bashrc
     if [[ -f ${BASHRC} ]]
@@ -54,7 +53,7 @@ then
     fi
 
     # Check Command Installation Status
-    if [[ ${install_status} -eq ${FALSE} ]]
+    if [[ ${install_status} == ${FALSE} ]]
     then
       # Display Error Prompt
       command echo -e "→ No bash configurations found, aborting QCD installation"
@@ -75,7 +74,7 @@ then
   command mv ${QCD_READ} ${QCD_FOLD} 2> /dev/null
 
   # Determine Appropriate Prompt
-  if [[ ${is_update} -eq ${TRUE} ]]
+  if [[ ${is_update} == ${TRUE} ]]
   then
     # Display Upgrade Prompt
     command echo -e "→ Upgraded QCD to ${install_version}"
