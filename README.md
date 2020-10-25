@@ -72,8 +72,9 @@ QCD will accept a keyword, prefix, or subsequence to a directory that has been s
 qcd ./../node-modules    qcd node-modules     qcd node            qcd nm
 ```
 
-<p align
+<p align="justify">
 These usages can be viewed anytime by using the help flag.
+</p>
 
 #### Completion Engine
 <p align="justify">
@@ -81,8 +82,8 @@ QCD ships with a custom completion engine that can be activated by hitting the t
 </p>
 
 ```bash
-# PWD Example                    # Link Example                 # Subsequence Example
-qcd ./node-modules/<tab><tab>    qcd node-modules/<tab><tab>    qcd nm/<tab><tab>
+# PWD Example                       # Link Example                 # Subsequence Example
+qcd ./../node-modules/<tab><tab>    qcd node-modules/<tab><tab>    qcd nm/<tab><tab>
 ```
 
 #### Manual Input
