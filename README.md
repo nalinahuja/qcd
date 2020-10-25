@@ -55,7 +55,7 @@ qcd <path>          qcd <keyword, prefix, subsequence>
 ```
 
 <p align="justify">
-QCD can interpret file system sequences like <code>.</code> and <code>..</code> during completion and file system navigation. QCD can also parse an input in the format <code>N..</code> which will tell QCD to jump to the Nth parent directory relative to the current working directory.
+QCD can interpret file system sequences like <code>.</code> and <code>..</code> during file system navigation. QCD can also parse input in the format <code>N..</code> which will tell QCD to jump to the Nth parent directory relative to the current working directory.
 </p>
 
 ```bash
