@@ -78,12 +78,12 @@ These usages can be viewed anytime using the help flag described in the usage se
 
 #### Completion Engine
 <p align="justify">
-QCD ships with a custom completion engine that can be activated by hitting the tab key twice. Much like the builtin command <code>cd</code>, this completion engine is able to complete directories of the current working directory and their subdirectories as well as interpret file system sequences like <code>.</code> and <code>..</code> during completion. QCD builds upon these features to allow for the completion of directories not in the current working directory that QCD has recorded in its lookup file. It is also able to complete subdirectories of complete, prefix, and subsequenced linked directories.<br><br>Assume for the following examples that a directory <code>node-modules</code> exists and has been added to QCDs lookup file.
+QCD ships with a custom completion engine that can be activated by hitting the tab key twice. Much like the builtin command <code>cd</code>, this completion engine is able to complete directories of the current working directory and their subdirectories as well as interpret file system sequences like <code>.</code> and <code>..</code> during completion. QCD builds upon these standard features to allow for the completion of directories not in the current working directory using information QCD has stored in its lookup file. It is also able to complete subdirectories of complete, prefix, and subsequenced linked directories.<br><br>Assume for the following examples that a directory <code>node-modules</code> exists and has been added to QCDs lookup file.
 </p>
 
 ```bash
-# PWD Example                       # Complete Example             # Prefix Example       # Subsequence Example
-qcd ./../node-modules/<tab><tab>    qcd node-modules/<tab><tab>    qcd node/<tab><tab>    qcd nm/<tab><tab>
+# Complete Example             # Prefix Example       # Subsequence Example
+qcd node-modules/<tab><tab>    qcd node/<tab><tab>    qcd nm/<tab><tab>
 ```
 
 #### Manual Input
