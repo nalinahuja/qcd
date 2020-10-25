@@ -46,12 +46,21 @@ To manually update QCD to a newer release, simply follow the same installation p
 
 #### Input Format
 <p align="justify">
-Just like the builtin command <code>cd</code>, simply indicate a valid path relative to the current working directory and QCD will navigate to it. Where QCD differs from <code>cd</code> is that you can indicate a keyword, prefix, or subsequence related to a directory you have previously visited and QCD will attempt to resolve the directory's absolute path and navigate to it.
+Just like the builtin command <code>cd</code>, simply indicate a valid path relative to the current working directory and QCD will navigate to it. Where QCD differs from <code>cd</code> is that you can indicate a keyword, prefix, or subsequence related to a directory that QCD has previously seen and the program will attempt to resolve the directory's absolute path and navigate to it.
 </p>
 
 ```bash
 # Standard Input    # Special Input
 qcd <path>          qcd <keyword, prefix, subsequence>
+```
+
+<p align="justify">
+When a keyword is passed to QCD as input, the program will attempt a case sensitive search for the matching directory. When passing a prefix or subsequence to QCD as input, the program will attempt a case insensitive search for the matching directory. In the previous input format, input must start with the first character of the linked directory you wish to navigate to since QCD expects a subsequence rooted at the first character of the linked directory.<br><br>Assume for the following examples that a directory <code>node-modules</code> exists and has been added to QCDs lookup file.
+</p>
+
+```bash
+# Path Example           # Keyword Example    # Prefix Example    # Subsequence Example
+qcd ./../node-modules    qcd node-modules     qcd node            qcd nm
 ```
 
 <p align="justify">
@@ -61,15 +70,6 @@ QCD can interpret file system sequences like <code>.</code> and <code>..</code> 
 ```bash
 # File System Sequences    # Nth Parent Directory
 qcd ./../<directory>       qcd <N>..
-```
-
-<p align="justify">
-QCD will accept a keyword, prefix, or subsequence to a directory that has been stored in QCDs lookup file. When a keyword is passed to QCD as input, the program will attempt a case sensitive search for the matching directory. When passing a prefix or subsequence to QCD as input, the program will attempt a case insensitive search for the matching directory. In the previous input format, input must start with the first character of the linked directory you wish to navigate to since QCD expects a subsequence rooted at the first character of the linked directory.<br><br>Assume for the following examples that a directory <code>node-modules</code> exists and has been added to QCDs lookup file.
-</p>
-
-```bash
-# Path Example           # Keyword Example    # Prefix Example    # Subsequence Example
-qcd ./../node-modules    qcd node-modules     qcd node            qcd nm
 ```
 
 <p align="justify">
