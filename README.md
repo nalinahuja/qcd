@@ -55,7 +55,7 @@ qcd <path>          qcd <keyword, prefix, subsequence>
 ```
 
 <p align="justify">
-When a keyword is passed to QCD as input, the program will attempt a case sensitive search for the matching directory. When passing a prefix or subsequence to QCD as input, the program will attempt a case insensitive search for the matching directory. In the previous input format, input must start with the first character of the linked directory you wish to navigate to since QCD expects a subsequence rooted at the first character of the linked directory.<br><br>Assume for the following examples that a directory <code>node-modules</code> exists and has been added to QCDs lookup file.
+When a keyword is passed to QCD as input, the program will attempt a case sensitive search for the matching directory. When passing a prefix or subsequence to QCD as input, the program will attempt a case insensitive search for the matching directory. In the previous input format, the input must start with the first character of the linked directory you wish to navigate to since QCD expects a subsequence rooted at the first character of the linked directory.<br><br>Assume for the following examples that a directory <code>node-modules</code> exists and has been added to QCDs lookup file.
 </p>
 
 ```bash
@@ -64,7 +64,7 @@ qcd ./../node-modules    qcd node-modules     qcd node            qcd nm
 ```
 
 <p align="justify">
-QCD can interpret file system sequences like <code>.</code> and <code>..</code> during file system navigation. QCD can also parse input in the format <code>N..</code> which will tell QCD to jump to the Nth parent directory relative to the current working directory.
+QCD is able to interpret file system sequences like <code>.</code> and <code>..</code> during file system navigation and accept a special input in the format <code>N..</code> which will tell QCD to jump to the Nth parent directory relative to the current working directory
 </p>
 
 ```bash
@@ -73,7 +73,7 @@ qcd ./../<directory>       qcd <N>..
 ```
 
 <p align="justify">
-These usages can be viewed anytime by using the help flag.
+These usages can be viewed anytime using the help flag described in the usage section.
 </p>
 
 #### Completion Engine
