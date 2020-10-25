@@ -696,11 +696,8 @@ function _parse_standalone_flags() {
     return ${OK}
   elif [[ ${flag/--update/${UPDATE}} == ${UPDATE} ]]
   then
-    # Store Current Version
-    local curr_ver=$(command cat ${QCD_HELP} | command head -n1 | command awk '{print $4}')
-
     # Display Prompt
-    command echo -e "qcd: Currently running ${curr_ver}"
+    command echo -e "qcd: Currently running $(command cat ${QCD_HELP} | command head -n1 | command awk '{print $4}')"
 
     # Prompt User For Confirmation
     command read -p "→ Confirm update [y/n]: " confirm
@@ -788,11 +785,14 @@ function _parse_standalone_flags() {
       # Cleanup Installation
       command rm ${QCD_UPDATE} ${QCD_INSTALL} 2> /dev/null
 
-      # Store New Version
-      local new_ver=$(command cat ${QCD_HELP} | command head -n1 | command awk '{print $4}')
+      # Display Prompt
+      command echo -e "\r→ Update complete     "
+
+      # Clear All Outputs
+      _clear_output 2
 
       # Display Prompt
-      command echo -e "\r→ Update complete    \n\nUpdated to ${new_ver}"
+      command echo -e "qcd: Updated to $(command cat ${QCD_HELP} | command head -n1 | command awk '{print $4}')"
     else
       # Clear All Outputs
       _clear_output 2
