@@ -40,9 +40,11 @@ declare QCD_STORE=${QCD_FOLD}/store
 declare QCD_LINKS=${QCD_FOLD}/links
 declare QCD_TRACK=${QCD_FOLD}/.track
 
-# Release Resources
+# Release Files
 declare QCD_UPDATE=${QCD_FOLD}/update
 declare QCD_INSTALL=${QCD_FOLD}/install_qcd
+
+# Release Link
 declare QCD_RELEASES="https://api.github.com/repos/nalinahuja22/qcd/releases/latest"
 
 # End Defined Program Constants--------------------------------------------------------------------------------------------------------------------------------------
