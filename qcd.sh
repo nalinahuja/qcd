@@ -1076,7 +1076,7 @@ function qcd() {
         # Extract Leading Path Component
         local lead_comp=${sub_link:${si}:${ei}}
 
-        # Validate Leading Component
+        # Validate Leading Path Component
         if [[ -z ${lead_comp} ]]
         then
           # Update Path Components
