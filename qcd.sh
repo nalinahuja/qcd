@@ -895,23 +895,23 @@ function qcd() {
     return ${OK}
   else
     # Initialize Directory Components
-    local sym_link=${ESTR} sub_dir=${ESTR}
+    local sym_link=${ESTR} sub_link=${ESTR}
 
-    # Initialize Suffix Length
-    local sfx_len=${#dir_arg}
+    # Initialize Prefix Length
+    local pfx_len=${#dir_arg}
 
     # Determine Linked Subdirectory
     if [[ "${dir_arg}" == */* ]]
     then
-      # Store Subdirectory Suffix
-      sub_dir=${dir_arg#*/}
+      # Extract Linked Subdirectory
+      sub_link=${dir_arg#*/}
 
-      # Store Suffix Length
-      sfx_len=$((${#dir_arg} - ${#sub_dir} - 1))
+      # Update Prefix Length
+      pfx_len=$((${pfx_len} - ${#sub_link} - 1))
     fi
 
-    # Escape Regex Characters
-    sym_link=$(_escape_regex "${dir_arg:0:${sfx_len}}")
+    # Extract Symbolic Link
+    sym_link=$(_escape_regex "${dir_arg:0:${pfx_len}}")
 
     # End Input Directory Parsing------------------------------------------------------------------------------------------------------------------------------------
 
@@ -978,7 +978,7 @@ function qcd() {
         path=$(_split_path "${path}")
 
         # Form Complete Path
-        path=$(_escape_path "${path}${sub_dir}")
+        path=$(_escape_path "${path}${sub_link}")
 
         # Validate Path
         if [[ -d "${path}" && ! "${path%/}" == "${pwd%/}" ]]
@@ -1064,11 +1064,24 @@ function qcd() {
       # Switch To Linked Path
       command cd "${pathv}"
 
-      # Validate Subdirectory
-      if [[ ! -z ${sub_dir} && -d "${sub_dir}" ]]
+      # Validate Linked Subdirectory
+      if [[ ! -z ${sub_link} ]]
       then
-        # Switch To Subdirectory
-        command cd "${sub_dir}"
+        # Store Trailing Path Component
+        local trail_comp="${sub_link##*/}"
+
+        # Determine Leading Path Locality
+        local si=0 ei=$((${#sub_link} - ${#trail_comp}))
+
+        # Extract Leading Path Component
+        local lead_comp=${sub_link:${si}:${ei}}
+
+        # Validate Leading Path Component
+        if [[ -d "${lead_comp}" ]]
+        then
+          # Switch To Linked Subdirectory
+          command cd "${lead_comp}"
+        fi
 
         # Check For Tracking File
         if [[ -f ${QCD_TRACK} ]]
