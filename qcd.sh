@@ -1076,11 +1076,25 @@ function qcd() {
         # Extract Leading Path Component
         local lead_comp=${sub_link:${si}:${ei}}
 
-        # Validate Leading Path Component
-        if [[ -d "${lead_comp}" ]]
+        # Validate Leading Component
+        if [[ -z ${lead_comp} ]]
+        then
+          # Update Path Components
+          lead_comp=${trail_comp}; trail_comp=${ESTR}
+        fi
+
+        # Validate Leading Path Existence
+        if [[ ! -z ${lead_comp} && -d "${lead_comp}" ]]
         then
           # Switch To Leading Path
           command cd "${lead_comp}"
+
+          # Validate Trailing Path Existence
+          if [[ ! -z ${trail_comp} && -d "${trail_comp}" ]]
+          then
+            # Switch To Trailing Path
+            command cd "${trail_comp}"
+          fi
         fi
 
         # Check For Tracking File
