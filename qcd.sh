@@ -1067,7 +1067,7 @@ function qcd() {
       # Validate Linked Subdirectory
       if [[ ! -z ${sub_link} ]]
       then
-        # Store Trailing Path Component
+        # Extract Trailing Path Component
         local trail_comp="${sub_link##*/}"
 
         # Determine Leading Path Locality
@@ -1079,7 +1079,7 @@ function qcd() {
         # Validate Leading Path Component
         if [[ -d "${lead_comp}" ]]
         then
-          # Switch To Linked Subdirectory
+          # Switch To Leading Path
           command cd "${lead_comp}"
         fi
 
