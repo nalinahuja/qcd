@@ -246,6 +246,9 @@ function _generate_menu() {
   # Prepare Terminal Environment
   _hide_output
 
+  # Reset Exit Flag
+  EXIT_FLAG=${FALSE}
+
   # Initialize Selected Option
   local sel_opt=${NSET}
 
@@ -287,7 +290,7 @@ function _generate_menu() {
     # Check Exit Flag
     if [[ ${EXIT_FLAG} == ${TRUE} ]]
     then
-      # Restore Exit Flag
+      # Reset Exit Flag
       EXIT_FLAG=${FALSE}
 
       # Set Selected Line
