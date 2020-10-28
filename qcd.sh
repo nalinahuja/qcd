@@ -1151,7 +1151,7 @@ function _qcd_comp() {
     local res_dirs=()
 
     # Resolve Linked Directories
-    if [[ ! -d "${curr_arg}" ]]
+    if [[ ! -d "${sym_link}" ]]
     then
       # Initialize Linked Paths
       local link_paths=${NSET}
