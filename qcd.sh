@@ -293,7 +293,7 @@ function _generate_menu() {
       # Reset Exit Flag
       EXIT_FLAG=${FALSE}
 
-      # Set Selected Line
+      # Reset Option
       sel_opt=${NSEL}
 
       # Break Loop
@@ -311,8 +311,12 @@ function _generate_menu() {
       sel_opt=$((${sel_opt} + 1))
     elif [[ ${key} == ${ENT} || ${key} == ${EXT} ]]
     then
-      # Reset Selected Line
-      if [[ ${key} == ${EXT} ]]; then sel_opt=${NSEL}; fi
+      # Check Exit Key
+      if [[ ${key} == ${EXT} ]]
+      then
+        # Reset Option
+        sel_opt=${NSEL}
+      fi
 
       # Break Loop
       break
@@ -456,13 +460,13 @@ function _parse_option_flags() {
     if [[ ${#@} == 1 ]]
     then
       # Add Current Directory
-      (_add_directory &)
+      (_add_directory &> /dev/null &)
     else
       # Store Directory Argument
       local dir="${@:1:$((${#@} - 1))}"
 
       # Add Directory As Linkage
-      (_add_directory "${dir}" &)
+      (_add_directory "${dir}" &> /dev/null &)
     fi
 
     # Terminate Program
@@ -473,13 +477,13 @@ function _parse_option_flags() {
     if [[ ${#@} == 1 ]]
     then
       # Remove Current Directory
-      (_remove_directory &)
+      (_remove_directory &> /dev/null &)
     else
       # Store Link Argument
       local link="${@:1:$((${#@} - 1))}"
 
       # Remove Symbolic Linkages
-      (_remove_symbolic_link "${link}" &)
+      (_remove_symbolic_link "${link}" &> /dev/null &)
     fi
 
     # Terminate Program
@@ -647,7 +651,7 @@ function _parse_standalone_flags() {
       if [[ ! -d "${lpath}" ]]
       then
         # Remove Invalid Path
-        _remove_directory "${lpath}"
+        (_remove_directory "${lpath}" &> /dev/null)
       fi
     done
 
@@ -891,7 +895,7 @@ function qcd() {
     if [[ -f ${QCD_TRACK} ]]
     then
       # Add Current Directory
-      (_add_directory &)
+      (_add_directory &> /dev/null &)
     fi
 
     # Terminate Program
@@ -1059,7 +1063,7 @@ function qcd() {
       command echo -e "qcd: $(_format_path "${pathv%/}"): Directory does not exist"
 
       # Remove Current Directory
-      (_remove_directory "${pathv}" &)
+      (_remove_directory "${pathv}" &> /dev/null &)
 
       # Terminate Program
       return ${ERR}
@@ -1104,7 +1108,7 @@ function qcd() {
         if [[ -f ${QCD_TRACK} ]]
         then
           # Add Current Directory
-          (_add_directory &)
+          (_add_directory &> /dev/null &)
         fi
       fi
 
@@ -1326,7 +1330,7 @@ function _qcd_init() {
   if [[ -f ${QCD_STORE} ]]
   then
     # Prepare Resource Files
-    (qcd --clean &)
+    (qcd --clean &> /dev/null &)
   fi
 
   # Cleanup Resource Files On EXIT
