@@ -133,8 +133,7 @@ function _escape_path() {
   # Store Argument Path
   local path="${@}"
 
-  # Escape Space Characters
-  path="${path//\\ / }"
+  # Remove Escape Characters
   path="${path//\\/}"
 
   # Return Escaped Path
