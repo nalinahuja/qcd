@@ -51,7 +51,7 @@ Just like the builtin command <code>cd</code>, simply indicate a valid path rela
 
 ```bash
 # Standard Input    # Special Input
-qcd <path>          qcd <keyword, prefix, subsequence>
+qcd [path]          qcd [keyword, prefix, subsequence]
 ```
 
 <p align="justify">
@@ -69,7 +69,7 @@ QCD is able to interpret file system sequences like <code>.</code> and <code>..<
 
 ```bash
 # File System Sequences    # Nth Parent Directory
-qcd ./../<directory>       qcd <N>..
+qcd ./../[directory]       qcd [N]..
 ```
 
 <p align="justify">
@@ -157,5 +157,5 @@ QCD supports a set of standard flags such as the help, version, and update flags
 
 ```bash
 # Help Flag         # Version Flag         # Update Flag
-qcd [-h, --help]    qcd [-v, --version]    qcd [-u, --update]  
+qcd [-h, --help]    qcd [-v, --version]    qcd [-u, --update]
 ```
