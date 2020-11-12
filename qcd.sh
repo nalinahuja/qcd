@@ -1,5 +1,7 @@
 # Developed by Nalin Ahuja, nalinahuja22
 
+# TODO, add option flag for listing paths instead of navigating
+
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Boolean Values
