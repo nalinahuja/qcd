@@ -1,7 +1,5 @@
 # Developed by Nalin Ahuja, nalinahuja22
 
-# TODO, show options flag, don't navigate
-
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Boolean Values
