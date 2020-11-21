@@ -1,5 +1,8 @@
 # Developed by Nalin Ahuja, nalinahuja22
 
+# TODO, show options flag, don't navigate
+# TODO, fix SIGINT bug
+
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Boolean Values
