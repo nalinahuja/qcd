@@ -1,5 +1,6 @@
 # Developed by Nalin Ahuja, nalinahuja22
 
+# TODO, add -c flag output for confirmation
 # TODO, show options flag, don't navigate
 # TODO, fix SIGINT bug
 
