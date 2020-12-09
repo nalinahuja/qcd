@@ -494,7 +494,7 @@ function _parse_option_flags() {
   elif [[ ${flag/--mkdir/${MKDIRENT}} == ${MKDIRENT} ]]
   then
     # Verify Argument Count
-    if [[ ${#@} != 2 ]]
+    if [[ ${#@} -lt 2 ]]
     then
       # Display Prompt
       command echo -e "qcd: Insufficient arguments"
@@ -552,7 +552,7 @@ function _parse_option_flags() {
     if [[ ${#@} == 1 ]]
     then
       # Get All Symbolic Links From Store File
-      sym_links=$(qcd --clean && command cat ${QCD_STORE})
+      sym_links=$(qcd --clean &> /dev/null && command cat ${QCD_STORE})
     else
       # Store Regex Argument
       local regex="${@:1:$((${#@} - 1))}"
@@ -563,7 +563,7 @@ function _parse_option_flags() {
       regex="${regex%/}"
 
       # Get All Symbolic Links From Store File By Regex
-      sym_links=$(qcd --clean && command egrep -s -x "${regex}.*:.*" ${QCD_STORE} 2> /dev/null)
+      sym_links=$(qcd --clean &> /dev/null && command egrep -s -x "${regex}.*:.*" ${QCD_STORE} 2> /dev/null)
     fi
 
     # Error Check Symbolic Links
@@ -660,6 +660,9 @@ function _parse_standalone_flags() {
 
     # Unset IFS
     unset IFS
+
+    # Display Prompt
+    command echo -e "qcd: Cleaned store file    "
 
     # Terminate Program
     return ${OK}
