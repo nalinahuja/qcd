@@ -4,6 +4,8 @@
 # TODO, show options flag, don't navigate
 # TODO, add network installer feature
 # TODO, fix SIGINT bug
+# TODO, change numerical comparisions to -eq
+# TODO, change literal comparisons to ==
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
