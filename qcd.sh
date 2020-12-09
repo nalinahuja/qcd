@@ -1,8 +1,8 @@
 # Developed by Nalin Ahuja, nalinahuja22
 
+# TODO, error message for remember with input dir
 # TODO, show options flag, don't navigate
 # TODO, fix SIGINT bug
-# TODO, error message for remember with input dir
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
