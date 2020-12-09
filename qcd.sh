@@ -2,7 +2,7 @@
 
 # TODO, error message for remember with input dir
 # TODO, show options flag, don't navigate
-# Add network installer feature
+# TODO, add network installer feature
 # TODO, fix SIGINT bug
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
