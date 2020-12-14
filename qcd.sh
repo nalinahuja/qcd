@@ -1,7 +1,5 @@
 # Developed by Nalin Ahuja, nalinahuja22
 
-# TODO, error message for remember with input dir
-
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Boolean Values
@@ -439,6 +437,16 @@ function _parse_option_flags() {
     else
       # Store Directory Argument
       local dir="${@:1:$((${#@} - 1))}"
+
+      # Check Path Validity
+      if [[ ! -d "${dir}" ]]
+      then
+        # Display Prompt
+        command echo -e "qcd: Invalid directory path"
+
+        # Terminate Program
+        return ${ERR}
+      fi
 
       # Add Directory As Linkage
       (_add_directory "${dir}" &> /dev/null &)
