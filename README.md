@@ -134,7 +134,7 @@ qcd [-t, --track-dirs]
 
 #### Options
 <p align="justify">
-The options flag lists all symbolic links in the store file that match the specified input without navigating to a matching local directory if it exists.
+The options flag lists all symbolic links in the store file that match the specified input without navigating to a matching local directory, if it exists.
 </p>
 
 ```bash
