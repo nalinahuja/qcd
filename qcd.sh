@@ -641,9 +641,6 @@ function _parse_standalone_flags() {
     # Unset IFS
     unset IFS
 
-    # Display Prompt
-    command echo -e "qcd: Cleaned store file    "
-
     # Terminate Program
     return ${OK}
   elif [[ ${flag/--track-dirs/${TRACK}} == ${TRACK} ]]
