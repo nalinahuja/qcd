@@ -88,7 +88,7 @@ qcd node-modules/<tab><tab>    qcd node/<tab><tab>    qcd nm/<tab><tab>
 
 #### Manual Input
 <p align="justify">
-If multiple paths are resolved from same symbolic link, the user will have to manually choose the path they wish to navigate to from an arrow key selectable menu. This selection phase can be cleanly exited by pressing the <code>q</code> key or sending a <code>SIGINT</code> to the program. There are several redundancies built into the program to entirely avoid or simplify the manual selection process in order to streamline the use of QCD.
+If multiple paths are resolved from same symbolic link, the user will have to manually choose the path they wish to navigate to from an arrow key selectable menu which can be cleanly exited from by pressing the <code>q</code> key at any time. There are several redundancies built into the program to entirely avoid or simplify the manual selection process in order to streamline the use of QCD.
 </p>
 
 ## Flags
@@ -130,6 +130,15 @@ The track directories flag allows the user to change the directory tracking beha
 
 ```bash
 qcd [-t, --track-dirs]
+```
+
+#### Options
+<p align="justify">
+The options flag lists all symbolic links in the store file that match the specified input without navigating to a matching local directory if it exists.
+</p>
+
+```bash
+qcd [link] [-o, --options]
 ```
 
 #### Clean

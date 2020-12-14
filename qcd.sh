@@ -1,8 +1,6 @@
 # Developed by Nalin Ahuja, nalinahuja22
 
-# TODO, option flag
 # TODO, error message for remember with input dir
-# TODO, fix SIGINT bug
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -52,11 +50,6 @@ declare QCD_INSTALL=${QCD_FOLD}/install_qcd
 declare QCD_RELEASES="https://api.github.com/repos/nalinahuja22/qcd/releases/latest"
 
 # End Defined Program Constants--------------------------------------------------------------------------------------------------------------------------------------
-
-# Selection Exit Flag
-declare EXIT_FLAG=${FALSE}
-
-# End Global Program Variables---------------------------------------------------------------------------------------------------------------------------------------
 
 function _get_pwd() {
   # Store Current Directory
@@ -176,11 +169,6 @@ function _hide_output() {
   command tput civis 2> /dev/null
 }
 
-function _exit_process() {
-  # Set Exit Flag To True
-  EXIT_FLAG=${TRUE}
-}
-
 # End Environment Functions------------------------------------------------------------------------------------------------------------------------------------------
 
 function _read_input() {
@@ -249,9 +237,6 @@ function _generate_menu() {
   # Prepare Terminal Environment
   _hide_output
 
-  # Reset Exit Flag
-  EXIT_FLAG=${FALSE}
-
   # Initialize Selected Option
   local sel_opt=${NSET}
 
@@ -289,19 +274,6 @@ function _generate_menu() {
 
     # Read User Input
     local key=$(_read_input)
-
-    # Check Exit Flag
-    if [[ ${EXIT_FLAG} == ${TRUE} ]]
-    then
-      # Reset Exit Flag
-      EXIT_FLAG=${FALSE}
-
-      # Reset Option
-      sel_opt=${NSEL}
-
-      # Break Loop
-      break
-    fi
 
     # Update Cursor Position
     if [[ ${key} -eq ${UP} ]]
@@ -824,7 +796,7 @@ function _parse_standalone_flags() {
 # End Argument Parser Functions--------------------------------------------------------------------------------------------------------------------------------------
 
 function qcd() {
-  # Verify Resource Files
+  # Verify Resources
   _verify_files
 
   # End Resource Validation------------------------------------------------------------------------------------------------------------------------------------------
@@ -1357,9 +1329,6 @@ function _qcd_init() {
 
   # Cleanup Resource Files On EXIT
   command trap _cleanup_files EXIT &> /dev/null
-
-  # Set Exit Global To True On SIGINT
-  command trap _exit_process SIGINT &> /dev/null
 
   # Set Environment To Show Visible Files
   command bind 'set match-hidden-files off' &> /dev/null
