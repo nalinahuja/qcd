@@ -438,7 +438,7 @@ function _parse_option_flags() {
       # Store Directory Argument
       local dir="${@:1:$((${#@} - 1))}"
 
-      # Check Path Validity
+      # Determine Path Validity
       if [[ ! -d "${dir}" ]]
       then
         # Display Prompt
