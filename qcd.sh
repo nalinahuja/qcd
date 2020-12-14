@@ -1,11 +1,8 @@
 # Developed by Nalin Ahuja, nalinahuja22
 
+# TODO, option flag
 # TODO, error message for remember with input dir
-# TODO, show options flag, don't navigate
-# TODO, add network installer feature
 # TODO, fix SIGINT bug
-# TODO, change numerical comparisions to -eq
-# TODO, change literal comparisons to ==
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -26,11 +23,11 @@ declare NSET=0 MINPAD=4 TIMEOUT=10 COLNUM=256
 # Embedded Strings
 declare CWD="." HWD="../" YES="y" QUIT="q" ESTR="" FLSH="/" BSLH="\\" KESC=$(command printf "\033")
 
-# Program Flags
-declare HELP="-h" LIST="-l" CLEAN="-c" TRACK="-t" UPDATE="-u" VERSION="-v" FORGET="-f" REMEMBER="-r" MKDIRENT="-m"
-
 # Text Formatting Strings
 declare B=$(command printf "${KESC}[1m") N=$(command printf "${KESC}(B${KESC}[m") W=$(command printf "${KESC}[30m${KESC}[47m")
+
+# Program Flags
+declare HELP="-h" LIST="-l" CLEAN="-c" TRACK="-t" UPDATE="-u" VERSION="-v" OPTIONS="-o" FORGET="-f" REMEMBER="-r" MKDIRENT="-m"
 
 # End Defined String Constants---------------------------------------------------------------------------------------------------------------------------------------
 
@@ -211,7 +208,7 @@ function _read_input() {
     input="${input}${c}"
 
     # Check Break Conditions
-    if [[ ${#input} == 3 ]]
+    if [[ ${#input} -eq 3 ]]
     then
       # Return Arrow Key Action
       if [[ ${input} == "${KESC}[A" ]]
@@ -274,7 +271,7 @@ function _generate_menu() {
       opt=$(_format_path "${opt%/}")
 
       # Conditionally Format Option
-      if [[ ${oi} == ${sel_opt} ]]
+      if [[ ${oi} -eq ${sel_opt} ]]
       then
         # Print Option As Seleted
         command echo -e "${W} ${opt} ${N}" >> ${QCD_TEMP}
@@ -307,18 +304,18 @@ function _generate_menu() {
     fi
 
     # Update Cursor Position
-    if [[ ${key} == ${UP} ]]
+    if [[ ${key} -eq ${UP} ]]
     then
       # Decrement Selected Line
       sel_opt=$((${sel_opt} - 1))
-    elif [[ ${key} == ${DN} ]]
+    elif [[ ${key} -eq ${DN} ]]
     then
       # Increment Selected Line
       sel_opt=$((${sel_opt} + 1))
-    elif [[ ${key} == ${ENT} || ${key} == ${EXT} ]]
+    elif [[ ${key} -eq ${ENT} || ${key} -eq ${EXT} ]]
     then
-      # Check Exit Key
-      if [[ ${key} == ${EXT} ]]
+      # Check For Exit Key
+      if [[ ${key} -eq ${EXT} ]]
       then
         # Reset Option
         sel_opt=${NSEL}
@@ -329,11 +326,11 @@ function _generate_menu() {
     fi
 
     # Check For Option Loopback
-    if [[ ${sel_opt} == ${#@} ]]
+    if [[ ${sel_opt} -eq ${#@} ]]
     then
       # Jump To Top
       sel_opt=0
-    elif [[ ${sel_opt} == -1 ]]
+    elif [[ ${sel_opt} -eq -1 ]]
     then
       # Jump To Bottom
       sel_opt=$((${#@} - 1))
@@ -357,7 +354,7 @@ function _generate_menu() {
 
 function _update_store() {
   # Check Exit Status
-  if [[ ${1} == ${OK} ]]
+  if [[ ${1} -eq ${OK} ]]
   then
     # Update Store File
     command mv ${QCD_TEMP} ${QCD_STORE} 2> /dev/null
@@ -388,7 +385,7 @@ function _add_directory() {
   local adir=$(_get_pwd)
 
   # Check For Argument Path
-  if [[ ${#@} != 0 ]]
+  if [[ ${#@} -ne 0 ]]
   then
     # Store Argument Path
     adir=$(_get_path "${@}")
@@ -423,7 +420,7 @@ function _remove_directory() {
   local rdir=$(_get_pwd)
 
   # Check For Argument Path
-  if [[ ${#@} != 0 ]]
+  if [[ ${#@} -ne 0 ]]
   then
     # Store Argument Path
     rdir=$(_escape_regex "${@}")
@@ -463,7 +460,7 @@ function _parse_option_flags() {
   if [[ ${flag/--remember/${REMEMBER}} == ${REMEMBER} ]]
   then
     # Determine Remember Type
-    if [[ ${#@} == 1 ]]
+    if [[ ${#@} -eq 1 ]]
     then
       # Add Current Directory
       (_add_directory &> /dev/null &)
@@ -480,7 +477,7 @@ function _parse_option_flags() {
   elif [[ ${flag/--forget/${FORGET}} == ${FORGET} ]]
   then
     # Determine Forget Type
-    if [[ ${#@} == 1 ]]
+    if [[ ${#@} -eq 1 ]]
     then
       # Remove Current Directory
       (_remove_directory &> /dev/null &)
@@ -552,7 +549,7 @@ function _parse_option_flags() {
     local sym_links=${NSET}
 
     # Conditionally Fetch Symbolic Links
-    if [[ ${#@} == 1 ]]
+    if [[ ${#@} -eq 1 ]]
     then
       # Get All Symbolic Links From Store File
       sym_links=$(qcd --clean &> /dev/null && command cat ${QCD_STORE})
@@ -730,7 +727,7 @@ function _parse_standalone_flags() {
       command curl &> /dev/null
 
       # Check Operation Status
-      if [[ ${?} == ${NFD} ]]
+      if [[ ${?} -eq ${NFD} ]]
       then
         # Display Prompt
         command echo -e "→ Curl dependency not installed"
@@ -746,7 +743,7 @@ function _parse_standalone_flags() {
       local release_url=$(command curl --connect-timeout ${TIMEOUT} -sL ${QCD_RELEASES} 2> /dev/null | command egrep -s -o "https.*zipball.*" 2> /dev/null)
 
       # Error Check Release URL
-      if [[ ${?} != ${OK} || -z ${release_url} ]]
+      if [[ ${?} -ne ${OK} || -z ${release_url} ]]
       then
         # Display Prompt
         command echo -e "\r→ Failed to resolve download link for update"
@@ -759,7 +756,7 @@ function _parse_standalone_flags() {
       command curl --connect-timeout ${TIMEOUT} -sL "${release_url/\",/}" > ${QCD_UPDATE}
 
       # Error Check Release Contents
-      if [[ ${?} != ${OK} || ! -f ${QCD_UPDATE} ]]
+      if [[ ${?} -ne ${OK} || ! -f ${QCD_UPDATE} ]]
       then
         # Display Prompt
         command echo -e "\r→ Failed to download update"
@@ -775,7 +772,7 @@ function _parse_standalone_flags() {
       command unzip -o -j ${QCD_UPDATE} -d ${QCD_FOLD} &> /dev/null
 
       # Error Check Installation
-      if [[ ${?} != ${OK} ]]
+      if [[ ${?} -ne ${OK} ]]
       then
         # Display Prompt
         command echo -e "\r→ Failed to install update"
@@ -791,7 +788,7 @@ function _parse_standalone_flags() {
       command source ${QCD_PROG} 2> /dev/null
 
       # Error Check Installation
-      if [[ ${?} != ${OK} ]]
+      if [[ ${?} -ne ${OK} ]]
       then
         # Display Prompt
         command echo -e "\r→ Failed to configure update "
@@ -839,7 +836,7 @@ function qcd() {
   local fstatus=${?}
 
   # Check Function Status
-  if [[ ${fstatus} != ${CONT} ]]
+  if [[ ${fstatus} -ne ${CONT} ]]
   then
     # Terminate Program
     return ${fstatus}
@@ -852,7 +849,7 @@ function qcd() {
   local fstatus=${?}
 
   # Check Function Status
-  if [[ ${fstatus} != ${CONT} ]]
+  if [[ ${fstatus} -ne ${CONT} ]]
   then
     # Terminate Program
     return ${fstatus}
@@ -1011,7 +1008,7 @@ function qcd() {
       pathc=${#fpaths[@]}
 
       # Check For Single Path
-      if [[ ${pathc} == 1 ]]
+      if [[ ${pathc} -eq 1 ]]
       then
         # Set Matched Path
         mpath="${fpaths[@]}"
@@ -1032,7 +1029,7 @@ function qcd() {
         local ept=${?}
 
         # Check Function Status
-        if [[ ${ept} == ${NSEL} ]]
+        if [[ ${ept} -eq ${NSEL} ]]
         then
           # Terminate Program
           return ${OK}
@@ -1062,7 +1059,7 @@ function qcd() {
     elif [[ ! -d "${pathv}" ]]
     then
       # Check Result Count
-      if [[ ${pathc} != 1 ]]
+      if [[ ${pathc} -gt 1 ]]
       then
         # Print Separator
         command echo
