@@ -49,6 +49,11 @@ declare QCD_RELEASES="https://api.github.com/repos/nalinahuja22/qcd/releases/lat
 
 # End Defined Program Constants--------------------------------------------------------------------------------------------------------------------------------------
 
+# Menu Exit Boolean
+declare EXIT_FLAG=${FALSE}
+
+# End Program Global Variables---------------------------------------------------------------------------------------------------------------------------------------
+
 function _get_pwd() {
   # Store Current Directory
   local pwd=$(command pwd)
@@ -235,6 +240,12 @@ function _generate_menu() {
   # Prepare Terminal Environment
   _hide_output
 
+  # Set Signal Trap For SIGINT
+  command trap _qcd_exit SIGINT &> /dev/null
+
+  # Reset Exit Flag
+  EXIT_FLAG=${FALSE}
+
   # Initialize Selected Option
   local sel_opt=${NSET}
 
@@ -273,6 +284,19 @@ function _generate_menu() {
     # Read User Input
     local key=$(_read_input)
 
+    # Check Exit Flag
+    if [[ ${EXIT_FLAG} == ${TRUE} ]]
+    then
+      # Reset Exit Flag
+      EXIT_FLAG=${FALSE}
+
+      # Reset Option
+      sel_opt=${NSEL}
+
+      # Break Loop
+      break
+    fi
+
     # Update Cursor Position
     if [[ ${key} -eq ${UP} ]]
     then
@@ -309,6 +333,9 @@ function _generate_menu() {
     # Clear Previous Selection
     _clear_output ${#@}
   done
+
+  # Clear Signal Trap
+  command trap - SIGINT &> /dev/null
 
   # Clear All Outputs
   _clear_output $((${#@} + 1))
@@ -1121,6 +1148,11 @@ function qcd() {
 
 # End QCD Function---------------------------------------------------------------------------------------------------------------------------------------------------
 
+function _qcd_exit() {
+  # Set Exit Flag
+  EXIT_FLAG=${TRUE}
+}
+
 function _qcd_comp() {
   # Verify Resource Files
   _verify_files
@@ -1322,8 +1354,6 @@ function _qcd_comp() {
   # End Option Generation--------------------------------------------------------------------------------------------------------------------------------------------
 }
 
-# End QCD Completion Function----------------------------------------------------------------------------------------------------------------------------------------
-
 function _qcd_init() {
   # Check For Store File
   if [[ -f ${QCD_STORE} ]]
@@ -1345,4 +1375,4 @@ function _qcd_init() {
 # Initialize QCD
 _qcd_init
 
-# End QCD Initialization---------------------------------------------------------------------------------------------------------------------------------------------
+# End QCD Dependency Functions---------------------------------------------------------------------------------------------------------------------------------------
