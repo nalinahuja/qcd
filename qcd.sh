@@ -1,8 +1,5 @@
 # Developed by Nalin Ahuja, nalinahuja22
 
-# TODO: New installer
-# TODO: Refined README
-
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Boolean Values
