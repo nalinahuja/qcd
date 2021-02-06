@@ -44,11 +44,11 @@ declare -r QCD_STORE=${QCD_FOLD}/store
 declare -r QCD_TRACK=${QCD_FOLD}/.track
 
 # Release Files
-declare -r QCD_UPDATE=${QCD_FOLD}/update.zip
+declare -r QCD_RELEASE=${QCD_FOLD}/release.zip
 declare -r QCD_INSTALL=${QCD_FOLD}/install.sh
 
 # Release Link
-declare -r QCD_RELEASES="https://api.github.com/repos/nalinahuja22/qcd/releases/latest"
+declare -r QCD_RELEASE_URL="https://api.github.com/repos/nalinahuja22/qcd/releases/latest"
 
 # End Defined Program Constants--------------------------------------------------------------------------------------------------------------------------------------
 
@@ -337,7 +337,7 @@ function _generate_menu() {
     _clear_output ${#@}
   done
 
-  # Clear Signal Trap
+  # Clear Signal Trap For SIGINT
   command trap - SIGINT &> /dev/null
 
   # Clear All Outputs
@@ -747,7 +747,7 @@ function _parse_standalone_flags() {
       command echo -en "→ Downloading update "
 
       # Determine Release URL
-      local release_url=$(command curl --connect-timeout ${TIMEOUT} -sL ${QCD_RELEASES} 2> /dev/null | command egrep -s -o "https.*zipball.*" 2> /dev/null)
+      local release_url=$(command curl --connect-timeout ${TIMEOUT} -sL ${QCD_RELEASE_URL} 2> /dev/null | command egrep -s -o "https.*zipball.*" 2> /dev/null)
 
       # Error Check Release URL
       if [[ ${?} -ne ${OK} || -z ${release_url} ]]
@@ -760,10 +760,10 @@ function _parse_standalone_flags() {
       fi
 
       # Download Release Contents
-      command curl --connect-timeout ${TIMEOUT} -sL "${release_url/\",/}" > ${QCD_UPDATE}
+      command curl --connect-timeout ${TIMEOUT} -sL "${release_url/\",/}" > ${QCD_RELEASE}
 
       # Error Check Release Contents
-      if [[ ${?} -ne ${OK} || ! -f ${QCD_UPDATE} ]]
+      if [[ ${?} -ne ${OK} || ! -f ${QCD_RELEASE} ]]
       then
         # Display Prompt
         command echo -e "\r→ Failed to download update"
@@ -776,7 +776,7 @@ function _parse_standalone_flags() {
       command echo -en "\r→ Installing updates  "
 
       # Extract And Install Program Files
-      command unzip -o -j ${QCD_UPDATE} -d ${QCD_FOLD} &> /dev/null
+      command unzip -o -j ${QCD_RELEASE} -d ${QCD_FOLD} &> /dev/null
 
       # Error Check Installation
       if [[ ${?} -ne ${OK} ]]
@@ -805,7 +805,7 @@ function _parse_standalone_flags() {
       fi
 
       # Cleanup Installation
-      command rm ${QCD_UPDATE} ${QCD_INSTALL} 2> /dev/null
+      command rm ${QCD_RELEASE} ${QCD_INSTALL} 2> /dev/null
 
       # Display Prompt
       command echo -e "\r→ Update complete     "
