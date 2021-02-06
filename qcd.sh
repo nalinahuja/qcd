@@ -1,56 +1,59 @@
 # Developed by Nalin Ahuja, nalinahuja22
 
+# TODO: Refactor codebase
+# TODO: New installer
+# TODO: Refined README
+
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Boolean Values
-declare TRUE=1 FALSE=0
+declare -r TRUE=1 FALSE=0
 
 # Keycode Values
-declare UP=0 DN=1 EXT=2 ENT=3
+declare -r UP=0 DN=1 EXT=2 ENT=3
 
 # Function Return Values
-declare OK=0 ERR=1 CONT=2 NFD=127 NSEL=255
+declare -r OK=0 ERR=1 CONT=2 NFD=127 NSEL=255
 
 # Embedded Values
-declare NSET=0 MINPAD=4 TIMEOUT=10 COLNUM=256
+declare -r NSET=0 MINPAD=4 TIMEOUT=10 COLNUM=256
 
 # End Defined Numerical Constants------------------------------------------------------------------------------------------------------------------------------------
 
 # Embedded Strings
-declare CWD="." HWD="../" YES="y" QUIT="q" ESTR="" FLSH="/" BSLH="\\" KESC=$(command printf "\033")
+declare -r CWD="." HWD="../" YES="y" QUIT="q" ESTR="" FLSH="/" BSLH="\\" KESC=$(command printf "\033")
 
 # Text Formatting Strings
-declare B=$(command printf "${KESC}[1m") N=$(command printf "${KESC}(B${KESC}[m") W=$(command printf "${KESC}[30m${KESC}[47m")
+declare -r B=$(command printf "${KESC}[1m") N=$(command printf "${KESC}(B${KESC}[m") W=$(command printf "${KESC}[30m${KESC}[47m")
 
 # Program Flags
-declare HELP="-h" LIST="-l" CLEAN="-c" TRACK="-t" UPDATE="-u" VERSION="-v" OPTIONS="-o" FORGET="-f" REMEMBER="-r" MKDIRENT="-m"
+declare -r HELP="-h" LIST="-l" CLEAN="-c" TRACK="-t" UPDATE="-u" VERSION="-v" OPTIONS="-o" FORGET="-f" REMEMBER="-r" MKDIRENT="-m"
 
 # End Defined String Constants---------------------------------------------------------------------------------------------------------------------------------------
 
 # Program Path
-declare QCD_FOLD=~/.qcd
+declare -r QCD_FOLD=~/.qcd
 
 # Program Files
-declare QCD_PROG=${QCD_FOLD}/qcd.sh
-declare QCD_HELP=${QCD_FOLD}/help
-declare QCD_TEMP=${QCD_FOLD}/temp
+declare -r QCD_PROG=${QCD_FOLD}/qcd.sh
+declare -r QCD_HELP=${QCD_FOLD}/help
+declare -r QCD_TEMP=${QCD_FOLD}/temp
 
 # Resource Files
-declare QCD_STORE=${QCD_FOLD}/store
-declare QCD_LINKS=${QCD_FOLD}/links
-declare QCD_TRACK=${QCD_FOLD}/.track
+declare -r QCD_STORE=${QCD_FOLD}/store
+declare -r QCD_TRACK=${QCD_FOLD}/.track
 
 # Release Files
-declare QCD_UPDATE=${QCD_FOLD}/update
-declare QCD_INSTALL=${QCD_FOLD}/install_qcd
+declare -r QCD_UPDATE=${QCD_FOLD}/update.zip
+declare -r QCD_INSTALL=${QCD_FOLD}/install.sh
 
 # Release Link
-declare QCD_RELEASES="https://api.github.com/repos/nalinahuja22/qcd/releases/latest"
+declare -r QCD_RELEASES="https://api.github.com/repos/nalinahuja22/qcd/releases/latest"
 
 # End Defined Program Constants--------------------------------------------------------------------------------------------------------------------------------------
 
-# Menu Exit Boolean
-declare EXIT_FLAG=${FALSE}
+# Program Exit Boolean
+declare -i QCD_EXIT=${FALSE}
 
 # End Program Global Variables---------------------------------------------------------------------------------------------------------------------------------------
 
@@ -244,7 +247,7 @@ function _generate_menu() {
   command trap _qcd_exit SIGINT &> /dev/null
 
   # Reset Exit Flag
-  EXIT_FLAG=${FALSE}
+  QCD_EXIT=${FALSE}
 
   # Initialize Selected Option
   local sel_opt=${NSET}
@@ -285,10 +288,10 @@ function _generate_menu() {
     local key=$(_read_input)
 
     # Check Exit Flag
-    if [[ ${EXIT_FLAG} == ${TRUE} ]]
+    if [[ ${QCD_EXIT} == ${TRUE} ]]
     then
       # Reset Exit Flag
-      EXIT_FLAG=${FALSE}
+      QCD_EXIT=${FALSE}
 
       # Reset Option
       sel_opt=${NSEL}
@@ -372,7 +375,7 @@ function _verify_files() {
 
 function _cleanup_files() {
   # Remove Link And Temp Files
-  command rm ${QCD_LINKS} ${QCD_TEMP} 2> /dev/null
+  command rm ${QCD_TEMP} 2> /dev/null
 }
 
 # End File Management Functions--------------------------------------------------------------------------------------------------------------------------------------
@@ -1150,7 +1153,7 @@ function qcd() {
 
 function _qcd_exit() {
   # Set Exit Flag
-  EXIT_FLAG=${TRUE}
+  QCD_EXIT=${TRUE}
 }
 
 function _qcd_comp() {
