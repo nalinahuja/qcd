@@ -36,7 +36,7 @@ declare -i upgrade_status=${TRUE}
 declare -i install_status=${FALSE}
 
 # Installation Version
-declare -r install_version=$(command cat ${QCD_HELP} | command head -n1 | command awk '{print $4}')
+declare install_version
 
 # End Global Variables-----------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -55,6 +55,8 @@ then
     # Terminate Program
     command exit 1
   fi
+
+  install_version=$(command cat ${QCD_HELP} | command head -n1 | command awk '{print $4}')
 
   # Add Command To Terminal Profile
   if [[ ! -d ${QCD_FOLD} ]]
