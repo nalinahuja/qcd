@@ -51,6 +51,9 @@ then
   then
     # Display Prompt
     command echo -e "→ One or more program files are corrupted, aborting installation"
+
+    # Terminate Program
+    command exit 1
   fi
 
   # Add Command To Terminal Profile
@@ -82,12 +85,9 @@ then
       # Display Error Prompt
       command echo -e "→ No bash configurations found, aborting installation"
 
-      # Exit Installation
+      # Terminate Program
       command exit 1
     fi
-
-    # Display Success Prompt
-    command echo -e "→ Installed QCD command to terminal configuration"
 
     # Update Upgrade Status
     upgrade_status=${FALSE}
