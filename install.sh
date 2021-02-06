@@ -2,23 +2,17 @@
 
 # Developed by Nalin Ahuja, nalinahuja22
 
-# End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
-
-# Return Values
-declare -r NFD=127
+# End Header-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Boolean Values
 declare -r TRUE=1 FALSE=0
 
-# Embedded Values
-declare TIMEOUT=10 COLNUM=256
-
-# End Numerical Constants--------------------------------------------------------------------------------------------------------------------------------------------
+# End Numerical Constants----------------------------------------------------------------------------------------------------------------------------------------------
 
 # Embedded Strings
-declare -r YES="y" KESC=$(command printf "\033")
+declare -r YES="y"
 
-# End String Constants------------------------------------------------------------------------------------------------------------------------------------------------
+# End String Constants-------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Program Path
 declare -r QCD_FOLD=~/.qcd
@@ -29,41 +23,22 @@ declare -r QCD_PROG=./qcd.sh
 declare -r QCD_LICE=./LICENSE
 declare -r QCD_READ=./README.md
 
-# Release Files
-declare -r QCD_RELEASE=${QCD_FOLD}/release.zip
-declare -r QCD_INSTALL=${QCD_FOLD}/install.sh
-
 # Terminal Profiles
 declare -r BASHRC=~/.bashrc
 declare -r BASHPR=~/.bash_profile
 
-# Release Link
-declare -r QCD_RELEASE_URL="https://api.github.com/repos/nalinahuja22/qcd/releases/latest"
+# End File Constants---------------------------------------------------------------------------------------------------------------------------------------------------
 
-# End File Constants-------------------------------------------------------------------------------------------------------------------------------------------------
+# Upgrade Status
+declare -i upgrade_status=${TRUE}
 
-function _clear_output() {
-  # Clear Line Entries
-  for ((li=0; li <= ${1}; li++))
-  do
-    # Go To Beginning Of Line
-    command printf "${KESC}[${COLNUM}D"
+# Installation Status
+declare -i install_status=${FALSE}
 
-    # Clear Line
-    command printf "${KESC}[K"
+# Installation Version
+declare -r install_version=$(command cat ${QCD_HELP} | command head -n1 | command awk '{print $4}')
 
-    # Go Up One Line
-    command printf "${KESC}[1A"
-  done
-
-  # Go Down One Line
-  command printf "${KESC}[1B"
-}
-
-# End User Inferface Functions---------------------------------------------------------------------------------------------------------------------------------------
-
-
-# End Global Variables-----------------------------------------------------------------------------------------------------------------------------------------------
+# End Global Variables-------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Prompt User For Installation Confirmation
 command read -p "qcd: Confirm installation [y/n]: " confirm
@@ -71,75 +46,68 @@ command read -p "qcd: Confirm installation [y/n]: " confirm
 # Determine Action
 if [[ ${confirm//Y/${YES}} == ${YES} ]]
 then
-  # Verify Curl Dependency
-  command curl &> /dev/null
-
-  # Check Operation Status
-  if [[ ${?} -eq ${NFD} ]]
+  # Add Command To Terminal Profile
+  if [[ ! -d ${QCD_FOLD} ]]
   then
-    # Display Prompt
-    command echo -e "→ Curl dependency not installed"
+    # Find ~/.bashrc
+    if [[ -f ${BASHRC} ]]
+    then
+      # Add Command To ~/.bashrc
+      command echo -e "\n# QCD Utility Source\ncommand source ~/.qcd/qcd.sh\n" >> ${BASHRC}
 
-    # Terminate Program
-    return ${NFD}
+      # Update Installation Status
+      install_status=${TRUE}
+    fi
+
+    # Find ~/.bash_profile
+    if [[ -f ${BASHPR} ]]
+    then
+      # Add Command To ~/.bash_profile
+      command echo -e "\n# QCD Utility Source\ncommand source ~/.qcd/qcd.sh\n" >> ${BASHPR}
+
+      # Update Installation Status
+      install_status=${TRUE}
+    fi
+
+    # Check Installation Status
+    if [[ ${install_status} == ${FALSE} ]]
+    then
+      # Display Error Prompt
+      command echo -e "→ No bash configurations found, aborting installation"
+
+      # Exit Installation
+      command exit 1
+    fi
+
+    # Display Success Prompt
+    command echo -e "→ Installed QCD command to terminal configuration"
+
+    # Update Upgrade Status
+    upgrade_status=${FALSE}
   fi
 
-  # Display Prompt
-  command echo -en "→ Downloading release"
+  # Install QCD Program Files
+  command mkdir ${QCD_FOLD} 2> /dev/null
+  command mv ${QCD_PROG} ${QCD_FOLD} 2> /dev/null
+  command mv ${QCD_HELP} ${QCD_FOLD} 2> /dev/null
+  command mv ${QCD_LICE} ${QCD_FOLD} 2> /dev/null
+  command mv ${QCD_READ} ${QCD_FOLD} 2> /dev/null
 
-  # Determine Download URL
-  local download_url=$(command curl --connect-timeout ${TIMEOUT} -sL ${QCD_RELEASE_URL} 2> /dev/null | command egrep -s -o "https.*zipball.*" 2> /dev/null)
-
-  # Error Check Download URL
-  if [[ ${?} -ne ${OK} || -z ${download_url} ]]
+  # Determine Appropriate Prompt
+  if [[ ${upgrade_status} == ${TRUE} ]]
   then
-    # Display Prompt
-    command echo -e "\r→ Failed to resolve download link for release"
-
-    # Terminate Program
-    return ${ERR}
+    # Display Upgrade Prompt
+    command echo -e "→ Upgraded QCD to ${install_version}"
+  else
+    # Display Installation Prompt
+    command echo -e "→ Installed QCD ${install_version}"
   fi
 
-  # Download Release Contents
-  command curl --connect-timeout ${TIMEOUT} -sL "${download_url/\",/}" > ${QCD_RELEASE}
-
-  # Error Check Release Contents
-  if [[ ${?} -ne ${OK} || ! -f ${QCD_RELEASE} ]]
-  then
-    # Display Prompt
-    command echo -e "\r→ Failed to download release"
-
-    # Terminate Program
-    return ${ERR}
-  fi
-
-  # Display Prompt
-  command echo -en "\r→ Installing release  "
-
-  # Extract And Install Program Files
-  command unzip -o -j ${QCD_RELEASE} -d ${QCD_FOLD} &> /dev/null
-
-  # Error Check Installation
-  if [[ ${?} -ne ${OK} ]]
-  then
-    # Display Prompt
-    command echo -e "\r→ Failed to install release"
-
-    # Terminate Program
-    return ${ERR}
-  fi
-
-  # Cleanup Installation
-  command rm ${QCD_RELEASE} ${QCD_INSTALL} 2> /dev/null
-
-  # Clear All Outputs
-  _clear_output 2
-
-  # Display Prompt
-  command echo -e "qcd: Installed QCD $(command cat ${QCD_HELP} | command head -n1 | command awk '{print $4}'), please restart your terminal."
+  # Display Success Prompt
+  command echo -e "\nPlease restart your terminal"
 else
   # Display Abort Prompt
-  command echo -e "→ QCD installation aborted"
+  command echo -e "→ Installation aborted"
 fi
 
-# End QCD Installation-----------------------------------------------------------------------------------------------------------------------------------------------
+# End QCD Installation-------------------------------------------------------------------------------------------------------------------------------------------------
