@@ -1,6 +1,5 @@
 # Developed by Nalin Ahuja, nalinahuja22
 
-# TODO: Refactor codebase
 # TODO: New installer
 # TODO: Refined README
 
@@ -12,7 +11,7 @@ declare -r TRUE=1 FALSE=0
 # Keycode Values
 declare -r UP=0 DN=1 EXT=2 ENT=3
 
-# Function Return Values
+# Return Values
 declare -r OK=0 ERR=1 CONT=2 NFD=127 NSEL=255
 
 # Embedded Values
@@ -350,7 +349,7 @@ function _generate_menu() {
   return ${sel_opt}
 }
 
-# End User Selection Functions---------------------------------------------------------------------------------------------------------------------------------------
+# End User Inferface Functions---------------------------------------------------------------------------------------------------------------------------------------
 
 function _update_store() {
   # Check Exit Status
@@ -744,13 +743,13 @@ function _parse_standalone_flags() {
       fi
 
       # Display Prompt
-      command echo -en "→ Downloading update "
+      command echo -en "→ Downloading update"
 
-      # Determine Release URL
-      local release_url=$(command curl --connect-timeout ${TIMEOUT} -sL ${QCD_RELEASE_URL} 2> /dev/null | command egrep -s -o "https.*zipball.*" 2> /dev/null)
+      # Determine Download URL
+      local download_url=$(command curl --connect-timeout ${TIMEOUT} -sL ${QCD_RELEASE_URL} 2> /dev/null | command egrep -s -o "https.*zipball.*" 2> /dev/null)
 
-      # Error Check Release URL
-      if [[ ${?} -ne ${OK} || -z ${release_url} ]]
+      # Error Check Download URL
+      if [[ ${?} -ne ${OK} || -z ${download_url} ]]
       then
         # Display Prompt
         command echo -e "\r→ Failed to resolve download link for update"
@@ -760,7 +759,7 @@ function _parse_standalone_flags() {
       fi
 
       # Download Release Contents
-      command curl --connect-timeout ${TIMEOUT} -sL "${release_url/\",/}" > ${QCD_RELEASE}
+      command curl --connect-timeout ${TIMEOUT} -sL "${download_url/\",/}" > ${QCD_RELEASE}
 
       # Error Check Release Contents
       if [[ ${?} -ne ${OK} || ! -f ${QCD_RELEASE} ]]
