@@ -26,7 +26,7 @@ declare -r CWD="." HWD="../" YES="y" QUIT="q" ESTR="" FLSH="/" BSLH="\\" KESC=$(
 # Text Formatting Strings
 declare -r B=$(command printf "${KESC}[1m") N=$(command printf "${KESC}(B${KESC}[m") W=$(command printf "${KESC}[30m${KESC}[47m")
 
-# Program Flags
+# Optional Program Flags
 declare -r HELP="-h" LIST="-l" CLEAN="-c" TRACK="-t" UPDATE="-u" VERSION="-v" OPTIONS="-o" FORGET="-f" REMEMBER="-r" MKDIRENT="-m"
 
 # End Defined String Constants---------------------------------------------------------------------------------------------------------------------------------------
