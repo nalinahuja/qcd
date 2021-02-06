@@ -18,7 +18,7 @@ declare -r OK=0 ERR=1 CONT=2 NFD=127 NSEL=255
 # Embedded Values
 declare -r NSET=0 MINPAD=4 TIMEOUT=10 COLNUM=256
 
-# End Defined Numerical Constants------------------------------------------------------------------------------------------------------------------------------------
+# End Numerical Constants--------------------------------------------------------------------------------------------------------------------------------------------
 
 # Embedded Strings
 declare -r CWD="." HWD="../" YES="y" QUIT="q" ESTR="" FLSH="/" BSLH="\\" KESC=$(command printf "\033")
@@ -29,7 +29,7 @@ declare -r B=$(command printf "${KESC}[1m") N=$(command printf "${KESC}(B${KESC}
 # Optional Program Flags
 declare -r HELP="-h" LIST="-l" CLEAN="-c" TRACK="-t" UPDATE="-u" VERSION="-v" OPTIONS="-o" FORGET="-f" REMEMBER="-r" MKDIRENT="-m"
 
-# End Defined String Constants---------------------------------------------------------------------------------------------------------------------------------------
+# End String Constants-----------------------------------------------------------------------------------------------------------------------------------------------
 
 # Program Path
 declare -r QCD_FOLD=~/.qcd
@@ -50,12 +50,12 @@ declare -r QCD_INSTALL=${QCD_FOLD}/install.sh
 # Release Link
 declare -r QCD_RELEASE_URL="https://api.github.com/repos/nalinahuja22/qcd/releases/latest"
 
-# End Defined Program Constants--------------------------------------------------------------------------------------------------------------------------------------
+# End File Constants-------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Program Exit Boolean
 declare -i QCD_EXIT=${FALSE}
 
-# End Program Global Variables---------------------------------------------------------------------------------------------------------------------------------------
+# End Global Variables-----------------------------------------------------------------------------------------------------------------------------------------------
 
 function _get_pwd() {
   # Store Current Directory
@@ -450,7 +450,7 @@ function _remove_symbolic_link() {
   return ${OK}
 }
 
-# End Linkage Management Functions-----------------------------------------------------------------------------------------------------------------------------------
+# End Database Management Functions----------------------------------------------------------------------------------------------------------------------------------
 
 function _parse_option_flags() {
   # Store Argument Flag
@@ -1375,7 +1375,9 @@ function _qcd_init() {
   command complete -o nospace -o filenames -A directory -F _qcd_comp qcd
 }
 
+# End QCD Dependency Functions---------------------------------------------------------------------------------------------------------------------------------------
+
 # Initialize QCD
 _qcd_init
 
-# End QCD Dependency Functions---------------------------------------------------------------------------------------------------------------------------------------
+# End QCD Program Source---------------------------------------------------------------------------------------------------------------------------------------------
