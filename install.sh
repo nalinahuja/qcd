@@ -56,6 +56,7 @@ then
     command exit 1
   fi
 
+  # Initialize Installation Version
   install_version=$(command cat ${QCD_HELP} | command head -n1 | command awk '{print $4}')
 
   # Add Command To Terminal Profile
