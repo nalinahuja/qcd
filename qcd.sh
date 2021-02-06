@@ -3,48 +3,48 @@
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Boolean Values
-declare -r TRUE=1 FALSE=0
+declare -r TRUE=1 FALSE=0 &> /dev/null
 
 # Keycode Values
-declare -r UP=0 DN=1 EXT=2 ENT=3
+declare -r UP=0 DN=1 EXT=2 ENT=3 &> /dev/null
 
 # Return Values
-declare -r OK=0 ERR=1 CONT=2 NFD=127 NSEL=255
+declare -r OK=0 ERR=1 CONT=2 NFD=127 NSEL=255 &> /dev/null
 
 # Embedded Values
-declare -r NSET=0 MINPAD=4 TIMEOUT=10 COLNUM=256
+declare -r NSET=0 MINPAD=4 TIMEOUT=10 COLNUM=256 &> /dev/null
 
 # End Numerical Constants--------------------------------------------------------------------------------------------------------------------------------------------
 
 # Embedded Strings
-declare -r CWD="." HWD="../" YES="y" QUIT="q" ESTR="" FLSH="/" BSLH="\\" KESC=$(command printf "\033")
+declare -r CWD="." HWD="../" YES="y" QUIT="q" ESTR="" FLSH="/" BSLH="\\" KESC=$(command printf "\033") &> /dev/null
 
 # Text Formatting Strings
-declare -r B=$(command printf "${KESC}[1m") N=$(command printf "${KESC}(B${KESC}[m") W=$(command printf "${KESC}[30m${KESC}[47m")
+declare -r B=$(command printf "${KESC}[1m") N=$(command printf "${KESC}(B${KESC}[m") W=$(command printf "${KESC}[30m${KESC}[47m") &> /dev/null
 
 # Optional Program Flags
-declare -r HELP="-h" LIST="-l" CLEAN="-c" TRACK="-t" UPDATE="-u" VERSION="-v" OPTIONS="-o" FORGET="-f" REMEMBER="-r" MKDIRENT="-m"
+declare -r HELP="-h" LIST="-l" CLEAN="-c" TRACK="-t" UPDATE="-u" VERSION="-v" OPTIONS="-o" FORGET="-f" REMEMBER="-r" MKDIRENT="-m" &> /dev/null
 
 # End String Constants-----------------------------------------------------------------------------------------------------------------------------------------------
 
 # Program Path
-declare -r QCD_FOLD=~/.qcd
+declare -r QCD_FOLD=~/.qcd &> /dev/null
 
 # Program Files
-declare -r QCD_PROG=${QCD_FOLD}/qcd.sh
-declare -r QCD_HELP=${QCD_FOLD}/help
-declare -r QCD_TEMP=${QCD_FOLD}/temp
+declare -r QCD_PROG=${QCD_FOLD}/qcd.sh &> /dev/null
+declare -r QCD_HELP=${QCD_FOLD}/help   &> /dev/null
+declare -r QCD_TEMP=${QCD_FOLD}/temp   &> /dev/null
 
 # Resource Files
-declare -r QCD_STORE=${QCD_FOLD}/store
-declare -r QCD_TRACK=${QCD_FOLD}/.track
+declare -r QCD_STORE=${QCD_FOLD}/store  &> /dev/null
+declare -r QCD_TRACK=${QCD_FOLD}/.track &> /dev/null
 
 # Release Files
-declare -r QCD_RELEASE=${QCD_FOLD}/release.zip
-declare -r QCD_INSTALL=${QCD_FOLD}/install.sh
+declare -r QCD_RELEASE=${QCD_FOLD}/release.zip &> /dev/null
+declare -r QCD_INSTALL=${QCD_FOLD}/install.sh  &> /dev/null
 
 # Release Link
-declare -r QCD_RELEASE_URL="https://api.github.com/repos/nalinahuja22/qcd/releases/latest"
+declare -r QCD_RELEASE_URL="https://api.github.com/repos/nalinahuja22/qcd/releases/latest" &> /dev/null
 
 # End File Constants-------------------------------------------------------------------------------------------------------------------------------------------------
 
