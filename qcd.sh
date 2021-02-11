@@ -3,27 +3,27 @@
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Boolean Values
-declare -r TRUE=1 FALSE=0 &> /dev/null
+declare -r __TRUE=1 __FALSE=0 &> /dev/null
 
 # Keycode Values
-declare -r UP=0 DN=1 EXT=2 ENT=3 &> /dev/null
+declare -r __UP=0 __DN=1 __EXT=2 __ENT=3 &> /dev/null
 
 # Return Values
-declare -r OK=0 ERR=1 CONT=2 NFD=127 NSEL=255 &> /dev/null
+declare -r __OK=0 __ERR=1 __CONT=2 __NFD=127 __NSEL=255 &> /dev/null
 
 # Embedded Values
-declare -r NSET=0 MINPAD=4 TIMEOUT=10 COLNUM=256 &> /dev/null
+declare -r __NSET=0 __MINPAD=4 __TIMEOUT=10 __COLNUM=256 &> /dev/null
 
 # End Numerical Constants--------------------------------------------------------------------------------------------------------------------------------------------
 
 # Embedded Strings
-declare -r CWD="." HWD="../" YES="y" QUIT="q" ESTR="" FLSH="/" BSLH="\\" KESC=$(command printf "\033") &> /dev/null
+declare -r __CWD="." __HWD="../" __YES="y" __QUIT="q" __ESTR="" __FLSH="/" __BSLH="\\" __KESC=$(command printf "\033") &> /dev/null
 
 # Text Formatting Strings
-declare -r B=$(command printf "${KESC}[1m") N=$(command printf "${KESC}(B${KESC}[m") W=$(command printf "${KESC}[30m${KESC}[47m") &> /dev/null
+declare -r __B=$(command printf "${__KESC}[1m") __W=$(command printf "${__KESC}[30m${__KESC}[47m") __N=$(command printf "${__KESC}(B${__KESC}[m") &> /dev/null
 
 # Optional Program Flags
-declare -r HELP="-h" LIST="-l" CLEAN="-c" TRACK="-t" UPDATE="-u" VERSION="-v" OPTIONS="-o" FORGET="-f" REMEMBER="-r" MKDIRENT="-m" &> /dev/null
+declare -r __HELP="-h" __LIST="-l" __CLEAN="-c" __TRACK="-t" __UPDATE="-u" __VERSION="-v" __OPTIONS="-o" __FORGET="-f" __REMEMBER="-r" __MKDIRENT="-m" &> /dev/null
 
 # End String Constants-----------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -49,7 +49,7 @@ declare -r QCD_RELEASE_URL="https://api.github.com/repos/nalinahuja22/qcd/releas
 # End File Constants-------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Program Exit Boolean
-declare -i QCD_EXIT=${FALSE}
+declare -i QCD_EXIT=${__FALSE}
 
 # End Global Variables-----------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -58,7 +58,7 @@ function _get_pwd() {
   local pwd=$(command pwd)
 
   # Return Current Directory
-  command echo -e "${pwd}${FLSH}"
+  command echo -e "${pwd}${__FLSH}"
 }
 
 function _get_path() {
@@ -66,12 +66,12 @@ function _get_path() {
   local dir=$(command realpath "${@}")
 
   # Return Absolute Path
-  command echo -e "${dir}${FLSH}"
+  command echo -e "${dir}${__FLSH}"
 }
 
 function _get_rname() {
   # Store Argument Directory
-  local dir="${@%/}${FLSH}"
+  local dir="${@%/}${__FLSH}"
 
   # Get Prefix String
   local pfx="${dir#*/*}"
@@ -92,7 +92,7 @@ function _get_rname() {
 
 function _get_dname() {
   # Store Argument Directory
-  local dir="${@%/}${FLSH}"
+  local dir="${@%/}${__FLSH}"
 
   # Get Prefix String
   local pfx="${dir%/*/}"
@@ -175,7 +175,7 @@ function _hide_output() {
 
 function _read_input() {
   # Initialize String Buffers
-  local input=${ESTR} c=${ESTR}
+  local input=${__ESTR} c=${__ESTR}
 
   # Read Input Stream
   while [[ 1 ]]
@@ -187,11 +187,11 @@ function _read_input() {
     if [[ -z ${c} ]]
     then
       # Return Enter Action
-      command echo -e "${ENT}" && break
-    elif [[ ${c} == ${QUIT} ]]
+      command echo -e "${__ENT}" && break
+    elif [[ ${c} == ${__QUIT} ]]
     then
       # Return Quit Action
-      command echo -e "${EXT}" && break
+      command echo -e "${__EXT}" && break
     fi
 
     # Append Character To Input Buffer
@@ -201,14 +201,14 @@ function _read_input() {
     if [[ ${#input} -eq 3 ]]
     then
       # Return Arrow Key Action
-      if [[ ${input} == "${KESC}[A" ]]
+      if [[ ${input} == "${__KESC}[A" ]]
       then
         # Return Up Arrow Action
-        command echo -e "${UP}"
-      elif [[ ${input} == "${KESC}[B" ]]
+        command echo -e "${__UP}"
+      elif [[ ${input} == "${__KESC}[B" ]]
       then
         # Return Down Arrow Action
-        command echo -e "${DN}"
+        command echo -e "${__DN}"
       fi
 
       # Break Loop
@@ -222,17 +222,17 @@ function _clear_output() {
   for ((li=0; li <= ${1}; li++))
   do
     # Go To Beginning Of Line
-    command printf "${KESC}[${COLNUM}D"
+    command printf "${__KESC}[${__COLNUM}D"
 
     # Clear Line
-    command printf "${KESC}[K"
+    command printf "${__KESC}[K"
 
     # Go Up One Line
-    command printf "${KESC}[1A"
+    command printf "${__KESC}[1A"
   done
 
   # Go Down One Line
-  command printf "${KESC}[1B"
+  command printf "${__KESC}[1B"
 }
 
 function _generate_menu() {
@@ -243,16 +243,16 @@ function _generate_menu() {
   command trap _qcd_exit SIGINT &> /dev/null
 
   # Reset Exit Flag
-  QCD_EXIT=${FALSE}
+  QCD_EXIT=${__FALSE}
 
   # Initialize Selected Option
-  local sel_opt=${NSET}
+  local sel_opt=${__NSET}
 
   # Begin Selection Loop
   while [[ 1 ]]
   do
     # Initialize Option Index
-    local oi=${NSET}
+    local oi=${__NSET}
 
     # Clear Temp File
     command echo -en > ${QCD_TEMP}
@@ -267,7 +267,7 @@ function _generate_menu() {
       if [[ ${oi} -eq ${sel_opt} ]]
       then
         # Print Option As Seleted
-        command echo -e "${W} ${opt} ${N}" >> ${QCD_TEMP}
+        command echo -e "${__W} ${opt} ${__N}" >> ${QCD_TEMP}
       else
         # Print Option As Unselected
         command echo -e " ${opt} " >> ${QCD_TEMP}
@@ -284,34 +284,34 @@ function _generate_menu() {
     local key=$(_read_input)
 
     # Check Exit Flag
-    if [[ ${QCD_EXIT} == ${TRUE} ]]
+    if [[ ${QCD_EXIT} == ${__TRUE} ]]
     then
       # Reset Exit Flag
-      QCD_EXIT=${FALSE}
+      QCD_EXIT=${__FALSE}
 
       # Reset Option
-      sel_opt=${NSEL}
+      sel_opt=${__NSEL}
 
       # Break Loop
       break
     fi
 
     # Update Cursor Position
-    if [[ ${key} -eq ${UP} ]]
+    if [[ ${key} -eq ${__UP} ]]
     then
       # Decrement Selected Line
       sel_opt=$((${sel_opt} - 1))
-    elif [[ ${key} -eq ${DN} ]]
+    elif [[ ${key} -eq ${__DN} ]]
     then
       # Increment Selected Line
       sel_opt=$((${sel_opt} + 1))
-    elif [[ ${key} -eq ${ENT} || ${key} -eq ${EXT} ]]
+    elif [[ ${key} -eq ${__ENT} || ${key} -eq ${__EXT} ]]
     then
       # Check For Exit Key
-      if [[ ${key} -eq ${EXT} ]]
+      if [[ ${key} -eq ${__EXT} ]]
       then
         # Reset Option
-        sel_opt=${NSEL}
+        sel_opt=${__NSEL}
       fi
 
       # Break Loop
@@ -350,7 +350,7 @@ function _generate_menu() {
 
 function _update_store() {
   # Check Exit Status
-  if [[ ${1} -eq ${OK} ]]
+  if [[ ${1} -eq ${__OK} ]]
   then
     # Update Store File
     command mv ${QCD_TEMP} ${QCD_STORE} 2> /dev/null
@@ -390,7 +390,7 @@ function _add_directory() {
     if [[ ! -d "${adir}" ]]
     then
       # Return To Caller
-      return ${ERR}
+      return ${__ERR}
     fi
   fi
 
@@ -408,7 +408,7 @@ function _add_directory() {
   fi
 
   # Return To Caller
-  return ${OK}
+  return ${__OK}
 }
 
 function _remove_directory() {
@@ -429,7 +429,7 @@ function _remove_directory() {
   _update_store ${?}
 
   # Return To Caller
-  return ${OK}
+  return ${__OK}
 }
 
 function _remove_symbolic_link() {
@@ -443,7 +443,7 @@ function _remove_symbolic_link() {
   _update_store ${?}
 
   # Return To Caller
-  return ${OK}
+  return ${__OK}
 }
 
 # End Database Management Functions----------------------------------------------------------------------------------------------------------------------------------
@@ -453,7 +453,7 @@ function _parse_option_flags() {
   local flag="${@:${#@}}"
 
   # Check For Option Flags
-  if [[ ${flag/--remember/${REMEMBER}} == ${REMEMBER} ]]
+  if [[ ${flag/--remember/${__REMEMBER}} == ${__REMEMBER} ]]
   then
     # Determine Remember Type
     if [[ ${#@} -eq 1 ]]
@@ -471,7 +471,7 @@ function _parse_option_flags() {
         command echo -e "qcd: Invalid directory path"
 
         # Terminate Program
-        return ${ERR}
+        return ${__ERR}
       fi
 
       # Add Directory As Linkage
@@ -479,8 +479,8 @@ function _parse_option_flags() {
     fi
 
     # Terminate Program
-    return ${OK}
-  elif [[ ${flag/--forget/${FORGET}} == ${FORGET} ]]
+    return ${__OK}
+  elif [[ ${flag/--forget/${__FORGET}} == ${__FORGET} ]]
   then
     # Determine Forget Type
     if [[ ${#@} -eq 1 ]]
@@ -496,8 +496,8 @@ function _parse_option_flags() {
     fi
 
     # Terminate Program
-    return ${OK}
-  elif [[ ${flag/--mkdir/${MKDIRENT}} == ${MKDIRENT} ]]
+    return ${__OK}
+  elif [[ ${flag/--mkdir/${__MKDIRENT}} == ${__MKDIRENT} ]]
   then
     # Verify Argument Count
     if [[ ${#@} -lt 2 ]]
@@ -506,7 +506,7 @@ function _parse_option_flags() {
       command echo -e "qcd: Insufficient arguments"
 
       # Terminate Program
-      return ${ERR}
+      return ${__ERR}
     else
       # Store Directory Path Component
       local dir_path="${@:1:$((${#@} - 1))}"
@@ -527,14 +527,14 @@ function _parse_option_flags() {
         command echo -e "qcd: Directory already exists"
 
         # Terminate Program
-        return ${ERR}
+        return ${__ERR}
       elif [[ ! -z ${pfx_path} && ! -d "${pfx_path%/}" ]]
       then
         # Display Prompt
         command echo -e "qcd: Invalid path to new directory"
 
         # Terminate Program
-        return ${ERR}
+        return ${__ERR}
       fi
 
       # Create Directory At Location
@@ -545,14 +545,14 @@ function _parse_option_flags() {
     fi
 
     # Terminate Program
-    return ${OK}
-  elif [[ ${flag/--list/${LIST}} == ${LIST} ]]
+    return ${__OK}
+  elif [[ ${flag/--list/${__LIST}} == ${__LIST} ]]
   then
     # Display Prompt
     command echo -en "\rqcd: Generating link map..."
 
     # Initialize Symbolic Links
-    local sym_links=${NSET}
+    local sym_links=${__NSET}
 
     # Conditionally Fetch Symbolic Links
     if [[ ${#@} -eq 1 ]]
@@ -579,7 +579,7 @@ function _parse_option_flags() {
       command echo -e "\rqcd: No linkages found      "
 
       # Terminate Program
-      return ${ERR}
+      return ${__ERR}
     fi
 
     # Store Terminal Column Count
@@ -589,14 +589,14 @@ function _parse_option_flags() {
     local pcols=$(command echo -e "${sym_links}" | command awk -F ':' '{print $1}' | command awk '{print length}' | command sort -n | command tail -n1)
 
     # Error Check Column Padding
-    if [[ ${pcols} -lt ${MINPAD} ]]
+    if [[ ${pcols} -lt ${__MINPAD} ]]
     then
       # Set Padding To Minimum
-      pcols=${MINPAD}
+      pcols=${__MINPAD}
     fi
 
     # Format Header
-    command printf "\r${W} %-${pcols}s  %-$((${tcols} - ${pcols} - 3))s${N}\n" "Link" "Directory" > ${QCD_TEMP}
+    command printf "\r${__W} %-${pcols}s  %-$((${tcols} - ${pcols} - 3))s${__N}\n" "Link" "Directory" > ${QCD_TEMP}
 
     # Set IFS
     local IFS=$'\n'
@@ -619,11 +619,11 @@ function _parse_option_flags() {
     command cat ${QCD_TEMP}
 
     # Terminate Program
-    return ${OK}
+    return ${__OK}
   fi
 
   # Continue Program
-  return ${CONT}
+  return ${__CONT}
 }
 
 function _parse_standalone_flags() {
@@ -631,21 +631,21 @@ function _parse_standalone_flags() {
   local flag="${@:${#@}}"
 
   # Check For Standalone Flags
-  if [[ ${flag/--help/${HELP}} == ${HELP} ]]
+  if [[ ${flag/--help/${__HELP}} == ${__HELP} ]]
   then
     # Print Help File
     command cat ${QCD_HELP}
 
     # Terminate Program
-    return ${OK}
-  elif [[ ${flag/--version/${VERSION}} == ${VERSION} ]]
+    return ${__OK}
+  elif [[ ${flag/--version/${__VERSION}} == ${__VERSION} ]]
   then
     # Print Installed Version
     command cat ${QCD_HELP} | command head -n1
 
     # Terminate Program
-    return ${OK}
-  elif [[ ${flag/--clean/${CLEAN}} == ${CLEAN} ]]
+    return ${__OK}
+  elif [[ ${flag/--clean/${__CLEAN}} == ${__CLEAN} ]]
   then
     # Get Linked Paths From Store File
     local lpaths=$(command awk -F ':' '{print $2}' ${QCD_STORE})
@@ -668,20 +668,20 @@ function _parse_standalone_flags() {
     unset IFS
 
     # Terminate Program
-    return ${OK}
-  elif [[ ${flag/--track-dirs/${TRACK}} == ${TRACK} ]]
+    return ${__OK}
+  elif [[ ${flag/--track-dirs/${__TRACK}} == ${__TRACK} ]]
   then
     # Check For Tracking File
     if [[ -f ${QCD_TRACK} ]]
     then
       # Display Prompt
-      command echo -e "qcd: Directory tracking ${B}enabled${N}"
+      command echo -e "qcd: Directory tracking ${__B}enabled${__N}"
 
       # Prompt User For Confirmation
       command read -p "→ Disable tracking [y/n]: " confirm
     else
       # Display Prompt
-      command echo -e "qcd: Directory tracking ${B}disabled${N}"
+      command echo -e "qcd: Directory tracking ${__B}disabled${__N}"
 
       # Prompt User For Confirmation
       command read -p "→ Enable tracking [y/n]: " confirm
@@ -691,7 +691,7 @@ function _parse_standalone_flags() {
     _clear_output 2
 
     # Determine Action
-    if [[ ${confirm//Y/${YES}} == ${YES} ]]
+    if [[ ${confirm//Y/${__YES}} == ${__YES} ]]
     then
       # Check For Tracking File
       if [[ ! -f ${QCD_TRACK} ]]
@@ -700,19 +700,19 @@ function _parse_standalone_flags() {
         command touch ${QCD_TRACK}
 
         # Display Prompt
-        command echo -e "qcd: Directory tracking ${B}enabled${N}"
+        command echo -e "qcd: Directory tracking ${__B}enabled${__N}"
       else
         # Remove Tracking File
         command rm ${QCD_TRACK}
 
         # Display Prompt
-        command echo -e "qcd: Directory tracking ${B}disabled${N}"
+        command echo -e "qcd: Directory tracking ${__B}disabled${__N}"
       fi
     fi
 
     # Terminate Program
-    return ${OK}
-  elif [[ ${flag/--update/${UPDATE}} == ${UPDATE} ]]
+    return ${__OK}
+  elif [[ ${flag/--update/${__UPDATE}} == ${__UPDATE} ]]
   then
     # Display Prompt
     command echo -e "qcd: Currently running $(command cat ${QCD_HELP} | command head -n1 | command awk '{print $4}')"
@@ -721,7 +721,7 @@ function _parse_standalone_flags() {
     command read -p "→ Confirm update [y/n]: " confirm
 
     # Determine Action
-    if [[ ${confirm//Y/${YES}} == ${YES} ]]
+    if [[ ${confirm//Y/${__YES}} == ${__YES} ]]
     then
       # Clear Confirmation Prompt
       _clear_output 1
@@ -730,42 +730,42 @@ function _parse_standalone_flags() {
       command curl &> /dev/null
 
       # Check Operation Status
-      if [[ ${?} -eq ${NFD} ]]
+      if [[ ${?} -eq ${__NFD} ]]
       then
         # Display Prompt
         command echo -e "→ Curl dependency not installed"
 
         # Terminate Program
-        return ${NFD}
+        return ${__NFD}
       fi
 
       # Display Prompt
       command echo -en "→ Downloading update"
 
       # Determine Download URL
-      local download_url=$(command curl --connect-timeout ${TIMEOUT} -sL ${QCD_RELEASE_URL} 2> /dev/null | command egrep -s -o "https.*zipball.*" 2> /dev/null)
+      local download_url=$(command curl --connect-timeout ${__TIMEOUT} -sL ${QCD_RELEASE_URL} 2> /dev/null | command egrep -s -o "https.*zipball.*" 2> /dev/null)
 
       # Error Check Download URL
-      if [[ ${?} -ne ${OK} || -z ${download_url} ]]
+      if [[ ${?} -ne ${__OK} || -z ${download_url} ]]
       then
         # Display Prompt
         command echo -e "\r→ Failed to resolve download link for update"
 
         # Terminate Program
-        return ${ERR}
+        return ${__ERR}
       fi
 
       # Download Release Contents
-      command curl --connect-timeout ${TIMEOUT} -sL "${download_url/\",/}" > ${QCD_RELEASE}
+      command curl --connect-timeout ${__TIMEOUT} -sL "${download_url/\",/}" > ${QCD_RELEASE}
 
       # Error Check Release Contents
-      if [[ ${?} -ne ${OK} || ! -f ${QCD_RELEASE} ]]
+      if [[ ${?} -ne ${__OK} || ! -f ${QCD_RELEASE} ]]
       then
         # Display Prompt
         command echo -e "\r→ Failed to download update"
 
         # Terminate Program
-        return ${ERR}
+        return ${__ERR}
       fi
 
       # Display Prompt
@@ -775,13 +775,13 @@ function _parse_standalone_flags() {
       command unzip -o -j ${QCD_RELEASE} -d ${QCD_FOLD} &> /dev/null
 
       # Error Check Installation
-      if [[ ${?} -ne ${OK} ]]
+      if [[ ${?} -ne ${__OK} ]]
       then
         # Display Prompt
         command echo -e "\r→ Failed to install update"
 
         # Terminate Program
-        return ${ERR}
+        return ${__ERR}
       fi
 
       # Display Prompt
@@ -791,13 +791,13 @@ function _parse_standalone_flags() {
       command source ${QCD_PROG} 2> /dev/null
 
       # Error Check Installation
-      if [[ ${?} -ne ${OK} ]]
+      if [[ ${?} -ne ${__OK} ]]
       then
         # Display Prompt
         command echo -e "\r→ Failed to configure update "
 
         # Terminate Program
-        return ${ERR}
+        return ${__ERR}
       fi
 
       # Cleanup Installation
@@ -817,11 +817,11 @@ function _parse_standalone_flags() {
     fi
 
     # Terminate Program
-    return ${OK}
+    return ${__OK}
   fi
 
   # Continue Program
-  return ${CONT}
+  return ${__CONT}
 }
 
 # End Argument Parser Functions--------------------------------------------------------------------------------------------------------------------------------------
@@ -839,7 +839,7 @@ function qcd() {
   local fstatus=${?}
 
   # Check Function Status
-  if [[ ${fstatus} -ne ${CONT} ]]
+  if [[ ${fstatus} -ne ${__CONT} ]]
   then
     # Terminate Program
     return ${fstatus}
@@ -852,7 +852,7 @@ function qcd() {
   local fstatus=${?}
 
   # Check Function Status
-  if [[ ${fstatus} -ne ${CONT} ]]
+  if [[ ${fstatus} -ne ${__CONT} ]]
   then
     # Terminate Program
     return ${fstatus}
@@ -861,7 +861,7 @@ function qcd() {
   # End Argument Parsing---------------------------------------------------------------------------------------------------------------------------------------------
 
   # Initialize Argument Components
-  local dir_arg=${ESTR} show_opt=${FALSE}
+  local dir_arg=${__ESTR} show_opt=${__FALSE}
 
   # Check Argument Validity
   if [[ -z ${@} ]]
@@ -876,13 +876,13 @@ function qcd() {
     local si=1 ei=${#@}
 
     # Check For Option Flag
-    if [[ ${opt_arg/--options/${OPTIONS}} == ${OPTIONS} ]]
+    if [[ ${opt_arg/--options/${__OPTIONS}} == ${__OPTIONS} ]]
     then
       # Update Sublist Bounds
       si=1; ei=$((${#@} - 1));
 
       # Set Option Flag
-      show_opt=${TRUE}
+      show_opt=${__TRUE}
     fi
 
     # Set Directory Argument
@@ -898,10 +898,10 @@ function qcd() {
       local back_dir=$(command printf "%${back_height}s")
 
       # Override Directory Arguments
-      dir_arg="${back_dir// /${HWD}}"
+      dir_arg="${back_dir// /${__HWD}}"
 
       # Override Option Argument
-      opt_arg=${ESTR}
+      opt_arg=${__ESTR}
     else
       # Format Escaped Characters
       dir_arg=$(_escape_path "${dir_arg}")
@@ -911,7 +911,7 @@ function qcd() {
   # End Input Formatting---------------------------------------------------------------------------------------------------------------------------------------------
 
   # Determine If Directory Is Linked
-  if [[ -d "${dir_arg}" && ${show_opt} == ${FALSE} ]]
+  if [[ -d "${dir_arg}" && ${show_opt} == ${__FALSE} ]]
   then
     # Change To Valid Directory
     command cd "${dir_arg}"
@@ -924,10 +924,10 @@ function qcd() {
     fi
 
     # Terminate Program
-    return ${OK}
+    return ${__OK}
   else
     # Initialize Directory Components
-    local sym_link=${ESTR} sub_link=${ESTR}
+    local sym_link=${__ESTR} sub_link=${__ESTR}
 
     # Initialize Prefix Length
     local pfx_len=${#dir_arg}
@@ -948,19 +948,19 @@ function qcd() {
     # End Input Directory Parsing------------------------------------------------------------------------------------------------------------------------------------
 
     # Initialize Linkage Parameters
-    local pathv=${NSET}
+    local pathv=${__NSET}
 
     # Check For Indirect Link Matching
     if [[ -z $(command egrep -s -x "${sym_link}:.*" ${QCD_STORE} 2> /dev/null) ]]
     then
       # Initialize Parameters
-      local i=0 wld_link=${ESTR}
+      local i=0 wld_link=${__ESTR}
 
       # Check For Hidden Directory Prefix
       if [[ "${dir_arg}" == \.* ]]
       then
         # Override Parameters
-        i=2; wld_link="${BSLH}${CWD}"
+        i=2; wld_link="${__BSLH}${__CWD}"
       fi
 
       # Wildcard Symbolic Link
@@ -995,7 +995,7 @@ function qcd() {
     if [[ ${pathc} -gt 1 ]]
     then
       # Initialize Matched Path
-      local mpath=${ESTR}
+      local mpath=${__ESTR}
 
       # Store Current Directory
       local pwd=$(_get_pwd)
@@ -1039,7 +1039,7 @@ function qcd() {
       if [[ -z ${mpath} && ! -z ${fpaths} ]]
       then
         # Display Prompt
-        command echo -e "qcd: Multiple paths linked to ${B}${dir_arg%/}${N}"
+        command echo -e "qcd: Multiple paths linked to ${__B}${dir_arg%/}${__N}"
 
         # Generate Selection Menu
         _generate_menu ${fpaths[@]}
@@ -1048,10 +1048,10 @@ function qcd() {
         local ept=${?}
 
         # Check Function Status
-        if [[ ${ept} -eq ${NSEL} ]]
+        if [[ ${ept} -eq ${__NSEL} ]]
         then
           # Terminate Program
-          return ${OK}
+          return ${__OK}
         fi
 
         # Set To Manually Selected Endpoint
@@ -1074,7 +1074,7 @@ function qcd() {
       command echo -e "qcd: Cannot resolve linkage to directory"
 
       # Terminate Program
-      return ${ERR}
+      return ${__ERR}
     elif [[ ! -d "${pathv}" ]]
     then
       # Check Result Count
@@ -1091,7 +1091,7 @@ function qcd() {
       (_remove_directory "${pathv}" &> /dev/null &)
 
       # Terminate Program
-      return ${ERR}
+      return ${__ERR}
     else
       # Switch To Linked Path
       command cd "${pathv}"
@@ -1112,7 +1112,7 @@ function qcd() {
         if [[ -z ${lead_comp} ]]
         then
           # Update Path Components
-          lead_comp=${trail_comp}; trail_comp=${ESTR}
+          lead_comp=${trail_comp}; trail_comp=${__ESTR}
         fi
 
         # Validate Leading Path Existence
@@ -1138,7 +1138,7 @@ function qcd() {
       fi
 
       # Terminate Program
-      return ${OK}
+      return ${__OK}
     fi
   fi
 
@@ -1149,7 +1149,7 @@ function qcd() {
 
 function _qcd_exit() {
   # Set Exit Flag
-  QCD_EXIT=${TRUE}
+  QCD_EXIT=${__TRUE}
 }
 
 function _qcd_comp() {
@@ -1191,19 +1191,19 @@ function _qcd_comp() {
     if [[ ! -d "${sym_link}" ]]
     then
       # Initialize Linked Paths
-      local link_paths=${NSET}
+      local link_paths=${__NSET}
 
       # Check For Indirect Link Matching
       if [[ -z $(command egrep -s -x "${sym_link}:.*" ${QCD_STORE} 2> /dev/null)  ]]
       then
         # Initialize Parameters
-        local i=0 wld_link=${ESTR}
+        local i=0 wld_link=${__ESTR}
 
         # Check For Hidden Directory Prefix
         if [[ "${sym_link}" == \.* ]]
         then
           # Override Parameters
-          i=1; wld_link="${BSLH}${CWD}"
+          i=1; wld_link="${__BSLH}${__CWD}"
         fi
 
         # Wildcard Symbolic Link
@@ -1270,7 +1270,7 @@ function _qcd_comp() {
       for res_dir in ${res_dirs[@]}
       do
         # Add Subdirectories Of Similar Visibility
-        if [[ ! ${trail_comp:0:1} == ${CWD} ]]
+        if [[ ! ${trail_comp:0:1} == ${__CWD} ]]
         then
           # Add Compressed Visible Linked Subdirectories
           sub_dirs+=($(command printf "%s\n" $(command ls -F "${res_dir}" 2> /dev/null | command egrep -s -x ".*/" 2> /dev/null)))
@@ -1286,7 +1286,7 @@ function _qcd_comp() {
       local IFS=$'\n'
 
       # Format Symbolic Link
-      sym_link="${sym_link}${FLSH}"
+      sym_link="${sym_link}${__FLSH}"
 
       # Iterate Over Subdirectories
       for sub_dir in ${sub_dirs[@]}
@@ -1298,7 +1298,7 @@ function _qcd_comp() {
         if [[ ! -d "${link_sub}" ]]
         then
           # Append Completion Slash
-          link_sub="${link_sub}${FLSH}"
+          link_sub="${link_sub}${__FLSH}"
         fi
 
         # Add Linked Subdirectories
@@ -1315,7 +1315,7 @@ function _qcd_comp() {
     local pwd=$(_get_dname "$(_get_pwd)")
 
     # Initialize Ignore Boolean
-    local ignore_pwd=${FALSE}
+    local ignore_pwd=${__FALSE}
 
     # End Linkage Acquisition----------------------------------------------------------------------------------------------------------------------------------------
 
@@ -1329,14 +1329,14 @@ function _qcd_comp() {
       if [[ ! -d "${sym_link}" ]]
       then
         # Determine Action
-        if [[ ${ignore_pwd} == ${FALSE} && "${sym_link}" == "${pwd}" ]]
+        if [[ ${ignore_pwd} == ${__FALSE} && "${sym_link}" == "${pwd}" ]]
         then
           # Exlude Current Directory
-          ignore_pwd=${TRUE}
-        elif [[ ${curr_arg:0:1} == ${CWD} && ${sym_link:0:1} == ${CWD} || ! ${curr_arg:0:1} == ${CWD} && ! ${sym_link:0:1} == ${CWD} ]]
+          ignore_pwd=${__TRUE}
+        elif [[ ${curr_arg:0:1} == ${__CWD} && ${sym_link:0:1} == ${__CWD} || ! ${curr_arg:0:1} == ${__CWD} && ! ${sym_link:0:1} == ${__CWD} ]]
         then
           # Add Symbolic Links Of Similar Visibility
-          comp_list+=("${sym_link}${FLSH}")
+          comp_list+=("${sym_link}${__FLSH}")
         fi
       fi
     done
