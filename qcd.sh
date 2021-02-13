@@ -22,8 +22,11 @@ declare -r __CWD="." __HWD="../" __YES="y" __QUIT="q" __ESTR="" __FLSH="/" __BSL
 # Text Formatting Strings
 declare -r __B=$(command printf "${__KESC}[1m") __W=$(command printf "${__KESC}[30m${__KESC}[47m") __N=$(command printf "${__KESC}(B${__KESC}[m") &> /dev/null
 
-# Optional Program Flags
-declare -r __HELP="-h" __LIST="-l" __CLEAN="-c" __TRACK="-t" __UPDATE="-u" __VERSION="-v" __OPTIONS="-o" __FORGET="-f" __REMEMBER="-r" __MKDIRENT="-m" &> /dev/null
+# Standalone Program Flags
+declare -r __HELP="-h" __CLEAN="-c" __TRACK="-t" __UPDATE="-u" __VERSION="-v" &> /dev/null
+
+# Option Program Flags
+declare -r __LIST="-l" __OPTIONS="-o" __FORGET="-f" __REMEMBER="-r" __MKDIRENT="-m" &> /dev/null
 
 # End String Constants-----------------------------------------------------------------------------------------------------------------------------------------------
 
