@@ -402,11 +402,26 @@ function _add_directory() {
     ept="${@:2:1}"
   fi
 
-
-
-  # Store Directory If Unique
-  if [[ ! "${adir%/}" == "${HOME%/}" && -z $(command egrep -s -x ".*:${adir}" ${QCD_STORE} 2> /dev/null) ]]
+  # Return If Home Directory
+  if [[ "${adir%/}" == "${HOME%/}" ]]
   then
+    # Return To Caller
+    return ${__OK}
+  fi
+
+  # Store Directory As Linkage
+  if [[ -z $(command egrep -s -x ".*:${adir}" ${QCD_STORE} 2> /dev/null) ]]
+  then
+    # Append Data To Store File
+    command echo -e "${ept}:${adir}" >> ${QCD_STORE}
+
+    # Sort Store File In Place
+    command sort -o ${QCD_STORE} -n -t ':' -k2 ${QCD_STORE}
+  elif [[ -z $(command egrep -s -x "${ept}:${adir}" ${QCD_STORE} 2> /dev/null) ]]
+  then
+    # Remove Linkage By Directory
+    _remove_directory "${adir}"
+
     # Append Data To Store File
     command echo -e "${ept}:${adir}" >> ${QCD_STORE}
 
