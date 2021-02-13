@@ -98,20 +98,31 @@ QCD offers many different flags that are important to simplifying interaction be
 
 #### Remember Directory
 <p align="justify">
-The remember flag adds a symbolic link to QCDs lookup file that corresponds to the present working directory. The user can opt to include a valid path ahead of the remember flag to add a specific path to the lookup file where the linkage name is automatically identified as the last directory in the path by QCD. To set a custom linkage name, the user can include an optional alias ahead of the path. This can be done for directories QCD does and does not remember.
+The remember flag allows the user to add a symbolic links to QCDs lookup file. Wihtout any arguments, QCD will add a linkage to its lookup file that corresponds to the present working directory. The user can specify a valid path ahead of the remember flag to add a linkage specific to that path.
 </p>
 
 ```bash
+# No Arguments          # With Path
+qcd [-r, --remember]    qcd [path] [-r, --remember]
+```
+
+<p align="justify">
+In both of the previous usages of the remember flag, the linkage name is automatically identified as the last directory in the path. To set a custom linkage name, the user can specify a path along with an alias which is what the user can specify later to navigate to that path. This process is applicable to directories QCD does and does not remember.
+</p>
+
+```bash
+# With Alias
 qcd [path] [alias] [-r, --remember]
 ```
 
 #### Forget Directory
 <p align="justify">
-The forget flag removes a symbolic link from QCDs lookup file that corresponds to the present working directory. The user can opt to include a complete linkage ahead of the forget flag to remove all matching instances of that linkage.
+The forget flag allows the user to remove a symbolic links from QCDs lookup file. Wihtout any arguments, QCD will remove a linkage from its lookup file that corresponds to the present working directory. The user can specify a valid linkage ahead of the forget flag to remove all matching linkages.
 </p>
 
 ```bash
-qcd [link] [-f, --forget]
+# No Arguments        # With Linkage
+qcd [-f, --forget]    qcd [link] [-f, --forget]
 ```
 
 #### Make Directory
