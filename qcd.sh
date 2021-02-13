@@ -409,18 +409,32 @@ function _add_directory() {
     return ${__OK}
   fi
 
-  # Store Directory As Linkage
+  # Linkage Characteristics
+  local unique_path=${__FALSE} unique_tuple=${__FALSE}
+
+  # Determine If Linkage Path Is Unique
   if [[ -z $(command egrep -s -x ".*:${adir}" ${QCD_STORE} 2> /dev/null) ]]
   then
-    # Append Data To Store File
-    command echo -e "${ept}:${adir}" >> ${QCD_STORE}
+    # Set Linkage Characteristic
+    unique_path=${__TRUE}
+  fi
 
-    # Sort Store File In Place
-    command sort -o ${QCD_STORE} -n -t ':' -k2 ${QCD_STORE}
-  elif [[ -z $(command egrep -s -x "${ept}:${adir}" ${QCD_STORE} 2> /dev/null) ]]
+  # Determine If Linkage Path Is Unique
+  if [[ -z $(command egrep -s -x "${ept}:${adir}" ${QCD_STORE} 2> /dev/null) ]]
   then
-    # Remove Linkage By Directory
-    _remove_directory "${adir}"
+    # Set Linkage Characteristic
+    unique_tuple=${__TRUE}
+  fi
+
+  # Store Directory As Linkage
+  if [[ ${unique_path} -eq ${__TRUE} || ${unique_tuple} -eq ${__TRUE} ]]
+  then
+    # Check Linkage Characteristic
+    if [[ ${unique_tuple} -eq ${__TRUE} ]]
+    then
+      # Remove Linkage By Directory
+      _remove_directory "${adir}"
+    fi
 
     # Append Data To Store File
     command echo -e "${ept}:${adir}" >> ${QCD_STORE}
