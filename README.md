@@ -39,7 +39,7 @@ command source ~/.qcd/qcd.sh
 ```
 
 #### Updating QCD
-To manually update QCD to a newer release, simply follow the same installation process or use the update flag as described in the usage section. Don't worry, your store file will not be modified during an update.
+To manually update QCD to a newer release, simply follow the same installation process or use the update flag as described in the flags section. Don't worry, your store file will not be modified during an update.
 </p>
 
 ## Usage
