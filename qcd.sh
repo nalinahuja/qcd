@@ -576,7 +576,7 @@ function _parse_option_flags() {
     if [[ ${#@} -eq 2 ]]
     then
       # Store Directory Path Component
-      local dir_path="${@:1:$((${#@} - 1))}"
+      local dir_path="${@:1:1}"
 
       # Store Trailing Path Component
       local trail_path=$(_get_dname "${dir_path}")
