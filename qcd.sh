@@ -403,6 +403,9 @@ function _add_directory() {
   then
     # Store Argument Endpoint
     ept="${@:2:1}"
+
+    # Format Argument Endpoint
+    ept="${ept%/}"
   fi
 
   # Return If Home Directory
