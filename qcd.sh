@@ -460,9 +460,9 @@ function _parse_option_flags() {
     then
       # Add Current Directory
       (_add_directory &> /dev/null &)
-    else
+    elif [[ ${#@} -eq 2 ]]
       # Store Directory Argument
-      local dir="${@:1:$((${#@} - 1))}"
+      local dir="${@:1:1}"
 
       # Determine Path Validity
       if [[ ! -d "${dir}" ]]
@@ -474,8 +474,34 @@ function _parse_option_flags() {
         return ${__ERR}
       fi
 
-      # Add Directory As Linkage
+      # Add Directory As Direct Linkage
       (_add_directory "${dir}" &> /dev/null &)
+    elif [[ ${#@} -eq 3 ]]
+    then
+      # Store Directory Argument
+      local dir="${@:1:1)}"
+
+      # Store Alias Argument
+      local als="${@:2:1)}"
+
+      # Determine Path Validity
+      if [[ ! -d "${dir}" ]]
+      then
+        # Display Prompt
+        command echo -e "qcd: Invalid directory path"
+
+        # Terminate Program
+        return ${__ERR}
+      fi
+
+      # Add Directory As Aliased Linkage
+      (_add_directory "${dir}" "${als}" &> /dev/null &)
+    else
+      # Display Prompt
+      command echo -e "qcd: Too many positional arguments"
+
+      # Terminate Program
+      return ${__ERR}
     fi
 
     # Terminate Program
@@ -487,12 +513,19 @@ function _parse_option_flags() {
     then
       # Remove Current Directory
       (_remove_directory &> /dev/null &)
-    else
+    elif [[ ${#@} -eq 2 ]]
+    then
       # Store Link Argument
-      local link="${@:1:$((${#@} - 1))}"
+      local link="${@:1:1}"
 
       # Remove Symbolic Linkages
       (_remove_symbolic_link "${link}" &> /dev/null &)
+    else
+      # Display Prompt
+      command echo -e "qcd: Too many positional arguments"
+
+      # Terminate Program
+      return ${__ERR}
     fi
 
     # Terminate Program
@@ -500,14 +533,8 @@ function _parse_option_flags() {
   elif [[ ${flag/--mkdir/${__MKDIRENT}} == ${__MKDIRENT} ]]
   then
     # Verify Argument Count
-    if [[ ${#@} -lt 2 ]]
+    if [[ ${#@} -eq 2 ]]
     then
-      # Display Prompt
-      command echo -e "qcd: Insufficient arguments"
-
-      # Terminate Program
-      return ${__ERR}
-    else
       # Store Directory Path Component
       local dir_path="${@:1:$((${#@} - 1))}"
 
@@ -542,6 +569,12 @@ function _parse_option_flags() {
 
       # QCD Into New Directory
       qcd "${dir_path}"
+    else
+      # Display Prompt
+      command echo -e "qcd: Invalid number of positional arguments"
+
+      # Terminate Program
+      return ${__ERR}
     fi
 
     # Terminate Program
@@ -559,17 +592,25 @@ function _parse_option_flags() {
     then
       # Get All Symbolic Links From Store File
       sym_links=$(qcd --clean &> /dev/null && command cat ${QCD_STORE})
-    else
+    elif [[ ${#@} -eq 2 ]]
+    then
       # Store Regex Argument
-      local regex="${@:1:$((${#@} - 1))}"
+      local regex="${@:1:1}"
 
       # Expand Regex Characters
+      regex="${regex//\\/}"
       regex="${regex//\*/\.\*}"
       regex="${regex//\?/\.}"
       regex="${regex%/}"
 
       # Get All Symbolic Links From Store File By Regex
       sym_links=$(qcd --clean &> /dev/null && command egrep -s -x "${regex}.*:.*" ${QCD_STORE} 2> /dev/null)
+    else
+      # Display Prompt
+      command echo -e "qcd: Too many positional arguments"
+
+      # Terminate Program
+      return ${__ERR}
     fi
 
     # Error Check Symbolic Links
