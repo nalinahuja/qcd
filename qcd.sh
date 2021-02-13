@@ -384,7 +384,7 @@ function _add_directory() {
   if [[ ${#@} -gt 0 ]]
   then
     # Store Argument Path
-    adir=$(_get_path "${@:1}")
+    adir=$(_get_path "${@:1:1}")
 
     # Check Path Validity
     if [[ ! -d "${adir}" ]]
@@ -471,6 +471,7 @@ function _parse_option_flags() {
       # Add Current Directory
       (_add_directory &> /dev/null &)
     elif [[ ${#@} -eq 2 ]]
+    then
       # Store Directory Argument
       local dir="${@:1:1}"
 
@@ -489,10 +490,10 @@ function _parse_option_flags() {
     elif [[ ${#@} -eq 3 ]]
     then
       # Store Directory Argument
-      local dir="${@:1:1)}"
+      local dir="${@:1:1}"
 
       # Store Alias Argument
-      local als="${@:2:1)}"
+      local als="${@:2:1}"
 
       # Determine Path Validity
       if [[ ! -d "${dir}" ]]
