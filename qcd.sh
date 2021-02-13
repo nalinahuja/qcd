@@ -406,7 +406,7 @@ function _add_directory() {
       # Initialize From Argument
       ept="${@:2:1}"
     else
-      # Initialize From Argument Path
+      # Initialize From Directory Path
       ept=$(_get_dname "${adir}")
     fi
 
@@ -618,7 +618,7 @@ function _parse_option_flags() {
       sym_links=$(qcd --clean &> /dev/null && command egrep -s -x "${regex}.*:.*" ${QCD_STORE} 2> /dev/null)
     else
       # Display Prompt
-      command echo -e "qcd: Too many positional arguments"
+      command echo -e "\rqcd: Too many positional arguments"
 
       # Terminate Program
       return ${__ERR}
