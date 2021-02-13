@@ -381,10 +381,10 @@ function _add_directory() {
   local adir=$(_get_pwd)
 
   # Check For Argument Path
-  if [[ ${#@} -ne 0 ]]
+  if [[ ${#@} -gt 0 ]]
   then
     # Store Argument Path
-    adir=$(_get_path "${@}")
+    adir=$(_get_path "${@:1}")
 
     # Check Path Validity
     if [[ ! -d "${adir}" ]]
@@ -397,8 +397,18 @@ function _add_directory() {
   # Store Directory If Unique
   if [[ ! "${adir%/}" == "${HOME%/}" && -z $(command egrep -s -x ".*:${adir}" ${QCD_STORE} 2> /dev/null) ]]
   then
-    # Get Directory Name Of Path
-    local ept=$(_get_dname "${adir}")
+    # Define Path Endpoint
+    local ept=${__ESTR}
+
+    # Determine Endpoint Source
+    if [[ ${#@} -eq 2 ]]
+    then
+      # Initialize From Argument
+      ept="${@:2:1}"
+    else
+      # Initialize From Argument Path
+      ept=$(_get_dname "${adir}")
+    fi
 
     # Append Data To Store File
     command echo -e "${ept}:${adir}" >> ${QCD_STORE}
