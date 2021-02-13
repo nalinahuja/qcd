@@ -98,7 +98,7 @@ QCD offers many different flags that are important to simplifying interaction be
 
 #### Remember Directory
 <p align="justify">
-The remember flag adds a symbolic link to QCDs lookup file that corresponds to the present working directory. The user can opt to include a valid path ahead of the remember flag to add a specific path to the lookup file where the linkage name is automatically derived by QCD as the last directory in the path. To set a custom linkage name, the user can include an alias ahead of the path.
+The remember flag adds a symbolic link to QCDs lookup file that corresponds to the present working directory. The user can opt to include a valid path ahead of the remember flag to add a specific path to the lookup file where the linkage name is automatically identified as the last directory in the path by QCD. To set a custom linkage name, the user can include an optional alias ahead of the path.
 </p>
 
 ```bash
