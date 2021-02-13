@@ -111,8 +111,13 @@ function _get_dname() {
   fi
 }
 
+function _split_name() {
+  # Return Name Of Symbolic Link
+  command echo -e "${@%:*}"
+}
+
 function _split_path() {
-  # Return Absolute Path Of Symbolic Link
+  # Return Path Of Symbolic Link
   command echo -e "${@#*:}"
 }
 
@@ -381,35 +386,27 @@ function _add_directory() {
   local adir=$(_get_pwd)
 
   # Check For Argument Path
-  if [[ ${#@} -gt 0 ]]
+  if [[ ${#@} -ge 1 ]]
   then
     # Store Argument Path
     adir=$(_get_path "${@:1:1}")
-
-    # Check Path Validity
-    if [[ ! -d "${adir}" ]]
-    then
-      # Return To Caller
-      return ${__ERR}
-    fi
   fi
+
+  # Current Endpoint
+  local ept=$(_get_dname "${adir}")
+
+  # Check For Argument Endpoint
+  if [[ ${#@} -eq 2 ]]
+  then
+    # Store Argument Endpoint
+    ept="${@:2:1}"
+  fi
+
+
 
   # Store Directory If Unique
   if [[ ! "${adir%/}" == "${HOME%/}" && -z $(command egrep -s -x ".*:${adir}" ${QCD_STORE} 2> /dev/null) ]]
   then
-    # Define Path Endpoint
-    local ept=${__ESTR}
-
-    # Determine Endpoint Source
-    if [[ ${#@} -eq 2 ]]
-    then
-      # Initialize From Argument
-      ept="${@:2:1}"
-    else
-      # Initialize From Directory Path
-      ept=$(_get_dname "${adir}")
-    fi
-
     # Append Data To Store File
     command echo -e "${ept}:${adir}" >> ${QCD_STORE}
 
@@ -657,8 +654,8 @@ function _parse_option_flags() {
     for sym_link in ${sym_links}
     do
       # Form Linkage Components
+      local link=$(_split_name "${sym_link}")
       local path=$(_split_path "${sym_link}")
-      local link=$(_get_dname "${path}")
 
       # Format Linkage
       command printf " %-${pcols}s  %s\n" "${link}" "$(_format_path "${path%/}")" >> ${QCD_TEMP}
