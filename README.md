@@ -39,7 +39,7 @@ command source ~/.qcd/qcd.sh
 ```
 
 #### Updating QCD
-To manually update QCD to a newer release, simply follow the same installation process or use the update flag as described in the flags section. Don't worry, your store file will not be modified during an update.
+To manually update QCD to a newer release, simply follow the same installation process or use the update flag as described in the flags section. Don't worry, QCDs lookup file will not be modified during an update.
 </p>
 
 ## Usage
@@ -145,7 +145,7 @@ qcd [-t, --track-dirs]
 
 #### Options
 <p align="justify">
-The options flag lists all symbolic links in the store file that match the specified input without navigating to a matching local directory, if it exists.
+The options flag lists all symbolic links in QCDs lookup file that match the specified input without navigating to a matching local directory, if it exists.
 </p>
 
 ```bash
