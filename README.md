@@ -107,7 +107,7 @@ qcd [-r, --remember]    qcd [path] [-r, --remember]
 ```
 
 <p align="justify">
-In both of the previous usages of the remember flag, the linkage name is automatically identified as the last directory in the path. To set a custom linkage name, the user can specify a path along with an alias which is what the user can specify later to navigate to that path. This process is applicable to directories QCD does and does not remember.
+In both of the previous usages of the remember flag, the linkage name is automatically identified as the last directory in the path. To set a custom linkage name, the user can specify a path along with an alias which is what the user can specify later to navigate to that path. This usage is applicable to directories QCD does and does not remember.
 </p>
 
 ```bash
