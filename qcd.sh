@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # Developed by Nalin Ahuja, nalinahuja22
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -16,17 +18,17 @@ declare -r __NSET=0 __MINPAD=4 __TIMEOUT=10 __COLNUM=256 &> /dev/null
 
 # End Numerical Constants--------------------------------------------------------------------------------------------------------------------------------------------
 
-# Embedded Strings
+# Option Program Flags
+declare -r __LIST="-l" __OPTIONS="-o" __FORGET="-f" __REMEMBER="-r" __MKDIRENT="-m" &> /dev/null
+
+# Standalone Program Flags
+declare -r __HELP="-h" __BACK="-b" __CLEAN="-c" __TRACK="-t" __UPDATE="-u" __VERSION="-v" &> /dev/null
+
+# Embedded Program Strings
 declare -r __CWD="." __HWD="../" __YES="y" __QUIT="q" __ESTR="" __FLSH="/" __BSLH="\\" __KESC=$(command printf "\033") &> /dev/null
 
 # Text Formatting Strings
 declare -r __B=$(command printf "${__KESC}[1m") __W=$(command printf "${__KESC}[30m${__KESC}[47m") __N=$(command printf "${__KESC}(B${__KESC}[m") &> /dev/null
-
-# Standalone Program Flags
-declare -r __HELP="-h" __CLEAN="-c" __TRACK="-t" __UPDATE="-u" __VERSION="-v" &> /dev/null
-
-# Option Program Flags
-declare -r __LIST="-l" __OPTIONS="-o" __FORGET="-f" __REMEMBER="-r" __MKDIRENT="-m" &> /dev/null
 
 # End String Constants-----------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -52,7 +54,10 @@ declare -r QCD_RELEASE_URL="https://api.github.com/repos/nalinahuja22/qcd/releas
 # End File Constants-------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Program Exit Boolean
-declare -i QCD_EXIT=${__FALSE}
+declare QCD_EXIT=${__FALSE}
+
+# Program Last Directory
+declare QCD_BDIR=${__ESTR}
 
 # End Global Variables-----------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -729,6 +734,26 @@ function _parse_standalone_flags() {
 
     # Terminate Program
     return ${__OK}
+  elif [[ ${flag/--back/${__BACK}} == ${__BACK} ]]
+  then
+    # Check For Environment Variable
+    if [[ ! -z ${OLDPWD} && -d "${OLDPWD}" ]]
+    then
+      # Navigate To Directory
+      command cd "${OLDPWD}"
+    elif [[ ! -z ${QCD_BDIR} && -d "${QCD_BDIR}" ]]
+      # Navigate To Directory
+      command cd "${QCD_BDIR}"
+    else
+      # Display Prompt
+      command echo -e "qcd: Could not navigate to directory"
+
+      # Terminate Program
+      return ${__ERR}
+    fi
+
+    # Terminate Program
+    return ${__OK}
   elif [[ ${flag/--clean/${__CLEAN}} == ${__CLEAN} ]]
   then
     # Get Linked Paths From Store File
@@ -824,7 +849,7 @@ function _parse_standalone_flags() {
       fi
 
       # Display Prompt
-      command echo -en "→ Downloading update"
+      command echo -en "→ Downloading update "
 
       # Determine Download URL
       local download_url=$(command curl --connect-timeout ${__TIMEOUT} -sL ${QCD_RELEASE_URL} 2> /dev/null | command egrep -s -o "https.*zipball.*" 2> /dev/null)
@@ -1155,7 +1180,7 @@ function qcd() {
     if [[ -z ${pathv} ]]
     then
       # Display Error
-      command echo -e "qcd: Cannot resolve linkage to directory"
+      command echo -e "qcd: Could not navigate to directory"
 
       # Terminate Program
       return ${__ERR}
@@ -1177,6 +1202,9 @@ function qcd() {
       # Terminate Program
       return ${__ERR}
     else
+      # Save Current Directory
+      QCD_BDIR=$(_get_pwd)
+
       # Switch To Linked Path
       command cd "${pathv}"
 
@@ -1230,11 +1258,6 @@ function qcd() {
 }
 
 # End QCD Function---------------------------------------------------------------------------------------------------------------------------------------------------
-
-function _qcd_exit() {
-  # Set Exit Flag
-  QCD_EXIT=${__TRUE}
-}
 
 function _qcd_comp() {
   # Verify Resource Files
@@ -1435,6 +1458,11 @@ function _qcd_comp() {
   COMPREPLY=($(command compgen -W "$(command printf "%s\n" "${comp_list[@]}")" "${curr_arg}" 2> /dev/null))
 
   # End Option Generation--------------------------------------------------------------------------------------------------------------------------------------------
+}
+
+function _qcd_exit() {
+  # Set Exit Flag
+  QCD_EXIT=${__TRUE}
 }
 
 function _qcd_init() {
