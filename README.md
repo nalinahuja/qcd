@@ -136,7 +136,7 @@ qcd [path] [-m, --mkdir]
 
 #### Back Directory
 <p align="justify">
-The back directory flag allows the user to swtich to the directory they most recently switched from and it uses the environment variable $OLDPWD by default to achieve this. If the $OLDPWD environment variable is not found, QCD will internally keep track of it.
+The back directory flag allows the user to swtich to the directory they most recently switched from and uses the environment variable $OLDPWD to achieve this. If the $OLDPWD environment variable is not defined, QCD will internally keep track of this information.
 </p>
 
 ```bash
