@@ -127,11 +127,20 @@ qcd [-f, --forget]    qcd [link] [-f, --forget]
 
 #### Make Directory
 <p align="justify">
-The mkdir flag creates a directory at a specified, valid path and switches to that directory. QCD internally adds a symbolic linkage to its lookup file that corresponds to the path of the new directory if QCD is set to track directories, tracking explained in next section.
+The make directory flag creates a directory at a specified, valid path and switches to that directory. QCD internally adds a symbolic linkage to its lookup file that corresponds to the path of the new directory if QCD is set to track directories, tracking explained in next section.
 </p>
 
 ```bash
 qcd [path] [-m, --mkdir]
+```
+
+#### Back Directory
+<p align="justify">
+The back directory flag allows the user to swtich to the directory they most recently switched from and it uses the environment variable $OLDPWD by default to achieve this. If the $OLDPWD environment variable is not found, QCD will internally keep track of it.
+</p>
+
+```bash
+qcd [-b, --back-dir]
 ```
 
 #### Track Directories
