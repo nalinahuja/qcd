@@ -1030,8 +1030,8 @@ function qcd() {
     # Terminate Program
     return ${__OK}
   else
-    # Initialize Directory Components
-    local sym_link=${__ESTR} sub_link=${__ESTR}
+    # Initialize Subdirectory Component
+    local sub_link=${__ESTR}
 
     # Initialize Prefix Length
     local pfx_len=${#dir_arg}
@@ -1046,11 +1046,11 @@ function qcd() {
       pfx_len=$((${pfx_len} - ${#sub_link} - 1))
     fi
 
-    # Extract Symbolic Link
-    sym_link=$(_escape_regex "${dir_arg:0:${pfx_len}}")
-
     # Set IFS
     local IFS=$'\n'
+
+    # Initialize Symbolic Link Component
+    local sym_link=$(_escape_regex "${dir_arg:0:${pfx_len}}")
 
     # Initialize Linkage Parameters
     local pathv=($(command printf "%s\n" $(command egrep -s -x "${sym_link}:.*" ${QCD_STORE} 2> /dev/null)))
