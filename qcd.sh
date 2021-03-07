@@ -734,7 +734,7 @@ function _parse_standalone_flags() {
 
     # Terminate Program
     return ${__OK}
-  elif [[ ${flag/--back/${__BACK}} == ${__BACK} ]]
+  elif [[ ${flag/--back-dir/${__BACK}} == ${__BACK} ]]
   then
     # Determine Directory Source
     if [[ ! -z ${OLDPWD} && -d "${OLDPWD}" ]]

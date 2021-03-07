@@ -1,4 +1,4 @@
-[1mQCD Utility - v1.17.1(B[m
+[1mQCD Utility - v1.18(B[m
 
 [1mUsage:(B[m
   qcd                                   Change to home directory
@@ -6,13 +6,15 @@
   qcd [link]/[subdir]/...               Change to linked directory
   qcd [N]..                             Change to Nth parent directory
 
-[1mOptions:(B[m
+[1mStandalone Flags:(B[m
   qcd [-h, --help]                      Show this help
   qcd [-c, --clean]                     Clean store file
   qcd [-v, --version]                   Show current version
   qcd [-u, --update]                    Update to latest version
+  qcd [-b, --back-dir]                  Navigate to backward directory
   qcd [-t, --track-dirs]                Set directory tracking behavior
 
+[1mOption Flags:(B[m
   qcd [-r, --remember]                  Remember present directory
   qcd [-f, --forget]                    Forget present directory
   qcd [-l, --list]                      List directory linkages
@@ -22,6 +24,7 @@
   qcd [link] [-f, --forget]             Forget matching symbolic links
   qcd [path] [-m, --mkdir]              Create and switch to directory
   qcd [regex] [-l, --list]              List matching directory linkages
+
   qcd [path] [alias] [-r, --remember]   Remember directory by alias
 
 Developed by Nalin Ahuja, nalinahuja22
