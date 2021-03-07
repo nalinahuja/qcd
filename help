@@ -6,7 +6,7 @@
   qcd [link]/[subdir]/...               Change to linked directory
   qcd [N]..                             Change to Nth parent directory
 
-[1mStandalone Flags:(B[m
+[1mOptions:(B[m
   qcd [-h, --help]                      Show this help
   qcd [-c, --clean]                     Clean store file
   qcd [-v, --version]                   Show current version
@@ -14,7 +14,6 @@
   qcd [-b, --back-dir]                  Navigate to backward directory
   qcd [-t, --track-dirs]                Set directory tracking behavior
 
-[1mOption Flags:(B[m
   qcd [-r, --remember]                  Remember present directory
   qcd [-f, --forget]                    Forget present directory
   qcd [-l, --list]                      List directory linkages
