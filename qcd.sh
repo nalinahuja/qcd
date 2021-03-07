@@ -1330,7 +1330,7 @@ function _qcd_comp() {
         # Add Resolved Directory
         if [[ -d "${link_path}" ]]
         then
-          # Add Resolved Directory To List
+          # Add Resolved Directory
           res_dirs+=($(command printf "%s\n" "${link_path}"))
         fi
       done
@@ -1386,34 +1386,22 @@ function _qcd_comp() {
       done
     fi
   else
-    # Get Symbolic Paths From Store File
-    local sym_paths=$(command awk -F ':' '{print $2 "\n"}' ${QCD_STORE})
+    # Get Current Directory
+    local pwd=$(_get_pwd)
 
-    # Get Current Directory Name
-    local pwd=$(_get_dname "$(_get_pwd)")
-
-    # Initialize Ignore Boolean
-    local ignore_pwd=${__FALSE}
-
-    # Set IFS
-    local IFS=$'\n'
+    # Get Nonlocal Symbolic Links From Store File
+    local sym_links=($(command awk -v pwd="${pwd}" -F ':' '{if ($2 != pwd) {print $1 "\n"}}' ${QCD_STORE}))
 
     # Iterate Over Symbolic Links
-    for sym_path in ${sym_paths}
+    for sym_link in ${sym_links[@]}
     do
-      # F
-
       # Determine Symbolic Link Locality
       if [[ ! -d "${sym_link}" ]]
       then
-        # Determine Action
-        if [[ ${ignore_pwd} == ${__FALSE} && "${sym_}" == "${pwd}" ]]
+        # Determine Symbolic Link Visibility
+        if [[ ${curr_arg:0:1} == ${__CWD} && ${sym_link:0:1} == ${__CWD} || ! ${curr_arg:0:1} == ${__CWD} && ! ${sym_link:0:1} == ${__CWD} ]]
         then
-          # Exlude Current Directory
-          ignore_pwd=${__TRUE}
-        elif [[ ${curr_arg:0:1} == ${__CWD} && ${sym_link:0:1} == ${__CWD} || ! ${curr_arg:0:1} == ${__CWD} && ! ${sym_link:0:1} == ${__CWD} ]]
-        then
-          # Add Symbolic Links Of Similar Visibility
+          # Add Symbolic Link
           comp_list+=("${sym_link}${__FLSH}")
         fi
       fi
