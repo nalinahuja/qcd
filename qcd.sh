@@ -1049,11 +1049,14 @@ function qcd() {
     # Extract Symbolic Link
     sym_link=$(_escape_regex "${dir_arg:0:${pfx_len}}")
 
+    # Set IFS
+    local IFS=$'\n'
+
     # Initialize Linkage Parameters
-    local pathv=${__NSET}
+    local pathv=($(command printf "%s\n" $(command egrep -s -x "${sym_link}:.*" ${QCD_STORE} 2> /dev/null)))
 
     # Check For Indirect Link Matching
-    if [[ -z $(command egrep -s -x "${sym_link}:.*" ${QCD_STORE} 2> /dev/null) ]]
+    if [[ ${#pathv} -eq 0 ]]
     then
       # Initialize Parameters
       local i=0 wld_link=${__ESTR}
@@ -1080,12 +1083,6 @@ function qcd() {
 
       # Get Sequence Matched Symbolic Paths From Store File
       pathv=($(command printf "%s\n" $(command egrep -i -s -x "${wld_link}:.*" ${QCD_STORE} 2> /dev/null)))
-    else
-      # Set IFS
-      local IFS=$'\n'
-
-      # Get Link Matched Symbolic Paths From Store File
-      pathv=($(command printf "%s\n" $(command egrep -s -x "${sym_link}:.*" ${QCD_STORE} 2> /dev/null)))
     fi
 
     # Initialize Path Count
@@ -1276,11 +1273,14 @@ function _qcd_comp() {
     # Resolve Linked Directories
     if [[ ! -d "${sym_link}" ]]
     then
+      # Set IFS
+      local IFS=$'\n'
+
       # Initialize Linked Paths
-      local link_paths=${__NSET}
+      local link_paths=($(command printf "%s\n" $(command egrep -s -x "${sym_link}:.*" ${QCD_STORE} 2> /dev/null)))
 
       # Check For Indirect Link Matching
-      if [[ -z $(command egrep -s -x "${sym_link}:.*" ${QCD_STORE} 2> /dev/null)  ]]
+      if [[ ${#link_paths} -eq 0 ]]
       then
         # Initialize Parameters
         local i=0 wld_link=${__ESTR}
@@ -1307,16 +1307,7 @@ function _qcd_comp() {
 
         # Get Sequence Matched Symbolic Linkages From Store File
         link_paths=($(command printf "%s\n" $(command egrep -s -i -x "${wld_link}:.*" ${QCD_STORE} 2> /dev/null)))
-      else
-        # Set IFS
-        local IFS=$'\n'
-
-        # Get Link Matched Symbolic Linkages From Store File
-        link_paths=($(command printf "%s\n" $(command egrep -s -x "${sym_link}:.*" ${QCD_STORE} 2> /dev/null)))
       fi
-
-      # Set IFS
-      local IFS=$'\n'
 
       # Iterate Over Linked Paths
       for link_path in ${link_paths[@]}
@@ -1361,9 +1352,6 @@ function _qcd_comp() {
           sub_dirs+=($(command printf "%s\n" $(command ls -aF "${res_dir}" 2> /dev/null | command egrep -s -x ".*/" 2> /dev/null)))
         fi
       done
-
-      # Set IFS
-      local IFS=$'\n'
 
       # Format Symbolic Link
       sym_link="${sym_link}${__FLSH}"
