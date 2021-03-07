@@ -56,7 +56,7 @@ declare -r QCD_RELEASE_URL="https://api.github.com/repos/nalinahuja22/qcd/releas
 # Program Exit Boolean
 declare QCD_EXIT=${__FALSE}
 
-# Program Last Directory
+# Program Back Directory
 declare QCD_BDIR=${__ESTR}
 
 # End Global Variables-----------------------------------------------------------------------------------------------------------------------------------------------
@@ -736,13 +736,14 @@ function _parse_standalone_flags() {
     return ${__OK}
   elif [[ ${flag/--back/${__BACK}} == ${__BACK} ]]
   then
-    # Check For Environment Variable
+    # Determine Directory Source
     if [[ ! -z ${OLDPWD} && -d "${OLDPWD}" ]]
     then
-      # Navigate To Directory
+      # Use Environment Variable
       command cd "${OLDPWD}"
     elif [[ ! -z ${QCD_BDIR} && -d "${QCD_BDIR}" ]]
-      # Navigate To Directory
+    then
+      # Use Back Directory Variable
       command cd "${QCD_BDIR}"
     else
       # Display Prompt
