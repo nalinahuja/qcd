@@ -736,12 +736,8 @@ function _parse_standalone_flags() {
     return ${__OK}
   elif [[ ${flag/--back-dir/${__BACK}} == ${__BACK} ]]
   then
-    # Determine Directory Source
-    if [[ ! -z ${OLDPWD} && -d "${OLDPWD}" ]]
-    then
-      # Use Environment Variable
-      command cd "${OLDPWD}"
-    elif [[ ! -z ${QCD_BDIR} && -d "${QCD_BDIR}" ]]
+    # Check Directory Source
+    if [[ ! -z ${QCD_BDIR} && -d "${QCD_BDIR}" ]]
     then
       # Use Back Directory Variable
       command cd "${QCD_BDIR}"
