@@ -937,10 +937,8 @@ function _parse_standalone_flags() {
 # End Argument Parser Functions--------------------------------------------------------------------------------------------------------------------------------------
 
 function qcd() {
-  # Verify Resources
+  # Verify Resource Files
   _verify_files
-
-  # End Resource Validation------------------------------------------------------------------------------------------------------------------------------------------
 
   # Parse Arguments For Option Flags
   _parse_option_flags ${@}
@@ -967,8 +965,6 @@ function qcd() {
     # Terminate Program
     return ${fstatus}
   fi
-
-  # End Argument Parsing---------------------------------------------------------------------------------------------------------------------------------------------
 
   # Initialize Argument Components
   local dir_arg=${__ESTR} show_opt=${__FALSE}
@@ -1018,8 +1014,6 @@ function qcd() {
     fi
   fi
 
-  # End Input Formatting---------------------------------------------------------------------------------------------------------------------------------------------
-
   # Determine If Directory Is Linked
   if [[ -d "${dir_arg}" && ${show_opt} == ${__FALSE} ]]
   then
@@ -1054,8 +1048,6 @@ function qcd() {
 
     # Extract Symbolic Link
     sym_link=$(_escape_regex "${dir_arg:0:${pfx_len}}")
-
-    # End Input Directory Parsing------------------------------------------------------------------------------------------------------------------------------------
 
     # Initialize Linkage Parameters
     local pathv=${__NSET}
@@ -1099,8 +1091,6 @@ function qcd() {
     # Initialize Path Count
     local pathc=${#pathv[@]}
 
-    # End Linkage Acquisition----------------------------------------------------------------------------------------------------------------------------------------
-
     # Check Result Count
     if [[ ${pathc} -gt 1 ]]
     then
@@ -1143,8 +1133,6 @@ function qcd() {
         mpath="${fpaths[@]}"
       fi
 
-      # End Path Filtering-------------------------------------------------------------------------------------------------------------------------------------------
-
       # List Matching Paths
       if [[ -z ${mpath} && ! -z ${fpaths} ]]
       then
@@ -1174,8 +1162,6 @@ function qcd() {
       # Substring Path From Delimiter
       pathv=$(_split_path "${pathv}")
     fi
-
-    # End Path Resolution--------------------------------------------------------------------------------------------------------------------------------------------
 
     # Error Check Result
     if [[ -z ${pathv} ]]
@@ -1254,8 +1240,6 @@ function qcd() {
       return ${__OK}
     fi
   fi
-
-  # End Path Navigation----------------------------------------------------------------------------------------------------------------------------------------------
 }
 
 # End QCD Function---------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1264,15 +1248,11 @@ function _qcd_comp() {
   # Verify Resource Files
   _verify_files
 
-  # End Resource Validation------------------------------------------------------------------------------------------------------------------------------------------
-
   # Initialize Completion List
   local comp_list=()
 
   # Store Current Argument
   local curr_arg=${COMP_WORDS[COMP_CWORD]}
-
-  # End Completion Resource Initialization---------------------------------------------------------------------------------------------------------------------------
 
   # Determine Completion Type
   if [[ "${curr_arg}" == */* ]]
@@ -1289,8 +1269,6 @@ function _qcd_comp() {
 
     # Store Subdirectory Path Component
     local sub_comp=${curr_arg:${si}:${ei}}
-
-    # End Input Parsing----------------------------------------------------------------------------------------------------------------------------------------------
 
     # Initialize Resolved Directories
     local res_dirs=()
@@ -1337,8 +1315,6 @@ function _qcd_comp() {
         link_paths=($(command printf "%s\n" $(command egrep -s -x "${sym_link}:.*" ${QCD_STORE} 2> /dev/null)))
       fi
 
-      # End Linkage Acquisition--------------------------------------------------------------------------------------------------------------------------------------
-
       # Set IFS
       local IFS=$'\n'
 
@@ -1363,8 +1339,6 @@ function _qcd_comp() {
       res_dirs=$(_escape_path "${curr_arg}")
     fi
 
-    # End Path Resolution--------------------------------------------------------------------------------------------------------------------------------------------
-
     # Error Check Resolved Directory
     if [[ ! -z ${res_dirs} ]]
     then
@@ -1388,8 +1362,6 @@ function _qcd_comp() {
         fi
       done
 
-      # End Subdirectory Acquisition---------------------------------------------------------------------------------------------------------------------------------
-
       # Set IFS
       local IFS=$'\n'
 
@@ -1412,12 +1384,10 @@ function _qcd_comp() {
         # Add Linked Subdirectories
         comp_list+=("${link_sub}")
       done
-
-      # End Option Retrieval-----------------------------------------------------------------------------------------------------------------------------------------
     fi
   else
-    # Get Symbolic Links From Store File
-    local sym_links=$(command awk -F ':' '{print $1 "\n"}' ${QCD_STORE})
+    # Get Symbolic Paths From Store File
+    local sym_paths=$(command awk -F ':' '{print $2 "\n"}' ${QCD_STORE})
 
     # Get Current Directory Name
     local pwd=$(_get_dname "$(_get_pwd)")
@@ -1425,19 +1395,19 @@ function _qcd_comp() {
     # Initialize Ignore Boolean
     local ignore_pwd=${__FALSE}
 
-    # End Linkage Acquisition----------------------------------------------------------------------------------------------------------------------------------------
-
     # Set IFS
     local IFS=$'\n'
 
     # Iterate Over Symbolic Links
-    for sym_link in ${sym_links}
+    for sym_path in ${sym_paths}
     do
+      # F
+
       # Determine Symbolic Link Locality
       if [[ ! -d "${sym_link}" ]]
       then
         # Determine Action
-        if [[ ${ignore_pwd} == ${__FALSE} && "${sym_link}" == "${pwd}" ]]
+        if [[ ${ignore_pwd} == ${__FALSE} && "${sym_}" == "${pwd}" ]]
         then
           # Exlude Current Directory
           ignore_pwd=${__TRUE}
@@ -1448,8 +1418,6 @@ function _qcd_comp() {
         fi
       fi
     done
-
-    # End Option Retrieval-------------------------------------------------------------------------------------------------------------------------------------------
   fi
 
   # Set IFS
@@ -1457,8 +1425,6 @@ function _qcd_comp() {
 
   # Set Completion List
   COMPREPLY=($(command compgen -W "$(command printf "%s\n" "${comp_list[@]}")" "${curr_arg}" 2> /dev/null))
-
-  # End Option Generation--------------------------------------------------------------------------------------------------------------------------------------------
 }
 
 function _qcd_exit() {
