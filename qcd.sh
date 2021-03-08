@@ -1402,6 +1402,9 @@ function _qcd_comp() {
       done
     fi
   else
+    # Set IFS
+    local IFS=$'\n'
+
     # Get Current Directory
     local pwd=$(_get_pwd)
 
@@ -1422,6 +1425,9 @@ function _qcd_comp() {
         fi
       fi
     done
+
+    # Unset IFS
+    unset IFS
   fi
 
   # Set IFS
