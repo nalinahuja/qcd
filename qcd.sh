@@ -736,11 +736,20 @@ function _parse_standalone_flags() {
     return ${__OK}
   elif [[ ${flag/--back-dir/${__BACK}} == ${__BACK} ]]
   then
-    # Check Directory Source
+    # Check Back Directory Variable
     if [[ ! -z ${QCD_BDIR} && -d "${QCD_BDIR}" ]]
     then
-      # Use Back Directory Variable
+      # Get Current Directory
+      local pwd=$(_get_pwd)
+
+      # Switch To Back Directory
       command cd "${QCD_BDIR}"
+
+      # Update Back Directory
+      QCD_BDIR=${pwd}
+
+      # Terminate Program
+      return ${__OK}
     else
       # Display Prompt
       command echo -e "qcd: Could not navigate to directory"
@@ -748,9 +757,6 @@ function _parse_standalone_flags() {
       # Terminate Program
       return ${__ERR}
     fi
-
-    # Terminate Program
-    return ${__OK}
   elif [[ ${flag/--clean/${__CLEAN}} == ${__CLEAN} ]]
   then
     # Get Linked Paths From Store File
@@ -1013,6 +1019,9 @@ function qcd() {
   # Determine If Directory Is Linked
   if [[ -d "${dir_arg}" && ${show_opt} == ${__FALSE} ]]
   then
+    # Update Back Directory
+    QCD_BDIR=$(_get_pwd)
+
     # Change To Valid Directory
     command cd "${dir_arg}"
 
@@ -1182,7 +1191,7 @@ function qcd() {
       # Terminate Program
       return ${__ERR}
     else
-      # Save Current Directory
+      # Update Back Directory
       QCD_BDIR=$(_get_pwd)
 
       # Switch To Linked Path
@@ -1399,11 +1408,6 @@ function _qcd_comp() {
   COMPREPLY=($(command compgen -W "$(command printf "%s\n" "${comp_list[@]}")" "${curr_arg}" 2> /dev/null))
 }
 
-function _qcd_exit() {
-  # Set Exit Flag
-  QCD_EXIT=${__TRUE}
-}
-
 function _qcd_init() {
   # Check For Store File
   if [[ -f ${QCD_STORE} ]]
@@ -1420,6 +1424,11 @@ function _qcd_init() {
 
   # Initialize Completion Engine
   command complete -o nospace -o filenames -A directory -F _qcd_comp qcd
+}
+
+function _qcd_exit() {
+  # Set Exit Flag
+  QCD_EXIT=${__TRUE}
 }
 
 # End QCD Dependency Functions---------------------------------------------------------------------------------------------------------------------------------------
