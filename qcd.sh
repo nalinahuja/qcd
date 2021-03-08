@@ -1353,6 +1353,9 @@ function _qcd_comp() {
           res_dirs+=($(command printf "%s\n" "${link_path}"))
         fi
       done
+
+      # Unset IFS
+      unset IFS
     else
       # Resolve Local Directories
       res_dirs=$(_escape_path "${curr_arg}")
@@ -1400,6 +1403,9 @@ function _qcd_comp() {
         # Add Linked Subdirectories
         comp_list+=("${link_sub}")
       done
+
+      # Unset IFS
+      unset IFS
     fi
   else
     # Set IFS
