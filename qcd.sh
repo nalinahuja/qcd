@@ -928,24 +928,17 @@ function _parse_arguments() {
   return ${__CONT}
 }
 
-# End Argument Parser Functions--------------------------------------------------------------------------------------------------------------------------------------
+# End Argument Parser Function---------------------------------------------------------------------------------------------------------------------------------------
 
 function qcd() {
-  # Create Store File
+  # Create Resource File
   _create_store
 
-  # Parse Program Arguments
-  _parse_arguments ${@}
+  # Format Arguments As List
+  local args=("${@}")
 
-  # Store Function Status
-  local fstatus=${?}
-
-  # Check Function Status
-  if [[ ${fstatus} -ne ${__CONT} ]]
-  then
-    # Terminate Program
-    return ${fstatus}
-  fi
+  # Parse Commandline Arguments
+  _parse_arguments ${args} && [[ ${?} -ne ${__CONT} ]] && return ${?}
 
   # Initialize Argument Components
   local dir_arg=${__ESTR} show_opt=${__FALSE}
@@ -1249,7 +1242,7 @@ function qcd() {
 # End QCD Function---------------------------------------------------------------------------------------------------------------------------------------------------
 
 function _qcd_comp() {
-  # Verify Resource Files
+  # Create Resource File
   _create_store
 
   # Initialize Completion List
