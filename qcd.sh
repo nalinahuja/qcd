@@ -827,7 +827,7 @@ function _parse_standalone_flags() {
   elif [[ ${flag/--update/${__UPDATE}} == ${__UPDATE} ]]
   then
     # Display Prompt
-    command echo -e "qcd: Currently running $(command cat ${QCD_HELP} | command head -n1 | command awk '{print $4}')"
+    command echo -e "qcd: Currently running ${__B}$(command cat ${QCD_HELP} | command head -n1 | command awk '{print $4}')${__N}"
 
     # Prompt User For Confirmation
     command read -p "→ Confirm update [y/n]: " confirm
@@ -922,7 +922,7 @@ function _parse_standalone_flags() {
       _clear_output 2
 
       # Display Prompt
-      command echo -e "qcd: Updated to $(command cat ${QCD_HELP} | command head -n1 | command awk '{print $4}')"
+      command echo -e "qcd: Updated to ${__B}$(command cat ${QCD_HELP} | command head -n1 | command awk '{print $4}')${__N}"
     else
       # Clear All Outputs
       _clear_output 2
