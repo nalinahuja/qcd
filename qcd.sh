@@ -53,11 +53,11 @@ declare -r QCD_RELEASE_URL="https://api.github.com/repos/nalinahuja22/qcd/releas
 
 # End File Constants-------------------------------------------------------------------------------------------------------------------------------------------------
 
-# Program Exit Boolean
+# Exit Boolean
 declare QCD_EXIT=${__FALSE}
 
-# Program Back Directory
-declare QCD_BDIR=${__ESTR}
+# Back Directory
+declare QCD_BACK_DIR=${__ESTR}
 
 # End Global Variables-----------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -361,6 +361,15 @@ function _generate_menu() {
 
 # End User Inferface Functions---------------------------------------------------------------------------------------------------------------------------------------
 
+function _create_store() {
+  # Check For Store File
+  if [[ ! -f ${QCD_STORE} ]]
+  then
+    # Create Store File
+    command touch ${QCD_STORE} 2> /dev/null
+  fi
+}
+
 function _update_store() {
   # Check Exit Status
   if [[ ${1} -eq ${__OK} ]]
@@ -373,16 +382,7 @@ function _update_store() {
   fi
 }
 
-function _verify_files() {
-  # Check For Store File
-  if [[ ! -f ${QCD_STORE} ]]
-  then
-    # Create Store File
-    command touch ${QCD_STORE} 2> /dev/null
-  fi
-}
-
-function _cleanup_files() {
+function _cleanup_temp() {
   # Remove Link And Temp Files
   command rm ${QCD_TEMP} 2> /dev/null
 }
@@ -458,6 +458,20 @@ function _add_directory() {
   return ${__OK}
 }
 
+function _remove_linkage() {
+  # Store Argument Link
+  local rlink=$(_escape_regex "${@%/}")
+
+  # Remove Link From Store File
+  command egrep -s -v -x "${rlink}:.*" ${QCD_STORE} > ${QCD_TEMP} 2> /dev/null
+
+  # Update Store File
+  _update_store ${?}
+
+  # Return To Caller
+  return ${__OK}
+}
+
 function _remove_directory() {
   # Get Current Path
   local rdir=$(_get_pwd)
@@ -479,243 +493,9 @@ function _remove_directory() {
   return ${__OK}
 }
 
-function _remove_symbolic_link() {
-  # Store Argument Link
-  local rlink=$(_escape_regex "${@%/}")
-
-  # Remove Link From Store File
-  command egrep -s -v -x "${rlink}:.*" ${QCD_STORE} > ${QCD_TEMP} 2> /dev/null
-
-  # Update Store File
-  _update_store ${?}
-
-  # Return To Caller
-  return ${__OK}
-}
-
 # End Database Management Functions----------------------------------------------------------------------------------------------------------------------------------
 
-function _parse_option_flags() {
-  # Store Argument Flag
-  local flag="${@:${#@}}"
-
-  # Check For Option Flags
-  if [[ ${flag/--remember/${__REMEMBER}} == ${__REMEMBER} ]]
-  then
-    # Determine Remember Type
-    if [[ ${#@} -eq 1 ]]
-    then
-      # Add Current Directory
-      (_add_directory &> /dev/null &)
-    elif [[ ${#@} -eq 2 ]]
-    then
-      # Store Directory Argument
-      local dir="${@:1:1}"
-
-      # Determine Path Validity
-      if [[ ! -d "${dir}" ]]
-      then
-        # Display Prompt
-        command echo -e "qcd: Invalid directory path"
-
-        # Terminate Program
-        return ${__ERR}
-      fi
-
-      # Add Directory As Direct Linkage
-      (_add_directory "${dir}" &> /dev/null &)
-    elif [[ ${#@} -eq 3 ]]
-    then
-      # Store Directory Argument
-      local dir="${@:1:1}"
-
-      # Store Alias Argument
-      local als="${@:2:1}"
-
-      # Determine Path Validity
-      if [[ ! -d "${dir}" ]]
-      then
-        # Display Prompt
-        command echo -e "qcd: Invalid directory path"
-
-        # Terminate Program
-        return ${__ERR}
-      fi
-
-      # Add Directory As Aliased Linkage
-      (_add_directory "${dir}" "${als}" &> /dev/null &)
-    else
-      # Display Prompt
-      command echo -e "qcd: Too many positional arguments"
-
-      # Terminate Program
-      return ${__ERR}
-    fi
-
-    # Terminate Program
-    return ${__OK}
-  elif [[ ${flag/--forget/${__FORGET}} == ${__FORGET} ]]
-  then
-    # Determine Forget Type
-    if [[ ${#@} -eq 1 ]]
-    then
-      # Remove Current Directory
-      (_remove_directory &> /dev/null &)
-    elif [[ ${#@} -eq 2 ]]
-    then
-      # Store Link Argument
-      local link="${@:1:1}"
-
-      # Remove Symbolic Linkages
-      (_remove_symbolic_link "${link}" &> /dev/null &)
-    else
-      # Display Prompt
-      command echo -e "qcd: Too many positional arguments"
-
-      # Terminate Program
-      return ${__ERR}
-    fi
-
-    # Terminate Program
-    return ${__OK}
-  elif [[ ${flag/--mkdir/${__MKDIRENT}} == ${__MKDIRENT} ]]
-  then
-    # Verify Argument Count
-    if [[ ${#@} -eq 2 ]]
-    then
-      # Store Directory Path Component
-      local dir_path="${@:1:1}"
-
-      # Store Trailing Path Component
-      local trail_path=$(_get_dname "${dir_path}")
-
-      # Determine Substring Bounds
-      local si=0 ei=$((${#dir_path} - ${#trail_path}))
-
-      # Store Prefix Path Component
-      local pfx_path="${dir_path:${si}:${ei}}"
-
-      # Verify Path Components
-      if [[ -d "${dir_path%/}" ]]
-      then
-        # Display Prompt
-        command echo -e "qcd: Directory already exists"
-
-        # Terminate Program
-        return ${__ERR}
-      elif [[ ! -z ${pfx_path} && ! -d "${pfx_path%/}" ]]
-      then
-        # Display Prompt
-        command echo -e "qcd: Invalid path to new directory"
-
-        # Terminate Program
-        return ${__ERR}
-      fi
-
-      # Create Directory At Location
-      command mkdir "${dir_path}"
-
-      # QCD Into New Directory
-      qcd "${dir_path}"
-    else
-      # Display Prompt
-      command echo -e "qcd: Invalid number of positional arguments"
-
-      # Terminate Program
-      return ${__ERR}
-    fi
-
-    # Terminate Program
-    return ${__OK}
-  elif [[ ${flag/--list/${__LIST}} == ${__LIST} ]]
-  then
-    # Display Prompt
-    command echo -en "\rqcd: Generating link map..."
-
-    # Initialize Symbolic Links
-    local sym_links=${__NSET}
-
-    # Conditionally Fetch Symbolic Links
-    if [[ ${#@} -eq 1 ]]
-    then
-      # Get All Symbolic Links From Store File
-      sym_links=$(qcd --clean &> /dev/null && command cat ${QCD_STORE})
-    elif [[ ${#@} -eq 2 ]]
-    then
-      # Store Regex Argument
-      local regex="${@:1:1}"
-
-      # Expand Regex Characters
-      regex="${regex//\\/}"
-      regex="${regex//\*/\.\*}"
-      regex="${regex//\?/\.}"
-      regex="${regex%/}"
-
-      # Get All Symbolic Links From Store File By Regex
-      sym_links=$(qcd --clean &> /dev/null && command egrep -s -x "${regex}.*:.*" ${QCD_STORE} 2> /dev/null)
-    else
-      # Display Prompt
-      command echo -e "\rqcd: Too many positional arguments"
-
-      # Terminate Program
-      return ${__ERR}
-    fi
-
-    # Error Check Symbolic Links
-    if [[ -z ${sym_links} ]]
-    then
-      # Display Prompt
-      command echo -e "\rqcd: No linkages found      "
-
-      # Terminate Program
-      return ${__ERR}
-    fi
-
-    # Store Terminal Column Count
-    local tcols=$(command tput cols)
-
-    # Determine Column Padding
-    local pcols=$(command echo -e "${sym_links}" | command awk -F ':' '{print $1}' | command awk '{print length}' | command sort -n | command tail -n1)
-
-    # Error Check Column Padding
-    if [[ ${pcols} -lt ${__MINPAD} ]]
-    then
-      # Set Padding To Minimum
-      pcols=${__MINPAD}
-    fi
-
-    # Format Header
-    command printf "\r${__W} %-${pcols}s  %-$((${tcols} - ${pcols} - 3))s${__N}\n" "Link" "Directory" > ${QCD_TEMP}
-
-    # Set IFS
-    local IFS=$'\n'
-
-    # Iterate Over Linkages
-    for sym_link in ${sym_links}
-    do
-      # Form Linkage Components
-      local link=$(_split_name "${sym_link}")
-      local path=$(_split_path "${sym_link}")
-
-      # Format Linkage
-      command printf " %-${pcols}s  %s\n" "${link}" "$(_format_path "${path%/}")" >> ${QCD_TEMP}
-    done
-
-    # Unset IFS
-    unset IFS
-
-    # Display Prompt
-    command cat ${QCD_TEMP}
-
-    # Terminate Program
-    return ${__OK}
-  fi
-
-  # Continue Program
-  return ${__CONT}
-}
-
-function _parse_standalone_flags() {
+function _parse_arguments() {
   # Store Argument Flag
   local flag="${@:${#@}}"
 
@@ -737,16 +517,16 @@ function _parse_standalone_flags() {
   elif [[ ${flag/--back-dir/${__BACK}} == ${__BACK} ]]
   then
     # Check Back Directory Variable
-    if [[ ! -z ${QCD_BDIR} && -d "${QCD_BDIR}" ]]
+    if [[ ! -z ${QCD_BACK_DIR} && -d "${QCD_BACK_DIR}" ]]
     then
       # Get Current Directory
       local pwd=$(_get_pwd)
 
       # Switch To Back Directory
-      command cd "${QCD_BDIR}"
+      command cd "${QCD_BACK_DIR}"
 
       # Update Back Directory
-      QCD_BDIR=${pwd}
+      QCD_BACK_DIR=${pwd}
 
       # Terminate Program
       return ${__OK}
@@ -932,6 +712,218 @@ function _parse_standalone_flags() {
     return ${__OK}
   fi
 
+  # Check For Option Flags
+  if [[ ${flag/--remember/${__REMEMBER}} == ${__REMEMBER} ]]
+  then
+    # Determine Remember Type
+    if [[ ${#@} -eq 1 ]]
+    then
+      # Add Current Directory
+      (_add_directory &> /dev/null &)
+    elif [[ ${#@} -eq 2 ]]
+    then
+      # Store Directory Argument
+      local dir="${@:1:1}"
+
+      # Determine Path Validity
+      if [[ ! -d "${dir}" ]]
+      then
+        # Display Prompt
+        command echo -e "qcd: Invalid directory path"
+
+        # Terminate Program
+        return ${__ERR}
+      fi
+
+      # Add Directory As Direct Linkage
+      (_add_directory "${dir}" &> /dev/null &)
+    elif [[ ${#@} -eq 3 ]]
+    then
+      # Store Directory Argument
+      local dir="${@:1:1}"
+
+      # Store Alias Argument
+      local als="${@:2:1}"
+
+      # Determine Path Validity
+      if [[ ! -d "${dir}" ]]
+      then
+        # Display Prompt
+        command echo -e "qcd: Invalid directory path"
+
+        # Terminate Program
+        return ${__ERR}
+      fi
+
+      # Add Directory As Aliased Linkage
+      (_add_directory "${dir}" "${als}" &> /dev/null &)
+    else
+      # Display Prompt
+      command echo -e "qcd: Too many positional arguments"
+
+      # Terminate Program
+      return ${__ERR}
+    fi
+
+    # Terminate Program
+    return ${__OK}
+  elif [[ ${flag/--forget/${__FORGET}} == ${__FORGET} ]]
+  then
+    # Determine Forget Type
+    if [[ ${#@} -eq 1 ]]
+    then
+      # Remove Current Directory
+      (_remove_directory &> /dev/null &)
+    elif [[ ${#@} -eq 2 ]]
+    then
+      # Store Link Argument
+      local link="${@:1:1}"
+
+      # Remove Indicated Linkage
+      (_remove_linkage "${link}" &> /dev/null &)
+    else
+      # Display Prompt
+      command echo -e "qcd: Too many positional arguments"
+
+      # Terminate Program
+      return ${__ERR}
+    fi
+
+    # Terminate Program
+    return ${__OK}
+  elif [[ ${flag/--mkdir/${__MKDIRENT}} == ${__MKDIRENT} ]]
+  then
+    # Verify Argument Count
+    if [[ ${#@} -eq 2 ]]
+    then
+      # Store Directory Path Component
+      local dir_path="${@:1:1}"
+
+      # Store Trailing Path Component
+      local trail_path=$(_get_dname "${dir_path}")
+
+      # Determine Substring Bounds
+      local si=0 ei=$((${#dir_path} - ${#trail_path}))
+
+      # Store Prefix Path Component
+      local pfx_path="${dir_path:${si}:${ei}}"
+
+      # Verify Path Components
+      if [[ -d "${dir_path%/}" ]]
+      then
+        # Display Prompt
+        command echo -e "qcd: Directory already exists"
+
+        # Terminate Program
+        return ${__ERR}
+      elif [[ ! -z ${pfx_path} && ! -d "${pfx_path%/}" ]]
+      then
+        # Display Prompt
+        command echo -e "qcd: Invalid path to new directory"
+
+        # Terminate Program
+        return ${__ERR}
+      fi
+
+      # Create Directory At Location
+      command mkdir "${dir_path}"
+
+      # QCD Into New Directory
+      qcd "${dir_path}"
+    else
+      # Display Prompt
+      command echo -e "qcd: Invalid number of positional arguments"
+
+      # Terminate Program
+      return ${__ERR}
+    fi
+
+    # Terminate Program
+    return ${__OK}
+  elif [[ ${flag/--list/${__LIST}} == ${__LIST} ]]
+  then
+    # Display Prompt
+    command echo -en "\rqcd: Generating link map..."
+
+    # Initialize Symbolic Links
+    local sym_links=${__NSET}
+
+    # Conditionally Fetch Symbolic Links
+    if [[ ${#@} -eq 1 ]]
+    then
+      # Get All Symbolic Links From Store File
+      sym_links=$(qcd --clean &> /dev/null && command cat ${QCD_STORE})
+    elif [[ ${#@} -eq 2 ]]
+    then
+      # Store Regex Argument
+      local regex="${@:1:1}"
+
+      # Expand Regex Characters
+      regex="${regex//\\/}"
+      regex="${regex//\*/\.\*}"
+      regex="${regex//\?/\.}"
+      regex="${regex%/}"
+
+      # Get All Symbolic Links From Store File By Regex
+      sym_links=$(qcd --clean &> /dev/null && command egrep -s -x "${regex}.*:.*" ${QCD_STORE} 2> /dev/null)
+    else
+      # Display Prompt
+      command echo -e "\rqcd: Too many positional arguments"
+
+      # Terminate Program
+      return ${__ERR}
+    fi
+
+    # Error Check Symbolic Links
+    if [[ -z ${sym_links} ]]
+    then
+      # Display Prompt
+      command echo -e "\rqcd: No linkages found      "
+
+      # Terminate Program
+      return ${__ERR}
+    fi
+
+    # Store Terminal Column Count
+    local tcols=$(command tput cols)
+
+    # Determine Column Padding
+    local pcols=$(command echo -e "${sym_links}" | command awk -F ':' '{print $1}' | command awk '{print length}' | command sort -n | command tail -n1)
+
+    # Error Check Column Padding
+    if [[ ${pcols} -lt ${__MINPAD} ]]
+    then
+      # Set Padding To Minimum
+      pcols=${__MINPAD}
+    fi
+
+    # Format Header
+    command printf "\r${__W} %-${pcols}s  %-$((${tcols} - ${pcols} - 3))s${__N}\n" "Link" "Directory" > ${QCD_TEMP}
+
+    # Set IFS
+    local IFS=$'\n'
+
+    # Iterate Over Linkages
+    for sym_link in ${sym_links}
+    do
+      # Format Linkage Components
+      local link=$(_split_name "${sym_link}")
+      local path=$(_split_path "${sym_link}")
+
+      # Format Linkage
+      command printf " %-${pcols}s  %s\n" "${link}" "$(_format_path "${path%/}")" >> ${QCD_TEMP}
+    done
+
+    # Unset IFS
+    unset IFS
+
+    # Display Prompt
+    command cat ${QCD_TEMP}
+
+    # Terminate Program
+    return ${__OK}
+  fi
+
   # Continue Program
   return ${__CONT}
 }
@@ -939,24 +931,11 @@ function _parse_standalone_flags() {
 # End Argument Parser Functions--------------------------------------------------------------------------------------------------------------------------------------
 
 function qcd() {
-  # Verify Resource Files
-  _verify_files
+  # Create Store File
+  _create_store
 
-  # Parse Arguments For Option Flags
-  _parse_option_flags ${@}
-
-  # Store Function Status
-  local fstatus=${?}
-
-  # Check Function Status
-  if [[ ${fstatus} -ne ${__CONT} ]]
-  then
-    # Terminate Program
-    return ${fstatus}
-  fi
-
-  # Parse Arguments For Standalone Flags
-  _parse_standalone_flags ${@}
+  # Parse Program Arguments
+  _parse_arguments ${@}
 
   # Store Function Status
   local fstatus=${?}
@@ -1020,7 +999,7 @@ function qcd() {
   if [[ -d "${dir_arg}" && ${show_opt} == ${__FALSE} ]]
   then
     # Update Back Directory
-    QCD_BDIR=$(_get_pwd)
+    QCD_BACK_DIR=$(_get_pwd)
 
     # Change To Valid Directory
     command cd "${dir_arg}"
@@ -1215,7 +1194,7 @@ function qcd() {
       return ${__ERR}
     else
       # Update Back Directory
-      QCD_BDIR=$(_get_pwd)
+      QCD_BACK_DIR=$(_get_pwd)
 
       # Switch To Linked Path
       command cd "${pathv}"
@@ -1271,7 +1250,7 @@ function qcd() {
 
 function _qcd_comp() {
   # Verify Resource Files
-  _verify_files
+  _create_store
 
   # Initialize Completion List
   local comp_list=()
@@ -1451,8 +1430,8 @@ function _qcd_init() {
     (qcd --clean &> /dev/null &)
   fi
 
-  # Cleanup Resource Files On EXIT
-  command trap _cleanup_files EXIT &> /dev/null
+  # Cleanup Temporary Files On EXIT
+  command trap _cleanup_temp EXIT &> /dev/null
 
   # Set Environment To Show Visible Files
   command bind 'set match-hidden-files off' &> /dev/null
