@@ -934,11 +934,18 @@ function qcd() {
   # Create Resource File
   _create_store
 
-  # Format Arguments As List
-  local args=("${@}")
-
   # Parse Commandline Arguments
-  _parse_arguments ${args} && [[ ${?} -ne ${__CONT} ]] && return ${?}
+  _parse_arguments "${@}"
+
+  # Store Parsing Status
+  local pstatus=${?}
+
+  # Check For Terminating Status
+  if [[ ${pstatus} -ne ${__CONT} ]]
+  then
+    # Terminate Program
+    return ${pstatus}
+  fi
 
   # Initialize Argument Components
   local dir_arg=${__ESTR} show_opt=${__FALSE}
