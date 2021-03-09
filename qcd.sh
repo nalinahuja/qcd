@@ -14,21 +14,21 @@ declare -r __UP=0 __DN=1 __EXT=2 __ENT=3 &> /dev/null
 declare -r __OK=0 __ERR=1 __CONT=2 __NFD=127 __NSEL=255 &> /dev/null
 
 # Embedded Values
-declare -r __NSET=0 __MINPAD=4 __TIMEOUT=10 __COLNUM=256 &> /dev/null
+declare -r __NSET=0 __MINPAD=5 __TIMEOUT=10 __COLNUM=256 &> /dev/null
 
 # End Numerical Constants--------------------------------------------------------------------------------------------------------------------------------------------
 
-# Option Program Flags
+# Option Flags
 declare -r __LIST="-l" __OPTIONS="-o" __FORGET="-f" __REMEMBER="-r" __MKDIRENT="-m" &> /dev/null
 
-# Standalone Program Flags
+# Standalone Flags
 declare -r __HELP="-h" __BACK="-b" __CLEAN="-c" __TRACK="-t" __UPDATE="-u" __VERSION="-v" &> /dev/null
 
-# Embedded Program Strings
-declare -r __CWD="." __HWD="../" __YES="y" __QUIT="q" __ESTR="" __FLSH="/" __BSLH="\\" __KESC=$(command printf "\033") &> /dev/null
+# Embedded Strings
+declare -r __CWD="." __HWD="../" __YES="y" __QUIT="q" __ESTR="" __FLSH="/" __BSLH="\\" __ESCS=$(command printf "\033") &> /dev/null
 
 # Text Formatting Strings
-declare -r __B=$(command printf "${__KESC}[1m") __W=$(command printf "${__KESC}[30m${__KESC}[47m") __N=$(command printf "${__KESC}(B${__KESC}[m") &> /dev/null
+declare -r __B=$(command printf "${__ESCS}[1m") __W=$(command printf "${__ESCS}[30m${__ESCS}[47m") __N=$(command printf "${__ESCS}(B${__ESCS}[m") &> /dev/null
 
 # End String Constants-----------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -214,11 +214,11 @@ function _read_input() {
     if [[ ${#input} -eq 3 ]]
     then
       # Return Arrow Key Action
-      if [[ ${input} == "${__KESC}[A" ]]
+      if [[ ${input} == "${__ESCS}[A" ]]
       then
         # Return Up Arrow Action
         command echo -e "${__UP}"
-      elif [[ ${input} == "${__KESC}[B" ]]
+      elif [[ ${input} == "${__ESCS}[B" ]]
       then
         # Return Down Arrow Action
         command echo -e "${__DN}"
@@ -235,17 +235,17 @@ function _clear_output() {
   for ((li=0; li <= ${1}; li++))
   do
     # Go To Beginning Of Line
-    command printf "${__KESC}[${__COLNUM}D"
+    command printf "${__ESCS}[${__COLNUM}D"
 
     # Clear Line
-    command printf "${__KESC}[K"
+    command printf "${__ESCS}[K"
 
     # Go Up One Line
-    command printf "${__KESC}[1A"
+    command printf "${__ESCS}[1A"
   done
 
   # Go Down One Line
-  command printf "${__KESC}[1B"
+  command printf "${__ESCS}[1B"
 }
 
 function _generate_menu() {
@@ -1040,7 +1040,7 @@ function qcd() {
     local pathv=($(command printf "%s\n" $(command egrep -s -x "${sym_link}:.*" ${QCD_STORE} 2> /dev/null)))
 
     # Check For Indirect Link Matching
-    if [[ ${#pathv} -eq 0 ]]
+    if [[ ${#pathv[@]} -eq 0 ]]
     then
       # Initialize Parameters
       local i=0 wld_link=${__ESTR}
@@ -1264,7 +1264,7 @@ function _qcd_comp() {
       local link_paths=($(command printf "%s\n" $(command egrep -s -x "${sym_link}:.*" ${QCD_STORE} 2> /dev/null)))
 
       # Check For Indirect Link Matching
-      if [[ ${#link_paths} -eq 0 ]]
+      if [[ ${#link_paths[@]} -eq 0 ]]
       then
         # Initialize Parameters
         local i=0 wld_link=${__ESTR}
