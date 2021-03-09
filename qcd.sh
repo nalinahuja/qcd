@@ -1120,6 +1120,29 @@ function qcd() {
         # Display Prompt
         command echo -e "qcd: Multiple paths linked to ${__B}${dir_arg%/}${__N}"
 
+        # Initialize Path Lists
+        local pfxm=() pfxf=()
+
+        # Iterate Over Formatted Paths
+        for fpath in ${fpaths[@]}
+        do
+          # Get Directory Endpoint
+          local ept=$(_get_dname "${fpath}")
+
+          # Match Endpoint To Directory Argument
+          if [[ ${ept} == ${dir_arg}* ]]
+          then
+            # Add Path To Match List
+            pfxm+=("${fpath}")
+          else
+            # Add Path To Fail List
+            pfxf+=("${fpath}")
+          fi
+        done
+
+        # Concatenate Path Lists
+        fpaths=("${pfxm[@]}" "${pfxf[@]}")
+
         # Generate Selection Menu
         _generate_menu ${fpaths[@]}
 
