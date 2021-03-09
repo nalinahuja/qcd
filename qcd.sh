@@ -912,11 +912,7 @@ function qcd() {
   local pstatus=${?}
 
   # Check For Terminating Status
-  if [[ ${pstatus} -ne ${__CONT} ]]
-  then
-    # Terminate Program
-    return ${pstatus}
-  fi
+  [[ ${pstatus} -ne ${__CONT} ]] && return ${pstatus}
 
   # Initialize Argument Components
   local dir_arg=${__ESTR} show_opt=${__FALSE}
