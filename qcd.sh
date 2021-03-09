@@ -1090,15 +1090,11 @@ function qcd() {
         # Generate Selection Menu
         _generate_menu ${fpaths[@]}
 
-        # Store Function Status
+        # Store Selection Status
         local ept=${?}
 
-        # Check Function Status
-        if [[ ${ept} -eq ${__NSEL} ]]
-        then
-          # Terminate Program
-          return ${__OK}
-        fi
+        # Check Selection Status
+        [[ ${ept} -eq ${__NSEL} ]] && return ${__OK}
 
         # Set To Manually Selected Endpoint
         pathv="${fpaths[${ept}]}"
