@@ -517,24 +517,18 @@ function _parse_arguments() {
   elif [[ ${flag/--clean/${__CLEAN}} == ${__CLEAN} ]]
   then
     # Get Linked Paths From Store File
-    local lpaths=$(command awk -F ':' '{print $2}' ${QCD_STORE})
-
-    # Set IFS
-    local IFS=$'\n'
+    local link_paths=($(command awk -F ':' '{print $2}' ${QCD_STORE}))
 
     # Iterate Over Linked Paths
-    for lpath in ${lpaths}
+    for link_path in ${link_paths[@]}
     do
       # Check Path Validity
-      if [[ ! -d "${lpath}" ]]
+      if [[ ! -d "${link_path}" ]]
       then
         # Remove Invalid Path
-        (_remove_directory "${lpath}" &> /dev/null)
+        (_remove_directory "${link_path}" &> /dev/null)
       fi
     done
-
-    # Unset IFS
-    unset IFS
 
     # Terminate Program
     return ${__OK}
@@ -1254,7 +1248,7 @@ function _qcd_comp() {
         fi
 
         # Wildcard Symbolic Link
-        for ((;i < ${#sym_link}; i++))
+        for ((; i < ${#sym_link}; i++))
         do
           # Get Character At Index
           local c=${sym_link:${i}:1}
