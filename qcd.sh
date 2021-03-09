@@ -53,7 +53,7 @@ declare -r QCD_RELEASE_URL="https://api.github.com/repos/nalinahuja22/qcd/releas
 
 # End File Constants-------------------------------------------------------------------------------------------------------------------------------------------------
 
-# Exit Boolean
+# Exit Flag
 declare QCD_EXIT=${__FALSE}
 
 # Back Directory
@@ -196,16 +196,11 @@ function _read_input() {
     # Read One Character From STDIN
     command read -s -n1 c 2> /dev/null
 
-    # Check Break Conditions
-    if [[ -z ${c} ]]
-    then
-      # Return Enter Action
-      command echo -e "${__ENT}" && break
-    elif [[ ${c} == ${__QUIT} ]]
-    then
-      # Return Quit Action
-      command echo -e "${__EXT}" && break
-    fi
+    # Return Enter Action
+    [[ ${c} == ${__ESTR} ]] && command echo -e "${__ENT}" && break
+
+    # Return Quit Action
+    [[ ${c} == ${__QUIT} ]] && command echo -e "${__EXT}" && break
 
     # Append Character To Input Buffer
     input="${input}${c}"
@@ -213,19 +208,11 @@ function _read_input() {
     # Check Break Conditions
     if [[ ${#input} -eq 3 ]]
     then
-      # Return Arrow Key Action
-      if [[ ${input} == "${__ESCS}[A" ]]
-      then
-        # Return Up Arrow Action
-        command echo -e "${__UP}"
-      elif [[ ${input} == "${__ESCS}[B" ]]
-      then
-        # Return Down Arrow Action
-        command echo -e "${__DN}"
-      fi
+      # Return Up Arrow Action
+      [[ ${input} == "${__ESCS}[A" ]] && command echo -e "${__UP}" && break
 
-      # Break Loop
-      break
+      # Return Down Arrow Action
+      [[ ${input} == "${__ESCS}[B" ]] && command echo -e "${__DN}" && break
     fi
   done
 }
@@ -250,15 +237,12 @@ function _clear_output() {
 
 function _generate_menu() {
   # Prepare Terminal Environment
-  _hide_output
-
-  # Set Signal Trap For SIGINT
-  command trap _qcd_exit SIGINT &> /dev/null
+  command trap _qcd_exit SIGINT &> /dev/null && _hide_output
 
   # Reset Exit Flag
   QCD_EXIT=${__FALSE}
 
-  # Initialize Selected Option
+  # Initialize Option
   local sel_opt=${__NSET}
 
   # Begin Selection Loop
@@ -279,10 +263,10 @@ function _generate_menu() {
       # Conditionally Format Option
       if [[ ${oi} -eq ${sel_opt} ]]
       then
-        # Print Option As Seleted
+        # Format Option As Selected
         command echo -e "${__W} ${opt} ${__N}" >> ${QCD_TEMP}
       else
-        # Print Option As Unselected
+        # Format Option As Unselected
         command echo -e " ${opt} " >> ${QCD_TEMP}
       fi
 
@@ -290,7 +274,7 @@ function _generate_menu() {
       oi=$((${oi} + 1))
     done
 
-    # Output Selection
+    # Display Selection
     command cat ${QCD_TEMP}
 
     # Read User Input
@@ -320,12 +304,8 @@ function _generate_menu() {
       sel_opt=$((${sel_opt} + 1))
     elif [[ ${key} -eq ${__ENT} || ${key} -eq ${__EXT} ]]
     then
-      # Check For Exit Key
-      if [[ ${key} -eq ${__EXT} ]]
-      then
-        # Reset Option
-        sel_opt=${__NSEL}
-      fi
+      # Reset Option
+      [[ ${key} -eq ${__EXT} ]] && sel_opt=${__NSEL}
 
       # Break Loop
       break
@@ -346,14 +326,11 @@ function _generate_menu() {
     _clear_output ${#@}
   done
 
-  # Clear Signal Trap For SIGINT
-  command trap - SIGINT &> /dev/null
-
   # Clear All Outputs
   _clear_output $((${#@} + 1))
 
   # Restore Terminal Environment
-  _show_output
+  command trap - SIGINT &> /dev/null && _show_output
 
   # Return Selected Option
   return ${sel_opt}
@@ -917,7 +894,7 @@ function _parse_arguments() {
     # Unset IFS
     unset IFS
 
-    # Display Prompt
+    # Display Link Map
     command cat ${QCD_TEMP}
 
     # Terminate Program
