@@ -517,10 +517,13 @@ function _parse_arguments() {
   elif [[ ${flag/--clean/${__CLEAN}} == ${__CLEAN} ]]
   then
     # Get Linked Paths From Store File
-    local link_paths=($(command awk -F ':' '{print $2}' ${QCD_STORE}))
+    local link_paths=$(command awk -F ':' '{print $2}' ${QCD_STORE})
+
+    # Set IFS
+    local IFS=$'\n'
 
     # Iterate Over Linked Paths
-    for link_path in ${link_paths[@]}
+    for link_path in ${link_paths}
     do
       # Check Path Validity
       if [[ ! -d "${link_path}" ]]
@@ -529,6 +532,9 @@ function _parse_arguments() {
         (_remove_directory "${link_path}" &> /dev/null)
       fi
     done
+
+    # Unset IFS
+    unset IFS
 
     # Terminate Program
     return ${__OK}
