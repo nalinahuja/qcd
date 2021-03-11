@@ -1,9 +1,6 @@
 add or remove path sorting?
 speed shit up
-refactor the code there is too much lol
+fully test each feature
+refactor the code, there is too much lol
 any last features before dropping project?
-release project as v2.0
 revise any flag usages?
-- qcd -r
-- qcd [path] -r
-- qcd [path] [alias] -r
