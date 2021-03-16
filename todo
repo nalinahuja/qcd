@@ -4,3 +4,5 @@ fully test each feature
 refactor the code, there is too much lol
 any last features before dropping project?
 revise any flag usages?
+change backdirectory if CWD changed
+convert stuff into awk scripts
