@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 # Developed by Nalin Ahuja, nalinahuja22
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -8,7 +6,7 @@
 declare -r __TRUE=1 __FALSE=0 &> /dev/null
 
 # Keycode Values
-declare -r __UP=0 __DN=1 __EXT=2 __ENT=3 &> /dev/null
+declare -r __UP=1 __DN=2 __ENT=3 __EXT=4 &> /dev/null
 
 # Return Values
 declare -r __OK=0 __ERR=1 __CONT=2 __NFD=127 __NSEL=255 &> /dev/null
@@ -37,7 +35,6 @@ declare -r QCD_FOLD=~/.qcd &> /dev/null
 
 # Program Files
 declare -r QCD_PROG=${QCD_FOLD}/qcd.sh &> /dev/null
-declare -r QCD_HELP=${QCD_FOLD}/help   &> /dev/null
 declare -r QCD_TEMP=${QCD_FOLD}/temp   &> /dev/null
 
 # Resource Files

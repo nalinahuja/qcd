@@ -30,13 +30,13 @@ declare -r BASHPR=~/.bash_profile
 # End File Constants-------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Upgrade Status
-declare -i upgrade_status=${TRUE}
+declare -i UPGRADE_STATUS=${TRUE}
 
 # Installation Status
-declare -i install_status=${FALSE}
+declare -i INSTALL_STATUS=${FALSE}
 
 # Installation Version
-declare install_version
+declare INSTALLATION_VERSION
 
 # End Global Variables-----------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -57,7 +57,7 @@ then
   fi
 
   # Initialize Installation Version
-  install_version=$(command cat ${QCD_HELP} | command head -n1 | command awk '{print $4}')
+  INSTALLATION_VERSION=$(command cat ${QCD_HELP} | command head -n1 | command awk '{print $4}')
 
   # Add Command To Terminal Profile
   if [[ ! -d ${QCD_FOLD} ]]
@@ -69,7 +69,7 @@ then
       command echo -e "\n# QCD Utility Source\ncommand source ~/.qcd/qcd.sh\n" >> ${BASHRC}
 
       # Update Installation Status
-      install_status=${TRUE}
+      INSTALL_STATUS=${TRUE}
     fi
 
     # Find ~/.bash_profile
@@ -79,11 +79,11 @@ then
       command echo -e "\n# QCD Utility Source\ncommand source ~/.qcd/qcd.sh\n" >> ${BASHPR}
 
       # Update Installation Status
-      install_status=${TRUE}
+      INSTALL_STATUS=${TRUE}
     fi
 
     # Check Installation Status
-    if [[ ${install_status} == ${FALSE} ]]
+    if [[ ${INSTALL_STATUS} == ${FALSE} ]]
     then
       # Display Error Prompt
       command echo -e "→ No bash configurations found, aborting installation"
@@ -93,7 +93,7 @@ then
     fi
 
     # Update Upgrade Status
-    upgrade_status=${FALSE}
+    UPGRADE_STATUS=${FALSE}
   fi
 
   # Install QCD Program Files
@@ -104,13 +104,13 @@ then
   command mv ${QCD_READ} ${QCD_FOLD} 2> /dev/null
 
   # Determine Appropriate Prompt
-  if [[ ${upgrade_status} == ${TRUE} ]]
+  if [[ ${UPGRADE_STATUS} == ${TRUE} ]]
   then
     # Display Upgrade Prompt
-    command echo -e "→ Upgraded QCD to ${install_version}"
+    command echo -e "→ Upgraded QCD to ${INSTALLATION_VERSION}"
   else
     # Display Installation Prompt
-    command echo -e "→ Installed QCD ${install_version}"
+    command echo -e "→ Installed QCD ${INSTALLATION_VERSION}"
   fi
 
   # Display Success Prompt

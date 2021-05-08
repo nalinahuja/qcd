@@ -1,8 +1,27 @@
-add or remove path sorting?
-speed shit up
-fully test each feature
-refactor the code, there is too much lol
-any last features before dropping project?
-revise any flag usages?
-change backdirectory if CWD changed
-convert stuff into awk scripts
+Interface:
+- Commandline argument parsing
+- Commandline flag autocompletion
+- Revise commandline argument usages
+
+File Structure:
+- Remove help file
+
+Operation:
+- Add N../ for subdirectory completion
+- Binary checks using [[ -x "$(command -v BIN)" ]] 
+- Move help into bash script
+- Speed up operations using awk scripts
+- Use fuzzy logic for link to path matching
+- Add or remove path sorting?
+- Change backdirectory if CWD changed
+- Speed up completion engine
+
+Refactor & Review:
+- Review all code
+- Refactor all code
+- Fully test all features
+- Decompose code into modules
+- Revise program installer
+
+Testing:
+- Test everything lol
