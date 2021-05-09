@@ -16,8 +16,8 @@ readonly __NSET=0 __MINPAD=5 __TIMEOUT=10 __COLNUM=256 &> /dev/null
 
 # End Numerical Constants--------------------------------------------------------------------------------------------------------------------------------------------
 
-# Option Flags
-readonly __ALIAS="-a" __OPTIONS="-o" __REMEMBER="-r" __FORGET="-f" __MKDIRENT="-m" &> /dev/null
+# Value Flags
+readonly __ALIAS="-a" __OPTIONS="-o" __REMEMBER="-r" __FORGET="-f" &> /dev/null
 
 # Standalone Flags
 readonly __HELP="-h" __LIST="-l" __BACK="-b" __CLEAN="-c" __TRACK="-t" __UPDATE="-u" __VERSION="-v" &> /dev/null
@@ -530,433 +530,174 @@ function _remove_directory() {
 # End Database Management Functions----------------------------------------------------------------------------------------------------------------------------------
 
 function _parse_arguments() {
-  # Store Argument Flag
-  local flag="${@:${#@}}"
-
-  # Check For Standalone Flags
-  if [[ ${flag/--help/${__HELP}} == ${__HELP} ]]
-  then
-    # Print Help File
-    command cat ${QCD_HELP}
-
-    # Terminate Program
-    return ${__OK}
-  elif [[ ${flag/--version/${__VERSION}} == ${__VERSION} ]]
-  then
-    # Print Installed Version
-    command cat ${QCD_HELP} | command head -n1
-
-    # Terminate Program
-    return ${__OK}
-  elif [[ ${flag/--back-dir/${__BACK}} == ${__BACK} ]]
-  then
-    # Check Back Directory Variable
-    if [[ ! -z ${QCD_BACK_DIR} && -d "${QCD_BACK_DIR}" ]]
-    then
-      # Get Current Directory
-      local pwd=$(_get_pwd)
-
-      # Switch To Back Directory
-      command cd "${QCD_BACK_DIR}"
-
-      # Update Back Directory
-      QCD_BACK_DIR=${pwd}
-
-      # Terminate Program
-      return ${__OK}
-    else
-      # Display Prompt
-      command echo -e "qcd: Could not navigate to directory"
-
-      # Terminate Program
-      return ${__ERR}
-    fi
-  elif [[ ${flag/--clean/${__CLEAN}} == ${__CLEAN} ]]
-  then
-    # Get Linked Paths From Store File
-    local link_paths=$(command awk -F ':' '{print $2}' ${QCD_STORE})
-
-    # Set IFS
-    local IFS=$'\n'
-
-    # Iterate Over Linked Paths
-    for link_path in ${link_paths}
-    do
-      # Check Path Validity
-      if [[ ! -d "${link_path}" ]]
-      then
-        # Remove Invalid Path
-        (_remove_directory "${link_path}" &> /dev/null)
-      fi
-    done
-
-    # Unset IFS
-    unset IFS
-
-    # Terminate Program
-    return ${__OK}
-  elif [[ ${flag/--track-dirs/${__TRACK}} == ${__TRACK} ]]
-  then
-    # Check For Tracking File
-    if [[ -f ${QCD_TRACK} ]]
-    then
-      # Display Prompt
-      command echo -e "qcd: Directory tracking ${__B}enabled${__N}"
-
-      # Prompt User For Confirmation
-      command read -p "→ Disable tracking [y/n]: " confirm
-    else
-      # Display Prompt
-      command echo -e "qcd: Directory tracking ${__B}disabled${__N}"
-
-      # Prompt User For Confirmation
-      command read -p "→ Enable tracking [y/n]: " confirm
-    fi
-
-    # Clear All Outputs
-    _clear_output 2
+  # Parse Arguments
+  while [[ ${#@} -gt 0 ]]
+  do
+    # Get Argument Flag
+    local flag="${1}"
 
     # Determine Action
-    if [[ ${confirm//Y/${__YES}} == ${__YES} ]]
-    then
-      # Check For Tracking File
-      if [[ ! -f ${QCD_TRACK} ]]
-      then
-        # Create Tracking File
-        command touch ${QCD_TRACK}
-
-        # Display Prompt
-        command echo -e "qcd: Directory tracking ${__B}enabled${__N}"
-      else
-        # Remove Tracking File
-        command rm ${QCD_TRACK}
-
-        # Display Prompt
-        command echo -e "qcd: Directory tracking ${__B}disabled${__N}"
-      fi
-    fi
-
-    # Terminate Program
-    return ${__OK}
-  elif [[ ${flag/--update/${__UPDATE}} == ${__UPDATE} ]]
-  then
-    # Display Prompt
-    command echo -e "qcd: Currently running ${__B}$(command cat ${QCD_HELP} | command head -n1 | command awk '{print $4}')${__N}"
-
-    # Prompt User For Confirmation
-    command read -p "→ Confirm update [y/n]: " confirm
-
-    # Determine Action
-    if [[ ${confirm//Y/${__YES}} == ${__YES} ]]
-    then
-      # Clear Confirmation Prompt
-      _clear_output 1
-
-      # Verify Curl Dependency
-      command curl &> /dev/null
-
-      # Check Operation Status
-      if [[ -z "$(command -v curl)" ]]
-      then
-        # Display Prompt
-        command echo -e "→ Curl dependency not installed"
+    case "${flag}" in
+      # Check For Help Flag
+      ${__HELP}|--help)
+        # Display Help Message
+        _show_help
 
         # Terminate Program
-        return ${__ERR}
-      fi
+        return ${__OK}
+      ;;
 
-      # Display Prompt
-      command echo -en "→ Downloading update "
-
-      # Determine Download URL
-      local download_url=$(command curl --connect-timeout ${__TIMEOUT} -sL ${QCD_RELEASE_URL} 2> /dev/null | command egrep -s -o "https.*zipball.*" 2> /dev/null)
-
-      # Error Check Download URL
-      if [[ ${?} -ne ${__OK} || -z ${download_url} ]]
-      then
-        # Display Prompt
-        command echo -e "\r→ Failed to resolve download link for update"
+      # Check For Version Flag
+      ${__VERSION}|--version)
+        # Display Installation Version
+        _show_help | command head -n1
 
         # Terminate Program
-        return ${__ERR}
-      fi
+        return ${__OK}
+      ;;
 
-      # Download Release Contents
-      command curl --connect-timeout ${__TIMEOUT} -sL "${download_url/\",/}" > ${QCD_RELEASE}
+      # End Standard Flags-------------------------------------------------------------------------------------------------------------------------------------------
 
-      # Error Check Release Contents
-      if [[ ${?} -ne ${__OK} || ! -f ${QCD_RELEASE} ]]
-      then
-        # Display Prompt
-        command echo -e "\r→ Failed to download update"
+      # Check For List Flag
+      ${__LIST}|--list)
+        # todo
+      ;;
 
-        # Terminate Program
-        return ${__ERR}
-      fi
+      # Check For Clean Flag
+      ${__CLEAN}|--clean)
+        # Set IFS
+        local IFS=$'\n'
 
-      # Display Prompt
-      command echo -en "\r→ Installing updates  "
+        # Get Linkage Paths
+        local link_paths=($(command awk -F ':' '{print $2}' ${QCD_STORE}))
 
-      # Extract And Install Program Files
-      command unzip -o -j ${QCD_RELEASE} -d ${QCD_FOLD} &> /dev/null
+        # Iterate Over Linkage Paths
+        for link_path in ${link_paths}
+        do
+          # Verify Linkage Path
+          if [[ ! -d "${link_path}" ]]
+          then
+            # Remove Invalid Linkage Path
+            (_remove_directory "${link_path}" &> /dev/null)
+          fi
+        done
 
-      # Error Check Installation
-      if [[ ${?} -ne ${__OK} ]]
-      then
-        # Display Prompt
-        command echo -e "\r→ Failed to install update"
-
-        # Terminate Program
-        return ${__ERR}
-      fi
-
-      # Display Prompt
-      command echo -en "\r→ Configuring updates "
-
-      # Update Bash Environment
-      command source ${QCD_EXEC} 2> /dev/null
-
-      # Error Check Installation
-      if [[ ${?} -ne ${__OK} ]]
-      then
-        # Display Prompt
-        command echo -e "\r→ Failed to configure update "
+        # Unset IFS
+        unset IFS
 
         # Terminate Program
-        return ${__ERR}
-      fi
+        return ${__OK}
+      ;;
 
-      # Cleanup Installation
-      command rm ${QCD_RELEASE} ${QCD_INSTALL} 2> /dev/null
+      # Check For Update Flag
+      ${__UPDATE|--update)
+        # todo
+      ;;
 
-      # Display Prompt
-      command echo -e "\r→ Update complete     "
+      # Check For Back Flag
+      ${__BACK}|--back-dir)
+        # Check Back Directory Variable
+        if [[ ! -z ${QCD_BACK_DIR} && -d "${QCD_BACK_DIR}" ]]
+        then
+          # Get Current Directory
+          local pwd=$(_get_pwd)
 
-      # Clear All Outputs
-      _clear_output 2
+          # Switch To Back Directory
+          command cd "${QCD_BACK_DIR}"
 
-      # Display Prompt
-      command echo -e "qcd: Updated to ${__B}$(command cat ${QCD_HELP} | command head -n1 | command awk '{print $4}')${__N}"
-    else
-      # Clear All Outputs
-      _clear_output 2
-    fi
+          # Update Back Directory
+          declare QCD_BACK_DIR="${pwd}"
 
-    # Terminate Program
-    return ${__OK}
-  fi
+          # Terminate Program
+          return ${__OK}
+        else
+          # Display Prompt
+          command echo -e "qcd: Could not navigate to directory"
 
-  # Check For Option Flags
-  if [[ ${flag/--remember/${__REMEMBER}} == ${__REMEMBER} ]]
-  then
-    # Determine Remember Type
-    if [[ ${#@} -eq 1 ]]
-    then
-      # Add Current Directory
-      (_add_directory &> /dev/null &)
-    elif [[ ${#@} -eq 2 ]]
-    then
-      # Store Directory Argument
-      local dir="${@:1:1}"
+          # Terminate Program
+          return ${__ERR}
+        fi
+      ;;
 
-      # Determine Path Validity
-      if [[ ! -d "${dir}" ]]
-      then
-        # Display Prompt
-        command echo -e "qcd: Invalid directory path"
+      # Check For Tracking Flag
+      ${__TRACK}|--track-dir)
+        # Check For Tracking File
+        if [[ -f "${QCD_TRACK}" ]]
+        then
+          # Display Prompt
+          command echo -e "qcd: Directory tracking ${__B}enabled${__N}"
 
-        # Terminate Program
-        return ${__ERR}
-      fi
+          # Prompt User For Confirmation
+          command read -p "→ Disable tracking [y/n]: " confirm
+        else
+          # Display Prompt
+          command echo -e "qcd: Directory tracking ${__B}disabled${__N}"
 
-      # Add Directory As Direct Linkage
-      (_add_directory "${dir}" &> /dev/null &)
-    elif [[ ${#@} -eq 3 ]]
-    then
-      # Store Directory Argument
-      local dir="${@:1:1}"
+          # Prompt User For Confirmation
+          command read -p "→ Enable tracking [y/n]: " confirm
+        fi
 
-      # Store Alias Argument
-      local als="${@:2:1}"
+        # Clear Previous Outputs
+        _clear_output 2
 
-      # Determine Path Validity
-      if [[ ! -d "${dir}" ]]
-      then
-        # Display Prompt
-        command echo -e "qcd: Invalid directory path"
+        # Determine Action
+        if [[ ${confirm//Y/${__YES}} == ${__YES} ]]
+        then
+          # Check For Tracking File
+          if [[ ! -f "${QCD_TRACK}" ]]
+          then
+            # Create Tracking File
+            command touch "${QCD_TRACK}"
 
-        # Terminate Program
-        return ${__ERR}
-      fi
+            # Display Prompt
+            command echo -e "qcd: Directory tracking ${__B}enabled${__N}"
+          else
+            # Remove Tracking File
+            command rm "${QCD_TRACK}"
 
-      # Add Directory As Aliased Linkage
-      (_add_directory "${dir}" "${als}" &> /dev/null &)
-    else
-      # Display Prompt
-      command echo -e "qcd: Too many positional arguments"
-
-      # Terminate Program
-      return ${__ERR}
-    fi
-
-    # Terminate Program
-    return ${__OK}
-  elif [[ ${flag/--forget/${__FORGET}} == ${__FORGET} ]]
-  then
-    # Determine Forget Type
-    if [[ ${#@} -eq 1 ]]
-    then
-      # Remove Current Directory
-      (_remove_directory &> /dev/null &)
-    elif [[ ${#@} -eq 2 ]]
-    then
-      # Store Link Argument
-      local link="${@:1:1}"
-
-      # Remove Indicated Linkage
-      (_remove_linkage "${link}" &> /dev/null &)
-    else
-      # Display Prompt
-      command echo -e "qcd: Too many positional arguments"
-
-      # Terminate Program
-      return ${__ERR}
-    fi
-
-    # Terminate Program
-    return ${__OK}
-  elif [[ ${flag/--mkdir/${__MKDIRENT}} == ${__MKDIRENT} ]]
-  then
-    # Verify Argument Count
-    if [[ ${#@} -eq 2 ]]
-    then
-      # Store Directory Path Component
-      local dir_path="${@:1:1}"
-
-      # Store Trailing Path Component
-      local trail_path=$(_get_dname "${dir_path}")
-
-      # Determine Substring Bounds
-      local si=0 ei=$((${#dir_path} - ${#trail_path}))
-
-      # Store Prefix Path Component
-      local pfx_path="${dir_path:${si}:${ei}}"
-
-      # Verify Path Components
-      if [[ -d "${dir_path%/}" ]]
-      then
-        # Display Prompt
-        command echo -e "qcd: Directory already exists"
+            # Display Prompt
+            command echo -e "qcd: Directory tracking ${__B}disabled${__N}"
+          fi
+        fi
 
         # Terminate Program
-        return ${__ERR}
-      elif [[ ! -z ${pfx_path} && ! -d "${pfx_path%/}" ]]
-      then
-        # Display Prompt
-        command echo -e "qcd: Invalid path to new directory"
+        return ${__OK}
+      ;;
 
-        # Terminate Program
-        return ${__ERR}
-      fi
+      # End Standalone Flags-----------------------------------------------------------------------------------------------------------------------------------------
 
-      # Create Directory At Location
-      command mkdir "${dir_path}"
+      ${__REMEMBER}|--remember)
+        # todo
+      ;;
 
-      # QCD Into New Directory
-      qcd "${dir_path}"
-    else
-      # Display Prompt
-      command echo -e "qcd: Invalid number of positional arguments"
+      ${__FORGET}|--forget)
+        # todo
+      ;;
 
-      # Terminate Program
-      return ${__ERR}
-    fi
+      ${__ALIAS}|--alias)
+        # todo
+      ;;
 
-    # Terminate Program
-    return ${__OK}
-  elif [[ ${flag/--list/${__LIST}} == ${__LIST} ]]
-  then
-    # Display Prompt
-    command echo -en "\rqcd: Generating link map..."
+      # End Value Flags----------------------------------------------------------------------------------------------------------------------------------------------
 
-    # Initialize Symbolic Links
-    local sym_links=${__NSET}
+      -l|--lib)
+        LIBPATH="$2"
+        shift # past argument
+        shift # past value
+      ;;
 
-    # Conditionally Fetch Symbolic Links
-    if [[ ${#@} -eq 1 ]]
-    then
-      # Get All Symbolic Links From Store File
-      sym_links=$(qcd --clean &> /dev/null && command cat ${QCD_STORE})
-    elif [[ ${#@} -eq 2 ]]
-    then
-      # Store Regex Argument
-      local regex="${@:1:1}"
+      --default)
+        DEFAULT=YES
+        shift # past argument
+      ;;
 
-      # Expand Regex Characters
-      regex="${regex//\\/}"
-      regex="${regex//\*/\.\*}"
-      regex="${regex//\?/\.}"
-      regex="${regex%/}"
-
-      # Get All Symbolic Links From Store File By Regex
-      sym_links=$(qcd --clean &> /dev/null && command egrep -s -x "${regex}.*:.*" ${QCD_STORE} 2> /dev/null)
-    else
-      # Display Prompt
-      command echo -e "\rqcd: Too many positional arguments"
-
-      # Terminate Program
-      return ${__ERR}
-    fi
-
-    # Error Check Symbolic Links
-    if [[ -z ${sym_links} ]]
-    then
-      # Display Prompt
-      command echo -e "\rqcd: No linkages found      "
-
-      # Terminate Program
-      return ${__ERR}
-    fi
-
-    # Store Terminal Column Count
-    local tcols=$(command tput cols)
-
-    # Determine Column Padding
-    local pcols=$(command echo -e "${sym_links}" | command awk -F ':' '{print $1}' | command awk '{print length}' | command sort -n | command tail -n1)
-
-    # Error Check Column Padding
-    if [[ ${pcols} -lt ${__MINPAD} ]]
-    then
-      # Set Padding To Minimum
-      pcols=${__MINPAD}
-    fi
-
-    # Format Header
-    command printf "\r${__W} %-${pcols}s  %-$((${tcols} - ${pcols} - 3))s${__N}\n" "Link" "Directory" > ${QCD_TEMP}
-
-    # Set IFS
-    local IFS=$'\n'
-
-    # Iterate Over Linkages
-    for sym_link in ${sym_links}
-    do
-      # Format Linkage Components
-      local link=$(_split_name "${sym_link}")
-      local path=$(_split_path "${sym_link}")
-
-      # Format Linkage
-      command printf " %-${pcols}s  %s\n" "${link}" "$(_format_path "${path%/}")" >> ${QCD_TEMP}
-    done
-
-    # Unset IFS
-    unset IFS
-
-    # Display Link Map
-    command cat ${QCD_TEMP}
-
-    # Terminate Program
-    return ${__OK}
-  fi
+      *)
+        echo "unknown"
+        # save it in an array for later
+        shift # past argument
+      ;;
+    esac
+  done
 
   # Continue Program
   return ${__CONT}

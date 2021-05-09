@@ -12,6 +12,8 @@ Operation:
 - Change backdirectory if CWD changed
 - Speed up completion engine
 - Remove regex from list flag
+- qcd .qcd runtime behavior
+- relative path remember and forget
 
 Refactor & Review:
 - Review all code
@@ -20,30 +22,3 @@ Refactor & Review:
 
 Testing:
 - Test everything lol
-
-qcd .qcd runtime behavior
-relative path remember and forget
-
-qcd                                 Switch to home directory
-qcd [path]                          Switch to valid directory
-qcd [link]/[subdir]/...             Switch to linked directory
-qcd [n]..                           Switch to nth parent directory
-
-qcd [-h, --help]                    Show this help
-qcd [-c, --clean]                   Clean store file
-qcd [-l, --list]                    List stored linkages
-qcd [-v, --version]                 Show current version
-qcd [-u, --update]                  Update to latest version
-qcd [-b, --back-dir]                Navigate to backward directory
-qcd [-t, --track-dirs]              Set directory tracking behavior
-
-qcd [-r, --remember]                Remember present directory
-qcd [-r, --remember] [path]         Remember directory by path
-
-qcd [-f, --forget]                  Forget present directory
-qcd [-f, --forget] [path]           Forget matching directory path
-qcd [-f, --forget] [link]           Forget matching symbolic links
-
-qcd [-m, --mkdir] [path]            Create and switch to new directory
-qcd [-a, --alias] [alias]           Alias directory if remembered
-qcd [-o, --options] [link]          Show symbolic link options
