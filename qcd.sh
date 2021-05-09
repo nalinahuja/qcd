@@ -1454,26 +1454,22 @@ function _qcd_comp() {
 }
 
 function _qcd_init() {
-  # Check For Store File
-  if [[ -f ${QCD_STORE} ]]
-  then
-    # Prepare Resource Files
-    (qcd --clean &> /dev/null &)
-  fi
-
-  # Cleanup Temporary Files On EXIT
+  # Set Signal Trap For EXIT
   command trap _cleanup_temp EXIT &> /dev/null
 
   # Set Environment To Show Visible Files
   command bind 'set match-hidden-files off' &> /dev/null
 
-  # Initialize Completion Engine
+  # Initialize Directory Completion Engine
   command complete -o nospace -o filenames -A directory -F _qcd_comp qcd
+
+  # Remove Invalid Linkages From Store File
+  [[ -f "${QCD_STORE}" ]] && (qcd --clean &> /dev/null &)
 }
 
 function _qcd_exit() {
   # Set Exit Flag
-  QCD_EXIT=${__TRUE}
+  declare QCD_EXIT=${__TRUE}
 }
 
 # End QCD Dependency Functions---------------------------------------------------------------------------------------------------------------------------------------
