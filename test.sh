@@ -38,12 +38,10 @@
 #
 # echo SF $PARAMS
 
-for i in {1..100}; do
-  command egrep -s -x ".*:/Users/apple/dev/qcd/" ~/.qcd/store &> /dev/null
-  command egrep -s -x "qcd:/Users/apple/dev/qcd/" ~/.qcd/store &> /dev/null
-done
-
 # for i in {1..100}; do
-#   awk -F ':' -v KEY="/Users/apple/dev/qcd/" '$2 == KEY {print $1}' ~/.qcd/store &> /dev/null
-#   awk -F ':' -v KEY="qcd:/Users/apple/dev/qcd/" '$0 == KEY {print $1}' ~/.qcd/store &> /dev/null
+#   command egrep -s -v -x "qcd:.*" ~/.qcd/store
 # done
+#
+for i in {1..100}; do
+  awk -F ':' -v EPT="qcd" '{if ($1 != EPT) {print $0}}' ~/.qcd/store
+done

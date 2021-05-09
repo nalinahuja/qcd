@@ -390,7 +390,7 @@ function _cleanup_temp() {
 # End File Management Functions--------------------------------------------------------------------------------------------------------------------------------------
 
 function _add_directory() {
-  # Get Current Path
+  # Initialize Directory Path
   local dir=${__ESTR}
 
   # Check For Argument Path
@@ -403,12 +403,8 @@ function _add_directory() {
     dir=$(_get_path "${@:1:1}")
   fi
 
-  # Check For Home Directory
-  if [[ "${dir%/}" == "${HOME%/}" ]]
-  then
-    # Return To Caller
-    return ${__OK}
-  fi
+  # Compare Directory Path To Home Path
+  [[ "${dir%/}" == "${HOME%/}" ]] && return ${__OK}
 
   # Get Current Endpoint
   local ept=$(_get_dname "${dir}")
@@ -455,10 +451,10 @@ function _add_directory() {
 
 function _remove_linkage() {
   # Store Argument Link
-  local rlink=$(_escape_regex "${@%/}")
+  local link=$(_escape_regex "${@%/}")
 
   # Remove Link From Store File
-  command egrep -s -v -x "${rlink}:.*" ${QCD_STORE} > ${QCD_TEMP} 2> /dev/null
+  command awk -F ':' -v LINK="${link}" '{if ($1 != LINK) {print $0}}' > ${QCD_TEMP} 2> /dev/null
 
   # Update Store File
   _update_store ${?}
@@ -468,18 +464,21 @@ function _remove_linkage() {
 }
 
 function _remove_directory() {
-  # Get Current Path
-  local rdir=$(_get_pwd)
+  # Initialize Directory Path
+  local dir=${__ESTR}
 
   # Check For Argument Path
-  if [[ ${#@} -ne 0 ]]
+  if [[ ${#@} -eq 0 ]]
   then
+    # Store Current Path
+    dir=$(_get_pwd)
+  else
     # Store Argument Path
-    rdir=$(_escape_regex "${@}")
+    dir=$(_escape_regex "${@}")
   fi
 
   # Remove Directory From Store File
-  command egrep -s -v -x ".*:${rdir}" ${QCD_STORE} > ${QCD_TEMP} 2> /dev/null
+  command awk -F ':' -v DIR="${dir}" '{if ($2 != DIR) {print $0}}' > ${QCD_TEMP} 2> /dev/null
 
   # Update Store File
   _update_store ${?}
