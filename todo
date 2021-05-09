@@ -15,6 +15,7 @@ Operation:
 - Add or remove path sorting?
 - Change backdirectory if CWD changed
 - Speed up completion engine
+- Remove regex from list flag
 
 Refactor & Review:
 - Review all code
