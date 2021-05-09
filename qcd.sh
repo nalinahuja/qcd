@@ -48,7 +48,7 @@ readonly QCD_INSTALL=${QCD_FOLD}/install.sh  &> /dev/null
 # End File Constants-------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Release Version
-readonly QCD_RELEASE_VER="2.0" &> /dev/null
+readonly QCD_RELEASE_VER="1.19.0" &> /dev/null
 
 # Release Link
 readonly QCD_RELEASE_URL="https://api.github.com/repos/nalinahuja22/qcd/releases/latest" &> /dev/null
