@@ -102,8 +102,11 @@ function _get_dname() {
   # Get Prefix String
   local pfx="${dir%/*/}"
 
+  # Determine Substring Bounds
+  local si=$((${#pfx} + 1))
+
   # Get Suffix String
-  local sfx="${dir:$((${#pfx} + 1))}"
+  local sfx="${dir:${si}}"
 
   # Determine Return
   if [[ -z ${sfx} ]]
@@ -184,8 +187,8 @@ function _hide_output() {
 # End Environment Functions------------------------------------------------------------------------------------------------------------------------------------------
 
 function _read_input() {
-  # Initialize String Buffers
-  local input=${__ESTR} c=${__ESTR}
+  # Initialize String Buffer
+  local buffer=()
 
   # Read Input Stream
   while [[ 1 ]]
@@ -194,22 +197,31 @@ function _read_input() {
     command read -s -n1 c 2> /dev/null
 
     # Return Enter Action
-    [[ ${c} == ${__ESTR} ]] && command echo -e "${__ENT}" && break
+    [[ "${c}" == "${__ESTR}" ]] && command echo -e "${__ENT}" && break
 
     # Return Quit Action
-    [[ ${c} == ${__QUIT} ]] && command echo -e "${__EXT}" && break
+    [[ "${c}" == "${__QUIT}" ]] && command echo -e "${__EXT}" && break
 
     # Append Character To Input Buffer
-    input="${input}${c}"
+    buffer+=("${c}")
 
     # Check Break Conditions
-    if [[ ${#input} -eq 3 ]]
+    if [[ ${#buffer[@]} -ge 3 ]]
     then
+      # Set IFS
+      local IFS=$''
+
       # Return Up Arrow Action
-      [[ ${input} == "${_ESEQ}[A" ]] && command echo -e "${__UP}" && break
+      [[ "${buffer[*]}" == "${_ESEQ}[A" ]] && command echo -e "${__UP}" && break
 
       # Return Down Arrow Action
-      [[ ${input} == "${_ESEQ}[B" ]] && command echo -e "${__DN}" && break
+      [[ "${buffer[*]}" == "${_ESEQ}[B" ]] && command echo -e "${__DN}" && break
+
+      # Unset IFS
+      unset IFS
+
+      # Reset String Buffer
+      buffer=()
     fi
   done
 }

@@ -25,3 +25,6 @@ Refactor & Review:
 
 Testing:
 - Test everything lol
+
+
+do you need the _escape_path and _escape_regex functions?
