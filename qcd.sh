@@ -34,9 +34,8 @@ readonly __B=$(command printf "${_ESEQ}[1m") __W=$(command printf "${_ESEQ}[30m$
 readonly QCD_FOLD=~/.qcd &> /dev/null
 
 # Program Files
-readonly QCD_EXEC=${QCD_FOLD}/qcd.sh  &> /dev/null
-readonly QCD_HELP=${QCD_FOLD}/help.sh &> /dev/null
-readonly QCD_TEMP=${QCD_FOLD}/temp    &> /dev/null
+readonly QCD_EXEC=${QCD_FOLD}/qcd.sh &> /dev/null
+readonly QCD_TEMP=${QCD_FOLD}/temp   &> /dev/null
 
 # Resource Files
 readonly QCD_STORE=${QCD_FOLD}/store  &> /dev/null
@@ -191,6 +190,43 @@ function _hide_output() {
 }
 
 # End Environment Functions------------------------------------------------------------------------------------------------------------------------------------------
+
+function _show_help() {
+  # Option Flags
+  readonly __ALIAS="-a" __REMEMBER="-r" __FORGET="-f" __MKDIRENT="-m" &> /dev/null
+
+  # Display Help Message
+  command cat << EOF
+${__B}QCD Utility - v${QCD_RELEASE_VER}${__N}
+
+${__B}Usage:${__N}
+  qcd                                 Switch to home directory
+  qcd [path]                          Switch to valid directory
+  qcd [link]/[subdir]/...             Switch to linked directory
+  qcd [n]..                           Switch to nth parent directory
+
+${__B}Options:${__N}
+  qcd [-h, --help]                    Show this help
+  qcd [-c, --clean]                   Clean store file
+  qcd [-l, --list]                    List stored linkages
+  qcd [-v, --version]                 Show current version
+  qcd [-u, --update]                  Update to latest version
+  qcd [-b, --back-dir]                Navigate to backward directory
+  qcd [-t, --track-dirs]              Set directory tracking behavior
+
+  qcd [-r, --remember]                Remember present directory
+  qcd [-r, --remember] [path]         Remember directory by path
+  qcd [-a, --alias] [alias]           Alias directory if remembered
+
+  qcd [-f, --forget]                  Forget present directory
+  qcd [-f, --forget] [link]           Forget matching symbolic links
+
+  qcd [-m, --mkdir] [path]            Create and switch to new directory
+  qcd [-o, --options] [link]          Show matching symbolic link options
+
+Developed by Nalin Ahuja, nalinahuja22
+EOF
+}
 
 function _read_input() {
   # Initialize String Buffer
