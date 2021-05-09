@@ -192,9 +192,6 @@ function _hide_output() {
 # End Environment Functions------------------------------------------------------------------------------------------------------------------------------------------
 
 function _show_help() {
-  # Option Flags
-  readonly __ALIAS="-a" __REMEMBER="-r" __FORGET="-f" __MKDIRENT="-m" &> /dev/null
-
   # Display Help Message
   command cat << EOF
 ${__B}QCD Utility - v${QCD_RELEASE_VER}${__N}
