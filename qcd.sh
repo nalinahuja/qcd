@@ -34,7 +34,7 @@ readonly __B=$(command printf "${_ESEQ}[1m") __W=$(command printf "${_ESEQ}[30m$
 readonly QCD_FOLD=~/.qcd &> /dev/null
 
 # Program Files
-readonly QCD_PROG=${QCD_FOLD}/qcd.sh &> /dev/null
+readonly QCD_EXEC=${QCD_FOLD}/qcd.sh &> /dev/null
 readonly QCD_TEMP=${QCD_FOLD}/temp   &> /dev/null
 
 # Resource Files
@@ -654,7 +654,7 @@ function _parse_arguments() {
       command echo -en "\r→ Configuring updates "
 
       # Update Bash Environment
-      command source ${QCD_PROG} 2> /dev/null
+      command source ${QCD_EXEC} 2> /dev/null
 
       # Error Check Installation
       if [[ ${?} -ne ${__OK} ]]
