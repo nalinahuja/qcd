@@ -5,27 +5,27 @@
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Boolean Values
-declare -r TRUE=1 FALSE=0
+readonly TRUE=1 FALSE=0
 
 # End Numerical Constants--------------------------------------------------------------------------------------------------------------------------------------------
 
 # Embedded Strings
-declare -r YES="y"
+readonly YES="y"
 
 # End String Constants-----------------------------------------------------------------------------------------------------------------------------------------------
 
 # Program Path
-declare -r QCD_FOLD=~/.qcd
+readonly QCD_FOLD=~/.qcd
 
 # Program Files
-declare -r QCD_HELP=./help
-declare -r QCD_PROG=./qcd.sh
-declare -r QCD_LICE=./LICENSE
-declare -r QCD_READ=./README.md
+readonly QCD_HELP=./help
+readonly QCD_PROG=./qcd.sh
+readonly QCD_LICE=./LICENSE
+readonly QCD_READ=./README.md
 
 # Terminal Profiles
-declare -r BASHRC=~/.bashrc
-declare -r BASHPR=~/.bash_profile
+readonly BASHRC=~/.bashrc
+readonly BASHPR=~/.bash_profile
 
 # End File Constants-------------------------------------------------------------------------------------------------------------------------------------------------
 

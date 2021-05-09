@@ -59,10 +59,10 @@ declare QCD_BACK_DIR=${__ESTR}
 # End Global Variables-----------------------------------------------------------------------------------------------------------------------------------------------
 
 function _get_pwd() {
-  # Store Current Directory
+  # Store Current Working Directory
   local pwd=$(command pwd)
 
-  # Return Current Directory
+  # Return Current Working Directory
   command echo -e "${pwd}${__FLSH}"
 }
 
@@ -70,7 +70,7 @@ function _get_path() {
   # Store Argument Directory
   local dir=$(command realpath "${@}")
 
-  # Return Absolute Path
+  # Return Realpath Path
   command echo -e "${dir}${__FLSH}"
 }
 
@@ -357,8 +357,12 @@ function _update_store() {
 }
 
 function _cleanup_temp() {
-  # Remove Link And Temp Files
-  command rm ${QCD_TEMP} 2> /dev/null
+  # Check For Temp File
+  if [[ -f ${QCD_TEMP} ]]
+  then
+    # Remove Temp File
+    command rm ${QCD_TEMP} 2> /dev/null
+  fi
 }
 
 # End File Management Functions--------------------------------------------------------------------------------------------------------------------------------------
