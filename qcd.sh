@@ -328,25 +328,25 @@ function _generate_menu() {
     fi
 
     # Check For Option Loopback
-    if [[ ${os} -eq $# ]]
+    if [[ ${os} -eq ${#@} ]]
     then
       # Jump To Top
       os=0
     elif [[ ${os} -eq -1 ]]
     then
       # Jump To Bottom
-      os=$(($# - 1))
+      os=$((${#@} - 1))
     fi
 
     # Clear Previous Selection
-    _clear_output $#
+    _clear_output ${#@}
   done
 
   # Clear Signal Trap For SIGINT
   command trap - SIGINT &> /dev/null
 
   # Clear Selection Interface
-  _clear_output $(($# + 1))
+  _clear_output $((${#@} + 1))
 
   # Show Terminal Outputs
   _show_output
@@ -391,17 +391,27 @@ function _cleanup_temp() {
 
 function _add_directory() {
   # Get Current Path
-  local adir=$(_get_pwd)
+  local dir=${__ESTR}
 
   # Check For Argument Path
-  if [[ ${#@} -ge 1 ]]
+  if [[ ${#@} -eq 0 ]]
   then
+    # Store Current Path
+    dir=$(_get_pwd)
+  else
     # Store Argument Path
-    adir=$(_get_path "${@:1:1}")
+    dir=$(_get_path "${@:1:1}")
   fi
 
-  # Current Endpoint
-  local ept=$(_get_dname "${adir}")
+  # Check For Home Directory
+  if [[ "${dir%/}" == "${HOME%/}" ]]
+  then
+    # Return To Caller
+    return ${__OK}
+  fi
+
+  # Get Current Endpoint
+  local ept=$(_get_dname "${dir}")
 
   # Check For Argument Endpoint
   if [[ ${#@} -eq 2 ]]
@@ -413,25 +423,18 @@ function _add_directory() {
     ept="${ept%/}"
   fi
 
-  # Return If Home Directory
-  if [[ "${adir%/}" == "${HOME%/}" ]]
-  then
-    # Return To Caller
-    return ${__OK}
-  fi
-
   # Linkage Characteristics
   local unique_path=${__FALSE} unique_tuple=${__FALSE}
 
   # Determine If Linkage Path Is Unique
-  if [[ -z $(command egrep -s -x ".*:${adir}" ${QCD_STORE} 2> /dev/null) ]]
+  if [[ -z $(command egrep -s -x ".*:${dir}" ${QCD_STORE} 2> /dev/null) ]]
   then
     # Set Linkage Characteristic
     unique_path=${__TRUE}
   fi
 
   # Determine If Linkage Path Is Unique
-  if [[ -z $(command egrep -s -x "${ept}:${adir}" ${QCD_STORE} 2> /dev/null) ]]
+  if [[ -z $(command egrep -s -x "${ept}:${dir}" ${QCD_STORE} 2> /dev/null) ]]
   then
     # Set Linkage Characteristic
     unique_tuple=${__TRUE}
@@ -444,11 +447,11 @@ function _add_directory() {
     if [[ ${unique_tuple} -eq ${__TRUE} ]]
     then
       # Remove Linkage By Directory
-      _remove_directory "${adir}"
+      _remove_directory "${dir}"
     fi
 
     # Append Data To Store File
-    command echo -e "${ept}:${adir}" >> ${QCD_STORE}
+    command echo -e "${ept}:${dir}" >> ${QCD_STORE}
 
     # Sort Store File In Place
     command sort -o ${QCD_STORE} -n -t ':' -k2 ${QCD_STORE}
