@@ -363,8 +363,8 @@ function _update_store() {
     # Update Store File
     command mv ${QCD_TEMP} ${QCD_STORE} 2> /dev/null
   else
-    # Remove Temp File
-    command rm ${QCD_TEMP} 2> /dev/null
+    # Cleanup Temp File
+    _cleanup_temp
   fi
 }
 
