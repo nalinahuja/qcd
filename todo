@@ -3,9 +3,6 @@ Interface:
 - Commandline flag autocompletion
 - Revise commandline argument usages
 
-File Structure:
-- Remove help file
-
 Operation:
 - Add N../ for subdirectory completion
 - Binary checks using [[ -x "$(command -v BIN)" ]]
@@ -15,7 +12,6 @@ Operation:
 - Change backdirectory if CWD changed
 - Speed up completion engine
 - Remove regex from list flag
-- Move help into bash script
 
 Refactor & Review:
 - Review all code
@@ -24,3 +20,5 @@ Refactor & Review:
 
 Testing:
 - Test everything lol
+
+qcd .qcd runtime behavior

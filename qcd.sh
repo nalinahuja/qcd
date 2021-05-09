@@ -34,8 +34,9 @@ readonly __B=$(command printf "${_ESEQ}[1m") __W=$(command printf "${_ESEQ}[30m$
 readonly QCD_FOLD=~/.qcd &> /dev/null
 
 # Program Files
-readonly QCD_EXEC=${QCD_FOLD}/qcd.sh &> /dev/null
-readonly QCD_TEMP=${QCD_FOLD}/temp   &> /dev/null
+readonly QCD_EXEC=${QCD_FOLD}/qcd.sh  &> /dev/null
+readonly QCD_HELP=${QCD_FOLD}/help.sh &> /dev/null
+readonly QCD_TEMP=${QCD_FOLD}/temp    &> /dev/null
 
 # Resource Files
 readonly QCD_STORE=${QCD_FOLD}/store  &> /dev/null
@@ -45,10 +46,15 @@ readonly QCD_TRACK=${QCD_FOLD}/.track &> /dev/null
 readonly QCD_RELEASE=${QCD_FOLD}/release.zip &> /dev/null
 readonly QCD_INSTALL=${QCD_FOLD}/install.sh  &> /dev/null
 
+# End File Constants-------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Release Version
+readonly QCD_RELEASE_VER="2.0" &> /dev/null
+
 # Release Link
 readonly QCD_RELEASE_URL="https://api.github.com/repos/nalinahuja22/qcd/releases/latest" &> /dev/null
 
-# End File Constants-------------------------------------------------------------------------------------------------------------------------------------------------
+# End Release Constants----------------------------------------------------------------------------------------------------------------------------------------------
 
 # Exit Flag
 declare QCD_EXIT=${__FALSE}

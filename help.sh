@@ -1,29 +1,33 @@
-[1mQCD Utility - v1.18.1(B[m
+# Developed by Nalin Ahuja, nalinahuja22
 
-[1mUsage:(B[m
+command cat << EOF
+${__B}QCD Utility - v${__VERSION}${__N}
+
+${__B}Usage:${__N}
   qcd                                   Change to home directory
   qcd [path]                            Change to valid directory
   qcd [link]/[subdir]/...               Change to linked directory
   qcd [N]..                             Change to Nth parent directory
 
-[1mOptions:(B[m
+${__B}Options:${__N}
   qcd [-h, --help]                      Show this help
-  qcd [-b, --back-dir]                  Navigate to backward directory
   qcd [-c, --clean]                     Clean store file
-  qcd [-t, --track-dirs]                Set directory tracking behavior
-  qcd [-u, --update]                    Update to latest version
   qcd [-v, --version]                   Show current version
-  qcd [-l, --list]                      List directory linkages
+  qcd [-u, --update]                    Update to latest version
+  qcd [-b, --back-dir]                  Navigate to backward directory
+  qcd [-t, --track-dirs]                Set directory tracking behavior
 
   qcd [-r, --remember]                  Remember present directory
   qcd [-f, --forget]                    Forget present directory
+  qcd [-l, --list]                      List directory linkages
 
   qcd [path] [-r, --remember]           Remember directory by path
   qcd [link] [-o, --options]            Show symbolic link options
   qcd [link] [-f, --forget]             Forget matching symbolic links
   qcd [path] [-m, --mkdir]              Create and switch to directory
-  qcd [-l, --list]              List matching directory linkages
+  qcd [regex] [-l, --list]              List matching directory linkages
 
   qcd [path] [alias] [-r, --remember]   Remember directory by alias
 
 Developed by Nalin Ahuja, nalinahuja22
+EOF
