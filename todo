@@ -9,18 +9,17 @@ File Structure:
 Operation:
 - Add N../ for subdirectory completion
 - Binary checks using [[ -x "$(command -v BIN)" ]]
-- Move help into bash script
 - Speed up operations using awk scripts
 - Use fuzzy logic for link to path matching
 - Add or remove path sorting?
 - Change backdirectory if CWD changed
 - Speed up completion engine
 - Remove regex from list flag
+- Move help into bash script
 
 Refactor & Review:
 - Review all code
 - Refactor all code
-- Decompose code into modules
 - Revise program installer
 
 Testing:
