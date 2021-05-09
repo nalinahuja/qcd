@@ -216,13 +216,13 @@ ${__B}Options:${__N}
 
   qcd [-r, --remember]                Remember present directory
   qcd [-r, --remember] [path]         Remember directory by path
-  qcd [-a, --alias] [alias]           Alias directory if remembered
 
   qcd [-f, --forget]                  Forget present directory
   qcd [-f, --forget] [link]           Forget matching symbolic links
 
   qcd [-m, --mkdir] [path]            Create and switch to new directory
-  qcd [-o, --options] [link]          Show matching symbolic link options
+  qcd [-a, --alias] [alias]           Alias directory if remembered
+  qcd [-o, --options] [link]          Show symbolic link options
 
 Developed by Nalin Ahuja, nalinahuja22
 EOF
@@ -519,7 +519,7 @@ function _remove_directory() {
     dir=$(_get_pwd)
   else
     # Store Argument Path
-    dir=$(_escape_regex "${@}")
+    dir=$(_get_path "${@}")
   fi
 
   # Remove Directory From Store File
