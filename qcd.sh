@@ -1250,7 +1250,7 @@ function _qcd_comp() {
       local IFS=$'\n'
 
       # Initialize Linked Paths
-      local link_paths=($(command printf "%s\n" $(command egrep -s -x "${sym_link}:.*" ${QCD_STORE} 2> /dev/null)))
+      local link_paths=($(command awk -F ':' -v LINK="${sym_link}" '{ if (LINK ~ $1) {print $2} }' ${QCD_STORE} 2> /dev/null))
 
       # Check For Indirect Link Matching
       if [[ ${#link_paths[@]} -eq 0 ]]
