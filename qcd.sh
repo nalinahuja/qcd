@@ -215,8 +215,8 @@ ${__B}Options:${__N}
   qcd [-r, --remember] [path]         Remember directory by path
 
   qcd [-f, --forget]                  Forget present directory
-  qcd [-f, --forget] [link]           Forget matching symbolic links
   qcd [-f, --forget] [path]           Forget matching directory path
+  qcd [-f, --forget] [link]           Forget matching symbolic links
 
   qcd [-m, --mkdir] [path]            Create and switch to new directory
   qcd [-a, --alias] [alias]           Alias directory if remembered
