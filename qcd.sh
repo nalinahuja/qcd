@@ -254,8 +254,8 @@ function _generate_menu() {
   # Reset Exit Flag
   declare QCD_EXIT=${__FALSE}
 
-  # Initialize Option
-  local or=${__NSET}
+  # Initialize Selected Option
+  local os=${__NSET}
 
   # Begin Selection Loop
   while [[ 1 ]]
@@ -273,7 +273,7 @@ function _generate_menu() {
       opt=$(_format_path "${opt%/}")
 
       # Conditionally Format Option
-      if [[ ${oi} -eq ${or} ]]
+      if [[ ${oi} -eq ${os} ]]
       then
         # Format Option As Selected
         command echo -e "${__W} ${opt} ${__N}" >> ${QCD_TEMP}
@@ -298,8 +298,8 @@ function _generate_menu() {
       # Reset Exit Flag
       QCD_EXIT=${__FALSE}
 
-      # Reset Option
-      or=${__NSEL}
+      # Reset Selected Option
+      os=${__NSEL}
 
       # Break Loop
       break
@@ -308,47 +308,51 @@ function _generate_menu() {
     # Update Cursor Position
     if [[ ${key} -eq ${__UP} ]]
     then
-      # Decrement Selected Line
-      sel_opt=$((${sel_opt} - 1))
+      # Decrement Selected Option
+      ((os--))
     elif [[ ${key} -eq ${__DN} ]]
     then
-      # Increment Selected Line
-      sel_opt=$((${sel_opt} + 1))
-    elif [[ ${key} -eq ${__ENT} || ${key} -eq ${__EXT} ]]
+      # Increment Selected Option
+      ((os++))
+    elif [[ ${key} -eq ${__ENT} ]]
     then
-      # Reset Option
-      [[ ${key} -eq ${__EXT} ]] && sel_opt=${__NSEL}
+      # Break Loop
+      break
+    elif [[ ${key} -eq ${__EXT} ]]
+    then
+      # Reset Option Selection
+      os=${__NSEL}
 
       # Break Loop
       break
     fi
 
     # Check For Option Loopback
-    if [[ ${sel_opt} -eq ${#@} ]]
+    if [[ ${os} -eq $# ]]
     then
       # Jump To Top
-      sel_opt=0
-    elif [[ ${sel_opt} -eq -1 ]]
+      os=0
+    elif [[ ${os} -eq -1 ]]
     then
       # Jump To Bottom
-      sel_opt=$((${#@} - 1))
+      os=$(($# - 1))
     fi
 
     # Clear Previous Selection
-    _clear_output ${#@}
+    _clear_output $#
   done
 
   # Clear Signal Trap For SIGINT
   command trap - SIGINT &> /dev/null
 
   # Clear Selection Interface
-  _clear_output $((${#@} + 1))
+  _clear_output $(($# + 1))
 
   # Show Terminal Outputs
   _show_output
 
   # Return Selected Option
-  return ${or}
+  return ${os}
 }
 
 # End User Inferface Functions---------------------------------------------------------------------------------------------------------------------------------------
