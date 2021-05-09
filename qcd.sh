@@ -448,12 +448,15 @@ function _add_directory() {
   # Compare Directory Path To Home Path
   [[ "${dir%/}" == "${HOME%/}" ]] && return ${__OK}
 
-  # Get Current Endpoint
-  local ept=$(_get_dname "${dir}")
+  # Initialize Path Endpoint
+  local ept=${__ESTR}
 
   # Check For Argument Endpoint
-  if [[ ${#@} -eq 2 ]]
+  if [[ ${#@} -lt 2 ]]
   then
+    # Extract Endpoint From Directory Path
+    ept=$(_get_dname "${dir}")
+  else
     # Store Argument Endpoint
     ept="${@:2:1}"
 
@@ -496,7 +499,7 @@ function _remove_linkage() {
   local link=$(_escape_regex "${@%/}")
 
   # Remove Link From Store File
-  command awk -F ':' -v LINK="${link}" '{if ($1 != LINK) {print $0}}' > ${QCD_TEMP} 2> /dev/null
+  command awk -F ':' -v LINK="${link}" '{if ($1 != LINK) {print $0}}' ${QCD_STORE} > ${QCD_TEMP} 2> /dev/null
 
   # Update Store File
   _update_store ${?}
@@ -520,7 +523,7 @@ function _remove_directory() {
   fi
 
   # Remove Directory From Store File
-  command awk -F ':' -v DIR="${dir}" '{if ($2 != DIR) {print $0}}' > ${QCD_TEMP} 2> /dev/null
+  command awk -F ':' -v DIR="${dir}" '{if ($2 != DIR) {print $0}}' ${QCD_STORE} > ${QCD_TEMP} 2> /dev/null
 
   # Update Store File
   _update_store ${?}
