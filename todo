@@ -8,7 +8,7 @@ File Structure:
 
 Operation:
 - Add N../ for subdirectory completion
-- Binary checks using [[ -x "$(command -v BIN)" ]] 
+- Binary checks using [[ -x "$(command -v BIN)" ]]
 - Move help into bash script
 - Speed up operations using awk scripts
 - Use fuzzy logic for link to path matching
@@ -19,7 +19,6 @@ Operation:
 Refactor & Review:
 - Review all code
 - Refactor all code
-- Fully test all features
 - Decompose code into modules
 - Revise program installer
 

@@ -3,50 +3,50 @@
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Boolean Values
-declare -r __TRUE=1 __FALSE=0 &> /dev/null
+readonly __TRUE=1 __FALSE=0 &> /dev/null
 
 # Keycode Values
-declare -r __UP=1 __DN=2 __ENT=3 __EXT=4 &> /dev/null
+readonly __UP=1 __DN=2 __ENT=3 __EXT=4 &> /dev/null
 
 # Return Values
-declare -r __OK=0 __ERR=1 __CONT=2 __NFD=127 __NSEL=255 &> /dev/null
+readonly __OK=0 __ERR=1 __CONT=2 __NSEL=255 &> /dev/null
 
 # Embedded Values
-declare -r __NSET=0 __MINPAD=5 __TIMEOUT=10 __COLNUM=256 &> /dev/null
+readonly __NSET=0 __MINPAD=5 __TIMEOUT=10 __COLNUM=256 &> /dev/null
 
 # End Numerical Constants--------------------------------------------------------------------------------------------------------------------------------------------
 
 # Option Flags
-declare -r __LIST="-l" __OPTIONS="-o" __FORGET="-f" __REMEMBER="-r" __MKDIRENT="-m" &> /dev/null
+readonly __LIST="-l" __OPTIONS="-o" __FORGET="-f" __REMEMBER="-r" __MKDIRENT="-m" &> /dev/null
 
 # Standalone Flags
-declare -r __HELP="-h" __BACK="-b" __CLEAN="-c" __TRACK="-t" __UPDATE="-u" __VERSION="-v" &> /dev/null
+readonly __HELP="-h" __BACK="-b" __CLEAN="-c" __TRACK="-t" __UPDATE="-u" __VERSION="-v" &> /dev/null
 
 # Embedded Strings
-declare -r __CWD="." __HWD="../" __YES="y" __QUIT="q" __ESTR="" __FLSH="/" __BSLH="\\" __ESCS=$(command printf "\033") &> /dev/null
+readonly __CWD="." __HWD="../" __YES="y" __QUIT="q" __ESTR="" __FLSH="/" __BSLH="\\" __ESCS=$(command printf "\033") &> /dev/null
 
 # Text Formatting Strings
-declare -r __B=$(command printf "${__ESCS}[1m") __W=$(command printf "${__ESCS}[30m${__ESCS}[47m") __N=$(command printf "${__ESCS}(B${__ESCS}[m") &> /dev/null
+readonly __B=$(command printf "${__ESCS}[1m") __W=$(command printf "${__ESCS}[30m${__ESCS}[47m") __N=$(command printf "${__ESCS}(B${__ESCS}[m") &> /dev/null
 
 # End String Constants-----------------------------------------------------------------------------------------------------------------------------------------------
 
 # Program Path
-declare -r QCD_FOLD=~/.qcd &> /dev/null
+readonly QCD_FOLD=~/.qcd &> /dev/null
 
 # Program Files
-declare -r QCD_PROG=${QCD_FOLD}/qcd.sh &> /dev/null
-declare -r QCD_TEMP=${QCD_FOLD}/temp   &> /dev/null
+readonly QCD_PROG=${QCD_FOLD}/qcd.sh &> /dev/null
+readonly QCD_TEMP=${QCD_FOLD}/temp   &> /dev/null
 
 # Resource Files
-declare -r QCD_STORE=${QCD_FOLD}/store  &> /dev/null
-declare -r QCD_TRACK=${QCD_FOLD}/.track &> /dev/null
+readonly QCD_STORE=${QCD_FOLD}/store  &> /dev/null
+readonly QCD_TRACK=${QCD_FOLD}/.track &> /dev/null
 
 # Release Files
-declare -r QCD_RELEASE=${QCD_FOLD}/release.zip &> /dev/null
-declare -r QCD_INSTALL=${QCD_FOLD}/install.sh  &> /dev/null
+readonly QCD_RELEASE=${QCD_FOLD}/release.zip &> /dev/null
+readonly QCD_INSTALL=${QCD_FOLD}/install.sh  &> /dev/null
 
 # Release Link
-declare -r QCD_RELEASE_URL="https://api.github.com/repos/nalinahuja22/qcd/releases/latest" &> /dev/null
+readonly QCD_RELEASE_URL="https://api.github.com/repos/nalinahuja22/qcd/releases/latest" &> /dev/null
 
 # End File Constants-------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -596,13 +596,13 @@ function _parse_arguments() {
       command curl &> /dev/null
 
       # Check Operation Status
-      if [[ ${?} -eq ${__NFD} ]]
+      if [[ ! -x "$(command -v curl)" ]]
       then
         # Display Prompt
         command echo -e "→ Curl dependency not installed"
 
         # Terminate Program
-        return ${__NFD}
+        return ${__ERR}
       fi
 
       # Display Prompt
@@ -1007,7 +1007,7 @@ function qcd() {
     local sym_link=$(_escape_regex "${dir_arg:0:${pfx_len}}")
 
     # Initialize Linkage Parameters
-    local pathv=($(command printf "%s\n" $(command egrep -s -x "${sym_link}:.*" ${QCD_STORE} 2> /dev/null)))
+    local pathv=($(command awk -F ':' -v LINK="${sym_link}" '{ if (LINK ~ $1) {print $2} }' ${QCD_STORE} 2> /dev/null))
 
     # Check For Indirect Link Matching
     if [[ ${#pathv[@]} -eq 0 ]]
