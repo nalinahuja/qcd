@@ -666,35 +666,30 @@ function _parse_arguments() {
 
       # End Standalone Flags-----------------------------------------------------------------------------------------------------------------------------------------
 
+      # Check For Remember Flag
       ${__REMEMBER}|--remember)
         # todo
       ;;
 
+      # Check For Forget Flag
       ${__FORGET}|--forget)
         # todo
       ;;
 
+      # Check For Alias Flag
       ${__ALIAS}|--alias)
         # todo
       ;;
 
       # End Value Flags----------------------------------------------------------------------------------------------------------------------------------------------
 
-      -l|--lib)
-        LIBPATH="$2"
-        shift # past argument
-        shift # past value
-      ;;
+      # Handle Unsupported Flag
+      -*)
+        # Display Prompt
+        command echo -e "qcd: Unknown flag ${flag}"
 
-      --default)
-        DEFAULT=YES
-        shift # past argument
-      ;;
-
-      *)
-        echo "unknown"
-        # save it in an array for later
-        shift # past argument
+        # Terminate Program
+        return ${__ERR}
       ;;
     esac
   done
