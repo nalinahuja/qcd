@@ -423,28 +423,20 @@ function _add_directory() {
     ept="${ept%/}"
   fi
 
-  # Linkage Characteristics
-  local unique_path=${__FALSE} unique_tuple=${__FALSE}
+  # Initialize Data Characteristics
+  local udir=${__FALSE} uent=${__FALSE}
 
-  # Determine If Linkage Path Is Unique
-  if [[ -z $(command egrep -s -x ".*:${dir}" ${QCD_STORE} 2> /dev/null) ]]
-  then
-    # Set Linkage Characteristic
-    unique_path=${__TRUE}
-  fi
+  # Determine If Linkage Directory Is Unique
+  [[ -z $(command awk -F ':' -v DIR="${dir}" '{if ($2 == DIR) {print $0}}' ${QCD_STORE} 2> /dev/null) ]] && udir=${__TRUE}
 
-  # Determine If Linkage Path Is Unique
-  if [[ -z $(command egrep -s -x "${ept}:${dir}" ${QCD_STORE} 2> /dev/null) ]]
-  then
-    # Set Linkage Characteristic
-    unique_tuple=${__TRUE}
-  fi
+  # Determine If Linkage Entry Is Unique
+  [[ -z $(command awk -F ':' -v EPT="${ept}" -v DIR="${dir}" '{if ($1 == EPT && $2 == DIR) {print $0}}' ${QCD_STORE} 2> /dev/null) ]] && uent=${__TRUE}
 
   # Store Directory As Linkage
-  if [[ ${unique_path} -eq ${__TRUE} || ${unique_tuple} -eq ${__TRUE} ]]
+  if [[ ${udir} -eq ${__TRUE} || ${uent} -eq ${__TRUE} ]]
   then
     # Check Linkage Characteristic
-    if [[ ${unique_tuple} -eq ${__TRUE} ]]
+    if [[ ${uent} -eq ${__TRUE} ]]
     then
       # Remove Linkage By Directory
       _remove_directory "${dir}"
