@@ -245,14 +245,17 @@ function _clear_output() {
 }
 
 function _generate_menu() {
-  # Prepare Terminal Environment
-  command trap _qcd_exit SIGINT &> /dev/null && _hide_output
+  # Hide Terminal Outputs
+  _hide_output
+
+  # Set Signal Trap For SIGINT
+  command trap _qcd_exit SIGINT &> /dev/null
 
   # Reset Exit Flag
-  QCD_EXIT=${__FALSE}
+  declare QCD_EXIT=${__FALSE}
 
   # Initialize Option
-  local sel_opt=${__NSET}
+  local or=${__NSET}
 
   # Begin Selection Loop
   while [[ 1 ]]
@@ -270,7 +273,7 @@ function _generate_menu() {
       opt=$(_format_path "${opt%/}")
 
       # Conditionally Format Option
-      if [[ ${oi} -eq ${sel_opt} ]]
+      if [[ ${oi} -eq ${or} ]]
       then
         # Format Option As Selected
         command echo -e "${__W} ${opt} ${__N}" >> ${QCD_TEMP}
@@ -280,7 +283,7 @@ function _generate_menu() {
       fi
 
       # Increment Option Index
-      oi=$((${oi} + 1))
+      ((oi++))
     done
 
     # Display Selection
@@ -296,7 +299,7 @@ function _generate_menu() {
       QCD_EXIT=${__FALSE}
 
       # Reset Option
-      sel_opt=${__NSEL}
+      or=${__NSEL}
 
       # Break Loop
       break
@@ -335,14 +338,17 @@ function _generate_menu() {
     _clear_output ${#@}
   done
 
-  # Clear All Outputs
+  # Clear Signal Trap For SIGINT
+  command trap - SIGINT &> /dev/null
+
+  # Clear Selection Interface
   _clear_output $((${#@} + 1))
 
-  # Restore Terminal Environment
-  command trap - SIGINT &> /dev/null && _show_output
+  # Show Terminal Outputs
+  _show_output
 
   # Return Selected Option
-  return ${sel_opt}
+  return ${or}
 }
 
 # End User Inferface Functions---------------------------------------------------------------------------------------------------------------------------------------
