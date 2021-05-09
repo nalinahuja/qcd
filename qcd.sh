@@ -217,11 +217,11 @@ function _read_input() {
       # Return Down Arrow Action
       [[ "${buffer[*]}" == "${_ESEQ}[B" ]] && command echo -e "${__DN}" && break
 
-      # Unset IFS
-      unset IFS
-
       # Reset String Buffer
       buffer=()
+
+      # Unset IFS
+      unset IFS
     fi
   done
 }
@@ -359,7 +359,7 @@ function _generate_menu() {
 
 function _create_store() {
   # Check For Store File
-  if [[ ! -f ${QCD_STORE} ]]
+  if [[ ! -f "${QCD_STORE}" ]]
   then
     # Create Store File
     command touch ${QCD_STORE} 2> /dev/null
@@ -380,7 +380,7 @@ function _update_store() {
 
 function _cleanup_temp() {
   # Check For Temp File
-  if [[ -f ${QCD_TEMP} ]]
+  if [[ -f "${QCD_TEMP}" ]]
   then
     # Remove Temp File
     command rm ${QCD_TEMP} 2> /dev/null
@@ -616,7 +616,7 @@ function _parse_arguments() {
       command curl &> /dev/null
 
       # Check Operation Status
-      if [[ ! -x "$(command -v curl)" ]]
+      if [[ -z "$(command -v curl)" ]]
       then
         # Display Prompt
         command echo -e "→ Curl dependency not installed"
