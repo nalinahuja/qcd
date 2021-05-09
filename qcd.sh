@@ -12,21 +12,21 @@ readonly __UP=1 __DN=2 __ENT=3 __EXT=4 &> /dev/null
 readonly __OK=0 __ERR=1 __CONT=2 __NSEL=255 &> /dev/null
 
 # Embedded Values
-readonly __NSET=0 __MINPAD=5 __TIMEOUT=10 __COLNUM=256 &> /dev/null
+readonly __NSET=0 __MINPAD=5 __TIMEOUT=5 __COLNUM=256 &> /dev/null
 
 # End Numerical Constants--------------------------------------------------------------------------------------------------------------------------------------------
-
-# Option Flags
-readonly __LIST="-l" __OPTIONS="-o" __FORGET="-f" __REMEMBER="-r" __MKDIRENT="-m" &> /dev/null
 
 # Standalone Flags
 readonly __HELP="-h" __BACK="-b" __CLEAN="-c" __TRACK="-t" __UPDATE="-u" __VERSION="-v" &> /dev/null
 
+# Option Flags
+readonly __LIST="-l" __ALIAS="-a" __OPTIONS="-o" __FORGET="-f" __REMEMBER="-r" __MKDIRENT="-m" &> /dev/null
+
 # Embedded Strings
-readonly __CWD="." __HWD="../" __YES="y" __QUIT="q" __ESTR="" __FLSH="/" __BSLH="\\" __ESCS=$(command printf "\033") &> /dev/null
+readonly __CWD="." __HWD="../" __YES="y" __QUIT="q" __ESTR="" __FLSH="/" __BSLH="\\" _ESEQ=$(command printf "\033") &> /dev/null
 
 # Text Formatting Strings
-readonly __B=$(command printf "${__ESCS}[1m") __W=$(command printf "${__ESCS}[30m${__ESCS}[47m") __N=$(command printf "${__ESCS}(B${__ESCS}[m") &> /dev/null
+readonly __B=$(command printf "${_ESEQ}[1m") __W=$(command printf "${_ESEQ}[30m${_ESEQ}[47m") __N=$(command printf "${_ESEQ}(B${_ESEQ}[m") &> /dev/null
 
 # End String Constants-----------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -206,10 +206,10 @@ function _read_input() {
     if [[ ${#input} -eq 3 ]]
     then
       # Return Up Arrow Action
-      [[ ${input} == "${__ESCS}[A" ]] && command echo -e "${__UP}" && break
+      [[ ${input} == "${_ESEQ}[A" ]] && command echo -e "${__UP}" && break
 
       # Return Down Arrow Action
-      [[ ${input} == "${__ESCS}[B" ]] && command echo -e "${__DN}" && break
+      [[ ${input} == "${_ESEQ}[B" ]] && command echo -e "${__DN}" && break
     fi
   done
 }
@@ -219,17 +219,17 @@ function _clear_output() {
   for ((li=0; li <= ${1}; li++))
   do
     # Go To Beginning Of Line
-    command printf "${__ESCS}[${__COLNUM}D"
+    command printf "${_ESEQ}[${__COLNUM}D"
 
     # Clear Line
-    command printf "${__ESCS}[K"
+    command printf "${_ESEQ}[K"
 
     # Go Up One Line
-    command printf "${__ESCS}[1A"
+    command printf "${_ESEQ}[1A"
   done
 
   # Go Down One Line
-  command printf "${__ESCS}[1B"
+  command printf "${_ESEQ}[1B"
 }
 
 function _generate_menu() {
