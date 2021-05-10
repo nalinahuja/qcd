@@ -914,6 +914,9 @@ function _parse_arguments() {
     # Verify Directory Parameter
     [[ -z ${dir} ]] && dir=$(_get_pwd)
 
+    # Verify Alias Parameter
+    [[ -z ${als} ]] && als=$(_get_dname "${dir}")
+
     # Add Directory To Store File
     (_add_directory "${dir}" "${als}" &> /dev/null &)
 
@@ -1024,7 +1027,7 @@ function qcd() {
     if [[ "${dir_arg}" == */* ]]
     then
       # Extract Linked Subdirectory
-      sub_link=${dir_arg#*/}
+      sub_link="${dir_arg#*/}"
 
       # Update Prefix Length
       pfx_len=$((${pfx_len} - ${#sub_link} - 1))
@@ -1036,8 +1039,8 @@ function qcd() {
     # Initialize Symbolic Link Component
     local sym_link=$(_escape_regex "${dir_arg:0:${pfx_len}}")
 
-    # Initialize Linkage Parameters
-    local pathv=($(command awk -F ':' -v LINK="${sym_link}" '{ if (LINK == $1) {print $2} }' ${QCD_STORE} 2> /dev/null))
+    # Get Exact Matched Symbolic Paths From Store File
+    local pathv=($(command awk -F ':' -v LINK="${sym_link}" '{if (LINK == $1) {print $2}}' ${QCD_STORE} 2> /dev/null))
 
     # Check For Indirect Link Matching
     if [[ ${#pathv[@]} -eq 0 ]]
@@ -1046,7 +1049,7 @@ function qcd() {
       local i=0 wld_link=${__ESTR}
 
       # Check For Hidden Directory Prefix
-      if [[ "${dir_arg}" == \.* ]]
+      if [[ "${sym_link}" == \\.* ]]
       then
         # Override Parameters
         i=2; wld_link="${__BSLH}${__CWD}"
@@ -1065,7 +1068,7 @@ function qcd() {
       # Set IFS
       local IFS=$'\n'
 
-      # Get Sequence Matched Symbolic Paths From Store File
+      # Get Subsequence Matched Symbolic Paths From Store File
       pathv=($(command printf "%s\n" $(command egrep -i -s -x "${wld_link}:.*" ${QCD_STORE} 2> /dev/null)))
     fi
 
