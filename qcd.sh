@@ -35,7 +35,7 @@ readonly QCD_FOLD=~/.qcd &> /dev/null
 
 # Program Files
 readonly QCD_PROG=${QCD_FOLD}/qcd.sh &> /dev/null
-readonly QCD_PERL=${QCD_FOLD}/lcs.pl &> /dev/null
+readonly QCD_UTIL=${QCD_FOLD}/lcs.pl &> /dev/null
 readonly QCD_TEMP=${QCD_FOLD}/temp   &> /dev/null
 
 # Resource Files
@@ -1206,7 +1206,7 @@ function qcd() {
           paths=("${pfxm[@]}" "${pfxf[@]}")
         else
           # Sort By Longest Common Subsequence
-          paths=($(command perl ${QCD_PERL} "${dir_arg}" "${paths[@]}"))
+          paths=($(command perl ${QCD_UTIL} "${dir_arg}" "${paths[@]}"))
         fi
 
         # Generate Selection Menu

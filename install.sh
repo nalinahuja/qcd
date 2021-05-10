@@ -19,6 +19,7 @@ readonly QCD_FOLD=~/.qcd
 
 # Program Files
 readonly QCD_PROG=./qcd.sh
+readonly QCD_UTIL=./lcs.pl
 readonly QCD_LICE=./LICENSE
 readonly QCD_READ=./README.md
 
@@ -95,6 +96,7 @@ then
   # Install QCD Program Files
   command mkdir ${QCD_FOLD} 2> /dev/null
   command mv ${QCD_PROG} ${QCD_FOLD} 2> /dev/null
+  command mv ${QCD_UTIL} ${QCD_FOLD} 2> /dev/null
   command mv ${QCD_LICE} ${QCD_FOLD} 2> /dev/null
   command mv ${QCD_READ} ${QCD_FOLD} 2> /dev/null
 
