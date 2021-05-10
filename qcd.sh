@@ -1027,7 +1027,7 @@ function qcd() {
     # Determine Linked Subdirectory
     if [[ "${dir_arg}" == */* ]]
     then
-      # Extract Linked Subdirectory
+      # Extract Subdirectory Subdirectory
       sub_link="${dir_arg#*/}"
 
       # Update Prefix Length
@@ -1041,10 +1041,10 @@ function qcd() {
     local sym_link=$(_escape_regex "${dir_arg:0:${pfx_len}}")
 
     # Get Exact Matched Symbolic Paths From Store File
-    local pathv=($(command awk -F ':' -v LINK="${sym_link}" '{if (LINK == $1) {print $2}}' ${QCD_STORE} 2> /dev/null))
+    local paths=($(command awk -F ':' -v LINK="${sym_link}" '{if (LINK == $1) {print $2}}' ${QCD_STORE} 2> /dev/null))
 
     # Check For Indirect Link Matching
-    if [[ ${#pathv[@]} -eq 0 ]]
+    if [[ ${#paths[@]} -eq 0 ]]
     then
       # Initialize Parameters
       local i=0 wld_link=${__ESTR}
@@ -1070,18 +1070,15 @@ function qcd() {
       local IFS=$'\n'
 
       # Get Subsequence Matched Symbolic Paths From Store File
-      pathv=($(command egrep -i -s -x "${wld_link}:.*" ${QCD_STORE} 2> /dev/null))
+      paths=($(command egrep -i -s -x "${wld_link}:.*" ${QCD_STORE} 2> /dev/null))
     fi
 
     # Initialize Path Count
-    local pathc=${#pathv[@]}
+    local pathc=${#paths[@]}
 
     # Check Result Count
     if [[ ${pathc} -gt 1 ]]
     then
-      # Initialize Matched Path
-      local mpath=${__ESTR}
-
       # Store Current Directory
       local pwd=$(_get_pwd)
 
@@ -1089,7 +1086,7 @@ function qcd() {
       local fpaths=()
 
       # Iterate Over Path Values
-      for path in ${pathv[@]}
+      for path in ${paths[@]}
       do
         # Substring Path From Delimiter
         path=$(_split_path "${path}")
@@ -1110,6 +1107,9 @@ function qcd() {
 
       # Update Path Count
       pathc=${#fpaths[@]}
+
+      # Initialize Matched Path
+      local mpath=${__ESTR}
 
       # Check For Single Path
       if [[ ${pathc} -eq 1 ]]
@@ -1157,25 +1157,25 @@ function qcd() {
         [[ ${ept} -eq ${__NSEL} ]] && return ${__OK}
 
         # Set To Manually Selected Endpoint
-        pathv="${fpaths[${ept}]}"
+        paths="${fpaths[${ept}]}"
       else
         # Set To Automatically Selected Endpoint
-        pathv="${mpath}"
+        paths="${mpath}"
       fi
     else
       # Substring Path From Delimiter
-      pathv=$(_split_path "${pathv}")
+      paths=$(_split_path "${paths}")
     fi
 
     # Error Check Result
-    if [[ -z ${pathv} ]]
+    if [[ -z ${paths} ]]
     then
       # Display Error
       command echo -e "qcd: Could not navigate to directory"
 
       # Terminate Program
       return ${__ERR}
-    elif [[ ! -d "${pathv}" ]]
+    elif [[ ! -d "${paths}" ]]
     then
       # Check Result Count
       if [[ ${pathc} -gt 1 ]]
@@ -1185,10 +1185,10 @@ function qcd() {
       fi
 
       # Display Error
-      command echo -e "qcd: $(_format_path "${pathv%/}"): Directory does not exist"
+      command echo -e "qcd: $(_format_path "${paths%/}"): Directory does not exist"
 
       # Remove Current Directory
-      (_remove_directory "${pathv}" &> /dev/null &)
+      (_remove_directory "${paths}" &> /dev/null &)
 
       # Terminate Program
       return ${__ERR}
@@ -1197,9 +1197,9 @@ function qcd() {
       QCD_BACK_DIR=$(_get_pwd)
 
       # Switch To Linked Path
-      command cd "${pathv}"
+      command cd "${paths}"
 
-      # Validate Linked Subdirectory
+      # Validate Subdirectory Component
       if [[ ! -z ${sub_link} ]]
       then
         # Extract Trailing Path Component
