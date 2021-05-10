@@ -66,7 +66,7 @@ declare QCD_BACK_DIR=${__ESTR}
 
 function _get_pwd() {
   # Store Current Working Directory
-  local pwd=$(command pwd)
+  local pwd=$(command pwd 2> /dev/null)
 
   # Return Current Working Directory
   command echo -e "${pwd}${__FLSH}"
@@ -74,7 +74,7 @@ function _get_pwd() {
 
 function _get_path() {
   # Store Argument Directory
-  local dir=$(command realpath "${@}")
+  local dir=$(command realpath "${@}" 2> /dev/null)
 
   # Return Realpath Path
   command echo -e "${dir}${__FLSH}"
@@ -456,7 +456,7 @@ function _add_directory() {
     dir=$(_get_pwd)
   else
     # Store Argument Path
-    dir=$(_get_path "${@:1:1}")
+    dir=$(_get_path "${1}")
   fi
 
   # Compare Directory Path To Home Path
@@ -472,7 +472,7 @@ function _add_directory() {
     ept=$(_get_dname "${dir}")
   else
     # Store Argument Endpoint
-    ept="${@:2:1}"
+    ept="${2}"
 
     # Format Argument Endpoint
     ept="${ept%/}"
