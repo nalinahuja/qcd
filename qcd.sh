@@ -304,8 +304,8 @@ function _generate_menu() {
     # Initialize Option Index
     local oi=${__NSET}
 
-    # Clear Temp File
-    command echo -en > ${QCD_TEMP}
+    # Initialize Output Buffer
+    local buffer=()
 
     # Iterate Over Options
     for opt in "${@}"
@@ -317,10 +317,10 @@ function _generate_menu() {
       if [[ ${oi} -eq ${os} ]]
       then
         # Format Option As Selected
-        command echo -e "${__W} ${opt} ${__N}" >> ${QCD_TEMP}
+        buffer+=($(command echo -e "${__W} ${opt} ${__N}"))
       else
         # Format Option As Unselected
-        command echo -e " ${opt} " >> ${QCD_TEMP}
+        buffer+=($(command echo -e " ${opt} "))
       fi
 
       # Increment Option Index
@@ -328,7 +328,7 @@ function _generate_menu() {
     done
 
     # Display Selection
-    command cat ${QCD_TEMP}
+    command echo -e "${buffer[*]}"
 
     # Read User Input
     local key=$(_read_input)
@@ -1192,7 +1192,7 @@ function qcd() {
             local ept=$(_get_dname "${path}")
 
             # Compare Endpoint To Directory Argument
-            if [[ ${ept} == ${dir_arg}* ]]
+            if [[ "${ept}" == ${dir_arg}* ]]
             then
               # Add Path To Match List
               pfxm+=("${path}")
@@ -1206,7 +1206,8 @@ function qcd() {
           paths=("${pfxm[@]}" "${pfxf[@]}")
         else
           # Sort By Longest Common Subsequence
-          paths=($(command perl "${dir_arg}" "${paths[@]}"))
+          paths=($(command perl ${QCD_PERL} "${dir_arg}" "${paths[@]}"))
+          # sleep 1
         fi
 
         # Generate Selection Menu
