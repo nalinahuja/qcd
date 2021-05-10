@@ -1182,6 +1182,7 @@ function qcd() {
         # Determine Sorting Type
         if [[ ! -z "$(command -v perl)" ]]
         then
+          # Sort Paths By Decreasing Order Of Similarity
           paths=($(command perl ${QCD_PERL} "${dir_arg}" "${paths[@]}"))
         else
           # Initialize Path Lists
