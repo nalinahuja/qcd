@@ -1,7 +1,5 @@
 Interface:
-- Commandline argument parsing
 - Commandline flag autocompletion
-- Revise commandline argument usages
 
 Operation:
 - Add N../ for subdirectory completion
@@ -16,8 +14,6 @@ Operation:
 - relative path remember and forget
 
 Refactor & Review:
-- Review all code
-- Refactor all code
 - Revise program installer
 
 Testing:

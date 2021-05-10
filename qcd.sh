@@ -12,7 +12,7 @@ readonly __UP=1 __DN=2 __ENT=3 __EXT=4 &> /dev/null
 readonly __OK=0 __ERR=1 __CONT=2 __NSEL=255 &> /dev/null
 
 # Embedded Values
-readonly __NSET=0 __MINPAD=5 __TIMEOUT=10 __COLNUM=256 &> /dev/null
+readonly __NSET=0 __MINPAD=5 __DELAY=10 __COLNUM=256 &> /dev/null
 
 # End Numerical Constants--------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -533,11 +533,8 @@ function _parse_arguments() {
   # Parse Arguments
   while [[ ${#@} -gt 0 ]]
   do
-    # Get Argument Flag
-    local flag="${1}"
-
     # Determine Action
-    case "${flag}" in
+    case "${1}" in
       # Check For Help Flag
       ${__HELP}|--help)
         # Display Help Message
@@ -560,7 +557,7 @@ function _parse_arguments() {
 
       # Check For List Flag
       ${__LIST}|--list)
-        # todo
+        # todo!!!
       ;;
 
       # Check For Clean Flag
@@ -585,13 +582,119 @@ function _parse_arguments() {
         # Unset IFS
         unset IFS
 
+        # Display Prompt
+        command echo -e "qcd: Cleaned store file"
+
         # Terminate Program
         return ${__OK}
       ;;
 
       # Check For Update Flag
-      ${__UPDATE|--update)
-        # todo
+      ${__UPDATE}|--update)
+        # Display Prompt
+        command echo -e "qcd: Currently running ${__B}${QCD_RELEASE_VER}${__N}"
+
+        # Prompt User For Confirmation
+        command read -p "→ Confirm update [y/n]: " confirm
+
+        # Determine Action
+        if [[ ${confirm//Y/${__YES}} == ${__YES} ]]
+        then
+          # Clear Previous Outputs
+          _clear_output 1
+
+          # Verify Curl Dependency
+          if [[ -z "$(command -v curl)" ]]
+          then
+            # Display Prompt
+            command echo -e "→ Curl dependency not installed"
+
+            # Terminate Program
+            return ${__ERR}
+          fi
+
+          # Display Prompt
+          command echo -en "→ Downloading update "
+
+          # Get Release Information
+          local release_info=$(command curl --connect-timeout ${__DELAY} -sL "${QCD_RELEASE_URL}" 2> /dev/null)
+
+          # Get Download URL
+          local download_url=$(command echo -e "${release_info}" | command egrep -s -o "https.*zipball.*" 2> /dev/null)
+
+          # Verify Download URL
+          if [[ ${?} -ne ${__OK} || -z ${download_url} ]]
+          then
+            # Display Prompt
+            command echo -e "\r→ Failed to resolve download source for update"
+
+            # Terminate Program
+            return ${__ERR}
+          fi
+
+          # Download Release Contents
+          command curl --connect-timeout ${__DELAY} -sL "${download_url%\",}" > "${QCD_RELEASE}"
+
+          # Error Check Release Contents
+          if [[ ${?} -ne ${__OK} || ! -f "${QCD_RELEASE}" ]]
+          then
+            # Display Prompt
+            command echo -e "\r→ Failed to download update"
+
+            # Terminate Program
+            return ${__ERR}
+          fi
+
+          # Display Prompt
+          command echo -en "\r→ Installing updates  "
+
+          # Extract And Install Program Files
+          command unzip -o -j "${QCD_RELEASE}" -d "${QCD_FOLD}" &> /dev/null
+
+          # Error Check Installation
+          if [[ ${?} -ne ${__OK} ]]
+          then
+            # Display Prompt
+            command echo -e "\r→ Failed to install update"
+
+            # Terminate Program
+            return ${__ERR}
+          fi
+
+          # Display Prompt
+          command echo -en "\r→ Configuring updates "
+
+          # Update Terminal Environment
+          command source "${QCD_EXEC}" 2> /dev/null
+
+          # Error Check Installation
+          if [[ ${?} -ne ${__OK} ]]
+          then
+            # Display Prompt
+            command echo -e "\r→ Failed to configure update "
+
+            # Terminate Program
+            return ${__ERR}
+          fi
+
+          # Cleanup Installation
+          command rm "${QCD_RELEASE}" "${QCD_INSTALL}" 2> /dev/null
+
+          # Display Prompt
+          command echo -e "\r→ Update complete     "
+
+          # Clear Previous Outputs
+          _clear_output 2
+
+          # Display Prompt
+          command echo -e "qcd: Updated to ${__B}${QCD_RELEASE_VER}${__N}"
+        else
+          # Clear All Outputs
+          _clear_output 2
+        fi
+
+        # Terminate Program
+        return ${__OK}
       ;;
 
       # Check For Back Flag
@@ -668,29 +771,23 @@ function _parse_arguments() {
 
       # Check For Remember Flag
       ${__REMEMBER}|--remember)
-        # todo
+        # todo!!!
       ;;
 
       # Check For Forget Flag
       ${__FORGET}|--forget)
-        # todo
+        # todo!!!
       ;;
 
       # Check For Alias Flag
       ${__ALIAS}|--alias)
-        # todo
+        # todo!!!
       ;;
 
       # End Value Flags----------------------------------------------------------------------------------------------------------------------------------------------
 
-      # Handle Unsupported Flag
-      -*)
-        # Display Prompt
-        command echo -e "qcd: Unknown flag ${flag}"
-
-        # Terminate Program
-        return ${__ERR}
-      ;;
+      # Default Argument Handler
+      *) shift;;
     esac
   done
 
