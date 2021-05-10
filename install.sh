@@ -2,17 +2,17 @@
 
 # Developed by Nalin Ahuja, nalinahuja22
 
-# End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
+# End Header----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Boolean Values
 readonly TRUE=1 FALSE=0
 
-# End Numerical Constants--------------------------------------------------------------------------------------------------------------------------------------------
+# End Numerical Constants---------------------------------------------------------------------------------------------------------------------------------------------
 
 # Embedded Strings
 readonly YES="y"
 
-# End String Constants-----------------------------------------------------------------------------------------------------------------------------------------------
+# End String Constants------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Program Path
 readonly QCD_FOLD=~/.qcd
@@ -26,7 +26,7 @@ readonly QCD_READ=./README.md
 readonly BASHRC=~/.bashrc
 readonly BASHPR=~/.bash_profile
 
-# End File Constants-------------------------------------------------------------------------------------------------------------------------------------------------
+# End File Constants--------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Upgrade Status
 declare UPGRADE_STATUS=${TRUE}
@@ -35,12 +35,12 @@ declare UPGRADE_STATUS=${TRUE}
 declare INSTALL_STATUS=${FALSE}
 
 # Installation Version
-declare INSTALLATION_VERSION
+declare INSTALLATION_VERSION=$(command cat ${QCD_PROG} | command grep "QCD_RELEASE_VER" | command head -n1 | command awk -F '"' '{print $2}')
 
-# End Global Variables-----------------------------------------------------------------------------------------------------------------------------------------------
+# End Global Variables------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Prompt User For Installation Confirmation
-command read -p "qcd: Confirm installation [y/n]: " confirm
+command read -p "qcd: Confirm installation v${INSTALLATION_VERSION} [y/n]: " confirm
 
 # Determine Action
 if [[ ${confirm//Y/${YES}} == ${YES} ]]
@@ -54,9 +54,6 @@ then
     # Terminate Program
     command exit 1
   fi
-
-  # Initialize Installation Version
-  INSTALLATION_VERSION=$(command cat ${QCD_HELP} | command head -n1 | command awk '{print $4}')
 
   # Add Command To Terminal Profile
   if [[ ! -d "${QCD_FOLD}" ]]
@@ -118,4 +115,4 @@ else
   command echo -e "→ Installation aborted"
 fi
 
-# End QCD Installation-----------------------------------------------------------------------------------------------------------------------------------------------
+# End QCD Installation------------------------------------------------------------------------------------------------------------------------------------------------
