@@ -759,7 +759,7 @@ function _parse_arguments() {
           command cd "${QCD_BACK_DIR}"
 
           # Update Back Directory
-          QCD_BACK_DIR="${pwd}"
+          QCD_BACK_DIR=${pwd}
 
           # Terminate Program
           return ${__OK}
@@ -920,10 +920,12 @@ function qcd() {
   _parse_arguments "${@}"
 
   # Store Parsing Status
-  local pstatus=${?}
+  local status=${?}
 
   # Check For Terminating Status
-  [[ ${pstatus} -ne ${__CONT} ]] && return ${pstatus}
+  [[ ${status} -ne ${__CONT} ]] && return ${status}
+
+  ------
 
   # Initialize Argument Components
   local dir_arg=${__ESTR} show_opt=${__FALSE}
