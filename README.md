@@ -143,7 +143,7 @@ qcd [-o, --options] [link]
 
 #### Back Directory
 <p align="justify">
-The back directory flag allows the user to swtich to the directory they most recently switched from and it uses an internally tracked variable similar to $OLDPWD achieve this.
+The back directory flag allows the user to swtich to the directory they most recently switched from and it uses an internally tracked variable similar to $OLDPWD achieve this functionality.
 </p>
 
 ```bash
