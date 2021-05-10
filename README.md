@@ -111,6 +111,16 @@ qcd [-r, --remember]    qcd [-r, --remember] [path]
 In both cases, the linkage name is automatically derived from the directory path. To set a custom linkage name, please see the <a href="#alias-directory">alias</a> flag usage.
 </p>
 
+#### Forget Directory
+<p align="justify">
+The forget flag allows the user to remove a symbolic links from QCDs lookup file. Without any arguments, QCD will remove a linkage from its lookup file that corresponds to the present working directory. The user can specify a valid path or symbolic link after the forget flag to remove all matching linkages.
+</p>
+
+```bash
+# No Arguments        # With Path                  # With Linkage
+qcd [-f, --forget]    qcd [-f, --forget] [path]    qcd [-f, --forget] [link]
+```
+
 #### Alias Directory
 <p align="justify">
 The alias flag allows the user to set a custom linkage name. This operation can be done as many times as the user desires provided that this directory has been added QCDs lookup file.
@@ -124,16 +134,6 @@ qcd [-a, --alias] [alias]
 <p align="justify">
 The alias flag can be used in conjunction with the <a href="#remember-directory">remember</a> flag to alias a directory when it is remembered by QCD.
 </p>
-
-#### Forget Directory
-<p align="justify">
-The forget flag allows the user to remove a symbolic links from QCDs lookup file. Without any arguments, QCD will remove a linkage from its lookup file that corresponds to the present working directory. The user can specify a valid path or symbolic link after the forget flag to remove all matching linkages.
-</p>
-
-```bash
-# No Arguments        # With Path                  # With Linkage
-qcd [-f, --forget]    qcd [-f, --forget] [path]    qcd [-f, --forget] [link]
-```
 
 #### Options
 <p align="justify">
