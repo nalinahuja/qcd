@@ -13,9 +13,9 @@ function _split_path() {
 
 regex="d.*"
 
-pathv=($(command egrep -i -s -x "${regex}:.*" ~/.qcd/store 2> /dev/null | while read path; do if [[ -d "$path/qcd" ]]; then echo "$path/qcd"; fi; done))
+pathv=($(command egrep -i -s -x "${regex}:.*" ~/.qcd/store 2> /dev/null))
 
-command egrep -i -s -x "${regex}:.*" ~/.qcd/store 2> /dev/null |
+echo -e "${pathv[@]}" |
     while read path; do
         path=$(_split_path "$path")
         [[ -d "${path}qcd" ]] && echo "${path}qcd";
