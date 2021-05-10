@@ -126,7 +126,7 @@ The alias flag can be used in conjunction with the <a href="#remember-directory"
 </p>
 
 ```bash
-# With Remember Path
+# With Remember Flag
 qcd [-a, --alias] [alias] [-r, --remember] [path]
 ```
 
