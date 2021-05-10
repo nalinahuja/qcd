@@ -996,7 +996,7 @@ function qcd() {
   fi
 
   # Determine If Directory Is Linked
-  if [[ -d "${dir_arg}" && ${show_opt} == ${__FALSE} ]]
+  if [[ -d "${dir_arg}" && ${opt_arg} == ${__FALSE} ]]
   then
     # Update Back Directory
     QCD_BACK_DIR=$(_get_pwd)
@@ -1005,7 +1005,7 @@ function qcd() {
     command cd "${dir_arg}"
 
     # Check For Tracking File
-    if [[ -f ${QCD_TRACK} ]]
+    if [[ -f "${QCD_TRACK}" ]]
     then
       # Add Current Directory
       (_add_directory &> /dev/null &)
