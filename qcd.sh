@@ -304,7 +304,7 @@ function _generate_menu() {
     # Initialize Option Index
     local oi=${__NSET}
 
-    # Initialize Output Buffer
+    # Initialize String Buffer
     local buffer=()
 
     # Iterate Over Options
@@ -1207,7 +1207,6 @@ function qcd() {
         else
           # Sort By Longest Common Subsequence
           paths=($(command perl ${QCD_PERL} "${dir_arg}" "${paths[@]}"))
-          # sleep 1
         fi
 
         # Generate Selection Menu
