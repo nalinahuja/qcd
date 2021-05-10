@@ -123,17 +123,14 @@ qcd [-f, --forget]    qcd [-f, --forget] [path]    qcd [-f, --forget] [link]
 
 #### Alias Directory
 <p align="justify">
-The alias flag allows the user to set a custom linkage name. This operation can be done as many times as the user desires provided that this directory has been added QCDs lookup file.
+The alias flag allows the user to set a custom linkage name. This operation can be done as many times as the user desires provided that this directory has been added QCDs lookup file. The alias flag can be used in conjunction with the <a href="#remember-directory">remember</a> flag to alias a directory when it is remembered by QCD.
+
 </p>
 
 ```bash
 # With Alias
 qcd [-a, --alias] [alias]
 ```
-
-<p align="justify">
-The alias flag can be used in conjunction with the <a href="#remember-directory">remember</a> flag to alias a directory when it is remembered by QCD.
-</p>
 
 #### Options
 <p align="justify">
