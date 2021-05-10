@@ -888,9 +888,6 @@ function _parse_arguments() {
         # Get Argument Alias
         als=$(_escape_regex "${1}")
 
-        # Get Current Directory
-        dir=$(_get_pwd)
-
         # Shift Values
         command shift
       ;;
@@ -905,6 +902,9 @@ function _parse_arguments() {
   # Verify Directory Parameters
   if [[ ! -z ${dir} || ! -z ${als} ]]
   then
+    # Verify Directory Parameter
+    [[ -z ${dir} ]] && dir=$(_get_pwd)
+
     # Add Directory To Store File
     (_add_directory "${dir}" "${als}" &> /dev/null &)
   fi
