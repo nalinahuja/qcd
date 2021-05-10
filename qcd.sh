@@ -799,13 +799,13 @@ function _parse_arguments() {
           if [[ ! -f "${QCD_TRACK}" ]]
           then
             # Create Tracking File
-            command touch "${QCD_TRACK}"
+            command touch ${QCD_TRACK}
 
             # Display Prompt
             command echo -e "qcd: Directory tracking ${__B}enabled${__N}"
           else
             # Remove Tracking File
-            command rm "${QCD_TRACK}"
+            command rm ${QCD_TRACK}
 
             # Display Prompt
             command echo -e "qcd: Directory tracking ${__B}disabled${__N}"
