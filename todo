@@ -2,19 +2,16 @@ Interface:
 - Commandline flag autocompletion
 
 Operation:
-- Add N../ for subdirectory completion
-- Binary checks using [[ -x "$(command -v BIN)" ]]
+- Add or remove path sorting
+- Speed up completion engine
 - Speed up operations using awk scripts
 - Use fuzzy logic for link to path matching
-- Add or remove path sorting?
 - Change backdirectory if CWD changed
-- Speed up completion engine
-- Remove regex from list flag
+
+Bugs:
 - qcd .qcd runtime behavior
 - relative path remember and forget
 
-Refactor & Review:
+Review:
+- Test everything
 - Revise program installer
-
-Testing:
-- Test everything lol
