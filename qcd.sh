@@ -1179,35 +1179,28 @@ function qcd() {
         # Display Prompt
         command echo -e "qcd: Multiple paths linked to ${__B}${dir_arg%/}${__N}"
 
-        # Determine Sorting Type
-        if [[ ! -z "$(command -v perl)" ]]
-        then
-          # Sort Paths By Decreasing Order Of Similarity
-          paths=($(command perl ${QCD_PERL} "${dir_arg}" "${paths[@]}"))
-        else
-          # Initialize Path Lists
-          local pfxm=() pfxf=()
+        # Initialize Path Lists
+        local pfxm=() pfxf=()
 
-          # Iterate Over Filtered Paths
-          for path in ${paths[@]}
-          do
-            # Get Path Endpoint
-            local ept=$(_get_dname "${path}")
+        # Iterate Over Filtered Paths
+        for path in ${paths[@]}
+        do
+          # Get Path Endpoint
+          local ept=$(_get_dname "${path}")
 
-            # Compare Endpoint To Directory Argument
-            if [[ ${ept} == ${dir_arg}* ]]
-            then
-              # Add Path To Match List
-              pfxm+=("${path}")
-            else
-              # Add Path To Fail List
-              pfxf+=("${path}")
-            fi
-          done
+          # Compare Endpoint To Directory Argument
+          if [[ ${ept} == ${dir_arg}* ]]
+          then
+            # Add Path To Match List
+            pfxm+=("${path}")
+          else
+            # Add Path To Fail List
+            pfxf+=("${path}")
+          fi
+        done
 
-          # Concatenate Path Lists
-          paths=("${pfxm[@]}" "${pfxf[@]}")
-        fi
+        # Concatenate Path Lists
+        paths=("${pfxm[@]}" "${pfxf[@]}")
 
         # Generate Selection Menu
         _generate_menu ${paths[@]}
