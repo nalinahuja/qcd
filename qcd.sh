@@ -906,8 +906,20 @@ function _parse_arguments() {
         command shift
       ;;
 
+      # Default Flag Handler
+      -*)
+        # Display Prompt
+        command echo -e "qcd: ${1}: Unsupported commandline flag"
+
+        # Terminate Program
+        return ${__ERR}
+      ;;
+
       # Default Argument Handler
-      *) shift;;
+      *)
+        # Shift Past Value
+        shift
+      ;;
     esac
   done
 
