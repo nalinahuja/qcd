@@ -903,7 +903,7 @@ function _parse_arguments() {
   done
 
   # Verify Directory Parameters
-  if [[ ! -z ${dir} || ! -z ${alias} ]]
+  if [[ ! -z ${dir} || ! -z ${als} ]]
   then
     # Update Store File
     (_add_directory "${dir}" "${als}" &> /dev/null &)
