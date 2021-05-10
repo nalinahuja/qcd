@@ -1079,47 +1079,33 @@ function qcd() {
     # Check Result Count
     if [[ ${pathc} -gt 1 ]]
     then
+      # Set IFS
+      local IFS=$'\n'
+
+      # Initialize Path List
+      local fpaths=()
+
       # Store Current Directory
       local pwd=$(_get_pwd)
-
-      # Initialize Filtered Paths
-      local fpaths=()
 
       # Iterate Over Path Values
       for path in ${paths[@]}
       do
-        # Substring Path From Delimiter
+        # Split Path By Delimiter
         path=$(_split_path "${path}")
 
-        # Form Complete Path
+        # Concatenate Subdirectory Path
         path=$(_escape_path "${path}${sub_link}")
 
-        # Validate Path
-        if [[ -d "${path}" && ! "${path%/}" == "${pwd%/}" ]]
-        then
-          # Set IFS
-          local IFS=$'\n'
-
-          # Add Filtered Path To List
-          fpaths+=($(command printf "%s\n" "${path}"))
-        fi
+        # Verify And Add Path To List
+        [[ -d "${path}" && ! "${path%/}" == "${pwd%/}" ]] && fpaths+=($(command echo "${path}"))
       done
 
       # Update Path Count
       pathc=${#fpaths[@]}
 
-      # Initialize Matched Path
-      local mpath=${__ESTR}
-
-      # Check For Single Path
-      if [[ ${pathc} -eq 1 ]]
-      then
-        # Set Matched Path
-        mpath="${fpaths[@]}"
-      fi
-
       # List Matching Paths
-      if [[ -z ${mpath} && ! -z ${fpaths} ]]
+      if [[ ${pathc} -gt 1 && ! -z ${fpaths} ]]
       then
         # Display Prompt
         command echo -e "qcd: Multiple paths linked to ${__B}${dir_arg%/}${__N}"
@@ -1160,7 +1146,7 @@ function qcd() {
         paths="${fpaths[${ept}]}"
       else
         # Set To Automatically Selected Endpoint
-        paths="${mpath}"
+        paths="${fpath}"
       fi
     else
       # Substring Path From Delimiter
