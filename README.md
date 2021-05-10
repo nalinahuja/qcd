@@ -21,10 +21,10 @@ Please navigate to the <a href="https://github.com/nalinahuja22/qcd/releases">re
 
 ```bash
 # Using Wget
-command wget https://github.com/nalinahuja22/qcd/archive/v1.18.1.zip
+command wget https://github.com/nalinahuja22/qcd/archive/v2.0.zip
 
 # Using Curl
-command curl -sL https://github.com/nalinahuja22/qcd/archive/v1.18.1.zip > v1.18.1.zip
+command curl -sL https://github.com/nalinahuja22/qcd/archive/v2.0.zip > v2.0.zip
 ```
 
 Alternatively, you can clone this <a href="https://github.com/nalinahuja22/qcd">repository</a> but it is recommended that you download the most recent release since the git repository is comparatively larger.
@@ -68,8 +68,8 @@ QCD is able to interpret file system sequences like <code>.</code> and <code>..<
 </p>
 
 ```bash
-# File System Sequences    # Nth Parent Directory
-qcd ./../[directory]       qcd [N]..
+# File System Sequences    # nth Parent Directory
+qcd ./../[directory]       qcd [n]..
 ```
 
 <p align="justify">
@@ -98,40 +98,50 @@ QCD offers many different flags that are important to simplifying interaction be
 
 #### Remember Directory
 <p align="justify">
-The remember flag allows the user to add a symbolic links to QCDs lookup file. Wihtout any arguments, QCD will add a linkage to its lookup file that corresponds to the present working directory. The user can specify a valid path ahead of the remember flag to add a linkage specific to that path.
+The remember flag allows the user to add a symbolic links to QCDs lookup file. Without any arguments, QCD will add a linkage to its lookup file that corresponds to the present working directory. The user can specify a valid path after the remember flag to add a linkage specific to that path.
+
 </p>
 
 ```bash
 # No Arguments          # With Path
-qcd [-r, --remember]    qcd [path] [-r, --remember]
+qcd [-r, --remember]    qcd [-r, --remember] [path]
 ```
 
 <p align="justify">
-In both of the previous usages of the remember flag, the linkage name is automatically identified as the last directory in the path. To set a custom linkage name, the user can specify a path along with an alias which is what the user can specify later to navigate to that path. This usage is applicable to directories QCD does and does not remember.
+In both cases, the linkage name is automatically derived from the directory path. To set a custom linkage name, please see the <a href="#Alias Directory">alias flag</a> usage.
+</p>
+
+#### Alias Directory
+<p align="justify">
+The alias flag allows the user to set a custom linkage name. This operation can be done as many times as the user desires provided that this directory has been added QCDs lookup file.
 </p>
 
 ```bash
 # With Alias
-qcd [path] [alias] [-r, --remember]
+qcd [-a, --alias] [alias]
 ```
+
+<p align="justify">
+The alias flag can be used in conjunction with the <a href="#Remember Directory">remember flag</a> to alias a directory when it is remembered by QCD.
+</p>
 
 #### Forget Directory
 <p align="justify">
-The forget flag allows the user to remove a symbolic links from QCDs lookup file. Wihtout any arguments, QCD will remove a linkage from its lookup file that corresponds to the present working directory. The user can specify a valid linkage ahead of the forget flag to remove all matching linkages.
+The forget flag allows the user to remove a symbolic links from QCDs lookup file. Without any arguments, QCD will remove a linkage from its lookup file that corresponds to the present working directory. The user can specify a valid path or symbolic link after the forget flag to remove all matching linkages.
 </p>
 
 ```bash
-# No Arguments        # With Linkage
-qcd [-f, --forget]    qcd [link] [-f, --forget]
+# No Arguments        # With Path                  # With Linkage
+qcd [-f, --forget]    qcd [-f, --forget] [path]    qcd [-f, --forget] [link]
 ```
 
-#### Make Directory
+#### Options
 <p align="justify">
-The make directory flag creates a directory at a specified, valid path and switches to that directory. QCD internally adds a symbolic linkage to its lookup file that corresponds to the path of the new directory if QCD is set to track directories, tracking explained in next section.
+The options flag lists all symbolic links in QCDs lookup file that match the specified input without navigating to a matching local directory, if it exists.
 </p>
 
 ```bash
-qcd [path] [-m, --mkdir]
+qcd [-o, --options] [link]
 ```
 
 #### Back Directory
@@ -152,18 +162,9 @@ The track directories flag allows the user to change the directory tracking beha
 qcd [-t, --track-dirs]
 ```
 
-#### Options
-<p align="justify">
-The options flag lists all symbolic links in QCDs lookup file that match the specified input without navigating to a matching local directory, if it exists.
-</p>
-
-```bash
-qcd [link] [-o, --options]
-```
-
 #### Clean
 <p align="justify">
-The clean flag removes symbolic linkages from QCDs lookup file that correspond to directories that may have been renamed or deleted by the user. QCD automatically cleans the lookup file when a new shell session is started, so it is not necessary to frequently clean the lookup file manually.
+The clean flag removes symbolic linkages from QCDs lookup file that correspond to directories that may have been renamed or deleted by the user. QCD automatically cleans the lookup file at the start of each bash session, so it is not necessary to manually clean the lookup file too often.
 </p>
 
 ```bash
@@ -172,11 +173,11 @@ qcd [-c, --clean]
 
 #### List
 <p align="justify">
-The list flag outputs the current contents of the lookup file in sorted order. The user can include an optional case sensitive regex string ahead of the list flag to filter the contents of the lookup file.
+The list flag outputs the current contents of the lookup file sorted by symbolic link.
 </p>
 
 ```bash
-qcd [regex] [-l, --list]
+qcd [-l, --list]
 ```
 
 #### Other
