@@ -1380,7 +1380,7 @@ function _qcd_comp() {
     local pwd=$(_get_pwd)
 
     # Get Nonlocal Symbolic Links From Store File
-    local sym_links=($(command awk -v pwd="${pwd}" -F ':' '{if ($2 != pwd) {print $1 "\n"}}' ${QCD_STORE}))
+    local sym_links=($(command awk -v pwd="${pwd}" -F ':' '{if ($2 != pwd) {print $1}}' ${QCD_STORE}))
 
     # Iterate Over Symbolic Links
     for sym_link in ${sym_links[@]}

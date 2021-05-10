@@ -1,7 +1,6 @@
 Operation:
 - Add or remove path sorting
 - Speed up completion engine
-- Change backdirectory if CWD changed
 - Use fuzzy logic for link to path matching
 
 Review:
