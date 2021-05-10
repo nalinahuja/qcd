@@ -1083,7 +1083,7 @@ function qcd() {
       local IFS=$'\n'
 
       # Initialize Path List
-      local fpaths=()
+      local paths=()
 
       # Store Current Directory
       local pwd=$(_get_pwd)
@@ -1098,14 +1098,14 @@ function qcd() {
         path=$(_escape_path "${path}${sub_link}")
 
         # Verify And Add Path To List
-        [[ -d "${path}" && ! "${path%/}" == "${pwd%/}" ]] && fpaths+=($(command echo "${path}"))
+        [[ -d "${path}" && ! "${path%/}" == "${pwd%/}" ]] && paths+=($(command echo "${path}"))
       done
 
       # Update Path Count
-      pathc=${#fpaths[@]}
+      pathc=${#paths[@]}
 
       # List Matching Paths
-      if [[ ${pathc} -gt 1 && ! -z ${fpaths} ]]
+      if [[ ${pathc} -gt 1 && ! -z ${paths} ]]
       then
         # Display Prompt
         command echo -e "qcd: Multiple paths linked to ${__B}${dir_arg%/}${__N}"
@@ -1114,7 +1114,7 @@ function qcd() {
         local pfxm=() pfxf=()
 
         # Iterate Over Filtered Paths
-        for fpath in ${fpaths[@]}
+        for fpath in ${paths[@]}
         do
           # Get Path Endpoint
           local ept=$(_get_dname "${fpath}")
@@ -1131,10 +1131,10 @@ function qcd() {
         done
 
         # Concatenate Lists
-        fpaths=("${pfxm[@]}" "${pfxf[@]}")
+        paths=("${pfxm[@]}" "${pfxf[@]}")
 
         # Generate Selection Menu
-        _generate_menu ${fpaths[@]}
+        _generate_menu ${paths[@]}
 
         # Store Selection Status
         local ept=${?}
@@ -1143,10 +1143,10 @@ function qcd() {
         [[ ${ept} -eq ${__NSEL} ]] && return ${__OK}
 
         # Set To Manually Selected Endpoint
-        pathv="${fpaths[${ept}]}"
+        pathv="${paths[${ept}]}"
       else
         # Set To Automatically Selected Endpoint
-        pathv="${fpaths}"
+        pathv="${paths}"
       fi
     else
       # Substring Path From Delimiter
