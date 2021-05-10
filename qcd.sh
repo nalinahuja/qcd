@@ -35,7 +35,6 @@ readonly QCD_FOLD=~/.qcd &> /dev/null
 
 # Program Files
 readonly QCD_PROG=${QCD_FOLD}/qcd.sh &> /dev/null
-readonly QCD_PERL=${QCD_FOLD}/lcs.pl &> /dev/null
 readonly QCD_TEMP=${QCD_FOLD}/temp   &> /dev/null
 
 # Resource Files
