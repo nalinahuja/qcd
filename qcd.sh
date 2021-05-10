@@ -1041,10 +1041,10 @@ function qcd() {
     local sym_link=$(_escape_regex "${dir_arg:0:${pfx_len}}")
 
     # Get Exact Matched Symbolic Paths From Store File
-    local paths=($(command awk -F ':' -v LINK="${sym_link}" '{if (LINK == $1) {print $2}}' ${QCD_STORE} 2> /dev/null))
+    local pathv=($(command awk -F ':' -v LINK="${sym_link}" '{if (LINK == $1) {print $2}}' ${QCD_STORE} 2> /dev/null))
 
     # Check For Indirect Link Matching
-    if [[ ${#paths[@]} -eq 0 ]]
+    if [[ ${#pathv[@]} -eq 0 ]]
     then
       # Initialize Parameters
       local i=0 wld_link=${__ESTR}
@@ -1070,11 +1070,11 @@ function qcd() {
       local IFS=$'\n'
 
       # Get Subsequence Matched Symbolic Paths From Store File
-      paths=($(command egrep -i -s -x "${wld_link}:.*" ${QCD_STORE} 2> /dev/null))
+      pathv=($(command egrep -i -s -x "${wld_link}:.*" ${QCD_STORE} 2> /dev/null))
     fi
 
     # Initialize Path Count
-    local pathc=${#paths[@]}
+    local pathc=${#pathv[@]}
 
     # Check Result Count
     if [[ ${pathc} -gt 1 ]]
@@ -1089,7 +1089,7 @@ function qcd() {
       local pwd=$(_get_pwd)
 
       # Iterate Over Path Values
-      for path in ${paths[@]}
+      for path in ${pathv[@]}
       do
         # Split Path By Delimiter
         path=$(_split_path "${path}")
@@ -1143,25 +1143,25 @@ function qcd() {
         [[ ${ept} -eq ${__NSEL} ]] && return ${__OK}
 
         # Set To Manually Selected Endpoint
-        paths="${fpaths[${ept}]}"
+        pathv="${fpaths[${ept}]}"
       else
         # Set To Automatically Selected Endpoint
-        paths="${fpath}"
+        pathv="${fpaths}"
       fi
     else
       # Substring Path From Delimiter
-      paths=$(_split_path "${paths}")
+      pathv=$(_split_path "${pathv}")
     fi
 
     # Error Check Result
-    if [[ -z ${paths} ]]
+    if [[ -z ${pathv} ]]
     then
       # Display Error
       command echo -e "qcd: Could not navigate to directory"
 
       # Terminate Program
       return ${__ERR}
-    elif [[ ! -d "${paths}" ]]
+    elif [[ ! -d "${pathv}" ]]
     then
       # Check Result Count
       if [[ ${pathc} -gt 1 ]]
@@ -1171,10 +1171,10 @@ function qcd() {
       fi
 
       # Display Error
-      command echo -e "qcd: $(_format_path "${paths%/}"): Directory does not exist"
+      command echo -e "qcd: $(_format_path "${pathv%/}"): Directory does not exist"
 
       # Remove Current Directory
-      (_remove_directory "${paths}" &> /dev/null &)
+      (_remove_directory "${pathv}" &> /dev/null &)
 
       # Terminate Program
       return ${__ERR}
@@ -1183,7 +1183,7 @@ function qcd() {
       QCD_BACK_DIR=$(_get_pwd)
 
       # Switch To Linked Path
-      command cd "${paths}"
+      command cd "${pathv}"
 
       # Validate Subdirectory Component
       if [[ ! -z ${sub_link} ]]
