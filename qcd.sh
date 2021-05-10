@@ -955,14 +955,15 @@ function qcd() {
   # Check Argument Validity
   if [[ ! -z ${@} ]]
   then
-    # Store Option Flag
-    local opt_flag="${@:1:1}"
+    # Store Argument
+    local arg="${@:1:1}"
 
     # Initialize Sublist Bounds
     local si=1 ei=${#@}
 
-    # Check For Option Flag
-    case "${opt_flag}" in
+    # Process Argument
+    case "${arg}" in
+      # Check For Option Flag
       ${__OPTIONS}|--options)
         # Update Sublist Bounds
         si=2; ei=${#@};
@@ -1069,7 +1070,7 @@ function qcd() {
       local IFS=$'\n'
 
       # Get Subsequence Matched Symbolic Paths From Store File
-      pathv=($(command printf "%s\n" $(command egrep -i -s -x "${wld_link}:.*" ${QCD_STORE} 2> /dev/null)))
+      pathv=($(command egrep -i -s -x "${wld_link}:.*" ${QCD_STORE} 2> /dev/null))
     fi
 
     # Initialize Path Count
