@@ -1219,7 +1219,7 @@ function qcd() {
         fi
 
         # Check For Tracking File
-        if [[ -f ${QCD_TRACK} ]]
+        if [[ -f "${QCD_TRACK}" ]]
         then
           # Add Current Directory
           (_add_directory &> /dev/null &)
