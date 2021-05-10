@@ -35,6 +35,7 @@ readonly QCD_FOLD=~/.qcd &> /dev/null
 
 # Program Files
 readonly QCD_PROG=${QCD_FOLD}/qcd.sh &> /dev/null
+readonly QCD_PERL=${QCD_FOLD}/lcs.pl &> /dev/null
 readonly QCD_TEMP=${QCD_FOLD}/temp   &> /dev/null
 
 # Resource Files
@@ -1141,7 +1142,7 @@ function qcd() {
       done
 
       # Get Subsequence Matched Symbolic Paths From Store File
-      pathv=($(command egrep -i -s -x "${wld_link}:.*" ${QCD_STORE} 2> /dev/null))
+      pathv=($(command egrep -i -s -x ".*${wld_link}:.*" ${QCD_STORE} 2> /dev/null))
     fi
 
     # Initialize Path Count
@@ -1178,28 +1179,34 @@ function qcd() {
         # Display Prompt
         command echo -e "qcd: Multiple paths linked to ${__B}${dir_arg%/}${__N}"
 
-        # Initialize Path Lists
-        local pfxm=() pfxf=()
+        # Determine Sorting Type
+        if [[ -z "$(command -v perl)" ]]
+        then
+          # Initialize Path Lists
+          local pfxm=() pfxf=()
 
-        # Iterate Over Filtered Paths
-        for fpath in ${paths[@]}
-        do
-          # Get Path Endpoint
-          local ept=$(_get_dname "${fpath}")
+          # Iterate Over Filtered Paths
+          for path in ${paths[@]}
+          do
+            # Get Path Endpoint
+            local ept=$(_get_dname "${path}")
 
-          # Compare Endpoint To Directory Argument
-          if [[ ${ept} == ${dir_arg}* ]]
-          then
-            # Add Path To Match List
-            pfxm+=("${fpath}")
-          else
-            # Add Path To Fail List
-            pfxf+=("${fpath}")
-          fi
-        done
+            # Compare Endpoint To Directory Argument
+            if [[ ${ept} == ${dir_arg}* ]]
+            then
+              # Add Path To Match List
+              pfxm+=("${path}")
+            else
+              # Add Path To Fail List
+              pfxf+=("${path}")
+            fi
+          done
 
-        # Concatenate Lists
-        paths=("${pfxm[@]}" "${pfxf[@]}")
+          # Concatenate Lists
+          paths=("${pfxm[@]}" "${pfxf[@]}")
+        else
+          paths=($(command perl ${QCD_PERL} "${dir_arg}" "${paths[@]}"))
+        fi
 
         # Generate Selection Menu
         _generate_menu ${paths[@]}
