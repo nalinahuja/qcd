@@ -666,7 +666,7 @@ function _parse_arguments() {
           command echo -en "→ Downloading update "
 
           # Get Release Information
-          local release_info=$(command curl --connect-timeout ${__DELAY} -sL "${QCD_RELEASE_URL}" 2> /dev/null)
+          local release_info=$(command curl --connect-timeout ${__DELAY} -sL ${QCD_RELEASE_URL} 2> /dev/null)
 
           # Get Download URL
           local download_url=$(command echo -e "${release_info}" | command egrep -s -o "https.*zipball.*" 2> /dev/null)
@@ -682,7 +682,7 @@ function _parse_arguments() {
           fi
 
           # Download Release Contents
-          command curl --connect-timeout ${__DELAY} -sL "${download_url%\",}" > "${QCD_RELEASE}"
+          command curl --connect-timeout ${__DELAY} -sL "${download_url%\",}" > ${QCD_RELEASE}
 
           # Error Check Release Contents
           if [[ ${?} -ne ${__OK} || ! -f "${QCD_RELEASE}" ]]
@@ -698,7 +698,7 @@ function _parse_arguments() {
           command echo -en "\r→ Installing updates  "
 
           # Extract And Install Program Files
-          command unzip -o -j "${QCD_RELEASE}" -d "${QCD_FOLD}" &> /dev/null
+          command unzip -o -j ${QCD_RELEASE} -d ${QCD_FOLD} &> /dev/null
 
           # Error Check Installation
           if [[ ${?} -ne ${__OK} ]]
@@ -714,7 +714,7 @@ function _parse_arguments() {
           command echo -en "\r→ Configuring updates "
 
           # Update Terminal Environment
-          command source "${QCD_EXEC}" 2> /dev/null
+          command source ${QCD_EXEC} 2> /dev/null
 
           # Error Check Installation
           if [[ ${?} -ne ${__OK} ]]
@@ -727,7 +727,7 @@ function _parse_arguments() {
           fi
 
           # Cleanup Installation
-          command rm "${QCD_RELEASE}" "${QCD_INSTALL}" 2> /dev/null
+          command rm ${QCD_RELEASE} ${QCD_INSTALL} 2> /dev/null
 
           # Display Prompt
           command echo -e "\r→ Update complete     "
