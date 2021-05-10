@@ -108,7 +108,7 @@ qcd [-r, --remember]    qcd [-r, --remember] [path]
 ```
 
 <p align="justify">
-In both cases, the linkage name is automatically derived from the directory path. To set a custom linkage name, please see the <a href="#Alias Directory">alias flag</a> usage.
+In both cases, the linkage name is automatically derived from the directory path. To set a custom linkage name, please see the <a href="#alias-directory">alias</a> flag usage.
 </p>
 
 #### Alias Directory
@@ -122,7 +122,7 @@ qcd [-a, --alias] [alias]
 ```
 
 <p align="justify">
-The alias flag can be used in conjunction with the <a href="#Remember Directory">remember flag</a> to alias a directory when it is remembered by QCD.
+The alias flag can be used in conjunction with the <a href="#remember-directory">remember</a> flag to alias a directory when it is remembered by QCD.
 </p>
 
 #### Forget Directory
