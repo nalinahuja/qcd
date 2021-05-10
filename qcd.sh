@@ -39,6 +39,7 @@ readonly QCD_UTIL=${QCD_FOLD}/lcs.pl &> /dev/null
 readonly QCD_TEMP=${QCD_FOLD}/temp   &> /dev/null
 
 # Resource Files
+readonly QCD_HELP=${QCD_FOLD}/help  &> /dev/null
 readonly QCD_STORE=${QCD_FOLD}/store  &> /dev/null
 readonly QCD_TRACK=${QCD_FOLD}/.track &> /dev/null
 
@@ -428,15 +429,19 @@ function _update_store() {
   return ${?}
 }
 
-function _cleanup_temp() {
+function _cleanup_files() {
   # Check For Temp File
   if [[ -f "${QCD_TEMP}" ]]
   then
     # Remove Temp File
     command rm ${QCD_TEMP} 2> /dev/null
+  fi
 
-    # Return To Caller
-    return ${?}
+  # Check For Temp File
+  if [[ -f "${QCD_HELP}" ]]
+  then
+    # Remove Help File
+    command rm ${QCD_HELP} 2> /dev/null
   fi
 
   # Return To Caller
@@ -1469,7 +1474,7 @@ function _qcd_comp() {
 
 function _qcd_init() {
   # Set Signal Trap For EXIT
-  command trap _cleanup_temp EXIT &> /dev/null
+  command trap _cleanup_files EXIT &> /dev/null
 
   # Set Environment To Show Visible Files
   command bind 'set match-hidden-files off' &> /dev/null
