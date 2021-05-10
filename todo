@@ -1,6 +1,5 @@
 Operation:
 - Add or remove path sorting
-- Speed up completion engine
 - Use fuzzy logic for link to path matching
 
 Review:
