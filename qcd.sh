@@ -825,7 +825,22 @@ function _parse_arguments() {
 
       # Check For Forget Flag
       ${__FORGET}|--forget)
-        # todo!!!
+        # Determine Forget Type
+        if [[ -z ${2} ]]
+        then
+          # Remove Current Directory
+          (_remove_directory &> /dev/null &)
+        elif [[ ! -e "${2}" ]]
+        then
+          # Remove Indicated Linkage
+          (_remove_linkage "${2}" &> /dev/null &)
+        else
+          # Remove Current Directory
+          (_remove_directory "${2}" &> /dev/null &)
+        fi
+
+        # Terminate Program
+        return ${__OK}
       ;;
 
       # Check For Alias Flag
