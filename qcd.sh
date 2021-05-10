@@ -931,6 +931,12 @@ function qcd() {
   # Create Resource File
   _create_store
 
+  # Store Creation Status
+  local status=${?}
+
+  # Check For Terminating Status
+  [[ ${status} -ne ${__OK} ]] && return ${status}
+
   # Parse Commandline Arguments
   _parse_arguments "${@}"
 
@@ -941,47 +947,48 @@ function qcd() {
   [[ ${status} -ne ${__CONT} ]] && return ${status}
 
   # Initialize Argument Components
-  local dir_arg=${__ESTR} opt_arg=${__FALSE}
+  local dir_arg=~ opt_arg=${__FALSE}
 
   # Check Argument Validity
-  if [[ -z ${@} ]]
+  if [[ ! -z ${@} ]]
   then
-    # Set To Home Directory
-    dir_arg=~
-  else
-    # Store Option Argument
-    local opt_arg="${@:${#@}}"
+    # Store Option Flag
+    local opt_flag="${@:1:1}"
 
     # Initialize Sublist Bounds
     local si=1 ei=${#@}
 
     # Check For Option Flag
-    if [[ ${opt_arg/--options/${__OPTIONS}} == ${__OPTIONS} ]]
-    then
-      # Update Sublist Bounds
-      si=1; ei=$((${#@} - 1));
+    case "${opt_flag}" in
+      ${__OPTIONS}|--options)
+        # Update Sublist Bounds
+        si=2; ei=${#@};
 
-      # Set Option Flag
-      show_opt=${__TRUE}
-    fi
+        # Set Option Argument
+        opt_arg=${__TRUE}
+      ;;
+    esac
 
     # Set Directory Argument
     dir_arg="${@:${si}:${ei}}"
 
     # Check For Back Directory Pattern
-    if [[ "${dir_arg}" =~ ^[0-9]+\.\.$ ]]
+    if [[ "${dir_arg}" =~ [0-9]+\.\. ]]
     then
-      # Determine Back Directory Height
-      local back_height=${dir_arg:0:$((${#dir_arg} - 2))}
+      # Determine Substring Bounds
+      local si=0 ei=$((${#dir_arg} - 2))
 
-      # Generate Expanded Back Directory
-      local back_dir=$(command printf "%${back_height}s")
+      # Determine Directory Offset
+      local offset=${dir_arg:${si}:${ei}}
 
-      # Override Directory Arguments
-      dir_arg="${back_dir// /${__HWD}}"
+      # Generate Directory Offset Pattern
+      local format=$(command printf "%${offset}s")
+
+      # Replace Directory Arguments
+      dir_arg=$(_get_path "${format// /${__HWD}}")
 
       # Override Option Argument
-      opt_arg=${__ESTR}
+      opt_arg=${__FALSE}
     else
       # Format Escaped Characters
       dir_arg=$(_escape_path "${dir_arg}")
