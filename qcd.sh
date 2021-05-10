@@ -289,7 +289,7 @@ function _generate_menu() {
   command trap _qcd_exit SIGINT &> /dev/null
 
   # Reset Exit Flag
-  declare QCD_EXIT=${__FALSE}
+  QCD_EXIT=${__FALSE}
 
   # Initialize Selected Option
   local os=${__NSET}
@@ -761,7 +761,7 @@ function _parse_arguments() {
           command cd "${QCD_BACK_DIR}"
 
           # Update Back Directory
-          declare QCD_BACK_DIR="${pwd}"
+          QCD_BACK_DIR="${pwd}"
 
           # Terminate Program
           return ${__OK}
@@ -1415,7 +1415,7 @@ function _qcd_init() {
 
 function _qcd_exit() {
   # Set Exit Flag
-  declare QCD_EXIT=${__TRUE}
+  QCD_EXIT=${__TRUE}
 }
 
 # End QCD Dependency Functions---------------------------------------------------------------------------------------------------------------------------------------
