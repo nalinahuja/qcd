@@ -18,13 +18,14 @@ pathv=($(command egrep -i -s -x "${regex}:.*" ~/.qcd/store 2> /dev/null))
 echo -e "${pathv[@]}" |
     while read path; do
         path=$(_split_path "$path")
+        echo $path
         [[ -d "${path}qcd" ]] && echo "${path}qcd";
     done
 
-for link in ${pathv[@]}
-do
-  echo "$link"
-done
+# for link in ${pathv[@]}
+# do
+#   echo "$link"
+# done
 
 echo $pathv
 
