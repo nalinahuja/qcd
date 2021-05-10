@@ -1008,11 +1008,11 @@ function qcd() {
     # Change To Valid Directory
     command cd "${dir_arg}"
 
-    # Add Current Directory If Tracking
-    [[ -f "${QCD_TRACK}" ]] && (_add_directory &> /dev/null &)
-
     # Get New Present Directory
     local new_pwd=$(_get_pwd)
+
+    # Add Current Directory If Tracking
+    [[ -f "${QCD_TRACK}" ]] && (_add_directory &> /dev/null &)
 
     # Set Back Directory On Path Mismatch
     [[ ! "${old_pwd}" == "${new_pwd}" ]] && QCD_BACK_DIR="${old_pwd}"
@@ -1216,11 +1216,11 @@ function qcd() {
           fi
         fi
 
-        # Add Current Directory If Tracking
-        [[ -f "${QCD_TRACK}" ]] && (_add_directory &> /dev/null &)
-
         # Get New Present Directory
         local new_pwd=$(_get_pwd)
+
+        # Add Current Directory If Tracking
+        [[ -f "${QCD_TRACK}" ]] && (_add_directory &> /dev/null &)
 
         # Set Back Directory On Path Mismatch
         [[ ! "${old_pwd}" == "${new_pwd}" ]] && QCD_BACK_DIR="${old_pwd}"
