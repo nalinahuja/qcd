@@ -152,9 +152,7 @@ qcd [-b, --back-dir]
 
 #### Make Directory
 <p align="justify">
-The make directory flag allow the user to create a directory at a specified path and automatically switch to that directory once it is created. QCD internally adds a symbolic linkage to its lookup file that corresponds to the new directory if QCD is configured to track directories. QCDs directory tracking behavior is explained in the <a href="#track-directories">track</a> flag section.
-
-tracking explained in next section.
+The make directory flag allow the user to create a directory at a specified path and automatically switch to that directory once it is created. QCD internally adds a symbolic linkage to its lookup file that corresponds to the new directory if QCD is configured to track directories. QCDs directory tracking behavior is explained in the <a href="#track-directories">next</a> section.
 </p>
 
 ```bash
