@@ -905,7 +905,7 @@ function _parse_arguments() {
   # Verify Directory Parameters
   if [[ ! -z ${dir} || ! -z ${als} ]]
   then
-    # Update Store File
+    # Add Directory To Store File
     (_add_directory "${dir}" "${als}" &> /dev/null &)
   fi
 
