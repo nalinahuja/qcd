@@ -437,7 +437,7 @@ function _cleanup_files() {
     command rm ${QCD_TEMP} 2> /dev/null
   fi
 
-  # Check For Temp File
+  # Check For Help File
   if [[ -f "${QCD_HELP}" ]]
   then
     # Remove Help File
