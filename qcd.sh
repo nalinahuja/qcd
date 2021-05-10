@@ -1142,7 +1142,7 @@ function qcd() {
       done
 
       # Get Subsequence Matched Symbolic Paths From Store File
-      pathv=($(command egrep -i -s -x ".*${wld_link}:.*" ${QCD_STORE} 2> /dev/null))
+      pathv=($(command egrep -i -s -x "${wld_link}:.*" ${QCD_STORE} 2> /dev/null))
     fi
 
     # Initialize Path Count
@@ -1180,8 +1180,10 @@ function qcd() {
         command echo -e "qcd: Multiple paths linked to ${__B}${dir_arg%/}${__N}"
 
         # Determine Sorting Type
-        if [[ -z "$(command -v perl)" ]]
+        if [[ ! -z "$(command -v perl)" ]]
         then
+          paths=($(command perl ${QCD_PERL} "${dir_arg}" "${paths[@]}"))
+        else
           # Initialize Path Lists
           local pfxm=() pfxf=()
 
@@ -1204,8 +1206,6 @@ function qcd() {
 
           # Concatenate Lists
           paths=("${pfxm[@]}" "${pfxf[@]}")
-        else
-          paths=($(command perl ${QCD_PERL} "${dir_arg}" "${paths[@]}"))
         fi
 
         # Generate Selection Menu
