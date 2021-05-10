@@ -557,7 +557,56 @@ function _parse_arguments() {
 
       # Check For List Flag
       ${__LIST}|--list)
-        # todo!!!
+        # Display Prompt
+        command echo -en "\rqcd: Generating link map..."
+
+        # Get Symbolic Linkages From Store File
+        local sym_links=$(qcd --clean &> /dev/null && command cat ${QCD_STORE})
+
+        # Error Check Symbolic Linkages
+        if [[ -z ${sym_links} ]]
+        then
+          # Display Prompt
+          command echo -e "\rqcd: No linkages found      "
+
+          # Terminate Program
+          return ${__ERR}
+        fi
+
+        # Determine Column Values
+        local tcols=$(command tput cols)
+
+        # Determine Column Padding
+        local pcols=$(command echo -e "${sym_links}" | command awk -F ':' '{print length($1)}' | command sort -n | command tail -n1)
+
+        # Set Column Padding To Minimum
+        [[ ${pcols} -lt ${__MINPAD} ]] && pcols=${__MINPAD}
+
+        # Format Table Header
+        command printf "\r${__W} %-${pcols}s  %-$((${tcols} - ${pcols} - 3))s${__N}\n" "Link" "Directory" > ${QCD_TEMP}
+
+        # Set IFS
+        local IFS=$'\n'
+
+        # Iterate Over Linkages
+        for sym_link in ${sym_links}
+        do
+          # Format Linkage Components
+          local link=$(_split_name "${sym_link}")
+          local path=$(_split_path "${sym_link}")
+
+          # Format Linkage Row
+          command printf " %-${pcols}s  %s\n" "${link}" "$(_format_path "${path%/}")" >> ${QCD_TEMP}
+        done
+
+        # Unset IFS
+        unset IFS
+
+        # Display Linkage Table
+        command cat ${QCD_TEMP}
+
+        # Terminate Program
+        return ${__OK}
       ;;
 
       # Check For Clean Flag
