@@ -556,8 +556,6 @@ function _parse_arguments() {
         return ${__OK}
       ;;
 
-      # End Standard Flags-------------------------------------------------------------------------------------------------------------------------------------------
-
       # Check For List Flag
       ${__LIST}|--list)
         # Display Prompt
@@ -819,8 +817,6 @@ function _parse_arguments() {
         return ${__OK}
       ;;
 
-      # End Standalone Flags-----------------------------------------------------------------------------------------------------------------------------------------
-
       # Check For Remember Flag
       ${__REMEMBER}|--remember)
         # Determine Remember Type
@@ -892,8 +888,6 @@ function _parse_arguments() {
         command shift
       ;;
 
-      # End Value Flags----------------------------------------------------------------------------------------------------------------------------------------------
-
       # Default Argument Handler
       *) shift;;
     esac
@@ -907,6 +901,9 @@ function _parse_arguments() {
 
     # Add Directory To Store File
     (_add_directory "${dir}" "${als}" &> /dev/null &)
+
+    # Terminate Program
+    return ${__OK}
   fi
 
   # Continue Program
