@@ -530,6 +530,9 @@ function _remove_directory() {
 # End Database Management Functions----------------------------------------------------------------------------------------------------------------------------------
 
 function _parse_arguments() {
+  # Intialize Directory Parameters
+  local dir=${__ESTR} als=${__ESTR}
+
   # Parse Arguments
   while [[ ${#@} -gt 0 ]]
   do
@@ -820,7 +823,31 @@ function _parse_arguments() {
 
       # Check For Remember Flag
       ${__REMEMBER}|--remember)
-        # todo!!!
+        # Determine Remember Type
+        if [[ -z ${2} || "${2}" == -* ]]
+        then
+          # Get Current Directory
+          dir=$(_get_pwd)
+        else
+          # Get Argument Directory
+          dir=$(_get_path "${2}")
+
+          # Verify Argument Directory
+          if [[ ! -d "${dir}" ]]
+          then
+            # Display Prompt
+            command echo -e "qcd: Invalid directory path"
+
+            # Terminate Program
+            return ${__ERR}
+          fi
+
+          # Shift Arguments
+          command shift
+        fi
+
+        # Shift Arguments
+        command shift
       ;;
 
       # Check For Forget Flag
@@ -830,7 +857,7 @@ function _parse_arguments() {
         then
           # Remove Current Directory
           (_remove_directory &> /dev/null &)
-        elif [[ ! -e "${2}" ]]
+        elif [[ ! -d "${2}" ]]
         then
           # Remove Indicated Linkage
           (_remove_linkage "${2}" &> /dev/null &)
@@ -845,7 +872,27 @@ function _parse_arguments() {
 
       # Check For Alias Flag
       ${__ALIAS}|--alias)
-        # todo!!!
+        # Shift Past Flag
+        command shift
+
+        # Determine Remember Type
+        if [[ -z ${1} || "${1}" == -* ]]
+        then
+          # Display Prompt
+          command echo -e "qcd: Invalid directory alias"
+
+          # Terminate Program
+          return ${__ERR}
+        fi
+
+        # Get Argument Alias
+        als=$(_escape_regex "${1}")
+
+        # Get Current Directory
+        dir=$(_get_pwd)
+
+        # Shift Values
+        command shift
       ;;
 
       # End Value Flags----------------------------------------------------------------------------------------------------------------------------------------------
@@ -854,6 +901,13 @@ function _parse_arguments() {
       *) shift;;
     esac
   done
+
+  # Verify Directory Parameters
+  if [[ ! -z ${dir} || ! -z ${alias} ]]
+  then
+    # Update Store File
+    (_add_directory "${dir}" "${als}" &> /dev/null &)
+  fi
 
   # Continue Program
   return ${__CONT}

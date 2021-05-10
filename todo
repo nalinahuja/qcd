@@ -2,11 +2,12 @@ Interface:
 - Commandline flag autocompletion
 
 Operation:
+- Complete argument parsing
 - Add or remove path sorting
 - Speed up completion engine
+- Change backdirectory if CWD changed
 - Speed up operations using awk scripts
 - Use fuzzy logic for link to path matching
-- Change backdirectory if CWD changed
 
 Bugs:
 - qcd .qcd runtime behavior
