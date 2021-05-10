@@ -1068,9 +1068,6 @@ function qcd() {
         wld_link="${wld_link}${c}.*"
       done
 
-      # Set IFS
-      local IFS=$'\n'
-
       # Get Subsequence Matched Symbolic Paths From Store File
       pathv=($(command egrep -i -s -x "${wld_link}:.*" ${QCD_STORE} 2> /dev/null))
     fi
@@ -1081,9 +1078,6 @@ function qcd() {
     # Check Result Count
     if [[ ${pathc} -gt 1 ]]
     then
-      # Set IFS
-      local IFS=$'\n'
-
       # Initialize Path List
       local paths=()
 
@@ -1229,6 +1223,9 @@ function qcd() {
       # Terminate Program
       return ${__OK}
     fi
+
+    # Unset IFS
+    unset IFS
   fi
 }
 
