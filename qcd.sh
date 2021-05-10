@@ -400,7 +400,13 @@ function _create_store() {
   then
     # Create Store File
     command touch ${QCD_STORE} 2> /dev/null
+
+    # Return To Caller
+    return ${?}
   fi
+
+  # Return To Caller
+  return ${__OK}
 }
 
 function _update_store() {
@@ -413,6 +419,9 @@ function _update_store() {
     # Cleanup Temp File
     _cleanup_temp
   fi
+
+  # Return To Caller
+  return ${?}
 }
 
 function _cleanup_temp() {
@@ -421,7 +430,13 @@ function _cleanup_temp() {
   then
     # Remove Temp File
     command rm ${QCD_TEMP} 2> /dev/null
+
+    # Return To Caller
+    return ${?}
   fi
+
+  # Return To Caller
+  return ${__OK}
 }
 
 # End File Management Functions--------------------------------------------------------------------------------------------------------------------------------------
@@ -925,10 +940,8 @@ function qcd() {
   # Check For Terminating Status
   [[ ${status} -ne ${__CONT} ]] && return ${status}
 
-  ------
-
   # Initialize Argument Components
-  local dir_arg=${__ESTR} show_opt=${__FALSE}
+  local dir_arg=${__ESTR} opt_arg=${__FALSE}
 
   # Check Argument Validity
   if [[ -z ${@} ]]
@@ -1017,7 +1030,7 @@ function qcd() {
     local sym_link=$(_escape_regex "${dir_arg:0:${pfx_len}}")
 
     # Initialize Linkage Parameters
-    local pathv=($(command awk -F ':' -v LINK="${sym_link}" '{ if (LINK ~ $1) {print $2} }' ${QCD_STORE} 2> /dev/null))
+    local pathv=($(command awk -F ':' -v LINK="${sym_link}" '{ if (LINK == $1) {print $2} }' ${QCD_STORE} 2> /dev/null))
 
     # Check For Indirect Link Matching
     if [[ ${#pathv[@]} -eq 0 ]]
