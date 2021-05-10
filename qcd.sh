@@ -999,21 +999,23 @@ function qcd() {
     fi
   fi
 
+  # Get Old Present Directory
+  local old_pwd=$(_get_pwd)
+
   # Determine If Directory Is Linked
   if [[ -d "${dir_arg}" && ${opt_arg} == ${__FALSE} ]]
   then
-    # Update Back Directory
-    QCD_BACK_DIR=$(_get_pwd)
-
     # Change To Valid Directory
     command cd "${dir_arg}"
 
-    # Check For Tracking File
-    if [[ -f "${QCD_TRACK}" ]]
-    then
-      # Add Current Directory
-      (_add_directory &> /dev/null &)
-    fi
+    # Add Current Directory If Tracking
+    [[ -f "${QCD_TRACK}" ]] && (_add_directory &> /dev/null &)
+
+    # Get New Present Directory
+    local new_pwd=$(_get_pwd)
+
+    # Set Back Directory On Path Mismatch
+    [[ ! "${old_pwd}" == "${new_pwd}" ]] && QCD_BACK_DIR="${old_pwd}"
 
     # Terminate Program
     return ${__OK}
@@ -1163,18 +1165,14 @@ function qcd() {
       return ${__ERR}
     elif [[ ! -d "${pathv}" ]]
     then
-      # Check Result Count
-      if [[ ${pathc} -gt 1 ]]
-      then
-        # Print Separator
-        command echo
-      fi
-
-      # Display Error
-      command echo -e "qcd: $(_format_path "${pathv%/}"): Directory does not exist"
+      # Conditionally Print Separator
+      [[ ${pathc} -gt 1 ]] && command echo
 
       # Remove Current Directory
       (_remove_directory "${pathv}" &> /dev/null &)
+
+      # Display Error
+      command echo -e "qcd: $(_format_path "${pathv%/}"): Directory does not exist"
 
       # Terminate Program
       return ${__ERR}
@@ -1218,12 +1216,14 @@ function qcd() {
           fi
         fi
 
-        # Check For Tracking File
-        if [[ -f "${QCD_TRACK}" ]]
-        then
-          # Add Current Directory
-          (_add_directory &> /dev/null &)
-        fi
+        # Add Current Directory If Tracking
+        [[ -f "${QCD_TRACK}" ]] && (_add_directory &> /dev/null &)
+
+        # Get New Present Directory
+        local new_pwd=$(_get_pwd)
+
+        # Set Back Directory On Path Mismatch
+        [[ ! "${old_pwd}" == "${new_pwd}" ]] && QCD_BACK_DIR="${old_pwd}"
       fi
 
       # Terminate Program
