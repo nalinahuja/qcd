@@ -35,6 +35,7 @@ readonly QCD_FOLD=~/.qcd &> /dev/null
 
 # Program Files
 readonly QCD_PROG=${QCD_FOLD}/qcd.sh &> /dev/null
+readonly QCD_PERL=${QCD_FOLD}/lcs.pl &> /dev/null
 readonly QCD_TEMP=${QCD_FOLD}/temp   &> /dev/null
 
 # Resource Files
@@ -1178,28 +1179,35 @@ function qcd() {
         # Display Prompt
         command echo -e "qcd: Multiple paths linked to ${__B}${dir_arg%/}${__N}"
 
-        # Initialize Path Lists
-        local pfxm=() pfxf=()
+        # Determine Sorting Method
+        if [[ -z "$(command -v perl)" ]]
+        then
+          # Initialize Path Lists
+          local pfxm=() pfxf=()
 
-        # Iterate Over Filtered Paths
-        for path in ${paths[@]}
-        do
-          # Get Path Endpoint
-          local ept=$(_get_dname "${path}")
+          # Iterate Over Filtered Paths
+          for path in ${paths[@]}
+          do
+            # Get Path Endpoint
+            local ept=$(_get_dname "${path}")
 
-          # Compare Endpoint To Directory Argument
-          if [[ ${ept} == ${dir_arg}* ]]
-          then
-            # Add Path To Match List
-            pfxm+=("${path}")
-          else
-            # Add Path To Fail List
-            pfxf+=("${path}")
-          fi
-        done
+            # Compare Endpoint To Directory Argument
+            if [[ ${ept} == ${dir_arg}* ]]
+            then
+              # Add Path To Match List
+              pfxm+=("${path}")
+            else
+              # Add Path To Fail List
+              pfxf+=("${path}")
+            fi
+          done
 
-        # Concatenate Path Lists
-        paths=("${pfxm[@]}" "${pfxf[@]}")
+          # Concatenate Path Lists
+          paths=("${pfxm[@]}" "${pfxf[@]}")
+        else
+          # Sort By Longest Common Subsequence
+          paths=($(command perl "${dir_arg}" "${paths[@]}"))
+        fi
 
         # Generate Selection Menu
         _generate_menu ${paths[@]}
