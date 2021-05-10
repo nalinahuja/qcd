@@ -637,7 +637,7 @@ function _parse_arguments() {
         local link_paths=($(command awk -F ':' '{print $2}' ${QCD_STORE}))
 
         # Iterate Over Linkage Paths
-        for link_path in ${link_paths}
+        for link_path in ${link_paths[@]}
         do
           # Verify Linkage Path
           if [[ ! -d "${link_path}" ]]
