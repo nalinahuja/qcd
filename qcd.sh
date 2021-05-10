@@ -17,7 +17,7 @@ readonly __NSET=0 __MINPAD=5 __DELAY=10 __COLNUM=256 &> /dev/null
 # End Numerical Constants--------------------------------------------------------------------------------------------------------------------------------------------
 
 # Value Flags
-readonly __ALIAS="-a" __OPTIONS="-o" __REMEMBER="-r" __FORGET="-f" &> /dev/null
+readonly __ALIAS="-a" __OPTIONS="-o" __REMEMBER="-r" __FORGET="-f" __MKDIRENT="-m" &> /dev/null
 
 # Standalone Flags
 readonly __HELP="-h" __LIST="-l" __BACK="-b" __CLEAN="-c" __TRACK="-t" __UPDATE="-u" __VERSION="-v" &> /dev/null
@@ -835,6 +835,63 @@ function _parse_arguments() {
         return ${__OK}
       ;;
 
+      # Check For Make Directory Flag
+      ${__MKDIRENT}|--make-dir)
+        # Shift Past Flag
+        command shift
+
+        # Verify Path Argument
+        if [[ -z ${1} || "${1}" == -* ]]
+        then
+          # Display Prompt
+          command echo -e "qcd: Directory path missing"
+
+          # Terminate Program
+          return ${__ERR}
+        fi
+
+        # Store Directory path
+        local dir_path="${1}"
+
+        # Store Trailing Path
+        local trail_path=$(_get_dname "${dir_path}")
+
+        # Determine Substring Bounds
+        local si=0 ei=$((${#dir_path} - ${#trail_path}))
+
+        # Store Prefix Path Component
+        local pfx_path="${dir_path:${si}:${ei}}"
+
+        # Verify Path Components
+        if [[ -d "${dir_path}" ]]
+        then
+          # Display Prompt
+          command echo -e "qcd: Directory already exists"
+
+          # Terminate Program
+          return ${__ERR}
+        elif [[ ! -z ${pfx_path} && ! -d "${pfx_path}" ]]
+        then
+          # Display Prompt
+          command echo -e "qcd: Invalid path to new directory"
+
+          # Terminate Program
+          return ${__ERR}
+        fi
+
+        # Create Directory At Location
+        command mkdir "${dir_path}"
+
+        # Switch To New Directory
+        command cd "${dir_path}"
+
+        # Add Current Directory If Tracking
+        [[ -f "${QCD_TRACK}" ]] && (_add_directory &> /dev/null &)
+
+        # Terminate Program
+        return ${__OK}
+      ;;
+
       # Check For Remember Flag
       ${__REMEMBER}|--remember)
         # Determine Remember Type
@@ -889,11 +946,11 @@ function _parse_arguments() {
         # Shift Past Flag
         command shift
 
-        # Determine Remember Type
+        # Verify Alias Argument
         if [[ -z ${1} || "${1}" == -* ]]
         then
           # Display Prompt
-          command echo -e "qcd: Invalid directory alias"
+          command echo -e "qcd: Directory alias missing"
 
           # Terminate Program
           return ${__ERR}
