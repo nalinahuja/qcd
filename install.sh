@@ -18,7 +18,6 @@ readonly YES="y"
 readonly QCD_FOLD=~/.qcd
 
 # Program Files
-readonly QCD_HELP=./help
 readonly QCD_PROG=./qcd.sh
 readonly QCD_LICE=./LICENSE
 readonly QCD_READ=./README.md
@@ -30,10 +29,10 @@ readonly BASHPR=~/.bash_profile
 # End File Constants-------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Upgrade Status
-declare -i UPGRADE_STATUS=${TRUE}
+declare UPGRADE_STATUS=${TRUE}
 
 # Installation Status
-declare -i INSTALL_STATUS=${FALSE}
+declare INSTALL_STATUS=${FALSE}
 
 # Installation Version
 declare INSTALLATION_VERSION
@@ -47,10 +46,10 @@ command read -p "qcd: Confirm installation [y/n]: " confirm
 if [[ ${confirm//Y/${YES}} == ${YES} ]]
 then
   # Verify Program Files
-  if [[ ! -e ${QCD_HELP} || ! -e ${QCD_PROG} || ! -e ${QCD_LICE} || ! -e ${QCD_READ} ]]
+  if [[ ! -e "${QCD_PROG}" || ! -e "${QCD_LICE}" || ! -e "${QCD_READ}" ]]
   then
     # Display Prompt
-    command echo -e "→ One or more program files are corrupted, aborting installation"
+    command echo -e "→ One or more source files are corrupted, aborting installation"
 
     # Terminate Program
     command exit 1
@@ -60,10 +59,10 @@ then
   INSTALLATION_VERSION=$(command cat ${QCD_HELP} | command head -n1 | command awk '{print $4}')
 
   # Add Command To Terminal Profile
-  if [[ ! -d ${QCD_FOLD} ]]
+  if [[ ! -d "${QCD_FOLD}" ]]
   then
     # Find ~/.bashrc
-    if [[ -f ${BASHRC} ]]
+    if [[ -f "${BASHRC}" ]]
     then
       # Add Command To ~/.bashrc
       command echo -e "\n# QCD Utility Source\ncommand source ~/.qcd/qcd.sh\n" >> ${BASHRC}
@@ -73,7 +72,7 @@ then
     fi
 
     # Find ~/.bash_profile
-    if [[ -f ${BASHPR} ]]
+    if [[ -f "${BASHPR}" ]]
     then
       # Add Command To ~/.bash_profile
       command echo -e "\n# QCD Utility Source\ncommand source ~/.qcd/qcd.sh\n" >> ${BASHPR}
@@ -99,7 +98,6 @@ then
   # Install QCD Program Files
   command mkdir ${QCD_FOLD} 2> /dev/null
   command mv ${QCD_PROG} ${QCD_FOLD} 2> /dev/null
-  command mv ${QCD_HELP} ${QCD_FOLD} 2> /dev/null
   command mv ${QCD_LICE} ${QCD_FOLD} 2> /dev/null
   command mv ${QCD_READ} ${QCD_FOLD} 2> /dev/null
 
