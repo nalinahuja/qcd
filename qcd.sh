@@ -1205,7 +1205,7 @@ function qcd() {
             fi
           done
 
-          # Concatenate Lists
+          # Concatenate Path Lists
           paths=("${pfxm[@]}" "${pfxf[@]}")
         fi
 
