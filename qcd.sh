@@ -675,7 +675,7 @@ function _parse_arguments() {
         command read -p "→ Confirm update [y/n]: " confirm
 
         # Determine Action
-        if [[ ${confirm,} == ${__YES} ]]
+        if [[ "${confirm,}" == "${__YES}" ]]
         then
           # Clear Previous Outputs
           _clear_output 1
@@ -824,7 +824,7 @@ function _parse_arguments() {
         _clear_output 2
 
         # Determine Action
-        if [[ ${confirm,} == ${__YES} ]]
+        if [[ "${confirm,}" == "${__YES}" ]]
         then
           # Check For Tracking File
           if [[ ! -f "${QCD_TRACK}" ]]
