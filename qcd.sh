@@ -660,7 +660,7 @@ function _parse_arguments() {
         unset IFS
 
         # Display Prompt
-        command echo -e "qcd: Store file cleaned"
+        command echo -e "qcd: Cleaned store file"
 
         # Terminate Program
         return ${__OK}
