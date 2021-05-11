@@ -49,19 +49,19 @@ readonly QCD_INSTALL=${QCD_FOLD}/install.sh  &> /dev/null
 
 # End File Constants-------------------------------------------------------------------------------------------------------------------------------------------------
 
-# Release Version
-readonly QCD_RELEASE_VER="2.0" &> /dev/null
-
 # Release URL Endpoint
 readonly QCD_RELEASE_URL="https://api.github.com/repos/nalinahuja22/qcd/releases/latest" &> /dev/null
 
-# End Installation Constants-----------------------------------------------------------------------------------------------------------------------------------------
+# End Release Constants----------------------------------------------------------------------------------------------------------------------------------------------
 
 # Exit Flag
 declare QCD_EXIT=${__FALSE}
 
 # Back Directory
 declare QCD_BACK_DIR=${__ESTR}
+
+# Release Version
+declare QCD_RELEASE_VERSION="v2.1"
 
 # End Global Variables-----------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -196,7 +196,7 @@ function _hide_output() {
 function _show_help() {
   # Display Help Message
   command cat << EOF
-${__B}QCD Utility - v${QCD_RELEASE_VER}${__N}
+${__B}QCD Utility - ${QCD_RELEASE_VERSION}${__N}
 
 ${__B}Usage:${__N}
   qcd                                 Switch to home directory
@@ -666,7 +666,7 @@ function _parse_arguments() {
       # Check For Update Flag
       ${__UPDATE}|--update)
         # Display Prompt
-        command echo -e "qcd: Currently running ${__B}${QCD_RELEASE_VER}${__N}"
+        command echo -e "qcd: Currently running ${__B}${QCD_RELEASE_VERSION}${__N}"
 
         # Prompt User For Confirmation
         command read -p "→ Confirm update [y/n]: " confirm
@@ -760,8 +760,11 @@ function _parse_arguments() {
           # Clear Previous Outputs
           _clear_output 2
 
+          # Update Release Version
+          QCD_RELEASE_VERSION=$(command cat ${QCD_PROG} | command grep "QCD_RELEASE_VERSION" | command head -n1 | command awk -F '"' '{print $2}')
+
           # Display Prompt
-          command echo -e "qcd: Updated to ${__B}${QCD_RELEASE_VER}${__N}"
+          command echo -e "qcd: Updated to ${__B}${QCD_RELEASE_VERSION}${__N}"
         else
           # Clear All Outputs
           _clear_output 2

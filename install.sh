@@ -36,12 +36,12 @@ declare UPGRADE_STATUS=${TRUE}
 declare INSTALL_STATUS=${FALSE}
 
 # Installation Version
-declare INSTALLATION_VERSION=$(command cat ${QCD_PROG} | command grep "QCD_RELEASE_VER" | command head -n1 | command awk -F '"' '{print $2}')
+declare INSTALL_VERSION=$(command cat ${QCD_PROG} | command grep "QCD_RELEASE_VERSION" | command head -n1 | command awk -F '"' '{print $2}')
 
 # End Global Variables------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Prompt User For Installation Confirmation
-command read -p "qcd: Confirm installation v${INSTALLATION_VERSION} [y/n]: " confirm
+command read -p "qcd: Confirm installation ${INSTALL_VERSION} [y/n]: " confirm
 
 # Determine Action
 if [[ ${confirm//Y/${YES}} == ${YES} ]]
@@ -104,10 +104,10 @@ then
   if [[ ${UPGRADE_STATUS} == ${TRUE} ]]
   then
     # Display Upgrade Prompt
-    command echo -e "→ Upgraded QCD to ${INSTALLATION_VERSION}"
+    command echo -e "→ Upgraded QCD to ${INSTALL_VERSION}"
   else
     # Display Installation Prompt
-    command echo -e "→ Installed QCD ${INSTALLATION_VERSION}"
+    command echo -e "→ Installed QCD ${INSTALL_VERSION}"
   fi
 
   # Display Success Prompt
