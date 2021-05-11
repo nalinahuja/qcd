@@ -296,6 +296,9 @@ function _generate_menu() {
   # Reset Exit Flag
   QCD_EXIT=${__FALSE}
 
+  # Initialize String Buffer
+  local buffer=()
+
   # Initialize Selected Option
   local os=${__NSET}
 
@@ -304,9 +307,6 @@ function _generate_menu() {
   do
     # Initialize Option Index
     local oi=${__NSET}
-
-    # Initialize String Buffer
-    local buffer=()
 
     # Iterate Over Options
     for opt in "${@}"
@@ -333,6 +333,9 @@ function _generate_menu() {
 
     # Read User Input
     local key=$(_read_input)
+
+    # Clear String Buffer
+    buffer=()
 
     # Check Exit Flag
     if [[ ${QCD_EXIT} == ${__TRUE} ]]
