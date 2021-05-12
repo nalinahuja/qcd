@@ -215,13 +215,13 @@ ${__B}Options:${__N}
 
   qcd [-r, --remember]                Remember present directory
   qcd [-r, --remember] [path]         Remember directory by path
+  qcd [-a, --alias] [alias]           Remember directory by alias
 
   qcd [-f, --forget]                  Forget present directory
   qcd [-f, --forget] [path]           Forget matching directory path
   qcd [-f, --forget] [link]           Forget matching symbolic links
 
   qcd [-m, --mkdir] [path]            Create and switch to new directory
-  qcd [-a, --alias] [alias]           Alias directory if remembered
   qcd [-o, --options] [link]          Show symbolic link options
 
 Developed by Nalin Ahuja, nalinahuja22
