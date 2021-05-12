@@ -61,7 +61,7 @@ declare QCD_EXIT=${__FALSE}
 declare QCD_BACK_DIR=${__ESTR}
 
 # Release Version
-declare QCD_RELEASE_VERSION="v2.0"
+declare QCD_RELEASE_VERSION="v2.0.1"
 
 # End Global Variables-----------------------------------------------------------------------------------------------------------------------------------------------
 
