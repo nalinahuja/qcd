@@ -1039,15 +1039,6 @@ function qcd() {
   # Check For Terminating Status
   [[ ${status} -ne ${__OK} ]] && return ${status}
 
-  # Verify Installed Binary
-  _verify_binary
-
-  # Store Verification Status
-  local status=${?}
-
-  # Check For Terminating Status
-  [[ ${status} -ne ${__OK} ]] && return ${status}
-
   # Parse Commandline Arguments
   _parse_arguments "${@}"
 
@@ -1505,6 +1496,19 @@ function _qcd_comp() {
 function _qcd_init() {
   # Verify Installed Binary
   _verify_binary
+
+  # Store Verification Status
+  local status=${?}
+
+  # Check For Error Status
+  if [[ ${status} -ne ${__OK} ]]
+  then
+    # Unset Function
+    unset -f qcd
+
+    # Terminate Initalization
+    return
+  fi
 
   # Set Signal Trap For EXIT
   command trap _cleanup_files EXIT &> /dev/null
