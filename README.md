@@ -10,12 +10,7 @@ QCD is compatible with macOS and popular Linux distributions in bash environment
 
 ## Dependencies
 <p align="justify">
-QCD does not require any special dependencies to operate as a command line utility and uses common builtin commands during execution. However, there may be some dependencies missing depending on the operating system QCD is installed on.
-<p>
-
-#### Linux
-<p align="justify">
-Some Linux distributions do not natively ship with the <code>curl</code> command. This command is used by QCD to download updates making it a <i>non-critical</i> dependency. This means that if the user wants to use QCDs update functionality, then they will have to manually install this dependency using a tool like <a href="https://ubuntu.com/server/docs/package-management"><code>apt</code></a>.
+QCD does not require any special dependencies to operate as a command line utility and uses common builtin commands during execution. However, there may be some dependencies missing depending on the operating system QCD is installed on. Some operating systems do not natively ship with the <code>curl</code> command. This command is used by QCD to download updates making it a <i>non-critical</i> dependency. This means that if the user wants to use QCDs update functionality, then they will have to manually install this dependency using a tool like <a href="https://ubuntu.com/server/docs/package-management"><code>apt</code></a>.
 </p>
 
 ## Installation
