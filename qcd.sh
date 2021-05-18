@@ -200,21 +200,6 @@ function _hide_output() {
   command tput civis 2> /dev/null
 }
 
-function _verify_binary() {
-  # Verify Realpath Binary
-  if [[ -z "$(command -v realpath)" ]]
-  then
-    # Display Prompt
-    command echo -e "qcd: ${__B}realpath${__N} dependency not installed"
-
-    # Return To Caller
-    return ${__ERR}
-  fi
-
-  # Return To Caller
-  return ${__OK}
-}
-
 # End Environment Functions------------------------------------------------------------------------------------------------------------------------------------------
 
 function _show_help() {
@@ -1503,27 +1488,17 @@ function _qcd_comp() {
 }
 
 function _qcd_init() {
-  # Verify Installed Binary
-  _verify_binary
+  # Set Signal Trap For EXIT
+  command trap _cleanup_files EXIT &> /dev/null
 
-  # Check For Error Status
-  if [[ ${?} -ne ${__OK} ]]
-  then
-    # Unset Function
-    unset -f qcd
-  else
-    # Set Signal Trap For EXIT
-    command trap _cleanup_files EXIT &> /dev/null
+  # Set Environment To Show Visible Files
+  command bind 'set match-hidden-files off' &> /dev/null
 
-    # Set Environment To Show Visible Files
-    command bind 'set match-hidden-files off' &> /dev/null
+  # Initialize Directory Completion Engine
+  command complete -o nospace -o filenames -A directory -F _qcd_comp qcd
 
-    # Initialize Directory Completion Engine
-    command complete -o nospace -o filenames -A directory -F _qcd_comp qcd
-
-    # Remove Invalid Linkages From Store File
-    [[ -f "${QCD_STORE}" ]] && (qcd --clean &> /dev/null &)
-  fi
+  # Remove Invalid Linkages From Store File
+  [[ -f "${QCD_STORE}" ]] && (qcd --clean &> /dev/null &)
 }
 
 function _qcd_exit() {
