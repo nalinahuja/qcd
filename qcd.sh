@@ -80,14 +80,14 @@ function _get_path() {
   # Navigate To Argument Directory
   command cd "${@}"
 
-  # Store New Directory
-  local nwd=$(_get_pwd)
+  # Store Real Directory Path
+  local rdp=$(_get_pwd)
 
   # Navigate To Present Directory
   command cd "${pwd}"
 
-  # Return Directory Path
-  command echo -e "${new}"
+  # Return Real Directory Path
+  command echo -e "${rdp}"
 }
 
 function _get_rname() {
