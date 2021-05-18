@@ -74,11 +74,20 @@ function _get_pwd() {
 }
 
 function _get_path() {
-  # Store Argument Directory
-  local dir=$(command realpath "${@}" 2> /dev/null)
+  # Store Present Directory
+  local pwd=$(_get_pwd)
 
-  # Return Realpath Path
-  command echo -e "${dir}${__FLSH}"
+  # Navigate To Argument Directory
+  command cd "${@}"
+
+  # Store New Directory
+  local nwd=$(_get_pwd)
+
+  # Navigate To Present Directory
+  command cd "${pwd}"
+
+  # Return Directory Path
+  command echo -e "${new}"
 }
 
 function _get_rname() {
@@ -928,7 +937,7 @@ function _parse_arguments() {
           dir=$(_get_pwd)
         else
           # Get Argument Directory
-          dir=$(_get_path "${2}")
+          dir="${2}"
 
           # Verify Argument Directory
           if [[ ! -d "${dir}" ]]
@@ -1088,7 +1097,7 @@ function qcd() {
       local format=$(command printf "%${offset}s")
 
       # Replace Directory Arguments
-      dir_arg=$(_get_path "${format// /${__HWD}}")
+      dir_arg="${format// /${__HWD}}"
 
       # Override Option Argument
       opt_arg=${__FALSE}
