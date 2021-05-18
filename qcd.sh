@@ -944,18 +944,24 @@ function _parse_arguments() {
 
       # Check For Forget Flag
       ${__FORGET}|--forget)
+        # Initalize Argument
+        local arg="${2}"
+
         # Determine Forget Type
-        if [[ -z ${2} ]]
+        if [[ -z ${arg} ]]
         then
-          # Remove Current Directory
+          # Forget Current Directory
           (_remove_directory &> /dev/null &)
-        elif [[ ! -d "${2}" ]]
+        elif [[ ! -d "${arg}" ]]
         then
-          # Remove Indicated Linkage
-          (_remove_linkage "${2}" &> /dev/null &)
+          # Forget Argument As Linkage
+          (_remove_linkage "${arg}" &> /dev/null &)
         else
-          # Remove Current Directory
-          (_remove_directory "${2}" &> /dev/null &)
+          # Expand Directory Path
+          arg=$(_get_path "${arg}")
+
+          # Forget Argument As Directory
+          (_remove_directory "${arg}" &> /dev/null &)
         fi
 
         # Terminate Program
