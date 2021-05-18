@@ -224,7 +224,7 @@ ${__B}Options:${__N}
 
   qcd [-r, --remember]                Remember present directory
   qcd [-r, --remember] [path]         Remember directory by path
-  qcd [-a, --alias] [alias]           Remember directory by alias
+  qcd [-a, --alias] [alias]           Remember present directory by alias
 
   qcd [-f, --forget]                  Forget present directory
   qcd [-f, --forget] [path]           Forget matching directory path
@@ -934,11 +934,11 @@ function _parse_arguments() {
             return ${__ERR}
           fi
 
-          # Shift Arguments
+          # Shift Past Flag
           command shift
         fi
 
-        # Shift Arguments
+        # Shift Past Value
         command shift
       ;;
 
@@ -980,7 +980,13 @@ function _parse_arguments() {
         # Get Argument Alias
         als=$(_escape_regex "${1}")
 
-        # Shift Values
+        # Shift Past Value
+        command shift
+      ;;
+
+      # Check For Option Flag
+      ${__OPTIONS}|--options)
+        # Shift Past Flag
         command shift
       ;;
 
