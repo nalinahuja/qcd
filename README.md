@@ -10,7 +10,13 @@ QCD is compatible with macOS and popular Linux distributions in bash environment
 
 ## Dependencies
 <p align="justify">
-QCD does not require any special dependencies to operate as a command line utility and uses common builtin commands during execution. However, unlike most Linux distributions macOS does not natively ship with the <code>realpath</code> and <code>curl> command and therefore the user will have to manually install this command in order to use QCD. The only other dependency it requires is the <code>curl</code> command which is used internally by QCD to download updates. Please make sure that this command is installed on your machine if you want to use QCDs the self update functionality. While not a dependency, please update your bash environment to the latest version to get the best possible experience with QCD.
+QCD does not require any special dependencies to operate as a command line utility and uses common builtin commands during execution. However, there may be some dependencies missing depending on the operating system QCD is installed in.
+
+#### MacOS
+MacOS does not natively ship with the <code>realpath</code> command. This command is used by QCD during path resolution making it a <i>critical</i> dependency. This means that if the user wants use QCD as a path switching utility, then the user will have to manually install this dependency using a tool like <a href="https://brew.sh/">brew</a>.
+
+#### Linux
+Some Linux distributions do not natively ship with the <code>curl</code> command. This command is used by QCD to download updates making it a <i>non-critical</i> dependency. This means that if the user wants to use QCDs update functionality, then the user will have to manually install this dependency using a tool like <a href="https://ubuntu.com/server/docs/package-management">apt</a>.
 </p>
 
 ## Installation
