@@ -61,7 +61,7 @@ declare QCD_EXIT=${__FALSE}
 declare QCD_BACK_DIR=${__ESTR}
 
 # Release Version
-declare QCD_RELEASE_VERSION="v2.0.1"
+declare QCD_RELEASE_VERSION="v2.0.2"
 
 # End Global Variables-----------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -1497,30 +1497,24 @@ function _qcd_init() {
   # Verify Installed Binary
   _verify_binary
 
-  # Store Verification Status
-  local status=${?}
-
   # Check For Error Status
-  if [[ ${status} -ne ${__OK} ]]
+  if [[ ${?} -ne ${__OK} ]]
   then
     # Unset Function
     unset -f qcd
+  else
+    # Set Signal Trap For EXIT
+    command trap _cleanup_files EXIT &> /dev/null
 
-    # Terminate Initalization
-    return
+    # Set Environment To Show Visible Files
+    command bind 'set match-hidden-files off' &> /dev/null
+
+    # Initialize Directory Completion Engine
+    command complete -o nospace -o filenames -A directory -F _qcd_comp qcd
+
+    # Remove Invalid Linkages From Store File
+    [[ -f "${QCD_STORE}" ]] && (qcd --clean &> /dev/null &)
   fi
-
-  # Set Signal Trap For EXIT
-  command trap _cleanup_files EXIT &> /dev/null
-
-  # Set Environment To Show Visible Files
-  command bind 'set match-hidden-files off' &> /dev/null
-
-  # Initialize Directory Completion Engine
-  command complete -o nospace -o filenames -A directory -F _qcd_comp qcd
-
-  # Remove Invalid Linkages From Store File
-  [[ -f "${QCD_STORE}" ]] && (qcd --clean &> /dev/null &)
 }
 
 function _qcd_exit() {
