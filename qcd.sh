@@ -191,6 +191,21 @@ function _hide_output() {
   command tput civis 2> /dev/null
 }
 
+function _verify_binary() {
+  # Verify Realpath Binary
+  if [[ -z "$(command -v realpath)" ]]
+  then
+    # Display Prompt
+    command echo -e "qcd: ${__B}realpath${__N} dependency not installed"
+
+    # Return To Caller
+    return ${__ERR}
+  fi
+
+  # Return To Caller
+  return ${__OK}
+}
+
 # End Environment Functions------------------------------------------------------------------------------------------------------------------------------------------
 
 function _show_help() {
@@ -684,7 +699,7 @@ function _parse_arguments() {
           if [[ -z "$(command -v curl)" ]]
           then
             # Display Prompt
-            command echo -e "→ Curl dependency not installed"
+            command echo -e "→ ${__B}curl${__N} dependency not installed"
 
             # Terminate Program
             return ${__ERR}
@@ -987,7 +1002,7 @@ function _parse_arguments() {
       # Default Argument Handler
       *)
         # Shift Past Value
-        shift
+        command shift
       ;;
     esac
   done
@@ -1019,6 +1034,15 @@ function qcd() {
   _create_store
 
   # Store Creation Status
+  local status=${?}
+
+  # Check For Terminating Status
+  [[ ${status} -ne ${__OK} ]] && return ${status}
+
+  # Verify Installed Binary
+  _verify_binary
+
+  # Store Verification Status
   local status=${?}
 
   # Check For Terminating Status
@@ -1190,7 +1214,7 @@ function qcd() {
         # Display Prompt
         command echo -e "qcd: Multiple paths linked to ${__B}${dir_arg%/}${__N}"
 
-        # Determine Sorting Method
+        # Determine Ordering Method
         if [[ -z "$(command -v perl)" ]]
         then
           # Initialize Path Lists
@@ -1216,7 +1240,7 @@ function qcd() {
           # Concatenate Path Lists
           paths=("${pfxm[@]}" "${pfxf[@]}")
         else
-          # Sort By Longest Common Subsequence
+          # Order Paths By Longest Common Subsequence
           paths=($(command perl ${QCD_UTIL} "${dir_arg}" "${paths[@]}"))
         fi
 
@@ -1479,6 +1503,9 @@ function _qcd_comp() {
 }
 
 function _qcd_init() {
+  # Verify Installed Binary
+  _verify_binary
+
   # Set Signal Trap For EXIT
   command trap _cleanup_files EXIT &> /dev/null
 
