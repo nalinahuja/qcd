@@ -550,7 +550,7 @@ function _remove_directory() {
     dir=$(_get_pwd)
   else
     # Store Argument Path
-    dir=$(_get_path "${@}")
+    dir="${@}"
   fi
 
   # Remove Directory From Store File
