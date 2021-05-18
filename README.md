@@ -14,6 +14,7 @@ QCD does not require any special dependencies to operate as a command line utili
 <p>
 
 #### Linux
+<p align="justify">
 Some Linux distributions do not natively ship with the <code>curl</code> command. This command is used by QCD to download updates making it a <i>non-critical</i> dependency. This means that if the user wants to use QCDs update functionality, then they will have to manually install this dependency using a tool like <a href="https://ubuntu.com/server/docs/package-management"><code>apt</code></a>.
 </p>
 
