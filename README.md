@@ -10,7 +10,7 @@ QCD is compatible with macOS and popular Linux distributions in bash environment
 
 ## Dependencies
 <p align="justify">
-QCD does not require any special dependencies to operate as a command line utility and uses common builtin commands during execution. However, there may be some dependencies missing depending on the operating system QCD is installed on. Some operating systems do not natively ship with the <code>curl</code> command which is used by QCD to download updates, making it a <i>non-critical</i> dependency. This means that if the user wants to use QCDs update functionality, then they will have to manually install this dependency using a tool like <a href="https://ubuntu.com/server/docs/package-management"><code>apt</code></a> or <a href="https://brew.sh"><code>brew</code></a>.
+QCD does not require any special dependencies to operate as a command line utility and uses common builtin commands during execution. However, there may be some dependencies missing depending on the operating system QCD is installed on. Some operating systems do not natively ship with the <code>curl</code> command which is used by QCD to download updates, making it a non-critical dependency. This means that if the user wants to use QCDs update functionality, then they will have to manually install this dependency using a tool like <a href="https://ubuntu.com/server/docs/package-management"><code>apt</code></a> or <a href="https://brew.sh"><code>brew</code></a>.
 </p>
 
 ## Installation
@@ -169,7 +169,7 @@ qcd [-m, --make-dir]
 
 #### Track Directories
 <p align="justify">
-The track directories flag allows the user to change the directory tracking behavior of QCD. By default, QCD will add new directories to its lookup file as they are visited. This flag gives the user the ability to toggle this feature on and off at will.
+The track directories flag allows the user to toggle the directory tracking behavior of QCD. When directory tracking is enabled, QCD will add new directories to its lookup file as they are visited. This feature is disabled by default.
 </p>
 
 ```bash
