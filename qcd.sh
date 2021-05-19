@@ -61,7 +61,7 @@ declare QCD_EXIT=${__FALSE}
 declare QCD_BACK_DIR=${__ESTR}
 
 # Release Version
-declare QCD_RELEASE_VERSION="v2.0.3"
+declare QCD_RELEASE_VERSION="v2.0.4"
 
 # End Global Variables-----------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -473,7 +473,7 @@ function _add_directory() {
     dir=$(_get_pwd)
   else
     # Store Argument Path
-    dir=$(_get_path "${1}")
+    dir="${1}"
   fi
 
   # Compare Directory Path To Home Path
@@ -750,6 +750,9 @@ function _parse_arguments() {
           # Display Prompt
           command echo -en "\r→ Configuring updates "
 
+          # Update Release Version
+          QCD_RELEASE_VERSION=$(command cat ${QCD_PROG} | command grep "QCD_RELEASE_VERSION" | command head -n1 | command awk -F '"' '{print $2}')
+
           # Update Terminal Environment
           command source ${QCD_PROG} 2> /dev/null
 
@@ -771,9 +774,6 @@ function _parse_arguments() {
 
           # Clear Previous Outputs
           _clear_output 2
-
-          # Update Release Version
-          QCD_RELEASE_VERSION=$(command cat ${QCD_PROG} | command grep "QCD_RELEASE_VERSION" | command head -n1 | command awk -F '"' '{print $2}')
 
           # Display Prompt
           command echo -e "qcd: Updated to ${__B}${QCD_RELEASE_VERSION}${__N}"
@@ -871,7 +871,7 @@ function _parse_arguments() {
           return ${__ERR}
         fi
 
-        # Store Directory path
+        # Store Directory Path
         local dir_path="${1}"
 
         # Store Trailing Path
@@ -1021,6 +1021,9 @@ function _parse_arguments() {
 
     # Verify Alias Parameter
     [[ -z ${als} ]] && als=$(_get_dname "${dir}")
+
+    # Expand Directory Path
+    dir=$(_get_path "${dir}")
 
     # Add Directory To Store File
     (_add_directory "${dir}" "${als}" &> /dev/null &)
