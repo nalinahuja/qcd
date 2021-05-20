@@ -36,16 +36,16 @@ readonly QCD_FOLD=~/.qcd &> /dev/null
 # Program Files
 readonly QCD_PROG=${QCD_FOLD}/qcd.sh &> /dev/null
 readonly QCD_UTIL=${QCD_FOLD}/lcs.pl &> /dev/null
-readonly QCD_TEMP=${QCD_FOLD}/temp   &> /dev/null
 
 # Resource Files
-readonly QCD_HELP=${QCD_FOLD}/help  &> /dev/null
+readonly QCD_TEMP=${QCD_FOLD}/temp    &> /dev/null
 readonly QCD_STORE=${QCD_FOLD}/store  &> /dev/null
 readonly QCD_TRACK=${QCD_FOLD}/.track &> /dev/null
 
 # Release Files
-readonly QCD_RELEASE=${QCD_FOLD}/release.zip &> /dev/null
+readonly QCD_VERSION=${QCD_FOLD}/VERSION     &> /dev/null
 readonly QCD_INSTALL=${QCD_FOLD}/install.sh  &> /dev/null
+readonly QCD_RELEASE=${QCD_FOLD}/release.zip &> /dev/null
 
 # End File Constants-------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -59,9 +59,6 @@ declare QCD_EXIT=${__FALSE}
 
 # Back Directory
 declare QCD_BACK_DIR=${__ESTR}
-
-# Release Version
-declare QCD_RELEASE_VERSION="v2.0.4"
 
 # End Global Variables-----------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -135,6 +132,41 @@ function _get_dname() {
   fi
 }
 
+function _show_help() {
+  # Display Help Message
+  command cat << EOF
+${__B}QCD Utility - ${QCD_RELEASE_VERSION}${__N}
+
+${__B}Usage:${__N}
+  qcd                                 Switch to home directory
+  qcd [path]                          Switch to valid directory
+  qcd [link]/[subdir]/...             Switch to linked directory
+  qcd [n]..                           Switch to nth parent directory
+
+${__B}Options:${__N}
+  qcd [-h, --help]                    Show this help
+  qcd [-c, --clean]                   Clean store file
+  qcd [-l, --list]                    List stored linkages
+  qcd [-v, --version]                 Show current version
+  qcd [-u, --update]                  Update to latest version
+  qcd [-b, --back-dir]                Navigate to backward directory
+  qcd [-t, --track-dirs]              Set directory tracking behavior
+
+  qcd [-r, --remember]                Remember present directory
+  qcd [-r, --remember] [path]         Remember directory by path
+  qcd [-a, --alias] [alias]           Remember present directory by alias
+
+  qcd [-f, --forget]                  Forget present directory
+  qcd [-f, --forget] [path]           Forget matching directory path
+  qcd [-f, --forget] [link]           Forget matching symbolic links
+
+  qcd [-m, --mkdir] [path]            Create and switch to new directory
+  qcd [-o, --options] [link]          Show symbolic link options
+
+Developed by Nalin Ahuja, nalinahuja22
+EOF
+}
+
 function _split_name() {
   # Return Name Of Symbolic Link
   command echo -e "${@%:*}"
@@ -166,6 +198,10 @@ function _escape_path() {
 
   # Return Escaped Path
   command echo -e "${path}"
+}
+
+function _get_version() {
+
 }
 
 function _escape_regex() {
@@ -201,41 +237,6 @@ function _hide_output() {
 }
 
 # End Environment Functions------------------------------------------------------------------------------------------------------------------------------------------
-
-function _show_help() {
-  # Display Help Message
-  command cat << EOF
-${__B}QCD Utility - ${QCD_RELEASE_VERSION}${__N}
-
-${__B}Usage:${__N}
-  qcd                                 Switch to home directory
-  qcd [path]                          Switch to valid directory
-  qcd [link]/[subdir]/...             Switch to linked directory
-  qcd [n]..                           Switch to nth parent directory
-
-${__B}Options:${__N}
-  qcd [-h, --help]                    Show this help
-  qcd [-c, --clean]                   Clean store file
-  qcd [-l, --list]                    List stored linkages
-  qcd [-v, --version]                 Show current version
-  qcd [-u, --update]                  Update to latest version
-  qcd [-b, --back-dir]                Navigate to backward directory
-  qcd [-t, --track-dirs]              Set directory tracking behavior
-
-  qcd [-r, --remember]                Remember present directory
-  qcd [-r, --remember] [path]         Remember directory by path
-  qcd [-a, --alias] [alias]           Remember present directory by alias
-
-  qcd [-f, --forget]                  Forget present directory
-  qcd [-f, --forget] [path]           Forget matching directory path
-  qcd [-f, --forget] [link]           Forget matching symbolic links
-
-  qcd [-m, --mkdir] [path]            Create and switch to new directory
-  qcd [-o, --options] [link]          Show symbolic link options
-
-Developed by Nalin Ahuja, nalinahuja22
-EOF
-}
 
 function _read_input() {
   # Initialize String Buffer
@@ -442,19 +443,8 @@ function _update_store() {
 }
 
 function _cleanup_files() {
-  # Check For Temp File
-  if [[ -f "${QCD_TEMP}" ]]
-  then
-    # Remove Temp File
-    command rm ${QCD_TEMP} 2> /dev/null
-  fi
-
-  # Check For Help File
-  if [[ -f "${QCD_HELP}" ]]
-  then
-    # Remove Help File
-    command rm ${QCD_HELP} 2> /dev/null
-  fi
+  # Remove Temp File
+  [[ -f "${QCD_TEMP}" ]] && command rm ${QCD_TEMP} 2> /dev/null
 
   # Return To Caller
   return ${__OK}
@@ -563,7 +553,7 @@ function _remove_directory() {
   return ${__OK}
 }
 
-# End Database Management Functions----------------------------------------------------------------------------------------------------------------------------------
+# End Linkage Management Functions-----------------------------------------------------------------------------------------------------------------------------------
 
 function _parse_arguments() {
   # Intialize Directory Parameters
@@ -706,7 +696,7 @@ function _parse_arguments() {
           local release_info=$(command curl --connect-timeout ${__DELAY} -sL ${QCD_RELEASE_URL} 2> /dev/null)
 
           # Get Download URL
-          local download_url=$(command echo -e "${release_info}" | command egrep -s -o "https.*zipball.*" 2> /dev/null)
+          local download_url=$(command echo -e "${release_info}" | command egrep -s -o "https.*zipball.*" 2> /dev/null | command awk -F '"' '{print $1}' 2> /dev/null)
 
           # Verify Download URL
           if [[ ${?} -ne ${__OK} || -z ${download_url} ]]
@@ -719,7 +709,7 @@ function _parse_arguments() {
           fi
 
           # Download Release Contents
-          command curl --connect-timeout ${__DELAY} -sL "${download_url%\",}" > ${QCD_RELEASE}
+          command curl --connect-timeout ${__DELAY} -sL "${download_url}" > ${QCD_RELEASE}
 
           # Error Check Release Contents
           if [[ ${?} -ne ${__OK} || ! -f "${QCD_RELEASE}" ]]
@@ -750,24 +740,11 @@ function _parse_arguments() {
           # Display Prompt
           command echo -en "\r→ Configuring updates "
 
-          # Update Release Version
-          QCD_RELEASE_VERSION=$(command cat ${QCD_PROG} | command grep "QCD_RELEASE_VERSION" | command head -n1 | command awk -F '"' '{print $2}')
-
-          # Update Terminal Environment
-          command source ${QCD_PROG} 2> /dev/null
-
-          # Error Check Installation
-          if [[ ${?} -ne ${__OK} ]]
-          then
-            # Display Prompt
-            command echo -e "\r→ Failed to configure update "
-
-            # Terminate Program
-            return ${__ERR}
-          fi
-
           # Cleanup Installation
           command rm ${QCD_RELEASE} ${QCD_INSTALL} 2> /dev/null
+
+          # Update Release Version
+          QCD_RELEASE_VERSION=$(command cat ${QCD_PROG} | command grep "QCD_RELEASE_VERSION" | command head -n1 | command awk -F '"' '{print $2}')
 
           # Display Prompt
           command echo -e "\r→ Update complete     "
@@ -777,6 +754,9 @@ function _parse_arguments() {
 
           # Display Prompt
           command echo -e "qcd: Updated to ${__B}${QCD_RELEASE_VERSION}${__N}"
+
+          # Update Terminal Environment
+          command source ${QCD_PROG} &> /dev/null
         else
           # Clear All Outputs
           _clear_output 2
