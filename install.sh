@@ -50,7 +50,7 @@ declare UPGRADE_STATUS=${TRUE}
 declare INSTALL_STATUS=${FALSE}
 
 # Installation Version
-declare INSTALL_VERSION=$(command cat "${QCD_VERSION}" 2> /dev/null)
+declare INSTALL_VERSION=$(command cat ${QCD_VERSION} 2> /dev/null)
 
 # End Global Variables------------------------------------------------------------------------------------------------------------------------------------------------
 
