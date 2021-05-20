@@ -4,16 +4,6 @@
 
 # End Header----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-# Boolean Values
-readonly TRUE=1 FALSE=0
-
-# End Numerical Constants---------------------------------------------------------------------------------------------------------------------------------------------
-
-# Embedded Strings
-readonly YES="y"
-
-# End String Constants------------------------------------------------------------------------------------------------------------------------------------------------
-
 # Program Path
 readonly QCD_FOLD=~/.qcd
 
@@ -30,7 +20,28 @@ readonly QCD_READ_ME=./README.md
 readonly BASHRC=~/.bashrc
 readonly BASHPR=~/.bash_profile
 
+# Verify Program Files
+if [[ ! -e "${QCD_PROG}" || ! -e "${QCD_UTIL}" || ! -e "${QCD_LICENSE}" || ! -e "${QCD_VERSION}" || ! -e "${QCD_READ_ME}" ]]
+then
+  # Display Prompt
+  command echo -e "qcd: One or more installation files are missing or corrupted, aborting installation"
+
+  # Terminate Program
+  command exit 1
+fi
+
 # End File Constants--------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Boolean Constants
+readonly TRUE=1 FALSE=0
+
+# Embedded Strings
+readonly YES="y" ESEQ=$(command printf "\033") &> /dev/null
+
+# Text Formatting Strings
+readonly B=$(command printf "${ESEQ}[1m") W=$(command printf "${ESEQ}[30m${ESEQ}[47m") N=$(command printf "${ESEQ}(B${ESEQ}[m") &> /dev/null
+
+# End Embedded Constants----------------------------------------------------------------------------------------------------------------------------------------------
 
 # Upgrade Status
 declare UPGRADE_STATUS=${TRUE}
@@ -39,26 +50,16 @@ declare UPGRADE_STATUS=${TRUE}
 declare INSTALL_STATUS=${FALSE}
 
 # Installation Version
-declare INSTALL_VERSION=$(command cat "${QCD_VERSION}")
+declare INSTALL_VERSION=$(command cat "${QCD_VERSION}" 2> /dev/null)
 
 # End Global Variables------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Prompt User For Installation Confirmation
-command read -p "qcd: Confirm installation ${INSTALL_VERSION} [y/n]: " confirm
+command read -p "qcd: Confirm installation ${B}${INSTALL_VERSION}${N} [y/n]: " confirm
 
 # Determine Action
 if [[ "${confirm,}" == "${YES}" ]]
 then
-  # Verify Program Files
-  if [[ ! -e "${QCD_PROG}" || ! -e "${QCD_LICE}" || ! -e "${QCD_READ}" ]]
-  then
-    # Display Prompt
-    command echo -e "→ One or more source files are corrupted, aborting installation"
-
-    # Terminate Program
-    command exit 1
-  fi
-
   # Add Command To Terminal Profile
   if [[ ! -d "${QCD_FOLD}" ]]
   then
@@ -109,13 +110,13 @@ then
   command mv ${QCD_READ_ME} ${QCD_FOLD} 2> /dev/null
 
   # Determine Appropriate Prompt
-  if [[ ${UPGRADE_STATUS} == ${TRUE} ]]
+  if [[ ${UPGRADE_STATUS} -eq ${TRUE} ]]
   then
     # Display Upgrade Prompt
-    command echo -e "→ Upgraded QCD to ${INSTALL_VERSION}"
+    command echo -e "→ Upgraded QCD to ${B}${INSTALL_VERSION}${N}"
   else
     # Display Installation Prompt
-    command echo -e "→ Installed QCD ${INSTALL_VERSION}"
+    command echo -e "→ Installed QCD ${B}${INSTALL_VERSION}${N}"
   fi
 
   # Display Success Prompt
