@@ -182,11 +182,11 @@ function _escape_regex() {
 # End Utility Functions----------------------------------------------------------------------------------------------------------------------------------------------
 
 function _show_help() {
-  # Display Message Header
+  # Display Help Message
   command echo -e "${__B}QCD Utility - $(_get_version)${__N}"
 
   # Display Usage Header
-  command echo -e "${__B}Usage:${__N}"
+  command echo -e "\n${__B}Usage:${__N}"
 
   # Display Usage
   command cat << EOF
@@ -197,7 +197,7 @@ function _show_help() {
 EOF
 
   # Display Options Header
-  command echo -e "${__B}Options:${__N}"
+  command echo -e "\n${__B}Options:${__N}"
 
   # Display Options
   command cat << EOF
@@ -225,7 +225,7 @@ EOF
 }
 
 function _get_version() {
-  # Return QCD Version
+  # Display Installation Version
   command cat "${QCD_VERSION}"
 }
 
@@ -896,7 +896,7 @@ function _parse_arguments() {
         elif [[ ! -z ${pfx_path} && ! -d "${pfx_path}" ]]
         then
           # Display Prompt
-          command echo -e "qcd: Invalid path to new directory"
+          command echo -e "qcd: Invalid path to directory"
 
           # Terminate Program
           return ${__ERR}
@@ -996,6 +996,16 @@ function _parse_arguments() {
       ${__OPTIONS}|--options)
         # Shift Past Flag
         command shift
+
+        # Verify Option Argument
+        if [[ -z ${1} || "${1}" == -* ]]
+        then
+          # Display Prompt
+          command echo -e "qcd: Directory linkage missing"
+
+          # Terminate Program
+          return ${__ERR}
+        fi
       ;;
 
       # Default Flag Handler
