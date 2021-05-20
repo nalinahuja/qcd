@@ -20,8 +20,11 @@ readonly QCD_FOLD=~/.qcd
 # Program Files
 readonly QCD_PROG=./qcd.sh
 readonly QCD_UTIL=./lcs.pl
-readonly QCD_LICE=./LICENSE
-readonly QCD_READ=./README.md
+
+# Release Files
+readonly QCD_LICENSE=./LICENSE
+readonly QCD_VERSION=./VERSION
+readonly QCD_READ_ME=./README.md
 
 # Terminal Profiles
 readonly BASHRC=~/.bashrc
@@ -36,7 +39,7 @@ declare UPGRADE_STATUS=${TRUE}
 declare INSTALL_STATUS=${FALSE}
 
 # Installation Version
-declare INSTALL_VERSION=$(command cat ${QCD_PROG} | command grep "QCD_RELEASE_VERSION" | command head -n1 | command awk -F '"' '{print $2}')
+declare INSTALL_VERSION=$(command cat "${QCD_VERSION}")
 
 # End Global Variables------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -44,7 +47,7 @@ declare INSTALL_VERSION=$(command cat ${QCD_PROG} | command grep "QCD_RELEASE_VE
 command read -p "qcd: Confirm installation ${INSTALL_VERSION} [y/n]: " confirm
 
 # Determine Action
-if [[ ${confirm//Y/${YES}} == ${YES} ]]
+if [[ "${confirm,}" == "${YES}" ]]
 then
   # Verify Program Files
   if [[ ! -e "${QCD_PROG}" || ! -e "${QCD_LICE}" || ! -e "${QCD_READ}" ]]
@@ -80,7 +83,7 @@ then
     fi
 
     # Check Installation Status
-    if [[ ${INSTALL_STATUS} == ${FALSE} ]]
+    if [[ ${INSTALL_STATUS} -eq ${FALSE} ]]
     then
       # Display Error Prompt
       command echo -e "→ No bash configurations found, aborting installation"
@@ -93,12 +96,17 @@ then
     UPGRADE_STATUS=${FALSE}
   fi
 
-  # Install QCD Program Files
+  # Create Program Folder
   command mkdir ${QCD_FOLD} 2> /dev/null
+
+  # Install QCD Program Files
   command mv ${QCD_PROG} ${QCD_FOLD} 2> /dev/null
   command mv ${QCD_UTIL} ${QCD_FOLD} 2> /dev/null
-  command mv ${QCD_LICE} ${QCD_FOLD} 2> /dev/null
-  command mv ${QCD_READ} ${QCD_FOLD} 2> /dev/null
+
+  # Install QCD Release Files
+  command mv ${QCD_LICENSE} ${QCD_FOLD} 2> /dev/null
+  command mv ${QCD_VERSION} ${QCD_FOLD} 2> /dev/null
+  command mv ${QCD_READ_ME} ${QCD_FOLD} 2> /dev/null
 
   # Determine Appropriate Prompt
   if [[ ${UPGRADE_STATUS} == ${TRUE} ]]
