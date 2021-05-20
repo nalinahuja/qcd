@@ -132,41 +132,6 @@ function _get_dname() {
   fi
 }
 
-function _show_help() {
-  # Display Help Message
-  command cat << EOF
-${__B}QCD Utility - ${QCD_RELEASE_VERSION}${__N}
-
-${__B}Usage:${__N}
-  qcd                                 Switch to home directory
-  qcd [path]                          Switch to valid directory
-  qcd [link]/[subdir]/...             Switch to linked directory
-  qcd [n]..                           Switch to nth parent directory
-
-${__B}Options:${__N}
-  qcd [-h, --help]                    Show this help
-  qcd [-c, --clean]                   Clean store file
-  qcd [-l, --list]                    List stored linkages
-  qcd [-v, --version]                 Show current version
-  qcd [-u, --update]                  Update to latest version
-  qcd [-b, --back-dir]                Navigate to backward directory
-  qcd [-t, --track-dirs]              Set directory tracking behavior
-
-  qcd [-r, --remember]                Remember present directory
-  qcd [-r, --remember] [path]         Remember directory by path
-  qcd [-a, --alias] [alias]           Remember present directory by alias
-
-  qcd [-f, --forget]                  Forget present directory
-  qcd [-f, --forget] [path]           Forget matching directory path
-  qcd [-f, --forget] [link]           Forget matching symbolic links
-
-  qcd [-m, --mkdir] [path]            Create and switch to new directory
-  qcd [-o, --options] [link]          Show symbolic link options
-
-Developed by Nalin Ahuja, nalinahuja22
-EOF
-}
-
 function _split_name() {
   # Return Name Of Symbolic Link
   command echo -e "${@%:*}"
@@ -200,10 +165,6 @@ function _escape_path() {
   command echo -e "${path}"
 }
 
-function _get_version() {
-
-}
-
 function _escape_regex() {
   # Store Argument String
   local str="${@}"
@@ -219,6 +180,56 @@ function _escape_regex() {
 }
 
 # End Utility Functions----------------------------------------------------------------------------------------------------------------------------------------------
+
+function _show_help() {
+  # Display Message Header
+  command echo -e "${__B}QCD Utility - $(_get_version)${__N}"
+
+  # Display Usage Header
+  command echo -e "${__B}Usage:${__N}"
+
+  # Display Usage
+  command cat << EOF
+  qcd                                 Switch to home directory
+  qcd [path]                          Switch to valid directory
+  qcd [link]/[subdir]/...             Switch to linked directory
+  qcd [n]..                           Switch to nth parent directory
+EOF
+
+  # Display Options Header
+  command echo -e "${__B}Options:${__N}"
+
+  # Display Options
+  command cat << EOF
+  qcd [-h, --help]                    Show this help
+  qcd [-c, --clean]                   Clean store file
+  qcd [-l, --list]                    List stored linkages
+  qcd [-v, --version]                 Show current version
+  qcd [-u, --update]                  Update to latest version
+  qcd [-b, --back-dir]                Navigate to backward directory
+  qcd [-t, --track-dirs]              Set directory tracking behavior
+
+  qcd [-r, --remember]                Remember present directory
+  qcd [-r, --remember] [path]         Remember directory by path
+  qcd [-a, --alias] [alias]           Remember present directory by alias
+
+  qcd [-f, --forget]                  Forget present directory
+  qcd [-f, --forget] [path]           Forget matching directory path
+  qcd [-f, --forget] [link]           Forget matching symbolic links
+
+  qcd [-m, --mkdir] [path]            Create and switch to new directory
+  qcd [-o, --options] [link]          Show symbolic link options
+
+Developed by Nalin Ahuja, nalinahuja22
+EOF
+}
+
+function _get_version() {
+  # Return QCD Version
+  command cat "${QCD_VERSION}"
+}
+
+# End Resource Functions---------------------------------------------------------------------------------------------------------------------------------------------
 
 function _show_output() {
   # Enable Terminal Output
@@ -443,8 +454,12 @@ function _update_store() {
 }
 
 function _cleanup_files() {
-  # Remove Temp File
-  [[ -f "${QCD_TEMP}" ]] && command rm ${QCD_TEMP} 2> /dev/null
+  # Check For Temp File
+  if [[ -f "${QCD_TEMP}" ]]
+  then
+    # Remove Temp File
+    command rm ${QCD_TEMP} 2> /dev/null
+  fi
 
   # Return To Caller
   return ${__OK}
@@ -668,7 +683,7 @@ function _parse_arguments() {
       # Check For Update Flag
       ${__UPDATE}|--update)
         # Display Prompt
-        command echo -e "qcd: Currently running ${__B}${QCD_RELEASE_VERSION}${__N}"
+        command echo -e "qcd: Currently running ${__B}$(_get_version)${__N}"
 
         # Prompt User For Confirmation
         command read -p "→ Confirm update [y/n]: " confirm
@@ -737,14 +752,24 @@ function _parse_arguments() {
             return ${__ERR}
           fi
 
-          # Display Prompt
-          command echo -en "\r→ Configuring updates "
-
           # Cleanup Installation
           command rm ${QCD_RELEASE} ${QCD_INSTALL} 2> /dev/null
 
-          # Update Release Version
-          QCD_RELEASE_VERSION=$(command cat ${QCD_PROG} | command grep "QCD_RELEASE_VERSION" | command head -n1 | command awk -F '"' '{print $2}')
+          # Display Prompt
+          command echo -en "\r→ Configuring updates "
+
+          # Update Terminal Environment
+          command source ${QCD_PROG} 2> /dev/null
+
+          # Error Check Installation
+          if [[ ${?} -ne ${__OK} ]]
+          then
+            # Display Prompt
+            command echo -e "\r→ Failed to configure update "
+
+            # Terminate Program
+            return ${__ERR}
+          fi
 
           # Display Prompt
           command echo -e "\r→ Update complete     "
@@ -753,10 +778,7 @@ function _parse_arguments() {
           _clear_output 2
 
           # Display Prompt
-          command echo -e "qcd: Updated to ${__B}${QCD_RELEASE_VERSION}${__N}"
-
-          # Update Terminal Environment
-          command source ${QCD_PROG} &> /dev/null
+          command echo -e "qcd: Updated to ${__B}$(_get_version)${__N}"
         else
           # Clear All Outputs
           _clear_output 2
@@ -1418,11 +1440,14 @@ function _qcd_comp() {
       # Initialize Subdirectories
       local sub_dirs=()
 
+      # Get Trailing Component Prefix
+      local tc_pfx=${trail_comp:0:1}
+
       # Iterate Over Resolved Directories
       for res_dir in ${res_dirs[@]}
       do
         # Add Subdirectories Of Similar Visibility
-        if [[ ! ${trail_comp:0:1} == ${__CWD} ]]
+        if [[ ! "${tc_pfx}"  == "${__CWD}" ]]
         then
           # Add Visible Linked Subdirectories
           sub_dirs+=($(command ls -F "${res_dir}" 2> /dev/null | command egrep -s -x ".*/" 2> /dev/null))
@@ -1456,17 +1481,23 @@ function _qcd_comp() {
     # Get Current Directory
     local pwd=$(_get_pwd)
 
+    # Get Current Argument Prefix
+    local ca_pfx=${curr_arg:0:1}
+
     # Get Nonlocal Symbolic Links From Store File
     local sym_links=($(command awk -v pwd="${pwd}" -F ':' '{if ($2 != pwd) {print $1}}' ${QCD_STORE}))
 
     # Iterate Over Symbolic Links
     for sym_link in ${sym_links[@]}
     do
+      # Get Symbolic Link Prefix
+      local sl_pfx=${sym_link:0:1}
+
       # Determine Symbolic Link Locality
       if [[ ! -d "${sym_link}" ]]
       then
         # Determine Symbolic Link Visibility
-        if [[ ${curr_arg:0:1} == ${__CWD} && ${sym_link:0:1} == ${__CWD} || ! ${curr_arg:0:1} == ${__CWD} && ! ${sym_link:0:1} == ${__CWD} ]]
+        if [[ "${ca_pfx}" == "${__CWD}" && "${sl_pfx}" == "${__CWD}" || ! "${ca_pfx}" == "${__CWD}" && ! "${sl_pfx}" == "${__CWD}" ]]
         then
           # Add Symbolic Link
           comp_list+=("${sym_link}${__FLSH}")
