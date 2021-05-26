@@ -23,10 +23,10 @@ readonly __ALIAS="-a" __OPTIONS="-o" __REMEMBER="-r" __FORGET="-f" __MKDIRENT="-
 readonly __HELP="-h" __LIST="-l" __BACK="-b" __CLEAN="-c" __TRACK="-t" __UPDATE="-u" __VERSION="-v" &> /dev/null
 
 # Embedded Strings
-readonly __CWD="." __HWD="../" __YES="y" __QUIT="q" __ESTR="" __FLSH="/" __BSLH="\\" _ESEQ=$(command printf "\033") &> /dev/null
+readonly __CWD="." __HWD="../" __YES="y" __QUIT="q" __ESTR="" __FLSH="/" __BSLH="\\" __ESEQ=$(command printf "\033") &> /dev/null
 
 # Text Formatting Strings
-readonly __B=$(command printf "${_ESEQ}[1m") __W=$(command printf "${_ESEQ}[30m${_ESEQ}[47m") __N=$(command printf "${_ESEQ}(B${_ESEQ}[m") &> /dev/null
+readonly __B=$(command printf "${__ESEQ}[1m") __W=$(command printf "${__ESEQ}[30m${__ESEQ}[47m") __N=$(command printf "${__ESEQ}(B${__ESEQ}[m") &> /dev/null
 
 # End String Constants-----------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -268,6 +268,9 @@ function _read_input() {
     # Append Character To Input Buffer
     buffer+=("${c}")
 
+    # Reset String Buffer
+    [[ ! "${buffer[0]}" == "${__ESEQ}" ]] && buffer=()
+
     # Check Break Conditions
     if [[ ${#buffer[@]} -ge 3 ]]
     then
@@ -275,10 +278,10 @@ function _read_input() {
       local IFS=$''
 
       # Return Up Arrow Action
-      [[ "${buffer[*]}" == "${_ESEQ}[A" ]] && command echo -e "${__UP}" && break
+      [[ "${buffer[*]}" == "${__ESEQ}[A" ]] && command echo -e "${__UP}" && break
 
       # Return Down Arrow Action
-      [[ "${buffer[*]}" == "${_ESEQ}[B" ]] && command echo -e "${__DN}" && break
+      [[ "${buffer[*]}" == "${__ESEQ}[B" ]] && command echo -e "${__DN}" && break
 
       # Reset String Buffer
       buffer=()
@@ -294,17 +297,17 @@ function _clear_output() {
   for ((li=0; li <= ${1}; li++))
   do
     # Go To Beginning Of Line
-    command printf "${_ESEQ}[${__COLNUM}D"
+    command printf "${__ESEQ}[${__COLNUM}D"
 
     # Clear Line
-    command printf "${_ESEQ}[K"
+    command printf "${__ESEQ}[K"
 
     # Go Up One Line
-    command printf "${_ESEQ}[1A"
+    command printf "${__ESEQ}[1A"
   done
 
   # Go Down One Line
-  command printf "${_ESEQ}[1B"
+  command printf "${__ESEQ}[1B"
 }
 
 function _generate_menu() {
