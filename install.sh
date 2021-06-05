@@ -8,8 +8,8 @@
 readonly QCD_FOLD=~/.qcd
 
 # Program Files
-readonly QCD_PROG=./qcd.sh
-readonly QCD_UTIL=./lcs.pl
+readonly QCD_SH=./qcd.sh
+readonly QCD_PL=./lcs.pl
 
 # Release Files
 readonly QCD_LICENSE=./LICENSE
@@ -21,7 +21,7 @@ readonly BASHRC=~/.bashrc
 readonly BASHPR=~/.bash_profile
 
 # Verify Program Files
-if [[ ! -e "${QCD_PROG}" || ! -e "${QCD_UTIL}" || ! -e "${QCD_LICENSE}" || ! -e "${QCD_VERSION}" || ! -e "${QCD_READ_ME}" ]]
+if [[ ! -e "${QCD_SH}" || ! -e "${QCD_PL}" || ! -e "${QCD_LICENSE}" || ! -e "${QCD_VERSION}" || ! -e "${QCD_READ_ME}" ]]
 then
   # Display Prompt
   command echo -e "qcd: One or more installation files are missing or corrupted, aborting installation"
@@ -101,8 +101,8 @@ then
   command mkdir ${QCD_FOLD} 2> /dev/null
 
   # Install QCD Program Files
-  command mv ${QCD_PROG} ${QCD_FOLD} 2> /dev/null
-  command mv ${QCD_UTIL} ${QCD_FOLD} 2> /dev/null
+  command mv ${QCD_SH} ${QCD_FOLD} 2> /dev/null
+  command mv ${QCD_PL} ${QCD_FOLD} 2> /dev/null
 
   # Install QCD Release Files
   command mv ${QCD_LICENSE} ${QCD_FOLD} 2> /dev/null

@@ -34,8 +34,8 @@ readonly __B=$(command printf "${__ESEQ}[1m") __W=$(command printf "${__ESEQ}[30
 readonly QCD_FOLD=~/.qcd &> /dev/null
 
 # Program Files
-readonly QCD_PROG=${QCD_FOLD}/qcd.sh &> /dev/null
-readonly QCD_UTIL=${QCD_FOLD}/lcs.pl &> /dev/null
+readonly QCD_SH=${QCD_FOLD}/qcd.sh &> /dev/null
+readonly QCD_PL=${QCD_FOLD}/lcs.pl &> /dev/null
 
 # Resource Files
 readonly QCD_TEMP=${QCD_FOLD}/temp    &> /dev/null
@@ -762,7 +762,7 @@ function _parse_arguments() {
           command echo -en "\r→ Configuring updates "
 
           # Update Terminal Environment
-          command source ${QCD_PROG} 2> /dev/null
+          command source ${QCD_SH} 2> /dev/null
 
           # Error Check Installation
           if [[ ${?} -ne ${__OK} ]]
@@ -1256,7 +1256,7 @@ function qcd() {
           paths=("${pfxm[@]}" "${pfxf[@]}")
         else
           # Order Paths By Longest Common Subsequence
-          paths=($(command perl ${QCD_UTIL} "${dir_arg}" "${paths[@]}"))
+          paths=($(command perl ${QCD_PL} "${dir_arg}" "${paths[@]}"))
         fi
 
         # Generate Selection Menu
@@ -1456,19 +1456,23 @@ function _qcd_comp() {
       # Get Trailing Component Prefix
       local tc_pfx=${trail_comp:0:1}
 
-      # Iterate Over Resolved Directories
-      for res_dir in ${res_dirs[@]}
-      do
-        # Add Subdirectories Of Similar Visibility
-        if [[ ! "${tc_pfx}"  == "${__CWD}" ]]
-        then
+      # Add Subdirectories Of Similar Visibility
+      if [[ ! "${tc_pfx}"  == "${__CWD}" ]]
+      then
+        # Iterate Over Resolved Directories
+        for res_dir in ${res_dirs[@]}
+        do
           # Add Visible Linked Subdirectories
           sub_dirs+=($(command ls -F "${res_dir}" 2> /dev/null | command egrep -s -x ".*/" 2> /dev/null))
-        else
-          # Add Linked Subdirectories
+        done
+      else
+        # Iterate Over Resolved Directories
+        for res_dir in ${res_dirs[@]}
+        do
+          # Add Hidden Linked Subdirectories
           sub_dirs+=($(command ls -aF "${res_dir}" 2> /dev/null | command egrep -s -x ".*/" 2> /dev/null))
-        fi
-      done
+        done
+      fi
 
       # Format Symbolic Link
       sym_link="${sym_link}${__FLSH}"
