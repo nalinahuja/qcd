@@ -1397,7 +1397,7 @@ function _qcd_comp() {
       local link_paths=($(command awk -F ':' -v LINK="${sym_link}" '{if (LINK == $1) {print $2}}' ${QCD_STORE} 2> /dev/null))
 
       # Check For Indirect Link Matching
-      if [[ ${#pathv[@]} -eq 0 ]]
+      if [[ ${#link_paths[@]} -eq 0 ]]
       then
         # Initialize Parameters
         local i=0 wld_link=${__ESTR}
@@ -1483,12 +1483,8 @@ function _qcd_comp() {
         # Generate Linked Subdirectory
         local link_sub=$(_escape_path "${sym_link}${sub_comp}${sub_dir%/}")
 
-        # Determine Linked Subdirectory Locality
-        if [[ ! -d "${link_sub}" ]]
-        then
-          # Append Completion Slash
-          link_sub="${link_sub}${__FLSH}"
-        fi
+        # Append Completion Delimiter
+        [[ ! -d "${link_sub}" ]] && link_sub="${link_sub}${__FLSH}"
 
         # Add Linked Subdirectories
         comp_list+=("${link_sub}")
