@@ -1534,7 +1534,7 @@ function _qcd_init() {
   command bind 'set match-hidden-files off' &> /dev/null
 
   # Initialize Directory Completion Engine
-  command complete -o nospace -o filenames -A directory -F _qcd_comp qcd
+  command complete -o nospace -o filenames -o bashdefault -A directory -F _qcd_comp qcd
 
   # Remove Invalid Linkages From Store File
   [[ -f "${QCD_STORE}" ]] && (qcd --clean &> /dev/null &)
