@@ -23,7 +23,7 @@ readonly __ALIAS="-a" __OPTIONS="-o" __REMEMBER="-r" __FORGET="-f" __MKDIRENT="-
 readonly __HELP="-h" __LIST="-l" __BACK="-b" __CLEAN="-c" __TRACK="-t" __UPDATE="-u" __VERSION="-v" &> /dev/null
 
 # Embedded Strings
-readonly __CWD="." __HWD="../" __YES="y" __QUIT="q" __ESTR="" __FLSH="/" __BSLH="\\" __ESEQ=$(command printf "\033") &> /dev/null
+readonly __CR="\r" __NL="\n" __CWD="." __HWD="../" __YES="y" __QUIT="q" __ESTR="" __FLSH="/" __BSLH="\\" __ESEQ=$(command printf "\033") &> /dev/null
 
 # Text Formatting Strings
 readonly __B=$(command printf "${__ESEQ}[1m") __W=$(command printf "${__ESEQ}[30m${__ESEQ}[47m") __N=$(command printf "${__ESEQ}(B${__ESEQ}[m") &> /dev/null
@@ -144,7 +144,7 @@ function _split_path() {
 
 function _format_path() {
   # Check For Environment Variable
-  if [[ ! -z ${HOME} ]]
+  if [[ -n ${HOME} ]]
   then
     # Return Formatted Path
     command echo -e ${@/${HOME}/\~}
@@ -186,7 +186,7 @@ function _show_help() {
   command echo -e "${__B}QCD Utility - $(_get_version)${__N}"
 
   # Display Usage Header
-  command echo -e "\n${__B}Usage:${__N}"
+  command echo -e "${__NL}${__B}Usage:${__N}"
 
   # Display Usage
   command cat << EOF
@@ -197,7 +197,7 @@ function _show_help() {
 EOF
 
   # Display Options Header
-  command echo -e "\n${__B}Options:${__N}"
+  command echo -e "${__NL}${__B}Options:${__N}"
 
   # Display Options
   command cat << EOF
@@ -603,7 +603,7 @@ function _parse_arguments() {
       # Check For List Flag
       ${__LIST}|--list)
         # Display Prompt
-        command echo -en "\rqcd: Generating link map..."
+        command echo -en "${__CR}qcd: Generating link map..."
 
         # Get Symbolic Linkages From Store File
         local sym_links=$(qcd --clean &> /dev/null && command cat ${QCD_STORE})
@@ -612,7 +612,7 @@ function _parse_arguments() {
         if [[ -z ${sym_links} ]]
         then
           # Display Prompt
-          command echo -e "\rqcd: No linkages found      "
+          command echo -e "${__CR}qcd: No linkages found      "
 
           # Terminate Program
           return ${__ERR}
@@ -628,10 +628,10 @@ function _parse_arguments() {
         [[ ${pcols} -lt ${__MINPAD} ]] && pcols=${__MINPAD}
 
         # Format Table Header
-        command printf "\r${__W} %-${pcols}s  %-$((${tcols} - ${pcols} - 3))s${__N}\n" "Link" "Directory" > ${QCD_TEMP}
+        command printf "${__CR}${__W} %-${pcols}s  %-$((${tcols} - ${pcols} - 3))s${__N}${__NL}" "Link" "Directory" > ${QCD_TEMP}
 
         # Set IFS
-        local IFS=$'\n'
+        local IFS=$'${__NL}'
 
         # Iterate Over Linkages
         for sym_link in ${sym_links}
@@ -641,7 +641,7 @@ function _parse_arguments() {
           local path=$(_split_path "${sym_link}")
 
           # Format Linkage Row
-          command printf " %-${pcols}s  %s\n" "${link}" "$(_format_path "${path%/}")" >> ${QCD_TEMP}
+          command printf " %-${pcols}s  %s${__NL}" "${link}" "$(_format_path "${path%/}")" >> ${QCD_TEMP}
         done
 
         # Unset IFS
@@ -657,7 +657,7 @@ function _parse_arguments() {
       # Check For Clean Flag
       ${__CLEAN}|--clean)
         # Set IFS
-        local IFS=$'\n'
+        local IFS=$'${__NL}'
 
         # Get Linkage Paths
         local link_paths=($(command awk -F ':' '{print $2}' ${QCD_STORE}))
@@ -720,7 +720,7 @@ function _parse_arguments() {
           if [[ ${?} -ne ${__OK} || -z ${download_url} ]]
           then
             # Display Prompt
-            command echo -e "\r→ Failed to resolve download source for update"
+            command echo -e "${__CR}→ Failed to resolve download source for update"
 
             # Terminate Program
             return ${__ERR}
@@ -733,14 +733,14 @@ function _parse_arguments() {
           if [[ ${?} -ne ${__OK} || ! -f "${QCD_RELEASE}" ]]
           then
             # Display Prompt
-            command echo -e "\r→ Failed to download update"
+            command echo -e "${__CR}→ Failed to download update"
 
             # Terminate Program
             return ${__ERR}
           fi
 
           # Display Prompt
-          command echo -en "\r→ Installing updates  "
+          command echo -en "${__CR}→ Installing updates  "
 
           # Extract And Install Program Files
           command unzip -o -j ${QCD_RELEASE} -d ${QCD_FOLD} &> /dev/null
@@ -749,7 +749,7 @@ function _parse_arguments() {
           if [[ ${?} -ne ${__OK} ]]
           then
             # Display Prompt
-            command echo -e "\r→ Failed to install update"
+            command echo -e "${__CR}→ Failed to install update"
 
             # Terminate Program
             return ${__ERR}
@@ -759,7 +759,7 @@ function _parse_arguments() {
           command rm ${QCD_RELEASE} ${QCD_INSTALL} 2> /dev/null
 
           # Display Prompt
-          command echo -en "\r→ Configuring updates "
+          command echo -en "${__CR}→ Configuring updates "
 
           # Update Terminal Environment
           command source ${QCD_SH} 2> /dev/null
@@ -768,14 +768,14 @@ function _parse_arguments() {
           if [[ ${?} -ne ${__OK} ]]
           then
             # Display Prompt
-            command echo -e "\r→ Failed to configure update "
+            command echo -e "${__CR}→ Failed to configure update "
 
             # Terminate Program
             return ${__ERR}
           fi
 
           # Display Prompt
-          command echo -e "\r→ Update complete     "
+          command echo -e "${__CR}→ Update complete     "
 
           # Clear Previous Outputs
           _clear_output 2
@@ -794,7 +794,7 @@ function _parse_arguments() {
       # Check For Back Flag
       ${__BACK}|--back-dir)
         # Check Back Directory Variable
-        if [[ ! -z ${QCD_BACK_DIR} && -d "${QCD_BACK_DIR}" ]]
+        if [[ -n ${QCD_BACK_DIR} && -d "${QCD_BACK_DIR}" ]]
         then
           # Get Current Directory
           local pwd=$(_get_pwd)
@@ -896,7 +896,7 @@ function _parse_arguments() {
 
           # Terminate Program
           return ${__ERR}
-        elif [[ ! -z ${pfx_path} && ! -d "${pfx_path}" ]]
+        elif [[ -n ${pfx_path} && ! -d "${pfx_path}" ]]
         then
           # Display Prompt
           command echo -e "qcd: Invalid path to directory"
@@ -1029,7 +1029,7 @@ function _parse_arguments() {
   done
 
   # Verify Directory Parameters
-  if [[ ! -z ${dir} || ! -z ${als} ]]
+  if [[ -n ${dir} || -n ${als} ]]
   then
     # Verify Directory Parameter
     [[ -z ${dir} ]] && dir=$(_get_pwd)
@@ -1076,7 +1076,7 @@ function qcd() {
   local dir_arg=~ opt_arg=${__FALSE}
 
   # Check Argument Validity
-  if [[ ! -z ${@} ]]
+  if [[ -n ${@} ]]
   then
     # Store Argument
     local arg="${@:1:1}"
@@ -1160,7 +1160,7 @@ function qcd() {
     fi
 
     # Set IFS
-    local IFS=$'\n'
+    local IFS=$'${__NL}'
 
     # Initialize Symbolic Link Component
     local sym_link=$(_escape_regex "${dir_arg:0:${pfx_len}}")
@@ -1224,7 +1224,7 @@ function qcd() {
       pathc=${#paths[@]}
 
       # List Matching Paths
-      if [[ ${pathc} -gt 1 && ! -z ${paths} ]]
+      if [[ ${pathc} -gt 1 && -n ${paths} ]]
       then
         # Display Prompt
         command echo -e "qcd: Multiple paths linked to ${__B}${dir_arg%/}${__N}"
@@ -1308,7 +1308,7 @@ function qcd() {
       command cd "${pathv}"
 
       # Validate Subdirectory Component
-      if [[ ! -z ${sub_link} ]]
+      if [[ -n ${sub_link} ]]
       then
         # Extract Trailing Path Component
         local trail_comp="${sub_link##*/}"
@@ -1327,13 +1327,13 @@ function qcd() {
         fi
 
         # Validate Leading Path Existence
-        if [[ ! -z ${lead_comp} && -d "${lead_comp}" ]]
+        if [[ -n ${lead_comp} && -d "${lead_comp}" ]]
         then
           # Switch To Leading Path
           command cd "${lead_comp}"
 
           # Validate Trailing Path Existence
-          if [[ ! -z ${trail_comp} && -d "${trail_comp}" ]]
+          if [[ -n ${trail_comp} && -d "${trail_comp}" ]]
           then
             # Switch To Trailing Path
             command cd "${trail_comp}"
@@ -1366,7 +1366,7 @@ function _qcd_comp() {
   _create_store
 
   # Set IFS
-  local IFS=$'\n'
+  local IFS=$'${__NL}'
 
   # Initialize Completion List
   local comp_list=()
@@ -1439,7 +1439,7 @@ function _qcd_comp() {
         if [[ -d "${link_path}" ]]
         then
           # Add Resolved Directory
-          res_dirs+=($(command printf "%s\n" "${link_path}"))
+          res_dirs+=($(command printf "%s${__NL}" "${link_path}"))
         fi
       done
     else
@@ -1448,7 +1448,7 @@ function _qcd_comp() {
     fi
 
     # Error Check Resolved Directory
-    if [[ ! -z ${res_dirs} ]]
+    if [[ -n ${res_dirs} ]]
     then
       # Initialize Subdirectories
       local sub_dirs=()
@@ -1520,7 +1520,7 @@ function _qcd_comp() {
   fi
 
   # Set Completion List
-  COMPREPLY=($(command compgen -W "$(command printf "%s\n" "${comp_list[@]}")" "${curr_arg}" 2> /dev/null))
+  COMPREPLY=($(command compgen -W "$(command printf "%s${__NL}" "${comp_list[@]}")" "${curr_arg}" 2> /dev/null))
 
   # Unset IFS
   unset IFS

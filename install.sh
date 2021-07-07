@@ -36,7 +36,7 @@ fi
 readonly TRUE=1 FALSE=0
 
 # Embedded Strings
-readonly YES="y" ESEQ=$(command printf "\033") &> /dev/null
+readonly NL="\n" YES="y" ESEQ=$(command printf "\033") &> /dev/null
 
 # Text Formatting Strings
 readonly B=$(command printf "${ESEQ}[1m") W=$(command printf "${ESEQ}[30m${ESEQ}[47m") N=$(command printf "${ESEQ}(B${ESEQ}[m") &> /dev/null
@@ -67,7 +67,7 @@ then
     if [[ -f "${BASHRC}" ]]
     then
       # Add Command To ~/.bashrc
-      command echo -e "\n# QCD Utility Source\ncommand source ~/.qcd/qcd.sh\n" >> ${BASHRC}
+      command echo -e "${NL}# QCD Utility Source${NL}command source ~/.qcd/qcd.sh${NL}" >> ${BASHRC}
 
       # Update Installation Status
       INSTALL_STATUS=${TRUE}
@@ -77,7 +77,7 @@ then
     if [[ -f "${BASHPR}" ]]
     then
       # Add Command To ~/.bash_profile
-      command echo -e "\n# QCD Utility Source\ncommand source ~/.qcd/qcd.sh\n" >> ${BASHPR}
+      command echo -e "${NL}# QCD Utility Source${NL}command source ~/.qcd/qcd.sh${NL}" >> ${BASHPR}
 
       # Update Installation Status
       INSTALL_STATUS=${TRUE}
@@ -120,7 +120,7 @@ then
   fi
 
   # Display Success Prompt
-  command echo -e "\nPlease restart your terminal"
+  command echo -e "${NL}Please restart your terminal"
 else
   # Display Abort Prompt
   command echo -e "→ Installation aborted"
