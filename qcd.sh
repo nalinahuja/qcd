@@ -275,7 +275,7 @@ function _read_input() {
     if [[ ${#buffer[@]} -ge 3 ]]
     then
       # Set IFS
-      local IFS="${__NL}"
+      local IFS=$'\n'
 
       # Return Up Arrow Action
       [[ "${buffer[*]}" == "${__ESEQ}[A" ]] && command echo -e "${__UP}" && break
@@ -631,7 +631,7 @@ function _parse_arguments() {
         command printf "${__CR}${__W} %-${pcols}s  %-$((${tcols} - ${pcols} - 3))s${__N}${__NL}" "Link" "Directory" > ${QCD_TEMP}
 
         # Set IFS
-        local IFS="${__NL}"
+        local IFS=$'\n'
 
         # Iterate Over Linkages
         for sym_link in ${sym_links}
@@ -657,7 +657,7 @@ function _parse_arguments() {
       # Check For Clean Flag
       ${__CLEAN}|--clean)
         # Set IFS
-        local IFS="${__NL}"
+        local IFS=$'\n'
 
         # Get Linkage Paths
         local link_paths=($(command awk -F ':' '{print $2}' ${QCD_STORE}))
@@ -1160,7 +1160,7 @@ function qcd() {
     fi
 
     # Set IFS
-    local IFS="${__NL}"
+    local IFS=$'\n'
 
     # Initialize Symbolic Link Component
     local sym_link=$(_escape_regex "${dir_arg:0:${pfx_len}}")
@@ -1366,7 +1366,7 @@ function _qcd_comp() {
   _create_store
 
   # Set IFS
-  local IFS="${__NL}"
+  local IFS=$'\n'
 
   # Initialize Completion List
   local comp_list=()
