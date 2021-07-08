@@ -254,8 +254,7 @@ function _read_input() {
   local buffer=()
 
   # Read Input Stream
-  while [[ 1 ]]
-  do
+  while [[ 1 ]]; do
     # Read One Character From STDIN
     command read -s -n1 c 2> /dev/null
 
@@ -294,8 +293,7 @@ function _read_input() {
 
 function _clear_output() {
   # Clear Line Entries
-  for ((li=0; li <= ${1}; li++))
-  do
+  for ((li=0; li <= ${1}; li++)); do
     # Go To Beginning Of Line
     command printf "${__ESEQ}[${__COLNUM}D"
 
@@ -327,14 +325,12 @@ function _generate_menu() {
   local os=${__NSET}
 
   # Begin Selection Loop
-  while [[ 1 ]]
-  do
+  while [[ 1 ]]; do
     # Initialize Option Index
     local oi=${__NSET}
 
     # Iterate Over Options
-    for opt in "${@}"
-    do
+    for opt in "${@}"; do
       # Format Option
       opt=$(_format_path "${opt%/}")
 
@@ -578,8 +574,7 @@ function _parse_arguments() {
   local dir=${__ESTR} als=${__ESTR}
 
   # Parse Arguments
-  while [[ ${#@} -gt 0 ]]
-  do
+  while [[ ${#@} -gt 0 ]]; do
     # Determine Action
     case "${1}" in
       # Check For Help Flag
@@ -634,8 +629,7 @@ function _parse_arguments() {
         local IFS=$'\n'
 
         # Iterate Over Linkages
-        for sym_link in ${sym_links}
-        do
+        for sym_link in ${sym_links}; do
           # Format Linkage Components
           local link=$(_split_name "${sym_link}")
           local path=$(_split_path "${sym_link}")
@@ -663,8 +657,7 @@ function _parse_arguments() {
         local link_paths=($(command awk -F ':' '{print $2}' ${QCD_STORE}))
 
         # Iterate Over Linkage Paths
-        for link_path in ${link_paths[@]}
-        do
+        for link_path in ${link_paths[@]}; do
           # Verify Linkage Path
           if [[ ! -d "${link_path}" ]]
           then
@@ -1182,8 +1175,7 @@ function qcd() {
       fi
 
       # Wildcard Symbolic Link
-      for ((; i < ${#sym_link}; i++))
-      do
+      for ((; i < ${#sym_link}; i++)); do
         # Get Character At Index
         local c=${sym_link:${i}:1}
 
@@ -1208,8 +1200,7 @@ function qcd() {
       local pwd=$(_get_pwd)
 
       # Iterate Over Path Values
-      for path in ${pathv[@]}
-      do
+      for path in ${pathv[@]}; do
         # Split Path By Delimiter
         path=$(_split_path "${path}")
 
@@ -1236,8 +1227,7 @@ function qcd() {
           local pfxm=() pfxf=()
 
           # Iterate Over Filtered Paths
-          for path in ${paths[@]}
-          do
+          for path in ${paths[@]}; do
             # Get Path Endpoint
             local ept=$(_get_dname "${path}")
 
@@ -1410,8 +1400,7 @@ function _qcd_comp() {
         fi
 
         # Wildcard Symbolic Link
-        for ((; i < ${#sym_link}; i++))
-        do
+        for ((; i < ${#sym_link}; i++)); do
           # Get Character At Index
           local c=${sym_link:${i}:1}
 
@@ -1427,8 +1416,7 @@ function _qcd_comp() {
       local res_dirs=()
 
       # Iterate Over Linked Paths
-      for link_path in ${link_paths[@]}
-      do
+      for link_path in ${link_paths[@]}; do
         # Substring Path From Delimiter
         link_path=$(_split_path "${link_path}")
 
@@ -1460,15 +1448,13 @@ function _qcd_comp() {
       if [[ ! "${tc_pfx}"  == "${__CWD}" ]]
       then
         # Iterate Over Resolved Directories
-        for res_dir in ${res_dirs[@]}
-        do
+        for res_dir in ${res_dirs[@]}; do
           # Add Visible Linked Subdirectories
           sub_dirs+=($(command ls -F "${res_dir}" 2> /dev/null | command egrep -s -x ".*/" 2> /dev/null))
         done
       else
         # Iterate Over Resolved Directories
-        for res_dir in ${res_dirs[@]}
-        do
+        for res_dir in ${res_dirs[@]}; do
           # Add Hidden Linked Subdirectories
           sub_dirs+=($(command ls -aF "${res_dir}" 2> /dev/null | command egrep -s -x ".*/" 2> /dev/null))
         done
@@ -1478,8 +1464,7 @@ function _qcd_comp() {
       sym_link="${sym_link}${__FLSH}"
 
       # Iterate Over Subdirectories
-      for sub_dir in ${sub_dirs[@]}
-      do
+      for sub_dir in ${sub_dirs[@]}; do
         # Generate Linked Subdirectory
         local link_sub=$(_escape_path "${sym_link}${sub_comp}${sub_dir%/}")
 
@@ -1501,8 +1486,7 @@ function _qcd_comp() {
     local sym_links=($(command awk -v pwd="${pwd}" -F ':' '{if ($2 != pwd) {print $1}}' ${QCD_STORE}))
 
     # Iterate Over Symbolic Links
-    for sym_link in ${sym_links[@]}
-    do
+    for sym_link in ${sym_links[@]}; do
       # Get Symbolic Link Prefix
       local sl_pfx=${sym_link:0:1}
 
