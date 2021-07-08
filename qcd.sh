@@ -67,7 +67,7 @@ function _get_pwd() {
   local pwd=$(command pwd 2> /dev/null)
 
   # Return Current Working Directory
-  command echo -e "${pwd}${__FLSH}"
+  [[ "${pwd}" == "${__FLSH}" ]] && command echo -e "${pwd}" || command echo -e "${pwd}${__FLSH}"
 }
 
 function _get_path() {
