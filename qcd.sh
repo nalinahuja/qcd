@@ -275,7 +275,7 @@ function _read_input() {
     if [[ ${#buffer[@]} -ge 3 ]]
     then
       # Set IFS
-      local IFS=$'\n'
+      local IFS=$''
 
       # Return Up Arrow Action
       [[ "${buffer[*]}" == "${__ESEQ}[A" ]] && command echo -e "${__UP}" && break
