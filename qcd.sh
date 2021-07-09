@@ -34,8 +34,8 @@ readonly __B=$(command printf "${__ESEQ}[1m") __W=$(command printf "${__ESEQ}[30
 readonly QCD_FOLD=~/.qcd &> /dev/null
 
 # Program Files
-readonly QCD_SH=${QCD_FOLD}/qcd.sh &> /dev/null
-readonly QCD_PL=${QCD_FOLD}/lcs.pl &> /dev/null
+readonly QCD_SH=${QCD_FOLD}/qcd.sh  &> /dev/null
+readonly QCD_PL=${QCD_FOLD}/rank.pl &> /dev/null
 
 # Resource Files
 readonly QCD_TEMP=${QCD_FOLD}/temp    &> /dev/null
@@ -1221,8 +1221,11 @@ function qcd() {
         command echo -e "qcd: Multiple paths linked to ${__B}${dir_arg%/}${__N}"
 
         # Determine Ordering Method
-        if [[ -z "$(command -v perl)" ]]
+        if [[ -x "$(command -v perl)" ]]
         then
+          # Order Paths By Longest Common Subsequence
+          paths=($(command perl ${QCD_PL} "${dir_arg}" "${paths[@]}"))
+        else
           # Initialize Path Lists
           local pfxm=() pfxf=()
 
@@ -1244,9 +1247,6 @@ function qcd() {
 
           # Concatenate Path Lists
           paths=("${pfxm[@]}" "${pfxf[@]}")
-        else
-          # Order Paths By Longest Common Subsequence
-          paths=($(command perl ${QCD_PL} "${dir_arg}" "${paths[@]}"))
         fi
 
         # Generate Selection Menu

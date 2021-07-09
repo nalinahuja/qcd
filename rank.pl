@@ -79,13 +79,10 @@ foreach my $path (@paths) {
                             $b->{ldel} <=> $a->{ldel}
                            } @similarity;
 
-# Display Similarity Scores
-foreach my $result (@similarity){
-  # TESTING ONLY
-  # print("@{$result}{qw(path subl ldel)}", "\n");
-
+# Return Similarity Scores
+foreach my $score (@similarity){
   # Print Result
-  print("@{$result}{qw(path)}", "\n");
+  print("@{$score}{qw(path)}", "\n");
 }
 
 # End Main-------------------------------------------------------------------------------------------------------------------------------------------------------------
