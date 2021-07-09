@@ -225,8 +225,8 @@ EOF
 }
 
 function _get_version() {
-  # Display Installation Version
-  command cat "${QCD_VERSION}"
+  # Return Installation Version
+  command cat "${QCD_VERSION}" 2> /dev/null
 }
 
 # End Resource Functions---------------------------------------------------------------------------------------------------------------------------------------------
@@ -735,7 +735,10 @@ function _parse_arguments() {
           # Display Prompt
           command echo -en "${__CR}→ Installing updates  "
 
-          # Extract And Install Program Files
+          # Uninstall Old Program Files
+          command rm ${QCD_FOLD}/*.sh ${QCD_FOLD}/*.pl
+
+          # Install New Program Files
           command unzip -o -j ${QCD_RELEASE} -d ${QCD_FOLD} &> /dev/null
 
           # Error Check Installation
