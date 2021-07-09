@@ -1,6 +1,6 @@
 ## qcd
 <p align="justify">
-qcd is a bash utility that extends upon the exisiting capabilities of the builtin command <code>cd</code>. It allows the user to quickly change from one directory to another by specifying a valid path, directory alias, directory prefix, or character subsequence to the program as a commandline argument. qcd works completely locally and utilizes common builtin commands to achieve this functionality making it extremely portable across systems that run bash. qcd operates out of the directory <code>~/.qcd</code> and remembers which directories you visit by storing symbolic linkages in a file named <code>store</code>. This file allows qcd to quickly search for and resolve the absolute path from a symbolic linkage and switch to that directory given a recognizable input.
+qcd is a bash utility that extends upon the exisiting capabilities of the builtin command <code>cd</code>. It allows the user to quickly change from one directory to another by specifying a valid path, directory alias, directory prefix, or character subsequence to the program as a commandline argument. qcd works completely locally and utilizes common builtin commands to achieve this functionality making it extremely portable across systems that run bash. qcd operates out of the directory <code>~/.qcd</code> and remembers which directories you visit by storing symbolic linkages on disk. This file allows qcd to quickly search for and resolve the absolute path from a symbolic linkage and switch to that directory given a recognizable input.
 </p>
 
 ## Compatibility
