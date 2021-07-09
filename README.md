@@ -64,7 +64,7 @@ qcd ./../node-modules    qcd node-modules     qcd node            qcd nm
 ```
 
 <p align="justify">
-QCD is able to interpret file system sequences like <code>.</code> and <code>..</code> during file system navigation and accept a special input in the format <code>N..</code> which will tell QCD to jump to the Nth parent directory relative to the current working directory.
+QCD is able to interpret file system sequences like <code>.</code> and <code>..</code> during file system navigation and accept a special input in the format <code>n..</code> which will tell QCD to jump to the Nth parent directory relative to the current working directory.
 </p>
 
 ```bash
