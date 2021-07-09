@@ -95,17 +95,17 @@ function _get_rname() {
   local pfx="${dir#*/*}"
 
   # Determine Return
-  if [[ -z ${pfx} ]]
+  if [[ -n ${pfx} ]]
   then
-    # Return Full Argument Directory
-    command echo -e "${dir%/}"
-  else
     # Determine Substring Bounds
-    local si=0 ei=$((${#dir} - ${#pfx} - 1))
+    local si=0 ei=$((${#dir} - ${#pfx}))
 
-    # Return Argument Directory Substring
-    command echo -e "${dir:${si}:${ei}}"
+    # Update Argument Directory
+    dir="${dir:${si}:${ei}}"
   fi
+
+  # Return Full Root Directory Name
+  command echo -e "${dir%/}"
 }
 
 function _get_dname() {
@@ -192,7 +192,7 @@ function _show_help() {
   command cat << EOF
   qcd                                 Switch to home directory
   qcd [path]                          Switch to valid directory
-  qcd [link]/[subdir]/...             Switch to linked directory
+  qcd [keyword]/[subdir]/...          Switch to linked directory
   qcd [n]..                           Switch to nth parent directory
 EOF
 
@@ -215,10 +215,10 @@ EOF
 
   qcd [-f, --forget]                  Forget present directory
   qcd [-f, --forget] [path]           Forget matching directory path
-  qcd [-f, --forget] [link]           Forget matching symbolic links
+  qcd [-f, --forget] [keyword]        Forget matching symbolic linkages
 
   qcd [-m, --mkdir] [path]            Create and switch to new directory
-  qcd [-o, --options] [link]          Show symbolic link options
+  qcd [-o, --options] [query]         Show symbolic linkage options in menu
 
 Developed by Nalin Ahuja, nalinahuja22
 EOF
@@ -226,7 +226,7 @@ EOF
 
 function _get_version() {
   # Return Installation Version
-  command cat "${QCD_VERSION}" 2> /dev/null
+  command cat ${QCD_VERSION} 2> /dev/null
 }
 
 # End Resource Functions---------------------------------------------------------------------------------------------------------------------------------------------
@@ -358,7 +358,7 @@ function _generate_menu() {
     buffer=()
 
     # Check Exit Flag
-    if [[ ${QCD_EXIT} == ${__TRUE} ]]
+    if [[ ${QCD_EXIT} -eq ${__TRUE} ]]
     then
       # Reset Exit Flag
       QCD_EXIT=${__FALSE}
@@ -598,7 +598,7 @@ function _parse_arguments() {
       # Check For List Flag
       ${__LIST}|--list)
         # Display Prompt
-        command echo -en "${__CR}qcd: Generating link map..."
+        command echo -en "${__ESEQ}[K${__CR}qcd: Generating link map..."
 
         # Get Symbolic Linkages From Store File
         local sym_links=$(qcd --clean &> /dev/null && command cat ${QCD_STORE})
@@ -607,7 +607,7 @@ function _parse_arguments() {
         if [[ -z ${sym_links} ]]
         then
           # Display Prompt
-          command echo -e "${__CR}qcd: No linkages found      "
+          command echo -e "${__ESEQ}[K${__CR}qcd: No linkages found"
 
           # Terminate Program
           return ${__ERR}
@@ -623,7 +623,7 @@ function _parse_arguments() {
         [[ ${pcols} -lt ${__MINPAD} ]] && pcols=${__MINPAD}
 
         # Format Table Header
-        command printf "${__CR}${__W} %-${pcols}s  %-$((${tcols} - ${pcols} - 3))s${__N}${__NL}" "Link" "Directory" > ${QCD_TEMP}
+        command printf "${__CR}${__W} %-${pcols}s  %-$((${tcols} - ${pcols} - 3))s${__N}${__NL}" "Keyword" "Directory" > ${QCD_TEMP}
 
         # Set IFS
         local IFS=$'\n'
@@ -701,7 +701,7 @@ function _parse_arguments() {
           fi
 
           # Display Prompt
-          command echo -en "→ Downloading update "
+          command echo -en "→ Downloading update"
 
           # Get Release Information
           local release_info=$(command curl --connect-timeout ${__DELAY} -sL ${QCD_RELEASE_URL} 2> /dev/null)
@@ -713,7 +713,7 @@ function _parse_arguments() {
           if [[ ${?} -ne ${__OK} || -z ${download_url} ]]
           then
             # Display Prompt
-            command echo -e "${__CR}→ Failed to resolve download source for update"
+            command echo -e "${__ESEQ}[K${__CR}→ Failed to resolve download source for update"
 
             # Terminate Program
             return ${__ERR}
@@ -726,14 +726,14 @@ function _parse_arguments() {
           if [[ ${?} -ne ${__OK} || ! -f "${QCD_RELEASE}" ]]
           then
             # Display Prompt
-            command echo -e "${__CR}→ Failed to download update"
+            command echo -e "${__ESEQ}[K${__CR}→ Failed to download update"
 
             # Terminate Program
             return ${__ERR}
           fi
 
           # Display Prompt
-          command echo -en "${__CR}→ Installing updates  "
+          command echo -en "${__ESEQ}[K${__CR}→ Installing updates"
 
           # Uninstall Old Program Files
           command rm ${QCD_FOLD}/*.sh ${QCD_FOLD}/*.pl
@@ -745,7 +745,7 @@ function _parse_arguments() {
           if [[ ${?} -ne ${__OK} ]]
           then
             # Display Prompt
-            command echo -e "${__CR}→ Failed to install update"
+            command echo -e "${__ESEQ}[K${__CR}→ Failed to install update"
 
             # Terminate Program
             return ${__ERR}
@@ -755,7 +755,7 @@ function _parse_arguments() {
           command rm ${QCD_RELEASE} ${QCD_INSTALL} 2> /dev/null
 
           # Display Prompt
-          command echo -en "${__CR}→ Configuring updates "
+          command echo -en "${__ESEQ}[K${__CR}→ Configuring updates"
 
           # Update Terminal Environment
           command source ${QCD_SH} 2> /dev/null
@@ -764,14 +764,14 @@ function _parse_arguments() {
           if [[ ${?} -ne ${__OK} ]]
           then
             # Display Prompt
-            command echo -e "${__CR}→ Failed to configure update "
+            command echo -e "${__ESEQ}[K${__CR}→ Failed to configure update"
 
             # Terminate Program
             return ${__ERR}
           fi
 
           # Display Prompt
-          command echo -e "${__CR}→ Update complete     "
+          command echo -e "${__ESEQ}[K${__CR}→ Update complete"
 
           # Clear Previous Outputs
           _clear_output 2
@@ -799,7 +799,7 @@ function _parse_arguments() {
           command cd "${QCD_BACK_DIR}"
 
           # Update Back Directory
-          QCD_BACK_DIR=${pwd}
+          QCD_BACK_DIR="${pwd}"
 
           # Terminate Program
           return ${__OK}
@@ -1174,7 +1174,7 @@ function qcd() {
       if [[ "${sym_link}" == \\.* ]]
       then
         # Override Parameters
-        i=2; wld_link="${__BSLH}${__CWD}"
+        i=2; wld_link="${__BSLH}${__CWD}";
       fi
 
       # Wildcard Symbolic Link
@@ -1316,7 +1316,7 @@ function qcd() {
         if [[ -z ${lead_comp} ]]
         then
           # Update Path Components
-          lead_comp=${trail_comp}; trail_comp=${__ESTR}
+          lead_comp=${trail_comp}; trail_comp=${__ESTR};
         fi
 
         # Validate Leading Path Existence
@@ -1399,7 +1399,7 @@ function _qcd_comp() {
         if [[ "${sym_link}" == \\.* ]]
         then
           # Override Parameters
-          i=2; wld_link="${__BSLH}${__CWD}"
+          i=2; wld_link="${__BSLH}${__CWD}";
         fi
 
         # Wildcard Symbolic Link
