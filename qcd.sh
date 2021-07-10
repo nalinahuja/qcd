@@ -1105,7 +1105,7 @@ function qcd() {
       local offset=${dir_arg:${si}:${ei}}
 
       # Generate Directory Offset Pattern
-      local format=$(command printf "%${offset}s")
+      local format=$(command printf "%${offset}s" 2> /dev/null)
 
       # Replace Directory Arguments
       dir_arg="${format// /${__HWD}}"
