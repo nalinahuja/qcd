@@ -17,22 +17,22 @@ qcd does not require any special dependencies to operate as a command line utili
 
 #### Downloading qcd
 <p align="justify">
-Please navigate to the <a href="https://github.com/nalinahuja22/qcd/releases">release</a> page of this repository and download the latest version of qcd. This download can be done within a browser environment or using a command line program like <code>wget</code> or <code>curl</code> as shown below.
+Please navigate to the <a href="https://github.com/nalinahuja/qcd/releases">release</a> page of this repository and download the latest version of qcd. This download can be done within a browser environment or using a command line program like <code>wget</code> or <code>curl</code> as shown below.
 
 ```bash
 # Using wget
-command wget https://github.com/nalinahuja22/qcd/archive/v2.1.zip
+command wget https://github.com/nalinahuja/qcd/archive/v2.1.zip
 
 # Using curl
-command curl -sL https://github.com/nalinahuja22/qcd/archive/v2.1.zip > v2.1.zip
+command curl -sL https://github.com/nalinahuja/qcd/archive/v2.1.zip > v2.1.zip
 ```
 
-Alternatively, you can clone this <a href="https://github.com/nalinahuja22/qcd">repository</a> but it is recommended that you download the most recent release since the repository is comparatively larger in size.
+Alternatively, you can clone this <a href="https://github.com/nalinahuja/qcd">repository</a> but it is recommended that you download the most recent release since the repository is comparatively larger in size.
 </p>
 
 #### Installing qcd
 <p align="justify">
-Navigate to the location where qcd has been downloaded onto your machine, unzip the archive if needed, and run the <a href="https://github.com/nalinahuja22/qcd/blob/master/install.sh">install.sh</a> script. This executable will install qcd into the directory <code>~/.qcd</code> and add the qcd command to your terminal profile. When the installation finishes, please source your terminal profile and restart your terminal to fully configure the installation.<br><br>If you would like to do a manual installation of qcd, all you need to do is move the program files you downloaded, besides the <a href="https://github.com/nalinahuja22/qcd/blob/master/install.sh">install.sh</a> file, into a directory named <code>~/.qcd</code> which you will have to create yourself. Then restart your terminal after adding the following command to it.
+Navigate to the location where qcd has been downloaded onto your machine, unzip the archive if needed, and run the <a href="https://github.com/nalinahuja/qcd/blob/master/install.sh">install.sh</a> script. This executable will install qcd into the directory <code>~/.qcd</code> and add the qcd command to your terminal profile. When the installation finishes, please source your terminal profile and restart your terminal to fully configure the installation.<br><br>If you would like to do a manual installation of qcd, all you need to do is move the program files you downloaded, besides the <a href="https://github.com/nalinahuja/qcd/blob/master/install.sh">install.sh</a> file, into a directory named <code>~/.qcd</code> which you will have to create yourself. Then restart your terminal after adding the following command to it.
 
 ```bash
 command source ~/.qcd/qcd.sh

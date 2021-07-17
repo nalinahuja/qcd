@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Developed by Nalin Ahuja, nalinahuja22
+# Developed by Nalin Ahuja, nalinahuja
 
 # End Header----------------------------------------------------------------------------------------------------------------------------------------------------------
 

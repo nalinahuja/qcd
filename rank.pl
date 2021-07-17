@@ -1,4 +1,4 @@
-# Developed by Nalin Ahuja, nalinahuja22
+# Developed by Nalin Ahuja, nalinahuja
 
 use strict;
 use warnings;

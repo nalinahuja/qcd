@@ -1,4 +1,4 @@
-# Developed by Nalin Ahuja, nalinahuja22
+# Developed by Nalin Ahuja, nalinahuja
 
 # End Header---------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -50,7 +50,7 @@ readonly QCD_RELEASE=${QCD_FOLD}/release.zip &> /dev/null
 # End File Constants-------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Release URL Endpoint
-readonly QCD_RELEASE_URL="https://api.github.com/repos/nalinahuja22/qcd/releases/latest" &> /dev/null
+readonly QCD_RELEASE_URL="https://api.github.com/repos/nalinahuja/qcd/releases/latest" &> /dev/null
 
 # End Release Constants----------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -220,7 +220,7 @@ EOF
   qcd [-m, --mkdir] [path]            Create and switch to new directory
   qcd [-o, --options] [query]         Show symbolic linkage options in menu
 
-Developed by Nalin Ahuja, nalinahuja22
+Developed by Nalin Ahuja, nalinahuja
 EOF
 }
 
