@@ -701,7 +701,7 @@ function _parse_arguments() {
           fi
 
           # Display Prompt
-          command echo -en "→ Downloading update"
+          command echo -en "→ Downloading update "
 
           # Get Release Information
           local release_info=$(command curl --connect-timeout ${__DELAY} -sL ${QCD_RELEASE_URL} 2> /dev/null)
@@ -733,7 +733,7 @@ function _parse_arguments() {
           fi
 
           # Display Prompt
-          command echo -en "${__ESEQ}[K${__CR}→ Installing updates"
+          command echo -en "${__ESEQ}[K${__CR}→ Installing updates "
 
           # Uninstall Old Program Files
           command rm ${QCD_FOLD}/*.sh ${QCD_FOLD}/*.pl
@@ -755,7 +755,7 @@ function _parse_arguments() {
           command rm ${QCD_RELEASE} ${QCD_INSTALL} 2> /dev/null
 
           # Display Prompt
-          command echo -en "${__ESEQ}[K${__CR}→ Configuring updates"
+          command echo -en "${__ESEQ}[K${__CR}→ Configuring updates "
 
           # Update Terminal Environment
           command source ${QCD_SH} 2> /dev/null
@@ -771,7 +771,7 @@ function _parse_arguments() {
           fi
 
           # Display Prompt
-          command echo -e "${__ESEQ}[K${__CR}→ Update complete"
+          command echo -e "${__ESEQ}[K${__CR}→ Update complete "
 
           # Clear Previous Outputs
           _clear_output 2
