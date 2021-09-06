@@ -598,7 +598,7 @@ function _parse_arguments() {
       # Check For List Flag
       ${__LIST}|--list)
         # Display Prompt
-        command echo -en "${__ESEQ}[K${__CR}qcd: Generating link map..."
+        command echo -en "${__ESEQ}[K${__CR}qcd: Generating linkage map..."
 
         # Get Symbolic Linkages From Store File
         local sym_links=$(qcd --clean &> /dev/null && command cat ${QCD_STORE})
