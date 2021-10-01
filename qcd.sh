@@ -38,7 +38,7 @@ readonly QCD_SH=${QCD_FOLD}/qcd.sh  &> /dev/null
 readonly QCD_PL=${QCD_FOLD}/rank.pl &> /dev/null
 
 # Resource Files
-readonly QCD_TEMP=${QCD_FOLD}/temp    &> /dev/null
+readonly QCD_TEMP=${QCD_FOLD}/.temp   &> /dev/null
 readonly QCD_STORE=${QCD_FOLD}/store  &> /dev/null
 readonly QCD_TRACK=${QCD_FOLD}/.track &> /dev/null
 
@@ -670,7 +670,7 @@ function _parse_arguments() {
         unset IFS
 
         # Display Prompt
-        command echo -e "qcd: Cleaned store file"
+        command echo -e "qcd: Cleaned linkages in store file"
 
         # Terminate Program
         return ${__OK}
