@@ -598,7 +598,7 @@ function _parse_arguments() {
       # Check For List Flag
       ${__LIST}|--list)
         # Display Prompt
-        command echo -en "${__ESEQ}[K${__CR}qcd: Generating linkage map..."
+        command echo -en "${__CR}${__ESEQ}[Kqcd: Generating linkage map..."
 
         # Get Symbolic Linkages From Store File
         local sym_links=$(qcd --clean &> /dev/null && command cat ${QCD_STORE})
@@ -607,7 +607,7 @@ function _parse_arguments() {
         if [[ -z ${sym_links} ]]
         then
           # Display Prompt
-          command echo -e "${__ESEQ}[K${__CR}qcd: No linkages found"
+          command echo -e "${__CR}${__ESEQ}[Kqcd: No linkages found"
 
           # Terminate Program
           return ${__ERR}
@@ -713,7 +713,7 @@ function _parse_arguments() {
           if [[ ${?} -ne ${__OK} || -z ${download_url} ]]
           then
             # Display Prompt
-            command echo -e "${__ESEQ}[K${__CR}→ Failed to resolve download source for update"
+            command echo -e "${__CR}${__ESEQ}[K→ Failed to resolve download source for update"
 
             # Terminate Program
             return ${__ERR}
@@ -726,14 +726,14 @@ function _parse_arguments() {
           if [[ ${?} -ne ${__OK} || ! -f "${QCD_RELEASE}" ]]
           then
             # Display Prompt
-            command echo -e "${__ESEQ}[K${__CR}→ Failed to download update"
+            command echo -e "${__CR}${__ESEQ}[K→ Failed to download update"
 
             # Terminate Program
             return ${__ERR}
           fi
 
           # Display Prompt
-          command echo -en "${__ESEQ}[K${__CR}→ Installing updates "
+          command echo -en "${__CR}${__ESEQ}[K→ Installing updates "
 
           # Uninstall Old Program Files
           command rm ${QCD_FOLD}/*.sh ${QCD_FOLD}/*.pl
@@ -745,7 +745,7 @@ function _parse_arguments() {
           if [[ ${?} -ne ${__OK} ]]
           then
             # Display Prompt
-            command echo -e "${__ESEQ}[K${__CR}→ Failed to install update"
+            command echo -e "${__CR}${__ESEQ}[K→ Failed to install update"
 
             # Terminate Program
             return ${__ERR}
@@ -755,7 +755,7 @@ function _parse_arguments() {
           command rm ${QCD_RELEASE} ${QCD_INSTALL} 2> /dev/null
 
           # Display Prompt
-          command echo -en "${__ESEQ}[K${__CR}→ Configuring updates "
+          command echo -en "${__CR}${__ESEQ}[K→ Configuring updates "
 
           # Update Terminal Environment
           command source ${QCD_SH} 2> /dev/null
@@ -764,14 +764,14 @@ function _parse_arguments() {
           if [[ ${?} -ne ${__OK} ]]
           then
             # Display Prompt
-            command echo -e "${__ESEQ}[K${__CR}→ Failed to configure update"
+            command echo -e "${__CR}${__ESEQ}[K→ Failed to configure update"
 
             # Terminate Program
             return ${__ERR}
           fi
 
           # Display Prompt
-          command echo -e "${__ESEQ}[K${__CR}→ Update complete "
+          command echo -e "${__CR}${__ESEQ}[K→ Update complete "
 
           # Clear Previous Outputs
           _clear_output 2
