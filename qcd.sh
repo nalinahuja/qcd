@@ -890,13 +890,6 @@ function _parse_arguments() {
 
           # Terminate Program
           return ${__ERR}
-        elif [[ -n ${pfx_path} && ! -d "${pfx_path}" ]]
-        then
-          # Display Prompt
-          command echo -e "qcd: Invalid path to directory"
-
-          # Terminate Program
-          return ${__ERR}
         fi
 
         # Create Directory At Location
