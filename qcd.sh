@@ -900,7 +900,7 @@ function _parse_arguments() {
         fi
 
         # Create Directory At Location
-        command mkdir "${dir_path}"
+        command mkdir -p "${dir_path}"
 
         # Switch To New Directory
         command cd "${dir_path}"
