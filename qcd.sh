@@ -75,14 +75,14 @@ function _get_path() {
   # Navigate To Argument Directory
   command cd "${@}"
 
-  # Store Real Directory Path
-  local rdp=$(_get_pwd)
+  # Store Absolute Directory Path
+  local adp=$(_get_pwd)
 
   # Navigate To Present Directory
   command cd "${pwd}"
 
-  # Return Real Directory Path
-  command echo -e "${rdp}"
+  # Return Absolute Directory Path
+  command echo -e "${adp}"
 }
 
 function _get_rname() {
@@ -92,7 +92,7 @@ function _get_rname() {
   # Get Prefix String
   local pfx="${dir#*/*}"
 
-  # Determine Return
+  # Check Prefix String
   if [[ -n ${pfx} ]]
   then
     # Determine Substring Bounds
@@ -119,7 +119,7 @@ function _get_dname() {
   # Get Suffix String
   local sfx="${dir:${si}}"
 
-  # Determine Return
+  # Determine Return Format
   if [[ -z ${sfx} ]]
   then
     # Return Prefix String
