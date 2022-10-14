@@ -142,7 +142,7 @@ function _split_path() {
 
 function _format_path() {
   # Check For Environment Variable
-  if [[ -n ${HOME} ]]
+  if [[ -n ${HOME} ]] && [[ "${@}" =~ ${HOME}* ]]
   then
     # Return Formatted Path
     command echo -e ${@/${HOME}/\~}
@@ -507,7 +507,7 @@ function _add_directory() {
   [[ -z $(command awk -F ':' -v EPT="${ept}" -v DIR="${dir}" '{if ($1 == EPT && $2 == DIR) {print $0}}' ${QCD_STORE} 2> /dev/null) ]] && uent=${__TRUE}
 
   # Store Directory As Linkage
-  if [[ ${udir} -eq ${__TRUE} || ${uent} -eq ${__TRUE} ]]
+  if [[ ${udir} -eq ${__TRUE} ]] || [[ ${uent} -eq ${__TRUE} ]]
   then
     # Check Linkage Characteristic
     if [[ ${uent} -eq ${__TRUE} ]]
@@ -683,7 +683,7 @@ function _parse_arguments() {
         command read -p "→ Confirm update [y/n]: " confirm
 
         # Determine Action
-        if [[ "${confirm,}" == "${__YES}" ]]
+        if [[ "$(command awk '{print tolower($0)}' <<< ${confirm})" == "${__YES}" ]]
         then
           # Clear Previous Outputs
           _clear_output 1
@@ -708,7 +708,7 @@ function _parse_arguments() {
           local download_url=$(command echo -e "${release_info}" | command egrep -s -o "https.*zipball.*" 2> /dev/null | command awk -F '"' '{print $1}' 2> /dev/null)
 
           # Verify Download URL
-          if [[ ${?} -ne ${__OK} || -z ${download_url} ]]
+          if [[ ${?} -ne ${__OK} ]] || [[ -z ${download_url} ]]
           then
             # Display Prompt
             command echo -e "${__CR}${__ESEQ}[K→ Failed to resolve download source for update"
@@ -721,7 +721,7 @@ function _parse_arguments() {
           command curl --connect-timeout ${__DELAY} -sL "${download_url}" > ${QCD_RELEASE}
 
           # Error Check Release Contents
-          if [[ ${?} -ne ${__OK} || ! -f "${QCD_RELEASE}" ]]
+          if [[ ${?} -ne ${__OK} ]] || [[ ! -f "${QCD_RELEASE}" ]]
           then
             # Display Prompt
             command echo -e "${__CR}${__ESEQ}[K→ Failed to download update"
@@ -788,7 +788,7 @@ function _parse_arguments() {
       # Check For Back Flag
       ${__BACK}|--back-dir)
         # Check Back Directory Variable
-        if [[ -n ${QCD_BACK_DIR} && -d "${QCD_BACK_DIR}" ]]
+        if [[ -n ${QCD_BACK_DIR} ]] && [[ -d "${QCD_BACK_DIR}" ]]
         then
           # Get Current Directory
           local pwd=$(_get_pwd)
@@ -832,7 +832,7 @@ function _parse_arguments() {
         _clear_output 2
 
         # Determine Action
-        if [[ "${confirm,}" == "${__YES}" ]]
+        if [[ "$(command awk '{print tolower($0)}' <<< ${confirm})" == "${__YES}" ]]
         then
           # Check For Tracking File
           if [[ ! -f "${QCD_TRACK}" ]]
@@ -861,7 +861,7 @@ function _parse_arguments() {
         command shift
 
         # Verify Path Argument
-        if [[ -z ${1} || "${1}" == -* ]]
+        if [[ -z ${1} ]] || [[ "${1}" == -* ]]
         then
           # Display Prompt
           command echo -e "qcd: Directory path missing"
@@ -908,7 +908,7 @@ function _parse_arguments() {
       # Check For Remember Flag
       ${__REMEMBER}|--remember)
         # Determine Remember Type
-        if [[ -z ${2} || "${2}" == -* ]]
+        if [[ -z ${2} ]] || [[ "${2}" == -* ]]
         then
           # Get Current Directory
           dir=$(_get_pwd)
@@ -966,7 +966,7 @@ function _parse_arguments() {
         command shift
 
         # Verify Alias Argument
-        if [[ -z ${1} || "${1}" == -* ]]
+        if [[ -z ${1} ]] || [[ "${1}" == -* ]]
         then
           # Display Prompt
           command echo -e "qcd: Directory alias missing"
@@ -988,7 +988,7 @@ function _parse_arguments() {
         command shift
 
         # Verify Option Argument
-        if [[ -z ${1} || "${1}" == -* ]]
+        if [[ -z ${1} ]] || [[ "${1}" == -* ]]
         then
           # Display Prompt
           command echo -e "qcd: Directory linkage missing"
@@ -1016,7 +1016,7 @@ function _parse_arguments() {
   done
 
   # Verify Directory Parameters
-  if [[ -n ${dir} || -n ${als} ]]
+  if [[ -n ${dir} ]] || [[ -n ${als} ]]
   then
     # Verify Directory Parameter
     [[ -z ${dir} ]] && dir=$(_get_pwd)
@@ -1113,7 +1113,7 @@ function qcd() {
   local old_pwd=$(_get_pwd)
 
   # Determine If Directory Is Linked
-  if [[ -d "${dir_arg}" && ${opt_arg} == ${__FALSE} ]]
+  if [[ -d "${dir_arg}" ]] && [[ ${opt_arg} == ${__FALSE} ]]
   then
     # Change To Valid Directory
     command cd "${dir_arg}"
@@ -1202,14 +1202,14 @@ function qcd() {
         path=$(_escape_path "${path}${sub_link}")
 
         # Verify And Add Path To List
-        [[ -d "${path}" && ! "${path%/}" == "${pwd%/}" ]] && paths+=($(command echo "${path}"))
+        [[ -d "${path}" ]] && [[ ! "${path%/}" == "${pwd%/}" ]] && paths+=($(command echo "${path}"))
       done
 
       # Update Path Count
       pathc=${#paths[@]}
 
       # List Matching Paths
-      if [[ ${pathc} -gt 1 && -n ${paths} ]]
+      if [[ ${pathc} -gt 1 ]] && [[ -n ${paths} ]]
       then
         # Display Prompt
         command echo -e "qcd: Multiple paths linked to ${__B}${dir_arg%/}${__N}"
@@ -1311,13 +1311,13 @@ function qcd() {
         fi
 
         # Validate Leading Path Existence
-        if [[ -n ${lead_comp} && -d "${lead_comp}" ]]
+        if [[ -n ${lead_comp} ]] && [[ -d "${lead_comp}" ]]
         then
           # Switch To Leading Path
           command cd "${lead_comp}"
 
           # Validate Trailing Path Existence
-          if [[ -n ${trail_comp} && -d "${trail_comp}" ]]
+          if [[ -n ${trail_comp} ]] && [[ -d "${trail_comp}" ]]
           then
             # Switch To Trailing Path
             command cd "${trail_comp}"
@@ -1488,7 +1488,7 @@ function _qcd_comp() {
       if [[ ! -d "${sym_link}" ]]
       then
         # Determine Symbolic Link Visibility
-        if [[ "${ca_pfx}" == "${__CWD}" && "${sl_pfx}" == "${__CWD}" || ! "${ca_pfx}" == "${__CWD}" && ! "${sl_pfx}" == "${__CWD}" ]]
+        if [[ "${ca_pfx}" == "${__CWD}" && "${sl_pfx}" == "${__CWD}" ]] || [[ ! "${ca_pfx}" == "${__CWD}" && ! "${sl_pfx}" == "${__CWD}" ]]
         then
           # Add Symbolic Link
           comp_list+=("${sym_link}${__FLSH}")

@@ -18,7 +18,7 @@ readonly QCD_READ_ME=./README.md
 readonly BASH_CONFIGS=(~/.bashrc ~/.bash_profile)
 
 # Verify Installation Files
-if [[ ! -e "${QCD_SH}" || ! -e "${QCD_PL}" || ! -e "${QCD_LICENSE}" || ! -e "${QCD_VERSION}" || ! -e "${QCD_READ_ME}" ]]
+if [[ ! -e "${QCD_SH}" ]] || [[ ! -e "${QCD_PL}" ]] || [[ ! -e "${QCD_LICENSE}" ]] || [[ ! -e "${QCD_VERSION}" ]] || [[ ! -e "${QCD_READ_ME}" ]]
 then
   # Display Prompt
   command echo -e "qcd: One or more installation files are missing or corrupted, aborting installation"
@@ -55,7 +55,7 @@ declare INSTALL_VERSION=$(command cat ${QCD_VERSION} 2> /dev/null)
 command read -p "qcd: Confirm program installation ${B}${INSTALL_VERSION}${N} [y/n]: " confirm
 
 # Determine Action
-if [[ "${confirm,}" == "${YES}" ]]
+if [[ "$(command awk '{print tolower($0)}' <<< ${confirm})" == "${YES}" ]]
 then
   # Add Command To Bash Configurations
   if [[ ! -d "${QCD_FOLD}" ]]

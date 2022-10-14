@@ -21,10 +21,10 @@ Please navigate to the <a href="https://github.com/nalinahuja/qcd/releases">rele
 
 ```bash
 # Using wget
-command wget https://github.com/nalinahuja/qcd/archive/v2.1.4.zip
+command wget https://github.com/nalinahuja/qcd/archive/v2.1.5.zip
 
 # Using curl
-command curl -sL https://github.com/nalinahuja/qcd/archive/v2.1.4.zip > v2.1.4.zip
+command curl -sL https://github.com/nalinahuja/qcd/archive/v2.1.5.zip > v2.1.5.zip
 ```
 
 Alternatively, you can clone this <a href="https://github.com/nalinahuja/qcd">repository</a> but it is recommended that you download the most recent release since the repository is comparatively larger in size.
