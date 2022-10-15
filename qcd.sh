@@ -76,13 +76,13 @@ function _get_path() {
   command cd "${@}"
 
   # Store Absolute Directory Path
-  local adp=$(_get_pwd)
+  local path=$(_get_pwd)
 
   # Navigate To Present Directory
   command cd "${pwd}"
 
   # Return Absolute Directory Path
-  command echo -e "${adp}"
+  command echo -e "${path}"
 }
 
 function _get_rname() {
@@ -142,7 +142,7 @@ function _split_path() {
 
 function _format_path() {
   # Check For Environment Variable
-  if [[ -n ${HOME} ]] && [[ "${@}" =~ ${HOME}* ]]
+  if [[ -n ${HOME} ]] && [[ "${@}" == ${HOME}* ]]
   then
     # Return Formatted Path
     command echo -e ${@/${HOME}/\~}
