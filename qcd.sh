@@ -10,7 +10,7 @@ readonly __UP=1 __DN=2 __ENT=3 __EXT=4 &> /dev/null
 readonly __OK=0 __ERR=1 __CONT=2 __NSEL=255 &> /dev/null
 
 # Embedded Values
-readonly __NSET=0 __MINPAD=5 __DELAY=10 __COLNUM=256 &> /dev/null
+readonly __NSET=0 __MINPAD=7 __DELAY=10 __COLNUM=256 &> /dev/null
 
 # End Numerical Constants--------------------------------------------------------------------------------------------------------------------------------------------
 
