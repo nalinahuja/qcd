@@ -51,7 +51,7 @@ Just like the builtin command <code>cd</code>, you can specifiy either an absolu
 
 ```bash
 # Standard Input    # Special Input
-qcd [path]          qcd [keyword, prefix, subsequence]
+qcd [dir]           qcd [keyword, prefix, subsequence]
 ```
 
 <p align="justify">
@@ -68,7 +68,7 @@ qcd ./../node-modules    qcd node-modules     qcd node            qcd nm
 
 ```bash
 # File System Sequences
-qcd ~/./../[directory]
+qcd ~/./../[dir]
 ```
 
 <p align="justify">
@@ -111,7 +111,7 @@ The remember flag allows the user to add a symbolic linkage to disk. Without any
 
 ```bash
 # No Arguments          # With Path
-qcd [-r, --remember]    qcd [-r, --remember] [path]
+qcd [-r, --remember]    qcd [-r, --remember] [dir]
 ```
 
 <p align="justify">
@@ -134,7 +134,7 @@ The alias flag can be used in conjunction with the <a href="#remember-directory"
 
 ```bash
 # With Remember Flag
-qcd [-a, --alias] [alias] [-r, --remember] [path]
+qcd [-a, --alias] [alias] [-r, --remember] [dir]
 ```
 
 #### Forget Directory
@@ -144,7 +144,7 @@ The forget flag allows the user to remove a symbolic linkage from disk. Without 
 
 ```bash
 # No Arguments        # With Path                  # With Keyword
-qcd [-f, --forget]    qcd [-f, --forget] [path]    qcd [-f, --forget] [keyword]
+qcd [-f, --forget]    qcd [-f, --forget] [dir]    qcd [-f, --forget] [keyword]
 ```
 
 #### Options
