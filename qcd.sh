@@ -201,9 +201,10 @@ function _show_help() {
   # Display Usage
   command cat << EOF
   qcd                                 Switch to home directory
-  qcd [path]                          Switch to valid directory
+  qcd [dir]                           Switch to valid directory
   qcd [keyword]/[subdir]/...          Switch to linked directory
   qcd [n]..                           Switch to nth parent directory
+  qcd [file]                          Switch to valid file directory
 EOF
 
   # Display Options Header
@@ -220,14 +221,14 @@ EOF
   qcd [-t, --track-dirs]              Set directory tracking behavior
 
   qcd [-r, --remember]                Remember present directory
-  qcd [-r, --remember] [path]         Remember directory by path
+  qcd [-r, --remember] [dir]          Remember directory by path
   qcd [-a, --alias] [alias]           Remember present directory by alias
 
   qcd [-f, --forget]                  Forget present directory
-  qcd [-f, --forget] [path]           Forget matching directory path
+  qcd [-f, --forget] [dir]            Forget matching directory path
   qcd [-f, --forget] [keyword]        Forget matching symbolic linkages
 
-  qcd [-m, --mkdir] [path]            Create and switch to new directory
+  qcd [-m, --mkdir] [dir]             Create and switch to new directory
   qcd [-o, --options] [query]         Show symbolic linkage options in menu
 
 Developed by Nalin Ahuja, nalinahuja
