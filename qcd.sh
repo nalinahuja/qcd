@@ -1220,8 +1220,12 @@ function qcd() {
         # Concatenate Subdirectory Path
         path=$(_escape_path "${path}${sub_link}")
 
-        # Verify And Add Path To List
-        [[ -d "${path}" ]] && [[ ! "${path%/}" == "${pwd%/}" ]] && paths+=($(command echo "${path}"))
+        # Verify Path
+        if [[ -d "${path}" ]] && [[ ! "${path%/}" == "${pwd%/}" ]]
+        then
+          # Add Path To List
+          paths+=($(command echo "${path}"))
+        fi
       done
 
       # Update Path Count
