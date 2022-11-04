@@ -21,10 +21,10 @@ Please navigate to the <a href="https://github.com/nalinahuja/qcd/releases">rele
 
 ```bash
 # Using wget
-command wget https://github.com/nalinahuja/qcd/archive/v2.1.6.zip
+command wget https://github.com/nalinahuja/qcd/archive/v3.0.zip
 
 # Using curl
-command curl -sL https://github.com/nalinahuja/qcd/archive/v2.1.6.zip > v2.1.6.zip
+command curl -sL https://github.com/nalinahuja/qcd/archive/v3.0.zip > v3.0.zip
 ```
 
 Alternatively, you can clone this <a href="https://github.com/nalinahuja/qcd">repository</a> but it is recommended that you download the most recent release of <code>qcd</code> since the repository is comparatively larger in size.
@@ -64,12 +64,20 @@ qcd ./../node-modules    qcd node-modules     qcd node            qcd nm
 ```
 
 <p align="justify">
-<code>qcd</code> is able to interpret file system sequences like <code>~</code>, <code>/</code>, <code>.</code> and <code>..</code> as well as accept a special input in the format <code>n..</code> which will tell <code>qcd</code> to jump to the nth parent directory relative to the present working directory.
+<code>qcd</code> is able to interpret standard file system characters and sequences like <code>~</code>, <code>/</code>, <code>.</code> and <code>..</code> just like the builtin <code>cd</code> command.</p>
+
+```bash
+# File System Sequences
+qcd ~/./../[directory]
+```
+
+<p align="justify">
+<code>qcd</code> can also interpet some special input formats that the builtin <code>cd</code> command does not natively support. <code>qcd</code> can accept a path to a file that exists on disk and jump to the directory that this file exists in by extracting the directory name from the file path. <code>qcd</code> can also accept input in the format <code>n..</code> which will tell it to jump to the nth parent directory relative to the present working directory.
 </p>
 
 ```bash
-# File System Sequences    # nth Parent Directory
-qcd ~/./../[directory]     qcd [n]..
+# File Path Handling    # nth Parent Directory
+qcd [file]              qcd [n]..
 ```
 
 <p align="justify">
