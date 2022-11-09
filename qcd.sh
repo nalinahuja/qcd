@@ -641,12 +641,17 @@ function _parse_arguments() {
 
         # Iterate Over Linkages
         for sym_link in ${sym_links}; do
-          # Format Linkage Components
+          # Extract Linkage Component
           local link=$(_split_name "${sym_link}")
-          local path=$(_split_path "${sym_link}")
+
+          # Extract Path Component
+          local path=$(_format_path "$(_split_path "${sym_link}")")
+
+          # Format Path Component
+          [[ ! ${path} == ${__FLSH} ]] && path="${path%/}"
 
           # Format Linkage Row
-          command printf " %-${pcols}s  %s${__NL}" "${link}" "$(_format_path "${path%/}")" >> ${QCD_TEMP}
+          command printf " %-${pcols}s  %s${__NL}" "${link}" "${path}" >> ${QCD_TEMP}
         done
 
         # Unset IFS
@@ -1035,7 +1040,7 @@ function _parse_arguments() {
     [[ -z ${dir} ]] && dir=$(_get_pwd)
 
     # Verify Alias Parameter
-    [[ -z ${als} ]] && als=$(_get_dname "${dir}")
+    [[ -z ${als} ]] && als=$(_get_dname $(_get_path "${dir}"))
 
     # Expand Directory Path
     dir=$(_get_path "${dir}")
