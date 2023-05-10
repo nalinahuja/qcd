@@ -2,8 +2,8 @@
 
 # Developed by Nalin Ahuja, nalinahuja
 
-# Program Path
-readonly QCD_FOLD=~/.qcd
+# Program Directory
+readonly QCD_DIR=~/.qcd
 
 # Program Files
 readonly QCD_SH=./qcd.sh
@@ -58,7 +58,7 @@ command read -p "qcd: Confirm program installation ${B}${INSTALL_VERSION}${N} [y
 if [[ "$(command awk '{print tolower($0)}' <<< ${confirm})" == "${YES}" ]]
 then
   # Add Command To Bash Configurations
-  if [[ ! -d "${QCD_FOLD}" ]]
+  if [[ ! -d "${QCD_DIR}" ]]
   then
     # Iterate Over Bash Configurations
     for BASH_CONFIG in ${BASH_CONFIGS[@]}; do
@@ -91,20 +91,20 @@ then
   if [[ ${UPDATE_STATUS} -eq ${TRUE} ]]
   then
     # Uninstall Old Program Files
-    command rm ${QCD_FOLD}/*.sh ${QCD_FOLD}/*.pl
+    command rm ${QCD_DIR}/*.sh ${QCD_DIR}/*.pl
   else
     # Create Program Folder
-    command mkdir ${QCD_FOLD} 2> /dev/null
+    command mkdir ${QCD_DIR} 2> /dev/null
   fi
 
   # Install QCD Program Files
-  command mv ${QCD_SH} ${QCD_FOLD} 2> /dev/null
-  command mv ${QCD_PL} ${QCD_FOLD} 2> /dev/null
+  command mv ${QCD_SH} ${QCD_DIR} 2> /dev/null
+  command mv ${QCD_PL} ${QCD_DIR} 2> /dev/null
 
   # Install QCD Release Files
-  command mv ${QCD_LICENSE} ${QCD_FOLD} 2> /dev/null
-  command mv ${QCD_VERSION} ${QCD_FOLD} 2> /dev/null
-  command mv ${QCD_READ_ME} ${QCD_FOLD} 2> /dev/null
+  command mv ${QCD_LICENSE} ${QCD_DIR} 2> /dev/null
+  command mv ${QCD_VERSION} ${QCD_DIR} 2> /dev/null
+  command mv ${QCD_READ_ME} ${QCD_DIR} 2> /dev/null
 
   # Determine Appropriate Prompt
   if [[ ${UPDATE_STATUS} -eq ${TRUE} ]]

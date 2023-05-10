@@ -7,7 +7,7 @@ readonly __TRUE=1 __FALSE=0 &> /dev/null
 readonly __OK=0 __ERR=1 __CONT=2 __NSEL=255 &> /dev/null
 
 # Keycode Values
-readonly __ARR_UP=1 __ARR_DN=2 __ENT=3 __EXT=4 &> /dev/null
+readonly __ARR_UP=1 __ARR_DN=2 __ENTR=3 __EXIT=4 &> /dev/null
 
 # Embedded Values
 readonly __NULL=0 __MIN_PADDING=7 __TIME_DELAY=10 __COLUMN_NUM=1024 &> /dev/null
@@ -17,7 +17,7 @@ readonly __NULL=0 __MIN_PADDING=7 __TIME_DELAY=10 __COLUMN_NUM=1024 &> /dev/null
 # Value Flags
 readonly __ALIAS="-a" __OPTIONS="-o" __REMEMBER="-r" __FORGET="-f" __MKDIRENT="-m" &> /dev/null
 
-# Standalone Flags
+# Command Flags
 readonly __HELP="-h" __LIST="-l" __BACK="-b" __CLEAN="-c" __TRACK="-t" __UPDATE="-u" __VERSION="-v" &> /dev/null
 
 # Embedded Strings
@@ -31,22 +31,22 @@ readonly __B=$(command printf "${__ESEQ}[1m") __W=$(command printf "${__ESEQ}[30
 
 # End String Constants-----------------------------------------------------------------------------------------------------------------------------------------------
 
-# Program Path
-readonly QCD_FOLD=~/.qcd &> /dev/null
+# Program Directory
+readonly QCD_DIR=~/.qcd &> /dev/null
 
 # Program Files
-readonly QCD_SH=${QCD_FOLD}/qcd.sh  &> /dev/null
-readonly QCD_PL=${QCD_FOLD}/rank.pl &> /dev/null
+readonly QCD_SH=${QCD_DIR}/qcd.sh  &> /dev/null
+readonly QCD_PL=${QCD_DIR}/rank.pl &> /dev/null
 
 # Resource Files
-readonly QCD_TEMP=${QCD_FOLD}/.temp   &> /dev/null
-readonly QCD_STORE=${QCD_FOLD}/store  &> /dev/null
-readonly QCD_TRACK=${QCD_FOLD}/.track &> /dev/null
+readonly QCD_TEMP=${QCD_DIR}/.temp   &> /dev/null
+readonly QCD_STORE=${QCD_DIR}/store  &> /dev/null
+readonly QCD_TRACK=${QCD_DIR}/.track &> /dev/null
 
 # Release Files
-readonly QCD_VERSION=${QCD_FOLD}/VERSION     &> /dev/null
-readonly QCD_INSTALL=${QCD_FOLD}/install.sh  &> /dev/null
-readonly QCD_RELEASE=${QCD_FOLD}/release.zip &> /dev/null
+readonly QCD_VERSION=${QCD_DIR}/VERSION     &> /dev/null
+readonly QCD_INSTALL=${QCD_DIR}/install.sh  &> /dev/null
+readonly QCD_RELEASE=${QCD_DIR}/release.zip &> /dev/null
 
 # End File Constants-------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -73,14 +73,17 @@ function is_empty() {
 }
 
 function _get_pwd() {
-  # Store Current Working Directory
+  # Store Present Working Directory
   local pwd=$(command pwd 2> /dev/null)
 
-  # Return Current Working Directory
-  [[ "${pwd}" == "${__FLSH}" ]] && command echo -e "${pwd}" || command echo -e "${pwd}${__FLSH}"
+  # Conditionally Format Present Working Directory
+  [[ ! "${pwd}" == "${__FLSH}" ]] && pwd+="${__FLSH}"
+
+  # Return Present Working Directory
+  command echo -e "${pwd}"
 }
 
-function _get_path() {
+function _abs_path() {
   # Store Present Directory
   local pwd=$(_get_pwd)
 
@@ -270,10 +273,10 @@ function _read_input() {
     command read -s -n1 c 2> /dev/null
 
     # Return Enter Action
-    [[ "${c}" == "${__NSTR}" ]] && command echo -e "${__ENT}" && break
+    [[ "${c}" == "${__NSTR}" ]] && command echo -e "${__ENTR}" && break
 
     # Return Quit Action
-    [[ "${c}" == "${__QUIT}" ]] && command echo -e "${__EXT}" && break
+    [[ "${c}" == "${__QUIT}" ]] && command echo -e "${__EXIT}" && break
 
     # Append Character To Input Buffer
     buffer+=("${c}")
@@ -390,11 +393,11 @@ function _generate_menu() {
     then
       # Increment Selected Option
       ((os++))
-    elif [[ ${key} -eq ${__ENT} ]]
+    elif [[ ${key} -eq ${__ENTR} ]]
     then
       # Break Loop
       break
-    elif [[ ${key} -eq ${__EXT} ]]
+    elif [[ ${key} -eq ${__EXIT} ]]
     then
       # Reset Option Selection
       os=${__NSEL}
@@ -545,7 +548,7 @@ function _remove_linkage() {
   local link=$(_escape_regex "${@%/}")
 
   # Remove Link From Store File
-  command awk -F ':' -v LINK="${link}" '{if ($1 != LINK) {print $0}}' ${QCD_STORE} > ${QCD_TEMP} 2> /dev/null
+  command awk -F ':' -v LINK="${link}" '{if ($1 != LINK) {print $0}}' ${QCD_STORE} >| ${QCD_TEMP} 2> /dev/null
 
   # Update Store File
   _update_store ${?}
@@ -569,7 +572,7 @@ function _remove_directory() {
   fi
 
   # Remove Directory From Store File
-  command awk -F ':' -v DIR="${dir}" '{if ($2 != DIR) {print $0}}' ${QCD_STORE} > ${QCD_TEMP} 2> /dev/null
+  command awk -F ':' -v DIR="${dir}" '{if ($2 != DIR) {print $0}}' ${QCD_STORE} >| ${QCD_TEMP} 2> /dev/null
 
   # Update Store File
   _update_store ${?}
@@ -634,7 +637,7 @@ function _parse_arguments() {
         [[ ${pcols} -lt ${__MIN_PADDING} ]] && pcols=${__MIN_PADDING}
 
         # Format Table Header
-        command printf "${__CR}${__W} %-${pcols}s  %-$((${tcols} - ${pcols} - 3))s${__N}${__NL}" "Keyword" "Directory" > ${QCD_TEMP}
+        command printf "${__CR}${__W} %-${pcols}s  %-$((${tcols} - ${pcols} - 3))s${__N}${__NL}" "Keyword" "Directory" >| ${QCD_TEMP}
 
         # Set IFS
         local IFS=$'\n'
@@ -736,7 +739,7 @@ function _parse_arguments() {
           fi
 
           # Download Release Contents
-          command curl --connect-timeout ${__TIME_DELAY} -sL "${download_url}" > ${QCD_RELEASE}
+          command curl --connect-timeout ${__TIME_DELAY} -sL "${download_url}" >| ${QCD_RELEASE}
 
           # Error Check Release Contents
           if [[ ${?} -ne ${__OK} ]] || [[ ! -f "${QCD_RELEASE}" ]]
@@ -752,10 +755,10 @@ function _parse_arguments() {
           command echo -en "${__CR}${__CL}→ Installing updates "
 
           # Uninstall Old Program Files
-          command rm ${QCD_FOLD}/*.sh ${QCD_FOLD}/*.pl
+          command rm ${QCD_DIR}/*.sh ${QCD_DIR}/*.pl
 
           # Install New Program Files
-          command unzip -o -j ${QCD_RELEASE} -d ${QCD_FOLD} &> /dev/null
+          command unzip -o -j ${QCD_RELEASE} -d ${QCD_DIR} &> /dev/null
 
           # Error Check Installation
           if [[ ${?} -ne ${__OK} ]]
@@ -968,7 +971,7 @@ function _parse_arguments() {
           (_remove_linkage "${arg}" &> /dev/null &)
         else
           # Expand Directory Path
-          arg=$(_get_path "${arg}")
+          arg=$(_abs_path "${arg}")
 
           # Forget Argument As Directory
           (_remove_directory "${arg}" &> /dev/null &)
@@ -1040,10 +1043,10 @@ function _parse_arguments() {
     [[ -z ${dir} ]] && dir=$(_get_pwd)
 
     # Verify Alias Parameter
-    [[ -z ${als} ]] && als=$(_get_dname $(_get_path "${dir}"))
+    [[ -z ${als} ]] && als=$(_get_dname $(_abs_path "${dir}"))
 
     # Expand Directory Path
-    dir=$(_get_path "${dir}")
+    dir=$(_abs_path "${dir}")
 
     # Add Directory To Store File
     (_add_directory "${dir}" "${als}" &> /dev/null &)
