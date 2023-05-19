@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use File::Basename;
 
-# End Imports----------------------------------------------------------------------------------------------------------------------------------------------------------
+# End Imports---------------------------------------------------------------------------------------------------------------------------------------------------------
 
 sub max {
   # Get Numerical Arguments
@@ -30,11 +30,9 @@ sub lcs {
     push(@tbl, 0);
   }
 
-  # Iterate Over Table Rows
+  # Find Longest Common Subsequence
   for (my $i = 0; $i < $ml + 1; $i++) {
-    # Iterate Over Table Columns
     for (my $j = 0; $j < $nl + 1; $j++) {
-      # Update Table
       if ($i == 0 or $j == 0) {
         $tbl[(($nl + 1) * $i) + $j] = 0;
       } elsif (substr($ms, $i - 1, 1) eq substr($ns, $j - 1, 1)) {
@@ -45,18 +43,48 @@ sub lcs {
     }
   }
 
-  # Return Longest Common Subsequene
+  # Return Longest Common Subsequence
   return $tbl[-1];
 }
 
-# End Subroutines------------------------------------------------------------------------------------------------------------------------------------------------------
+sub lci {
+  # Get String Arguments
+  my ($ms, $ns) = @_;
+
+  # Get String Lengths
+  my $ml = length($ms);
+  my $nl = length($ns);
+
+  # Initialize Latest Index
+  my $li = -1;
+
+  # Find Index Of Latest Character
+  for (my $i = 0; $i < $ml; $i++) {
+    $li = max($li, index($ns, substr($ms, $i , 1)));
+
+    # Break Loop If Latest Index Equals Target String Length
+    if ($li == $nl) {
+      last;
+    }
+  }
+
+  # Check If Latest Index Was Updated
+  if ($li == -1) {
+    # Set Latest Index To Maximum Value
+    $li = 256
+  }
+
+  return $li;
+}
+
+# End Subroutines-----------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Get Commandline Arguments
 my $regex = $ARGV[0];
 my @paths = @ARGV[1 .. $#ARGV];
 
-# Initalize Similarity Array
-my @similarity = ();
+# Initalize Path Similarity Array
+my @path_similarity = ();
 
 # Iterate Over Paths
 foreach my $path (@paths) {
@@ -64,25 +92,29 @@ foreach my $path (@paths) {
   my $bname = basename($path);
 
   # Calculate Subsequence Length
-  my $subl = lcs($regex, $bname);
+  my $lcs = lcs($regex, $bname);
+
+  # Determine Latest Character Index
+  my $lci = lci($regex, $bname);
 
   # Calculate String Length Delta
-  my $ldel = abs(length($regex) - length($bname));
+  my $lnd = abs(length($bname) - length($regex));
 
-  # Push Result To Similarity Array
-  push(@similarity, {path => $path, subl => $subl, ldel => $ldel});
+  # Push Info To Path Similarity Array
+  push(@path_similarity, {path => $path, lcs => $lcs, lci => $lci, lnd => $lnd});
 }
 
-# Sort Similiarity Array Using Comparator
-@similarity = reverse sort {
-                            $a->{subl} <=> $b->{subl} ||
-                            $b->{ldel} <=> $a->{ldel}
-                           } @similarity;
+# Sort Path Similarity Array Using Comparator
+@path_similarity = reverse sort {
+                            $a->{lcs} <=> $b->{lcs} ||
+                            $b->{lci} <=> $a->{lci} ||
+                            $b->{lnd} <=> $a->{lnd}
+                          } @path_similarity;
 
-# Return Similarity Scores
-foreach my $score (@similarity){
-  # Print Result
-  print("@{$score}{qw(path)}", "\n");
+# Return Path Rank
+foreach my $path_info (@path_similarity){
+  # Print Path
+  print("@{$path_info}{qw(path)}", "\n");
 }
 
-# End Main-------------------------------------------------------------------------------------------------------------------------------------------------------------
+# End Main------------------------------------------------------------------------------------------------------------------------------------------------------------
