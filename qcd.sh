@@ -15,16 +15,27 @@ readonly __NULL=0 __MIN_PADDING=7 __TIME_DELAY=10 __COLUMN_NUM=1024 &> /dev/null
 # End Numerical Constants--------------------------------------------------------------------------------------------------------------------------------------------
 
 # Value Flags
-readonly __ALIAS="-a" __OPTIONS="-o" __REMEMBER="-r" __FORGET="-f" __MKDIRENT="-m" &> /dev/null
+readonly __ALIAS="-a" __OPTIONS="-o" __REMEMBER="-r" __FORGET="-f" __MAKE_DIR="-m" &> /dev/null
 
 # Command Flags
-readonly __HELP="-h" __LIST="-l" __BACK="-b" __CLEAN="-c" __TRACK="-t" __UPDATE="-u" __VERSION="-v" &> /dev/null
+readonly __HELP="-h" __LIST="-l" __CLEAN="-c" __UPDATE="-u" __VERSION="-v" __BACK_DIR="-b" __TRACK_DIR="-t" &> /dev/null
+
+# End Flag Constants-------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Escape Characters
+readonly __CR="\r" __NL="\n" &> /dev/null
+
+# ANSI Sequences
+readonly __ESEQ=$(command printf "\033") &> /dev/null
 
 # Embedded Strings
-readonly  __CWD="." __HWD="../" __YES="y" __QUIT="q" __NSTR="" __FLSH="/" __BSLH="\\" __ESEQ=$(command printf "\033") &> /dev/null
+readonly __NSTR="" __CWD="." __HWD="../" __FLSH="/" __BSLH="\\" __YES="y" __QUIT="q" &> /dev/null
 
-# Control Sequences
-readonly __CR="\r" __NL="\n" __CL=$(command printf "${__ESEQ}[K") __UP=$(command printf "${__ESEQ}[1A") __DN=$(command printf "${__ESEQ}[1B") &> /dev/null
+# Keystroke Sequences
+readonly __ARR_UP_KEY=$(command printf "${__ESEQ}[A") __ARR_DN_KEY=$(command printf "${__ESEQ}[B") &> /dev/null
+
+# Cursor Control Sequences
+readonly __CL=$(command printf "${__ESEQ}[K") __CURSOR_UP=$(command printf "${__ESEQ}[1A") __CURSOR_DN=$(command printf "${__ESEQ}[1B") &> /dev/null
 
 # Text Formatting Strings
 readonly __B=$(command printf "${__ESEQ}[1m") __W=$(command printf "${__ESEQ}[30m${__ESEQ}[47m") __N=$(command printf "${__ESEQ}(B${__ESEQ}[m") &> /dev/null
@@ -48,12 +59,10 @@ readonly QCD_VERSION=${QCD_DIR}/VERSION     &> /dev/null
 readonly QCD_INSTALL=${QCD_DIR}/install.sh  &> /dev/null
 readonly QCD_RELEASE=${QCD_DIR}/release.zip &> /dev/null
 
-# End File Constants-------------------------------------------------------------------------------------------------------------------------------------------------
-
 # Release URL Endpoint
 readonly QCD_RELEASE_URL="https://api.github.com/repos/nalinahuja/qcd/releases/latest" &> /dev/null
 
-# End Release Constants----------------------------------------------------------------------------------------------------------------------------------------------
+# End Path Constants-------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Exit Flag
 declare QCD_EXIT=${__FALSE}
@@ -63,24 +72,24 @@ declare QCD_BACK_DIR=${__NSTR}
 
 # End Global Variables-----------------------------------------------------------------------------------------------------------------------------------------------
 
-function is_empty() {
+function _get_pwd() {
+  # Store Present Directory
+  local pwd=$(command pwd 2> /dev/null)
+
+  # Conditionally Format Present Directory
+  [[ ! "${pwd}" == "${__FLSH}" ]] && pwd+="${__FLSH}"
+
+  # Return Present Directory
+  command echo -e "${pwd}"
+}
+
+function _is_empty() {
   # Check Argument Length
   if [[ ${1} -eq 0 ]]
   then
     # Return True
     command echo -e "${__TRUE}"
   fi
-}
-
-function _get_pwd() {
-  # Store Present Working Directory
-  local pwd=$(command pwd 2> /dev/null)
-
-  # Conditionally Format Present Working Directory
-  [[ ! "${pwd}" == "${__FLSH}" ]] && pwd+="${__FLSH}"
-
-  # Return Present Working Directory
-  command echo -e "${pwd}"
 }
 
 function _abs_path() {
@@ -100,28 +109,7 @@ function _abs_path() {
   command echo -e "${abs_path}"
 }
 
-function _get_rname() {
-  # Store Argument Directory
-  local dir="${@%/}${__FLSH}"
-
-  # Get Prefix String
-  local pfx="${dir#*/*}"
-
-  # Check Prefix String
-  if [[ -n "${pfx}" ]]
-  then
-    # Determine Substring Bounds
-    local si=0 ei=$((${#dir} - ${#pfx}))
-
-    # Update Argument Directory
-    dir="${dir:${si}:${ei}}"
-  fi
-
-  # Return Full Root Directory Name
-  command echo -e "${dir%/}"
-}
-
-function _get_dname() {
+function _dir_name() {
   # Store Argument Directory
   local dir="${@%/}${__FLSH}"
 
@@ -145,26 +133,25 @@ function _get_dname() {
   fi
 }
 
-function _split_name() {
-  # Return Name Of Symbolic Link
-  command echo -e "${@%:*}"
-}
+function _root_name() {
+  # Store Argument Directory
+  local dir="${@%/}${__FLSH}"
 
-function _split_path() {
-  # Return Path Of Symbolic Link
-  command echo -e "${@#*:}"
-}
+  # Get Prefix String
+  local pfx="${dir#*/*}"
 
-function _format_path() {
-  # Check For Environment Variable
-  if [[ -n "${HOME}" ]] && [[ "${@}" == ${HOME}* ]]
+  # Check Prefix String
+  if [[ -n "${pfx}" ]]
   then
-    # Return Formatted Path
-    command echo -e ${@/${HOME}/\~}
-  else
-    # Return Original Path
-    command echo -e ${@}
+    # Determine Substring Bounds
+    local si=0 ei=$((${#dir} - ${#pfx}))
+
+    # Update Argument Directory
+    dir="${dir:${si}:${ei}}"
   fi
+
+  # Return Full Root Directory Name
+  command echo -e "${dir%/}"
 }
 
 function _escape_path() {
@@ -192,6 +179,28 @@ function _escape_regex() {
   command echo -e "${str}"
 }
 
+function _replace_home() {
+  # Check For Environment Variable
+  if [[ -n "${HOME}" ]] && [[ "${@}" == ${HOME}* ]]
+  then
+    # Return Formatted Path
+    command echo -e ${@/${HOME}/\~}
+  else
+    # Return Original Path
+    command echo -e ${@}
+  fi
+}
+
+function _get_symlink_name() {
+  # Return Name Of Symbolic Link
+  command echo -e "${@%:*}"
+}
+
+function _get_symlink_path() {
+  # Return Path Of Symbolic Link
+  command echo -e "${@#*:}"
+}
+
 # End Utility Functions----------------------------------------------------------------------------------------------------------------------------------------------
 
 function _show_help() {
@@ -205,7 +214,7 @@ function _show_help() {
   command cat << EOF
   qcd                                 Switch to home directory
   qcd [dir]                           Switch to valid directory
-  qcd [keyword]/[subdir]/...          Switch to linked directory
+  qcd [symlink]/[subdir]/...          Switch to linked directory
   qcd [n]..                           Switch to nth parent directory
   qcd [file]                          Switch to valid file directory
 EOF
@@ -221,7 +230,7 @@ EOF
   qcd [-v, --version]                 Show current version
   qcd [-u, --update]                  Update to latest version
   qcd [-b, --back-dir]                Navigate to backward directory
-  qcd [-t, --track-dirs]              Set directory tracking behavior
+  qcd [-t, --track-dir]               Set directory tracking behavior
 
   qcd [-r, --remember]                Remember present directory
   qcd [-r, --remember] [dir]          Remember directory by path
@@ -231,7 +240,7 @@ EOF
   qcd [-f, --forget] [dir]            Forget matching directory path
   qcd [-f, --forget] [keyword]        Forget matching symbolic linkages
 
-  qcd [-m, --mkdir] [dir]             Create and switch to new directory
+  qcd [-m, --make-dir] [dir]          Create and switch to new directory
   qcd [-o, --options] [query]         Show symbolic linkage options in menu
 
 Developed by Nalin Ahuja, nalinahuja
@@ -282,19 +291,19 @@ function _read_input() {
     buffer+=("${c}")
 
     # Reset String Buffer
-    [[ ! "${buffer[0]}" == "${__ESEQ}" ]] && buffer=()
+    [[ ! "${buffer[0]}" == "${__ESEQ}" ]] && buffer=() && continue
 
-    # Check Break Conditions
+    # Check For Arrow Key Sequence
     if [[ ${#buffer[@]} -ge 3 ]]
     then
       # Set IFS
       local IFS=$''
 
-      # Return Up Arrow Action
-      [[ "${buffer[*]}" == "${__ESEQ}[A" ]] && command echo -e "${__ARR_UP}" && break
+      # Return Arrow Up Action
+      [[ "${buffer[*]}" == "${__ARR_UP_KEY}" ]] && command echo -e "${__ARR_UP}" && break
 
-      # Return Down Arrow Action
-      [[ "${buffer[*]}" == "${__ESEQ}[B" ]] && command echo -e "${__ARR_DN}" && break
+      # Return Arrow Down Action
+      [[ "${buffer[*]}" == "${__ARR_DN_KEY}" ]] && command echo -e "${__ARR_DN}" && break
 
       # Reset String Buffer
       buffer=()
@@ -308,18 +317,18 @@ function _read_input() {
 function _clear_output() {
   # Clear Line Entries
   for ((li=0; li <= ${1}; li++)); do
-    # Go To Beginning Of Line
+    # Go To Beginning Of Current Line
     command printf "${__ESEQ}[${__COLUMN_NUM}D"
 
-    # Clear Line
+    # Clear Current Line
     command printf "${__CL}"
 
-    # Go Up One Line
-    command printf "${__UP}"
+    # Move Cursor Up One Line
+    command printf "${__CURSOR_UP}"
   done
 
-  # Go Down One Line
-  command printf "${__DN}"
+  # Move Cursor Down One Line
+  command printf "${__CURSOR_DN}"
 }
 
 function _generate_menu() {
@@ -336,17 +345,17 @@ function _generate_menu() {
   local buffer=()
 
   # Initialize Selected Option
-  local os=${__NULL}
+  local os=0
 
   # Begin Selection Loop
   while [[ 1 ]]; do
     # Initialize Option Index
-    local oi=${__NULL}
+    local oi=${os}
 
     # Iterate Over Options
     for opt in "${@}"; do
       # Format Option
-      opt=$(_format_path "${opt%/}")
+      opt=$(_replace_home "${opt%/}")
 
       # Conditionally Format Option
       if [[ ${oi} -eq ${os} ]]
@@ -457,10 +466,10 @@ function _update_store() {
   then
     # Update Store File
     command mv ${QCD_TEMP} ${QCD_STORE} 2> /dev/null
-  fi
 
-  # Cleanup Temp
-  _cleanup_temp
+    # Return To Caller
+    return ${?}
+  fi
 
   # Return To Caller
   return ${__OK}
@@ -472,6 +481,9 @@ function _cleanup_temp() {
   then
     # Remove Temp File
     command rm ${QCD_TEMP} 2> /dev/null
+
+    # Return To Caller
+    return ${?}
   fi
 
   # Return To Caller
@@ -480,12 +492,12 @@ function _cleanup_temp() {
 
 # End File Management Functions--------------------------------------------------------------------------------------------------------------------------------------
 
-function _add_directory() {
+function _add_symlink() {
   # Initialize Directory Path
   local dir=${__NSTR}
 
   # Check For Argument Path
-  if [[ $(is_empty ${#@}) ]]
+  if [[ $(_is_empty ${#@}) ]]
   then
     # Store Current Path
     dir=$(_get_pwd)
@@ -503,8 +515,8 @@ function _add_directory() {
   # Check For Argument Endpoint
   if [[ ${#@} -lt 2 ]]
   then
-    # Extract Endpoint From Directory Path
-    ept=$(_get_dname "${dir}")
+    # Extract Endpoint From Path
+    ept=$(_dir_name "${dir}")
   else
     # Store Argument Endpoint
     ept="${2}"
@@ -543,7 +555,7 @@ function _add_directory() {
   return ${__OK}
 }
 
-function _remove_linkage() {
+function _remove_symlink() {
   # Store Argument Link
   local link=$(_escape_regex "${@%/}")
 
@@ -562,7 +574,7 @@ function _remove_directory() {
   local dir=${__NSTR}
 
   # Check For Argument Path
-  if [[ $(is_empty ${#@}) ]]
+  if [[ $(_is_empty ${#@}) ]]
   then
     # Store Current Path
     dir=$(_get_pwd)
@@ -588,7 +600,7 @@ function _parse_arguments() {
   local dir=${__NSTR} als=${__NSTR}
 
   # Parse Arguments
-  while [[ ! $(is_empty ${#@}) ]]; do
+  while [[ ! $(_is_empty ${#@}) ]]; do
     # Determine Action
     case "${1}" in
       # Check For Help Flag
@@ -615,25 +627,25 @@ function _parse_arguments() {
         command echo -en "${__CR}${__CL}qcd: Generating linkage map..."
 
         # Get Symbolic Linkages From Store File
-        local sym_links=$(qcd --clean &> /dev/null && command cat ${QCD_STORE})
+        local symlinks=$(qcd --clean &> /dev/null && command cat ${QCD_STORE})
 
         # Error Check Symbolic Linkages
-        if [[ -z ${sym_links} ]]
+        if [[ -z ${symlinks} ]]
         then
           # Display Prompt
           command echo -e "${__CR}${__CL}qcd: No linkages found"
 
           # Terminate Program
-          return ${__ERR}
+          return ${__OK}
         fi
 
-        # Determine Column Values
+        # Get Column Values
         local tcols=$(command tput cols)
 
         # Determine Column Padding
-        local pcols=$(command echo -e "${sym_links}" | command awk -F ':' '{print length($1)}' | command sort -n | command tail -n1)
+        local pcols=$(command echo -e "${symlinks}" | command awk -F ':' '{print length($1)}' | command sort -n | command tail -n1)
 
-        # Set Column Padding To Minimum
+        # Set Column Padding To Minimum Value
         [[ ${pcols} -lt ${__MIN_PADDING} ]] && pcols=${__MIN_PADDING}
 
         # Format Table Header
@@ -643,18 +655,18 @@ function _parse_arguments() {
         local IFS=$'\n'
 
         # Iterate Over Linkages
-        for sym_link in ${sym_links}; do
-          # Extract Linkage Component
-          local link=$(_split_name "${sym_link}")
+        for symlink in ${symlinks}; do
+          # Extract Name Component
+          local name=$(_get_symlink_name "${symlink}")
 
           # Extract Path Component
-          local path=$(_format_path "$(_split_path "${sym_link}")")
+          local path=$(_replace_home "$(_get_symlink_path "${symlink}")")
 
           # Format Path Component
-          [[ ! ${path} == ${__FLSH} ]] && path="${path%/}"
+          [[ ! "${path}" == "${__FLSH}" ]] && path="${path%/}"
 
-          # Format Linkage Row
-          command printf " %-${pcols}s  %s${__NL}" "${link}" "${path}" >> ${QCD_TEMP}
+          # Format Linkage Entry
+          command printf " %-${pcols}s  %s${__NL}" "${name}" "${path}" >> ${QCD_TEMP}
         done
 
         # Unset IFS
@@ -673,15 +685,15 @@ function _parse_arguments() {
         local IFS=$'\n'
 
         # Get Linkage Paths
-        local link_paths=($(command awk -F ':' '{print $2}' ${QCD_STORE}))
+        local symlink_paths=($(command awk -F ':' '{print $2}' ${QCD_STORE}))
 
         # Iterate Over Linkage Paths
-        for link_path in ${link_paths[@]}; do
+        for symlink_path in ${symlink_paths[@]}; do
           # Verify Linkage Path
-          if [[ ! -d "${link_path}" ]]
+          if [[ ! -d "${symlink_path}" ]]
           then
             # Remove Invalid Linkage Path
-            (_remove_directory "${link_path}" &> /dev/null)
+            (_remove_directory "${symlink_path}" &> /dev/null)
           fi
         done
 
@@ -807,7 +819,7 @@ function _parse_arguments() {
       ;;
 
       # Check For Back Flag
-      ${__BACK}|--back-dir)
+      ${__BACK_DIR}|--back-dir)
         # Check Back Directory Variable
         if [[ -n "${QCD_BACK_DIR}" ]] && [[ -d "${QCD_BACK_DIR}" ]]
         then
@@ -832,7 +844,7 @@ function _parse_arguments() {
       ;;
 
       # Check For Tracking Flag
-      ${__TRACK}|--track-dir)
+      ${__TRACK_DIR}|--track-dir)
         # Check For Tracking File
         if [[ -f "${QCD_TRACK}" ]]
         then
@@ -877,7 +889,7 @@ function _parse_arguments() {
       ;;
 
       # Check For Make Directory Flag
-      ${__MKDIRENT}|--make-dir)
+      ${__MAKE_DIR}|--make-dir)
         # Shift Past Flag
         command shift
 
@@ -885,7 +897,7 @@ function _parse_arguments() {
         if [[ -z ${1} ]] || [[ "${1}" == -* ]]
         then
           # Display Prompt
-          command echo -e "qcd: Directory path missing"
+          command echo -e "qcd: Missing directory path"
 
           # Terminate Program
           return ${__ERR}
@@ -894,11 +906,11 @@ function _parse_arguments() {
         # Store Directory Path
         local dir_path="${1}"
 
-        # Store Trailing Path
-        local trail_path=$(_get_dname "${dir_path}")
+        # Store Directory Name
+        local dir_name=$(_dir_name "${dir_path}")
 
         # Determine Substring Bounds
-        local si=0 ei=$((${#dir_path} - ${#trail_path}))
+        local si=0 ei=$((${#dir_path} - ${#dir_name}))
 
         # Store Prefix Path Component
         local pfx_path="${dir_path:${si}:${ei}}"
@@ -920,7 +932,7 @@ function _parse_arguments() {
         command cd "${dir_path}"
 
         # Add Current Directory If Tracking
-        [[ -f "${QCD_TRACK}" ]] && (_add_directory &> /dev/null &)
+        [[ -f "${QCD_TRACK}" ]] && (_add_symlink &> /dev/null &)
 
         # Terminate Program
         return ${__OK}
@@ -957,7 +969,7 @@ function _parse_arguments() {
 
       # Check For Forget Flag
       ${__FORGET}|--forget)
-        # Initalize Argument
+        # Initialize Argument
         local arg="${2}"
 
         # Determine Forget Type
@@ -968,7 +980,7 @@ function _parse_arguments() {
         elif [[ ! -d "${arg}" ]]
         then
           # Forget Argument As Linkage
-          (_remove_linkage "${arg}" &> /dev/null &)
+          (_remove_symlink "${arg}" &> /dev/null &)
         else
           # Expand Directory Path
           arg=$(_abs_path "${arg}")
@@ -990,7 +1002,7 @@ function _parse_arguments() {
         if [[ -z ${1} ]] || [[ "${1}" == -* ]]
         then
           # Display Prompt
-          command echo -e "qcd: Directory alias missing"
+          command echo -e "qcd: Missing directory alias"
 
           # Terminate Program
           return ${__ERR}
@@ -1012,7 +1024,7 @@ function _parse_arguments() {
         if [[ -z ${1} ]] || [[ "${1}" == -* ]]
         then
           # Display Prompt
-          command echo -e "qcd: Directory linkage missing"
+          command echo -e "qcd: Missing directory linkage"
 
           # Terminate Program
           return ${__ERR}
@@ -1042,14 +1054,14 @@ function _parse_arguments() {
     # Verify Directory Parameter
     [[ -z ${dir} ]] && dir=$(_get_pwd)
 
-    # Verify Alias Parameter
-    [[ -z ${als} ]] && als=$(_get_dname $(_abs_path "${dir}"))
-
-    # Expand Directory Path
+    # Expand Directory Parameter
     dir=$(_abs_path "${dir}")
 
+    # Verify Alias Parameter
+    [[ -z ${als} ]] && als=$(_dir_name "${dir}")
+
     # Add Directory To Store File
-    (_add_directory "${dir}" "${als}" &> /dev/null &)
+    (_add_symlink "${dir}" "${als}" &> /dev/null &)
 
     # Terminate Program
     return ${__OK}
@@ -1063,19 +1075,13 @@ function _parse_arguments() {
 
 function qcd() {
   # Create Resource File
-  _create_store
-
-  # Store Creation Status
-  local status=${?}
+  _create_store; local status=${?}
 
   # Check For Terminating Status
   [[ ${status} -ne ${__OK} ]] && return ${status}
 
   # Parse Commandline Arguments
-  _parse_arguments "${@}"
-
-  # Store Parsing Status
-  local status=${?}
+  _parse_arguments "${@}"; local status=${?}
 
   # Check For Terminating Status
   [[ ${status} -ne ${__CONT} ]] && return ${status}
@@ -1150,7 +1156,7 @@ function qcd() {
     local new_pwd=$(_get_pwd)
 
     # Add Current Directory If Tracking
-    [[ -f "${QCD_TRACK}" ]] && (_add_directory &> /dev/null &)
+    [[ -f "${QCD_TRACK}" ]] && (_add_symlink &> /dev/null &)
 
     # Set Back Directory On Path Mismatch
     [[ ! "${old_pwd}" == "${new_pwd}" ]] && QCD_BACK_DIR="${old_pwd}"
@@ -1178,35 +1184,35 @@ function qcd() {
     local IFS=$'\n'
 
     # Initialize Symbolic Link Component
-    local sym_link=$(_escape_regex "${dir_arg:0:${pfx_len}}")
+    local symlink=$(_escape_regex "${dir_arg:0:${pfx_len}}")
 
     # Get Exact Matched Symbolic Paths From Store File
-    local pathv=($(command awk -F ':' -v LINK="${sym_link}" '{if (LINK == $1) {print $2}}' ${QCD_STORE} 2> /dev/null))
+    local pathv=($(command awk -F ':' -v LINK="${symlink}" '{if (LINK == $1) {print $2}}' ${QCD_STORE} 2> /dev/null))
 
     # Check For Indirect Link Matching
-    if [[ $(is_empty ${#pathv[@]}) ]]
+    if [[ $(_is_empty ${#pathv[@]}) ]]
     then
       # Initialize Parameters
-      local i=0 wld_link=${__NSTR}
+      local i=0 wld_symlink=${__NSTR}
 
       # Check For Hidden Directory Prefix
-      if [[ "${sym_link}" == \\.* ]]
+      if [[ "${symlink}" == \\.* ]]
       then
         # Override Parameters
-        i=2; wld_link="${__BSLH}${__CWD}";
+        i=2; wld_symlink="${__BSLH}${__CWD}";
       fi
 
       # Wildcard Symbolic Link
-      for ((; i < ${#sym_link}; i++)); do
+      for ((; i < ${#symlink}; i++)); do
         # Get Character At Index
-        local c="${sym_link:${i}:1}"
+        local c="${symlink:${i}:1}"
 
         # Append Wildcard
-        wld_link="${wld_link}${c}.*"
+        wld_symlink="${wld_symlink}${c}.*"
       done
 
       # Get Subsequence Matched Symbolic Paths From Store File
-      pathv=($(command egrep -i -s -x "${wld_link}:.*" ${QCD_STORE} 2> /dev/null))
+      pathv=($(command egrep -i -s -x "${wld_symlink}:.*" ${QCD_STORE} 2> /dev/null))
     fi
 
     # Initialize Path Count
@@ -1224,7 +1230,7 @@ function qcd() {
       # Iterate Over Path Values
       for path in ${pathv[@]}; do
         # Split Path By Delimiter
-        path=$(_split_path "${path}")
+        path=$(_get_symlink_path "${path}")
 
         # Concatenate Subdirectory Path
         path=$(_escape_path "${path}${sub_link}")
@@ -1258,7 +1264,7 @@ function qcd() {
           # Iterate Over Filtered Paths
           for path in ${paths[@]}; do
             # Get Path Endpoint
-            local ept=$(_get_dname "${path}")
+            local ept=$(_dir_name "${path}")
 
             # Compare Endpoint To Directory Argument
             if [[ "${ept}" == ${dir_arg}* ]]
@@ -1292,7 +1298,7 @@ function qcd() {
       fi
     else
       # Substring Path From Delimiter
-      pathv=$(_split_path "${pathv}")
+      pathv=$(_get_symlink_path "${pathv}")
     fi
 
     # Error Check Result
@@ -1312,7 +1318,7 @@ function qcd() {
       (_remove_directory "${pathv}" &> /dev/null &)
 
       # Display Error
-      command echo -e "qcd: $(_format_path "${pathv%/}"): Directory does not exist"
+      command echo -e "qcd: $(_replace_home "${pathv%/}"): Directory does not exist"
 
       # Terminate Program
       return ${__ERR}
@@ -1360,7 +1366,7 @@ function qcd() {
         local new_pwd=$(_get_pwd)
 
         # Add Current Directory If Tracking
-        [[ -f "${QCD_TRACK}" ]] && (_add_directory &> /dev/null &)
+        [[ -f "${QCD_TRACK}" ]] && (_add_symlink &> /dev/null &)
 
         # Set Back Directory On Path Mismatch
         [[ ! "${old_pwd}" == "${new_pwd}" ]] && QCD_BACK_DIR="${old_pwd}"
@@ -1394,48 +1400,48 @@ function _qcd_comp() {
   if [[ "${curr_arg}" == */* ]]
   then
     # Store Symbolic Link
-    local sym_link=$(_get_rname "${curr_arg}")
+    local symlink=$(_root_name "${curr_arg}")
 
     # Store Trailing Path Component
     local trail_comp="${curr_arg##*/}"
 
     # Determine Subdirectory Locality
-    local si=$((${#sym_link} + 1))
+    local si=$((${#symlink} + 1))
     local ei=$((${#curr_arg} - ${#trail_comp} - ${si}))
 
     # Store Subdirectory Path Component
     local sub_comp="${curr_arg:${si}:${ei}}"
 
     # Resolve Linked Directories
-    if [[ ! -d "${sym_link}" ]]
+    if [[ ! -d "${symlink}" ]]
     then
       # Get Exact Matched Symbolic Paths From Store File
-      local link_paths=($(command awk -F ':' -v LINK="${sym_link}" '{if (LINK == $1) {print $2}}' ${QCD_STORE} 2> /dev/null))
+      local link_paths=($(command awk -F ':' -v LINK="${symlink}" '{if (LINK == $1) {print $2}}' ${QCD_STORE} 2> /dev/null))
 
       # Check For Indirect Link Matching
-      if [[ $(is_empty ${#link_paths[@]}) ]]
+      if [[ $(_is_empty ${#link_paths[@]}) ]]
       then
         # Initialize Parameters
-        local i=0 wld_link=${__NSTR}
+        local i=0 wld_symlink=${__NSTR}
 
         # Check For Hidden Directory Prefix
-        if [[ "${sym_link}" == \\.* ]]
+        if [[ "${symlink}" == \\.* ]]
         then
           # Override Parameters
-          i=2; wld_link="${__BSLH}${__CWD}";
+          i=2; wld_symlink="${__BSLH}${__CWD}";
         fi
 
         # Wildcard Symbolic Link
-        for ((; i < ${#sym_link}; i++)); do
+        for ((; i < ${#symlink}; i++)); do
           # Get Character At Index
-          local c="${sym_link:${i}:1}"
+          local c="${symlink:${i}:1}"
 
           # Append Wildcard
-          wld_link="${wld_link}${c}.*"
+          wld_symlink="${wld_symlink}${c}.*"
         done
 
         # Get Subsequence Matched Symbolic Paths From Store File
-        link_paths=($(command egrep -i -s -x "${wld_link}:.*" ${QCD_STORE} 2> /dev/null))
+        link_paths=($(command egrep -i -s -x "${wld_symlink}:.*" ${QCD_STORE} 2> /dev/null))
       fi
 
       # Initialize Resolved Directories
@@ -1444,7 +1450,7 @@ function _qcd_comp() {
       # Iterate Over Linked Paths
       for link_path in ${link_paths[@]}; do
         # Substring Path From Delimiter
-        link_path=$(_split_path "${link_path}")
+        link_path=$(_get_symlink_path "${link_path}")
 
         # Form Complete Path
         link_path=$(_escape_path "${link_path}${sub_comp}")
@@ -1487,12 +1493,12 @@ function _qcd_comp() {
       fi
 
       # Format Symbolic Link
-      sym_link="${sym_link}${__FLSH}"
+      symlink="${symlink}${__FLSH}"
 
       # Iterate Over Subdirectories
       for sub_dir in ${sub_dirs[@]}; do
         # Generate Linked Subdirectory
-        local link_sub=$(_escape_path "${sym_link}${sub_comp}${sub_dir%/}")
+        local link_sub=$(_escape_path "${symlink}${sub_comp}${sub_dir%/}")
 
         # Append Completion Delimiter
         [[ ! -d "${link_sub}" ]] && link_sub="${link_sub}${__FLSH}"
@@ -1509,21 +1515,21 @@ function _qcd_comp() {
     local ca_pfx="${curr_arg:0:1}"
 
     # Get Nonlocal Symbolic Links From Store File
-    local sym_links=($(command awk -v pwd="${pwd}" -F ':' '{if ($2 != pwd) {print $1}}' ${QCD_STORE}))
+    local symlinks=($(command awk -v pwd="${pwd}" -F ':' '{if ($2 != pwd) {print $1}}' ${QCD_STORE}))
 
     # Iterate Over Symbolic Links
-    for sym_link in ${sym_links[@]}; do
+    for symlink in ${symlinks[@]}; do
       # Get Symbolic Link Prefix
-      local sl_pfx="${sym_link:0:1}"
+      local sl_pfx="${symlink:0:1}"
 
       # Determine Symbolic Link Locality
-      if [[ ! -d "${sym_link}" ]]
+      if [[ ! -d "${symlink}" ]]
       then
         # Determine Symbolic Link Visibility
         if [[ "${ca_pfx}" == "${__CWD}" && "${sl_pfx}" == "${__CWD}" ]] || [[ ! "${ca_pfx}" == "${__CWD}" && ! "${sl_pfx}" == "${__CWD}" ]]
         then
           # Add Symbolic Link
-          comp_list+=("${sym_link}${__FLSH}")
+          comp_list+=("${symlink}${__FLSH}")
         fi
       fi
     done
