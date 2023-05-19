@@ -1,11 +1,11 @@
 ## qcd
 <p align="justify">
-<code>qcd</code> is a bash utility that extends upon the exisiting capabilities of the builtin command <code>cd</code>. It allows the user to quickly change from one directory to another by specifying a directory path, directory name alias, directory name prefix, or directory name subsequence to the program as a command line argument. <code>qcd</code> works completely locally and utilizes common builtin commands to achieve this functionality making it extremely portable across systems that run bash. <code>qcd</code> operates out of the directory <code>~/.qcd</code> and remembers which directories you visit by storing symbolic linkages on disk. This file allows <code>qcd</code> to quickly search for and resolve the absolute path from a symbolic linkage and switch to that directory given a recognizable input.
+<code>qcd</code> is a bash utility that extends upon the exisiting capabilities of the builtin command <code>cd</code>. It allows the user to quickly change from one directory to another by specifying a directory path, directory name alias, directory name prefix, or directory name subsequence to the program as a command line argument. <code>qcd</code> works completely locally and utilizes common builtin commands to achieve this functionality, making it extremely portable across systems that run bash. <code>qcd</code> operates out of the directory <code>~/.qcd</code> and remembers which directories you visit by storing symbolic linkages on disk. This file allows <code>qcd</code> to quickly search for and resolve the absolute path from a symbolic linkage and switch to that directory given a recognizable input.
 </p>
 
 ## Compatibility
 <p align="justify">
-<code>qcd</code> is compatible with macOS and popular Linux distributions in bash environments between v3.x.
+<code>qcd</code> is compatible with macOS and popular Linux distributions in bash environments from v3.x onwards.
 </p>
 
 ## Dependencies
@@ -180,7 +180,7 @@ The track directories flag allows the user to toggle the directory tracking beha
 </p>
 
 ```bash
-qcd [-t, --track-dirs]
+qcd [-t, --track-dir]
 ```
 
 #### Clean
