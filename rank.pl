@@ -63,7 +63,7 @@ sub lci {
     $li = max($li, index($ns, substr($ms, $i , 1)));
 
     # Break Loop If Latest Index Equals Target String Length
-    if ($li == $nl) {
+    if ($li == $nl - 1) {
       last;
     }
   }
