@@ -22,17 +22,14 @@ readonly __HELP="-h" __LIST="-l" __CLEAN="-c" __UPDATE="-u" __VERSION="-v" __BAC
 
 # End Flag Constants-------------------------------------------------------------------------------------------------------------------------------------------------
 
-# Escape Characters
-readonly __CR="\r" __NL="\n" &> /dev/null
-
 # ANSI Sequences
 readonly __ESEQ=$(command printf "\033") &> /dev/null
 
-# Embedded Strings
-readonly __NSTR="" __CWD="." __HWD="../" __FLSH="/" __BSLH="\\" __YES="y" __QUIT="q" &> /dev/null
-
 # Keystroke Sequences
-readonly __ARR_UP_KEY=$(command printf "${__ESEQ}[A") __ARR_DN_KEY=$(command printf "${__ESEQ}[B") &> /dev/null
+readonly __ARR_UP_KEY="${__ESEQ}[A" __ARR_DN_KEY="${__ESEQ}[B" &> /dev/null
+
+# Embedded Strings
+readonly __NSTR="" __CR="\r" __NL="\n" __CWD="." __HWD="../" __FLSH="/" __BSLH="\\" __YES="y" __QUIT="q" &> /dev/null
 
 # Cursor Control Sequences
 readonly __CL=$(command printf "${__ESEQ}[K") __CURSOR_UP=$(command printf "${__ESEQ}[1A") __CURSOR_DN=$(command printf "${__ESEQ}[1B") &> /dev/null
@@ -350,7 +347,7 @@ function _generate_menu() {
   # Begin Selection Loop
   while [[ 1 ]]; do
     # Initialize Option Index
-    local oi=${os}
+    local oi=0
 
     # Iterate Over Options
     for opt in "${@}"; do
