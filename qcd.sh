@@ -368,14 +368,11 @@ function _generate_menu() {
       ((oi++))
     done
 
-    # Display Selection
-    command echo -e "${buffer[*]}"
+    # Display Selection And Clear Buffer
+    command echo -e "${buffer[*]}" && buffer=()
 
     # Read User Input
     local key=$(_read_input)
-
-    # Clear String Buffer
-    buffer=()
 
     # Check Exit Flag
     if [[ ${QCD_EXIT} -eq ${__TRUE} ]]
@@ -391,26 +388,25 @@ function _generate_menu() {
     fi
 
     # Update Cursor Position
-    if [[ ${key} -eq ${__ARR_UP} ]]
-    then
-      # Decrement Selected Option
-      ((os--))
-    elif [[ ${key} -eq ${__ARR_DN} ]]
-    then
-      # Increment Selected Option
-      ((os++))
-    elif [[ ${key} -eq ${__ENTR} ]]
-    then
-      # Break Loop
-      break
-    elif [[ ${key} -eq ${__EXIT} ]]
-    then
-      # Reset Option Selection
-      os=${__NSEL}
+    case ${key} in
+      ${__ARR_UP})
+        # Decrement Selected Option
+        ((os--))
+      ;;
 
-      # Break Loop
-      break
-    fi
+      ${__ARR_DN})
+        # Increment Selected Option
+        ((os++))
+      ;;
+
+      ${__ENTR}|${__EXIT})
+        # Reset Selected Option If Exiting
+        [[ ${key} -eq ${__EXIT} ]] && os=${__NSEL}
+
+        # Break Loop
+        break
+      ;;
+    esac
 
     # Check For Option Loopback
     if [[ ${os} -eq ${#@} ]]
