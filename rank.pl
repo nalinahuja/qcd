@@ -60,7 +60,7 @@ sub lci {
 
   # Find Index Of Latest Character
   for (my $i = 0; $i < $ml; $i++) {
-    $li = max($li, index($ns, substr($ms, $i , 1)));
+    $li = max($li, index($ns, substr($ms, $i , 1), $li));
 
     # Break Loop If Latest Index Equals Target String Length
     if ($li == $nl - 1) {
