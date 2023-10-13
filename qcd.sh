@@ -18,7 +18,7 @@ readonly __NULL=0 __MIN_PADDING=7 __TIME_DELAY=10 __COLUMN_NUM=1024 &> /dev/null
 readonly __ALIAS="-a" __OPTIONS="-o" __REMEMBER="-r" __FORGET="-f" __MAKE_DIR="-m" &> /dev/null
 
 # Command Flags
-readonly __HELP="-h" __LIST="-l" __CLEAN="-c" __UPDATE="-u" __VERSION="-v" __BACK_DIR="-b" __TRACK_DIR="-t" &> /dev/null
+readonly __HELP="-h" __LIST="-l" __CLEAN="-c" __PURGE="-p" __UPDATE="-u" __VERSION="-v" __BACK_DIR="-b" __TRACK_DIR="-t" &> /dev/null
 
 # End Flag Constants-------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -94,7 +94,7 @@ function _abs_path() {
   local pwd=$(_get_pwd)
 
   # Navigate To Argument Directory
-  command cd "${@}"
+  command cd -P "${@}"
 
   # Store Absolute Directory Path
   local abs_path=$(_get_pwd)
@@ -226,6 +226,7 @@ EOF
   qcd [-l, --list]                    List stored linkages
   qcd [-v, --version]                 Show current version
   qcd [-u, --update]                  Update to latest version
+  qcd [-p, --purge]                   Purge linkages in store file
   qcd [-b, --back-dir]                Navigate to backward directory
   qcd [-t, --track-dir]               Set directory tracking behavior
 
@@ -695,6 +696,34 @@ function _parse_arguments() {
 
         # Display Prompt
         command echo -e "qcd: Cleaned linkages in store file"
+
+        # Terminate Program
+        return ${__OK}
+      ;;
+
+      # Check For Purge Flag
+      ${__PURGE}|--purge)
+        # Display Prompt
+        command echo -e "qcd: Storing ${__B}$(command awk 'END{print NR}' ${QCD_STORE})${__N} linkages"
+
+        # Prompt User For Confirmation
+        command read -p "→ Confirm purge [y/n]: " confirm
+
+        # Determine Action
+        if [[ "$(command awk '{print tolower($0)}' <<< ${confirm})" == "${__YES}" ]]
+        then
+          # Purge Linkages In Store File
+          command echo -n > ${QCD_STORE}
+
+          # Clear Previous Outputs
+          _clear_output 2
+
+          # Display Prompt
+          command echo -e "qcd: Purged all stored linkages"
+        else
+          # Clear All Outputs
+          _clear_output 2
+        fi
 
         # Terminate Program
         return ${__OK}
