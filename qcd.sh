@@ -713,7 +713,7 @@ function _parse_arguments() {
         if [[ "$(command awk '{print tolower($0)}' <<< ${confirm})" == "${__YES}" ]]
         then
           # Purge Linkages In Store File
-          command echo -n > ${QCD_STORE}
+          command echo -n >| ${QCD_STORE}
 
           # Clear Previous Outputs
           _clear_output 2
